@@ -2,7 +2,7 @@
     <div class="container">
         <div class="nav-brand">
             <a href="landing.php">
-                <img src="images/U.png" alt="UniVerse Logo" class="logo">
+                <img src="assets/images/U.png" alt="UniVerse Logo" class="logo">
             </a>
         </div>
         <nav class="nav-menu" id="nav-menu">
@@ -51,12 +51,9 @@
                             </div>
                         </a>
                     </div>
-                </li>
+                </li>      
                 <li class="nav-item">
-                    <a href="about.html" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="contact.html" class="nav-link">Contact</a>
+                    <a href="" class="nav-link">Contact</a>
                 </li>
             </ul>
         </nav>

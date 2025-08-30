@@ -7,7 +7,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost') {
     define('DBUSER', 'root');
     define('DBPASS', '');
     define('DBDRIVER', '');
-    define('BASE_URL', 'http://localhost/MVC/public');
+    define('BASE_URL', 'http://localhost/UniVerse/public');
 } else {
     define('DBNAME', 'my_db');
     define('DBHOST', 'localhost');

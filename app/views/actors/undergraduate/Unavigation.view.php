@@ -2,29 +2,29 @@
     <div class="container">
         <!-- missing class -->
         <div class="nav-brand">
-            <a href="../../public/landing.php">
-                <img src="../../public/images/U.png" alt="UniVerse Logo" class="logo">
+            <a href="landing.php">
+                <img src="<?= BASE_URL ?>/assets/images/U.png" alt="UniVerse Logo" class="logo">
             </a>
         </div>
         <nav class="nav-menu" id="nav-menu">
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="./UHome.php" class="nav-link">Home</a> 
+                    <a href="Uhome" class="nav-link">Home</a> 
                 </li>
                 <li class="nav-item">
-                    <a href="./UMyProfile.php" class="nav-link">My Profile</a>
+                    <a href="umyprofile" class="nav-link">My Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a href="about.html" class="nav-link">Jobs & Internships</a>
+                    <a href="" class="nav-link">Articles</a>
                 </li>
                 <li class="nav-item">
-                    <a href="contact.html" class="nav-link">Career Articles</a>
+                    <a href="" class="nav-link">Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a href="contact.html" class="nav-link">Discussion Forums</a>
+                    <a href=""class="nav-link">Discussion Forums</a>
                 </li>
                 <li class="nav-item">
-                    <a href="contact.html" class="nav-link">Mentorship</a>
+                    <a href="" class="nav-link">Mentorship</a>
                 </li>
             </ul>
         </nav>
@@ -35,4 +35,4 @@
         </button>
     </div>
 </header>
-<script src="../../public/main.js"></script>
+<script src="<?= BASE_URL ?>/js/main.js"></script>

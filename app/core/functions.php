@@ -5,3 +5,8 @@ function show($stuff) {
     print_r($stuff);
     echo '</pre>';
 }
+
+function redirect($url) {
+    header('Location: ' . BASE_URL . '/' . ltrim($url, '/'));
+    exit();
+}

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-brand">
-                <img src="../../public/images/logo bw.PNG" alt="UniVerse Logo" class="footer-logo">
+                <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="UniVerse Logo" class="footer-logo">
                 <p>Bridging the gap between education and opportunity. Your gateway to a successful career journey.</p>
                 <div class="social-links">
                     <a href="#" class="social-link">
