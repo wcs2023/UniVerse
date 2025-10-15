@@ -28,11 +28,11 @@
 
         <!-- Profile Navigation -->
         <div class="profile-nav">
-            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item active">
+            <a href="umyprofile" class="nav-item active">
                 <!-- <i class="icon-person"></i> -->
                 Profile Overview
             </a>
-            <a href="<?= BASE_URL ?>/uachievements" class="nav-item">
+            <a href="uachievements" class="nav-item">
                 <!-- <i class="icon-achievement"></i> -->
                 Achievements
             </a>
@@ -42,14 +42,15 @@
             </a>
         </div>
 
-        <!-- Personal Info Section -->
+        <!-- Profile Overview Section -->
         <div class="profile-content">
             <div class="section-header">
-                <h2>Personal Information</h2>
+                <h2>Profile Overview</h2>
                 <!-- <button class="edit-btn">Edit</button> -->
             </div>
 
             <div class="info-grid">
+                <!-- Personal Information -->
                 <!-- Email -->
                 <div class="info-item">
                     <div class="info-label">
@@ -94,17 +95,8 @@
                     </div>
                     <div class="info-value">123 University Ave, UniCity, State</div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Academic Info Section -->
-        <div class="profile-content">
-            <div class="section-header">
-                <h2>Academic Information</h2>
-                <!-- <button class="edit-btn">Edit</button> -->
-            </div>
-
-            <div class="info-grid">
+                <!-- Academic Information -->
                 <!-- University -->
                 <div class="info-item">
                     <div class="info-label">
@@ -153,7 +145,7 @@
         </div>
     </div>
 
-    <?php include 'Ufooter.view.php'; ?>
+    <?php include __DIR__ . '/../../layout/footer.php'; ?>
     
     <!-- JavaScript at the bottom for better performance -->
     <!-- <script src="js/main.js"></script> -->

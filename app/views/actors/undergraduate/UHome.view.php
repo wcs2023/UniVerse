@@ -63,5 +63,5 @@
     </section>
 
 </body>
-    <?php include 'Ufooter.view.php'; ?>
+    <?php include __DIR__ . '/../../layout/footer.php'; ?>
 </html>

@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <?php include 'UFooter.view.php'; ?>
+    <?php include __DIR__ . '/../../layout/footer.php'; ?>
     
     <script src="<?= BASE_URL ?>/js/main.js"></script>
     <script>

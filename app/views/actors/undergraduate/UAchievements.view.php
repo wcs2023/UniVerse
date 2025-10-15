@@ -45,262 +45,67 @@
         <div class="achievements-container">
             <div class="section-header">
                 <h2>Your Achievements</h2>
-                <button class="add-achievement-btn">+ Add Achievement</button>
+                <button class="add-achievement-btn">+ Add New</button>
             </div>
 
+            <?php if (isset($data['achievements']) && !empty($data['achievements'])): ?>
             <div class="achievements-grid">
-                <!-- Community Leadership Certificate -->
+                <?php foreach ($data['achievements'] as $achievement): ?>
                 <div class="achievement-card">
                     <div class="achievement-header">
-                        <div class="achievement-title">Community Leadership Certificate</div>
-                        <span class="achievement-tag certificate">Certificate</span>
+                        <div class="achievement-title"><?= htmlspecialchars($achievement['title']) ?></div>
+                        <span class="achievement-tag <?= htmlspecialchars($achievement['achievement_type']) ?>">
+                            <?= ucfirst(htmlspecialchars($achievement['achievement_type'])) ?>
+                        </span>
                     </div>
-                    <div class="achievement-date">2023-12-15</div>
+                    <div class="achievement-date"><?= date('F Y', strtotime($achievement['date_achieved'])) ?></div>
                     <div class="achievement-description">
-                        Awarded for outstanding leadership and volunteer work in local community 
-                        initiatives, involving organizing several...
+                        <?= htmlspecialchars($achievement['description']) ?>
                     </div>
                     <div class="achievement-actions">
-                        <a href="#" class="view-link">🔗 View Link</a>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
+                        <button class="edit-btn" onclick="editAchievement(<?= $achievement['achievement_id'] ?>)">✏️ Edit</button>
+                        <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">🗑️ Delete</button>
+                        <?php if (!empty($achievement['certificate_url'])): ?>
+                        <a href="<?= htmlspecialchars($achievement['certificate_url']) ?>" target="_blank" class="view-link">🔗 View Certificate</a>
+                        <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- Robotics Club President -->
-                <div class="achievement-card">
-                    <div class="achievement-header">
-                        <div class="achievement-title">Robotics Club President</div>
-                        <span class="achievement-tag activity">Activity</span>
-                    </div>
-                    <div class="achievement-date">2023-09-01</div>
-                    <div class="achievement-description">
-                        Led the university robotics club, guiding the team to develop an autonomous 
-                        navigation robot that won the regional...
-                    </div>
-                    <div class="achievement-actions">
-                        <a href="#" class="view-link">🔗 View Link</a>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
-                    </div>
-                </div>
-
-                <!-- Capstone Research Project -->
-                <div class="achievement-card">
-                    <div class="achievement-header">
-                        <div class="achievement-title">Capstone Research Project</div>
-                        <span class="achievement-tag project">Project</span>
-                    </div>
-                    <div class="achievement-date">2024-05-20</div>
-                    <div class="achievement-description">
-                        Developed a novel machine learning model for predictive analytics in 
-                        renewable energy consumption, achieving...
-                    </div>
-                    <div class="achievement-actions">
-                        <a href="#" class="view-link">🔗 View Link</a>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
-                    </div>
-                </div>
-
-                <!-- Web Development Internship -->
-                <div class="achievement-card">
-                    <div class="achievement-header">
-                        <div class="achievement-title">Web Development Internship</div>
-                        <span class="achievement-tag activity">Activity</span>
-                    </div>
-                    <div class="achievement-date">2023-08-30</div>
-                    <div class="achievement-description">
-                        Completed a 3-month internship at TechSolutions Inc., contributing to the 
-                        front-end development of their main client...
-                    </div>
-                    <div class="achievement-actions">
-                        <a href="#" class="view-link">🔗 View Link</a>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
-                    </div>
-                </div>
-
-                <!-- Python Programming Course -->
-                <div class="achievement-card">
-                    <div class="achievement-header">
-                        <div class="achievement-title">Python Programming Course</div>
-                        <span class="achievement-tag certificate">Certificate</span>
-                    </div>
-                    <div class="achievement-date">2023-05-20</div>
-                    <div class="achievement-description">
-                        Successfully completed an advanced Python programming course with a focus 
-                        on data structures and algorithms...
-                    </div>
-                    <div class="achievement-actions">
-                        <a href="#" class="view-link">🔗 View Link</a>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
-                    </div>
-                </div>
-
-                <!-- University Debate Team -->
-                <div class="achievement-card">
-                    <div class="achievement-header">
-                        <div class="achievement-title">University Debate Team</div>
-                        <span class="achievement-tag activity">Activity</span>
-                    </div>
-                    <div class="achievement-date">2022-11-01</div>
-                    <div class="achievement-description">
-                        Member of the university debate team, participating in national competitions and 
-                        enhancing public speaking and critical...
-                    </div>
-                    <div class="achievement-actions">
-                        <a href="#" class="view-link">🔗 View Link</a>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑️</button>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
-        </div>
-    </div>
-                    </div>
-                    <div class="achievement-card academic-award">
-                        <div class="achievement-icon">🥇</div>
-                        <div class="achievement-content">
-                            <h3>Excellence in Computer Science</h3>
-                            <p class="achievement-desc">Top performer in Computer Science department</p>
-                            <div class="achievement-meta">
-                                <span class="achievement-date">Fall 2023</span>
-                                <span class="achievement-institution">Faculty of Science</span>
-                            </div>
-                        </div>
-                        <div class="achievement-actions">
-                            <button class="view-btn">View</button>
-                            <button class="edit-btn">Edit</button>
-                            <button class="delete-btn">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-    
-            <!-- Certifications Section -->
-            <section class="achievement-section">
-                <div class="section-header">
-                    <h2>Certifications</h2>
-                    <span class="achievement-count">2 Certifications</span>
-                </div>
-                
-                <div class="achievements-grid">
-                    <div class="achievement-card certification">
-                        <div class="achievement-icon">📜</div>
-                        <div class="achievement-content">
-                            <h3>AWS Cloud Practitioner</h3>
-                            <p class="achievement-desc">Amazon Web Services Cloud Practitioner Certification</p>
-                            <div class="achievement-meta">
-                                <span class="achievement-date">January 2024</span>
-                                <span class="achievement-provider">Amazon Web Services</span>
-                            </div>
-                        </div>
-                        <div class="achievement-actions">
-                            <button class="view-btn">View</button>
-                            <button class="edit-btn">Edit</button>
-                            <button class="delete-btn">Delete</button>
-                        </div>
-                    </div>
-
-                    <div class="achievement-card certification">
-                        <div class="achievement-icon">🔒</div>
-                        <div class="achievement-content">
-                            <h3>Cybersecurity Fundamentals</h3>
-                            <p class="achievement-desc">Introduction to Cybersecurity certificate from Cisco</p>
-                            <div class="achievement-meta">
-                                <span class="achievement-date">November 2023</span>
-                                <span class="achievement-provider">Cisco Networking Academy</span>
-                            </div>
-                        </div>
-                        <div class="achievement-actions">
-                            <button class="view-btn">View</button>
-                            <button class="edit-btn">Edit</button>
-                            <button class="delete-btn">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Publications Section -->
-            <!-- <section class="achievement-section">
-                <div class="section-header">
-                    <h2>Publications</h2>
-                    <span class="achievement-count">1 Publication</span>
-                </div>
-                
-                <div class="achievements-grid">
-                    <div class="achievement-card publication">
-                        <div class="achievement-icon">📚</div>
-                        <div class="achievement-content">
-                            <h3>Research Paper: ML in Finance</h3>
-                            <p class="achievement-desc">Co-authored research paper on machine learning applications in financial markets</p>
-                            <div class="achievement-meta">
-                                <span class="achievement-date">February 2024</span>
-                                <span class="achievement-journal">IEEE Student Journal</span>
-                            </div>
-                        </div>
-                        <div class="achievement-actions">
-                            <button class="view-btn">View</button>
-                            <button class="edit-btn">Edit</button>
-                            <button class="delete-btn">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </section> -->
+            <?php else: ?>
+            <div class="no-achievements">
+                <p>No achievements added yet. Click "Add New" to get started!</p>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 
-    <!-- Add Achievement Modal (Hidden by default) -->
-    <!-- <div class="modal" id="add-achievement-modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Add New Achievement</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form class="achievement-form">
-                <div class="form-group">
-                    <label for="achievement-type">Achievement Type</label>
-                    <select id="achievement-type" name="type">
-                        <option value="academic">Academic Award</option>
-                        <option value="competition">Coding Competition</option>
-                        <option value="certification">Certification</option>
-                        <option value="publication">Publication</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="achievement-title">Title</label>
-                    <input type="text" id="achievement-title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="achievement-description">Description</label>
-                    <textarea id="achievement-description" name="description" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="achievement-date">Date</label>
-                    <input type="date" id="achievement-date" name="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="achievement-organization">Organization/Institution</label>
-                    <input type="text" id="achievement-organization" name="organization">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Achievement</button>
-                </div>
-            </form>
-        </div>
-    </div> -->
-
-    <?php include 'UFooter.view.php'; ?>
+    <?php include __DIR__ . '/../../layout/footer.php'; ?> 
     
-    <!-- <script src="js/main.js"></script>
     <script>
+        function editAchievement(id) {
+            window.location.href = '<?= BASE_URL ?>/uachievements/edit/' + id;
+        }
+
+        function deleteAchievement(id) {
+            if (confirm('Are you sure you want to delete this achievement?')) {
+                window.location.href = '<?= BASE_URL ?>/uachievements/delete/' + id;
+            }
+        }
+
+        // Add achievement button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBtn = document.querySelector('.add-achievement-btn');
+            if (addBtn) {
+                addBtn.addEventListener('click', function() {
+                    window.location.href = '<?= BASE_URL ?>/uachievements/add';
+                });
+            }
+        });
+
         window.onload = function() {
             window.scrollTo(0, 0);
         };
-    </script> -->
+    </script>
 </body>
 </html>

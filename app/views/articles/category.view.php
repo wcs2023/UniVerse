@@ -8,7 +8,8 @@
     <title>UniVerse - <?= $data['title'] ?></title>
 </head>
 <body>
-    <?php include '../app/views/layout/header.php'; ?>
+
+<?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
 
     <div class="articles-container">
         <!-- Breadcrumb -->
@@ -38,7 +39,7 @@
                     <?php foreach($data['articles'] as $article): ?>
                         <article class="article-card">
                             <div class="article-image">
-                                <img src="<?= $article['image'] ?>" alt="<?= $article['title'] ?>" 
+                                <img src="<?= BASE_URL ?>/assets/images/<?= $article['image'] ?>" alt="<?= $article['title'] ?>" 
                                      onerror="this.src='<?= BASE_URL ?>/assets/images/articles/placeholder.svg'">
                                 <span class="article-category"><?= $article['category'] ?></span>
                             </div>
@@ -54,8 +55,8 @@
                                 
                                 <div class="article-meta">
                                     <div class="article-author">
-                                        <span>By <?= $article['author'] ?></span>
-                                        <span class="article-date"><?= date('M j, Y', strtotime($article['date'])) ?></span>
+                                        <span>By <?= $article['author_name'] ?? 'Unknown Author' ?></span>
+                                        <span class="article-date"><?= date('M j, Y', strtotime($article['created_at'])) ?></span>
                                     </div>
                                     
                                     <div class="article-stats">
@@ -87,8 +88,8 @@
         </div>
     </div>
 
-    <?php include '../app/views/layout/footer.php'; ?>
+    <?php include __DIR__ . '/../layout/footer.php'; ?>
     
-    <script src="<?= BASE_URL ?>/js/main.js"></script>
+    <!-- <script src="<?= BASE_URL ?>/js/main.js"></script> -->
 </body>
 </html>

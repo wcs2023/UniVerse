@@ -11,30 +11,46 @@
     <?php include 'Unavigation.view.php'; ?>
 
     <div class="edit-profile-container">
-        <!-- Profile Section Navigation -->
-            <!-- Edit Profile Navigation -->
-            <div class="profile-nav">
-            <a href="<?= BASE_URL ?>/ueditprofile" class="nav-item active">
-                <!-- <i class="icon-person"></i> -->
-                Edit Profile
-            </a>
-            <a href="<?= BASE_URL ?>/ueditachievements" class="nav-item">
-                <!-- <i class="icon-achievement"></i> -->
-                Achievements
-            </a>
-            <!-- <a href="<?= BASE_URL ?>/usettings" class="nav-item"> -->
-                <!-- <i class="icon-settings"></i> -->
-                <!-- Settings -->
-            <!-- </a> -->
-        </div>
-
-            
         <div class="edit-profile-content">
             <div class="edit-main-content">
                 <section class="personal-info-section">
                     <!-- <p class="section-description">Update your personal contact details and demographic information.</p> -->
                     
                     <form class="edit-profile-form">
+                        <!-- Profile Picture Section -->
+                        <div class="form-section">
+                            <h2>Profile Picture</h2>
+                            
+                            <div class="profile-picture-section">
+                                <div class="current-picture" onclick="openPhotoModal()">
+                                    <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Picture" id="profile-preview">
+                                    <p class="picture-note">Click to edit</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Photo Modal -->
+                        <div id="photoModal" class="photo-modal" style="display: none;">
+                            <div class="photo-modal-content">
+                                <div class="photo-modal-header">
+                                    <h3>Edit Profile Photo</h3>
+                                    <button type="button" class="close-modal" onclick="closePhotoModal()">&times;</button>
+                                </div>
+                                <div class="photo-modal-body">
+                                    <p>Upload a new profile picture. Click save when you're done.</p>
+                                    <div class="photo-preview-container">
+                                        <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Preview" id="modal-profile-preview">
+                                    </div>
+                                    <button type="button" class="upload-photo-btn" onclick="document.getElementById('modal-profile-picture').click()">Upload New Photo</button>
+                                    <input type="file" id="modal-profile-picture" name="profile-picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
+                                </div>
+                                <div class="photo-modal-footer">
+                                    <button type="button" class="btn btn-secondary" onclick="closePhotoModal()">Cancel</button>
+                                    <button type="button" class="btn btn-primary" onclick="savePhotoChanges()">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-section">
                             <h2>Personal Information</h2> <br>
                             
@@ -174,9 +190,70 @@
                 </section>
             </div>
         </div>
+    </div>
 
+    <?php include __DIR__ . '/../../layout/footer.php'; ?>
+    <script>
+        function openPhotoModal() {
+            document.getElementById('photoModal').style.display = 'flex';
+        }
 
-    <?php include 'Ufooter.view.php'; ?>
-    
+        function closePhotoModal() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+
+        function previewModalImage(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    input.value = '';
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('modal-profile-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function savePhotoChanges() {
+            const modalPreview = document.getElementById('modal-profile-preview').src;
+            document.getElementById('profile-preview').src = modalPreview;
+            closePhotoModal();
+            alert('Profile photo updated successfully!');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('photoModal');
+            if (event.target == modal) {
+                closePhotoModal();
+            }
+        }
+
+        // Form submission handling
+        document.querySelector('.edit-profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Here you would normally send the form data to the server
+            // For now, just show a success message
+            alert('Profile updated successfully!');
+            
+            // Redirect to profile page
+            window.location.href = '<?= BASE_URL ?>/umyprofile';
+        });
+    </script>
 </body>
 </html>

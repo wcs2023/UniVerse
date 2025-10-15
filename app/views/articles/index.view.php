@@ -8,8 +8,7 @@
     <title>UniVerse - <?= $data['title'] ?></title>
 </head>
 <body>
-    <?php include '../app/views/layout/header.php'; ?>
-
+    <?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
     <div class="articles-container">
         <!-- Articles Header -->
         <div class="articles-header">
@@ -36,11 +35,11 @@
             <div class="articles-grid">
                 <?php foreach($data['articles'] as $article): ?>
                     <article class="article-card">
-                        <div class="article-image">
-                            <img src="<?= $article['image'] ?>" alt="<?= $article['title'] ?>" 
-                                 onerror="this.src='<?= BASE_URL ?>/assets/images/articles/placeholder.svg'">
+                        <!-- <div class="article-image">
+                            <img src="<?= BASE_URL ?>/assets/images/<?= $article['image'] ?>" alt="<?= $article['title'] ?>" 
+                                 onerror="this.src='<?= BASE_URL ?>/assets/images/U.png">
                             <span class="article-category"><?= $article['category'] ?></span>
-                        </div>
+                        </div> -->
                         
                         <div class="article-content">
                             <h3 class="article-title">
@@ -53,8 +52,8 @@
                             
                             <div class="article-meta">
                                 <div class="article-author">
-                                    <span>By <?= $article['author'] ?></span>
-                                    <span class="article-date"><?= date('M j, Y', strtotime($article['date'])) ?></span>
+                                    <span>By <?= $article['author_name'] ?? 'Unknown Author' ?></span>
+                                    <span class="article-date"><?= date('M j, Y', strtotime($article['created_at'])) ?></span>
                                 </div>
                                 
                                 <div class="article-stats">
@@ -84,20 +83,13 @@
         </div>
     </div>
 
-    <?php include '../app/views/layout/footer.php'; ?>
+    <?php include __DIR__ . '/../layout/footer.php'; ?>
     
     <script src="<?= BASE_URL ?>/js/main.js"></script>
     <script>
-        // Category filter functionality
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
         // Load more functionality (placeholder)
-        document.querySelector('.load-more-btn').addEventListener('click', function() {
+        document.querySelector('.load-more-btn').addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default button action
             // In a real application, this would load more articles via AJAX
             this.textContent = 'Loading...';
             setTimeout(() => {

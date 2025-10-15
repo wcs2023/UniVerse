@@ -12,7 +12,7 @@
     <div class="scroll-progress" id="scroll-progress"></div>
 
     <!-- Header (included) -->
-    <?php include __DIR__ . '/nav_landingPage.php'; ?>
+    <?php include __DIR__ . '/layout/nav_home.php'; ?>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -27,13 +27,13 @@
                     opportunities, and industry connections to build successful careers.
                 </p>
                 <div class="hero-buttons">
-                    <a href="register.html" class="btn btn-primary btn-large">Get Started</a>
+                <a href="registration" class="btn btn-primary btn-large">Get Started</a>
                     <button class="btn btn-secondary btn-large" id="learn-more-btn">Learn More</button>
                 </div>
             </div>
             <div class="hero-image">
                 <div class="hero-main-image">
-                    <img src="assets/images/hero section.jpeg" alt="Students connecting with industry professionals" class="main-hero-img">
+                    <img src="assets/images/hero.png" alt="Students connecting with industry professionals" class="main-hero-img">
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
     </section>
 
     <!-- Target Audience Section -->
-    <section class="audience">
+    <section class="audience" id="audience">
         <div class="container">
             <h2 class="section-title fade-in">Who We Serve</h2>
             <div class="audience-grid">
@@ -131,64 +131,16 @@
     <section class="cta">
         <div class="container">
             <div class="cta-content scale-in">
-                <h2>Ready to Bridge Your Future?</h2>
+                <h1>Ready to Bridge Your Future?</h1>
                 <p>Join thousands of students and professionals already using UniVerse to build successful careers.</p>
                 <div class="cta-buttons">
-                    <a href="register.html" class="btn btn-primary btn-large">Join as Student</a>
-                    <a href="register.html" class="btn btn-outline btn-large">Join as Company</a>
+                    <a href="registration" class="btn btn-primary btn-large">Join with us</a>
+                    <!-- <a href="register.html" class="btn btn-outline btn-large">Join as Company</a> -->
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <img src="assets/images/U.png" alt="UniVerse Logo" class="footer-logo">
-                    <p>Bridging the gap between students and industry expectations in Sri Lanka.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link" title="Facebook">📘</a>
-                        <a href="#" class="social-link" title="Twitter">🐦</a>
-                        <a href="#" class="social-link" title="LinkedIn">💼</a>
-                        <a href="#" class="social-link" title="Instagram">📷</a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Platform</h3>
-                    <ul>
-                        <li><a href="degree-finder.html">Degree Finder</a></li>
-                        <li><a href="jobs.html">Jobs & Internships</a></li>
-                        <li><a href="mentorship.html">Mentorship</a></li>
-                        <li><a href="articles.html">Career Articles</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Resources</h3>
-                    <ul>
-                        <li><a href="forums.html">Discussion Forums</a></li>
-                        <li><a href="help.html">Help Center</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="success-stories.html">Success Stories</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Company</h3>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 UniVerse. All rights reserved. Made with ❤️ in Sri Lanka.</p>
-            </div>
-        </div>
-    </footer>
-
+    <?php include __DIR__ . '/layout/footer.php'; ?>
     <script src="js/main.js"></script>
 </body>
 </html>
