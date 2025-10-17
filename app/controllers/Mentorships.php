@@ -196,7 +196,7 @@ class Mentorships extends Controller
             // If alumni_id is provided, show the profile
             if ($alumni_id !== null) {
                 // Get alumni information
-                $alumniModel = $this->model('Alumni');
+                $alumniModel = $this->model('AlumniModel');
                 $alumni = $alumniModel->getAlumniById($alumni_id);
                 
                 if (!$alumni) {
@@ -209,7 +209,7 @@ class Mentorships extends Controller
                 ]);
             } else {
                 // Show request form with list of alumni
-                $alumniModel = $this->model('Alumni');
+                $alumniModel = $this->model('AlumniModel');
                 $alumni_list = $alumniModel->getAvailableAlumni();
                 
                 $this->view('mentorship/request', [

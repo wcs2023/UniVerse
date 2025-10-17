@@ -95,9 +95,14 @@ class AlumniModel
     public function getUserById($userId)
     {
         try {
-            $query = "SELECT u.*, mp.current_role, mp.company, mp.linkedin_url, mp.short_bio, mp.available_for_mentorship
+            $query = "SELECT u.*, 
+                      a.title as current_role, 
+                      a.company, 
+                      a.linkedin_url, 
+                      a.short_bio, 
+                      a.available_for_mentorship
                       FROM Users u
-                      LEFT JOIN Mentor_Profiles mp ON u.user_id = mp.user_id
+                      LEFT JOIN Alumni a ON u.user_id = a.user_id
                       WHERE u.user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
@@ -132,16 +137,16 @@ class AlumniModel
                 $userId
             ]);
             
-            // Check if Mentor_Profiles record exists
-            $query = "SELECT COUNT(*) as count FROM Mentor_Profiles WHERE user_id = ?";
+            // Check if Alumni record exists
+            $query = "SELECT COUNT(*) as count FROM Alumni WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             $result = $stmt->fetch(PDO::FETCH_OBJ);
             
             if ($result->count > 0) {
                 // Update existing record
-                $query = "UPDATE Mentor_Profiles SET
-                          current_role = ?,
+                $query = "UPDATE Alumni SET
+                          title = ?,
                           company = ?,
                           linkedin_url = ?,
                           short_bio = ?,
@@ -158,8 +163,8 @@ class AlumniModel
                 ]);
             } else {
                 // Insert new record
-                $query = "INSERT INTO Mentor_Profiles 
-                          (user_id, current_role, company, linkedin_url, short_bio, available_for_mentorship)
+                $query = "INSERT INTO Alumni 
+                          (user_id, title, company, linkedin_url, short_bio, available_for_mentorship)
                           VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([
@@ -214,8 +219,8 @@ class AlumniModel
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
-            // Also update mentor availability
-            $query = "UPDATE Mentor_Profiles SET available_for_mentorship = 0 WHERE user_id = ?";
+            // Also update alumni availability
+            $query = "UPDATE Alumni SET available_for_mentorship = 0 WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
@@ -237,22 +242,19 @@ class AlumniModel
         try {
             $this->db->beginTransaction();
             
-            // Delete from Mentor_Profiles
-            $query = "DELETE FROM Mentor_Profiles WHERE user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$userId]);
-            
-            // Delete from Mentee_Profiles
-            $query = "DELETE FROM Mentee_Profiles WHERE user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$userId]);
+            // Delete related data (foreign key constraints should handle this automatically, but being explicit)
             
             // Delete user articles
             $query = "DELETE FROM Articles WHERE author_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
-            // Delete from Users table
+            // Delete from Alumni (will cascade to related tables)
+            $query = "DELETE FROM Alumni WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+            
+            // Delete from Users table (this should cascade to other tables)
             $query = "DELETE FROM Users WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);

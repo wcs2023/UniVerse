@@ -11,7 +11,7 @@ class Alumni extends Controller
             session_start();
         }
         
-        $this->alumniModel = $this->model('Alumni');
+        $this->alumniModel = $this->model('AlumniModel');
     }
     
     /**

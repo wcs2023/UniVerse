@@ -285,8 +285,8 @@ if (!defined('URLROOT')) {
                 <div>
                     <h1 class="form-title">✏️ Edit Article</h1>
                     <?php if (isset($data['article'])): ?>
-                        <span class="status-badge status-<?= $data['article']->status ?>">
-                            <?= ucfirst($data['article']->status) ?>
+                        <span class="status-badge status-<?= $data['article']['status'] ?>">
+                            <?= ucfirst($data['article']['status']) ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -304,8 +304,8 @@ if (!defined('URLROOT')) {
 
             <?php if (isset($data['article'])): ?>
             <form id="article-form">
-                <input type="hidden" id="article_id" value="<?= $data['article']->article_id ?>">
-                <input type="hidden" id="current_status" value="<?= $data['article']->status ?>">
+                <input type="hidden" id="article_id" value="<?= $data['article']['article_id'] ?>">
+                <input type="hidden" id="current_status" value="<?= $data['article']['status'] ?>">
 
                 <div class="form-group">
                     <label for="title" class="form-label">
@@ -317,7 +317,7 @@ if (!defined('URLROOT')) {
                         name="title" 
                         class="form-input"
                         placeholder="Enter an engaging title for your article"
-                        value="<?= htmlspecialchars($data['article']->title) ?>"
+                        value="<?= htmlspecialchars($data['article']['title']) ?>"
                         required
                         maxlength="255"
                     >
@@ -330,16 +330,16 @@ if (!defined('URLROOT')) {
                     <label for="category" class="form-label">Category</label>
                     <select id="category" name="category" class="form-select">
                         <option value="">Select a category (optional)</option>
-                        <option value="Career Advice" <?= $data['article']->category == 'Career Advice' ? 'selected' : '' ?>>Career Advice</option>
-                        <option value="Industry Insights" <?= $data['article']->category == 'Industry Insights' ? 'selected' : '' ?>>Industry Insights</option>
-                        <option value="Success Stories" <?= $data['article']->category == 'Success Stories' ? 'selected' : '' ?>>Success Stories</option>
-                        <option value="Technical Skills" <?= $data['article']->category == 'Technical Skills' ? 'selected' : '' ?>>Technical Skills</option>
-                        <option value="Interview Tips" <?= $data['article']->category == 'Interview Tips' ? 'selected' : '' ?>>Interview Tips</option>
-                        <option value="Networking" <?= $data['article']->category == 'Networking' ? 'selected' : '' ?>>Networking</option>
-                        <option value="Professional Development" <?= $data['article']->category == 'Professional Development' ? 'selected' : '' ?>>Professional Development</option>
-                        <option value="Work-Life Balance" <?= $data['article']->category == 'Work-Life Balance' ? 'selected' : '' ?>>Work-Life Balance</option>
-                        <option value="Entrepreneurship" <?= $data['article']->category == 'Entrepreneurship' ? 'selected' : '' ?>>Entrepreneurship</option>
-                        <option value="Other" <?= $data['article']->category == 'Other' ? 'selected' : '' ?>>Other</option>
+                        <option value="Career Advice" <?= $data['article']['category'] == 'Career Advice' ? 'selected' : '' ?>>Career Advice</option>
+                        <option value="Industry Insights" <?= $data['article']['category'] == 'Industry Insights' ? 'selected' : '' ?>>Industry Insights</option>
+                        <option value="Success Stories" <?= $data['article']['category'] == 'Success Stories' ? 'selected' : '' ?>>Success Stories</option>
+                        <option value="Technical Skills" <?= $data['article']['category'] == 'Technical Skills' ? 'selected' : '' ?>>Technical Skills</option>
+                        <option value="Interview Tips" <?= $data['article']['category'] == 'Interview Tips' ? 'selected' : '' ?>>Interview Tips</option>
+                        <option value="Networking" <?= $data['article']['category'] == 'Networking' ? 'selected' : '' ?>>Networking</option>
+                        <option value="Professional Development" <?= $data['article']['category'] == 'Professional Development' ? 'selected' : '' ?>>Professional Development</option>
+                        <option value="Work-Life Balance" <?= $data['article']['category'] == 'Work-Life Balance' ? 'selected' : '' ?>>Work-Life Balance</option>
+                        <option value="Entrepreneurship" <?= $data['article']['category'] == 'Entrepreneurship' ? 'selected' : '' ?>>Entrepreneurship</option>
+                        <option value="Other" <?= $data['article']['category'] == 'Other' ? 'selected' : '' ?>>Other</option>
                     </select>
                 </div>
 
@@ -351,7 +351,7 @@ if (!defined('URLROOT')) {
                         name="tags" 
                         class="form-input"
                         placeholder="e.g., career, technology, interview, tips"
-                        value="<?= htmlspecialchars($data['article']->tags ?? '') ?>"
+                        value="<?= htmlspecialchars($data['article']['tags'] ?? '') ?>"
                     >
                     <div class="form-hint">
                         Separate tags with commas. Tags help students find your article.
@@ -368,14 +368,14 @@ if (!defined('URLROOT')) {
                         class="form-textarea"
                         placeholder="Share your knowledge and experience..."
                         required
-                    ><?= htmlspecialchars($data['article']->content) ?></textarea>
+                    ><?= htmlspecialchars($data['article']['content']) ?></textarea>
                     <div class="char-count">
                         <span id="content-count">0</span> characters
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <?php if ($data['article']->status == 'draft'): ?>
+                    <?php if ($data['article']['status'] == 'draft'): ?>
                         <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
                             📝 Publish Article
                         </button>

@@ -33,7 +33,12 @@ class App{
         }
         
         $controller = new $this->controller;
-        call_user_func([$controller, $this->method], []);
+        
+        // Get parameters from URL (everything after controller/method)
+        $params = array_slice($URL, 2);
+        
+        // Call the controller method with parameters
+        call_user_func_array([$controller, $this->method], $params);
     }
 
 }

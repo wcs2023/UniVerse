@@ -43,7 +43,7 @@ $current_path = parse_url($current_uri, PHP_URL_PATH);
                 </a>
             </li>
             <li>
-                <a href="<?= URLROOT ?>/profile" 
+                <a href="<?= URLROOT ?>/alumni/profile" 
                    class="<?= (strpos($current_path, '/profile') !== false) ? 'active' : '' ?>">
                     My Profile
                 </a>
