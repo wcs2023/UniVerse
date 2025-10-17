@@ -1,40 +1,36 @@
+<?php
+// Ensure URLROOT is defined
+if (!defined('URLROOT')) {
+    define('URLROOT', 'http://localhost/UniVerse/public');
+}
+?>
 <!-- Footer -->
 <footer class="footer">
     <div class="container">
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="/UniVerse/public/assets/images/logo.png" alt="UniVerse Logo" class="logo-img">
+                <img src="<?= URLROOT ?>/assets/images/logo.png" alt="UniVerse Logo" class="logo-img">
             </div>
             
             <ul class="footer-links">
-                <li><a href="#">Blog Posts</a></li>
-                <li><a href="#">Career Tips</a></li>
-                <li><a href="#">Events</a></li>
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Contact Us</a></li>
             </ul>
             
             <div class="social-icons">
-                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" title="Facebook">f</a>
+                <a href="#" title="Instagram">📷</a>
+                <a href="#" title="Twitter">🐦</a>
+                <a href="#" title="LinkedIn">in</a>
+                <a href="#" title="YouTube">▶</a>
             </div>
         </div>
         
         <div class="footer-bottom">
-            <p>© 2023 UniVerse. All rights reserved</p>
-            <ul class="footer-bottom-links">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms of Use</a></li>
-                <li><a href="#">Cookie Settings</a></li>
-            </ul>
+            <p>© 2025 UniVerse. All rights reserved</p>
         </div>
     </div>
 </footer>
-<!-- Font Awesome for social icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
     /* Footer */

@@ -1,5 +1,10 @@
 <?php
 
+// Define the application root directory
+define('APPROOT', dirname(dirname(__FILE__)));
+
+// Define the URL root
+define('URLROOT', 'http://localhost/UniVerse/public');
 
 if($_SERVER['SERVER_NAME'] == 'localhost') {
     define('DBHOST', 'localhost');
