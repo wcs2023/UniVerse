@@ -1,120 +1,193 @@
 <?php
 
-class Article extends Model
+class Article extends Model 
 {
     public function __construct()
     {
         parent::__construct();
     }
 
+    /**
+     * Get all published articles
+     */
     public function getAllArticles($limit = null)
     {
-        $sql = "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as author_name 
-                FROM articles a 
-                LEFT JOIN users u ON a.author_id = u.user_id 
-                WHERE a.status = 'published' 
-                ORDER BY a.created_at DESC";
+        $query = "SELECT a.*, u.first_name, u.last_name 
+                  FROM articles a
+                  LEFT JOIN users u ON a.user_id = u.user_id
+                  WHERE a.status = 'published'
+                  ORDER BY a.created_at DESC";
         
         if ($limit) {
-            $sql .= " LIMIT " . (int)$limit;
+            $query .= " LIMIT :limit";
+            return $this->fetchAll($query, ['limit' => $limit]);
         }
         
-        return $this->fetchAll($sql);
+        return $this->fetchAll($query);
     }
 
+    /**
+     * Get article by ID
+     */
+    public function getArticleById($articleId)
+    {
+        $query = "SELECT a.*, u.first_name, u.last_name, u.email
+                  FROM articles a
+                  LEFT JOIN users u ON a.user_id = u.user_id
+                  WHERE a.article_id = :article_id";
+        
+        return $this->fetch($query, ['article_id' => $articleId]);
+    }
+
+    /**
+     * Get articles by category
+     */
     public function getArticlesByCategory($category, $limit = null)
     {
-        $sql = "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as author_name 
-                FROM articles a 
-                LEFT JOIN users u ON a.author_id = u.user_id 
-                WHERE a.category = ? AND a.status = 'published' 
-                ORDER BY a.created_at DESC";
+        $query = "SELECT a.*, u.first_name, u.last_name 
+                  FROM articles a
+                  LEFT JOIN users u ON a.user_id = u.user_id
+                  WHERE a.category = :category AND a.status = 'published'
+                  ORDER BY a.created_at DESC";
         
         if ($limit) {
-            $sql .= " LIMIT " . (int)$limit;
+            $query .= " LIMIT :limit";
+            return $this->fetchAll($query, ['category' => $category, 'limit' => $limit]);
         }
         
-        return $this->fetchAll($sql, [$category]);
+        return $this->fetchAll($query, ['category' => $category]);
     }
 
-    public function getArticleById($id)
+    /**
+     * Get articles by author/user
+     */
+    public function getArticlesByUser($userId, $limit = null)
     {
-        $sql = "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as author_name 
-                FROM articles a 
-                LEFT JOIN users u ON a.author_id = u.user_id 
-                WHERE a.id = ? AND a.status = 'published'";
+        $query = "SELECT a.*, u.first_name, u.last_name 
+                  FROM articles a
+                  LEFT JOIN users u ON a.user_id = u.user_id
+                  WHERE a.user_id = :user_id
+                  ORDER BY a.created_at DESC";
         
-        return $this->fetch($sql, [$id]);
-    }
-
-    public function getCategories()
-    {
-        $sql = "SELECT DISTINCT category FROM articles WHERE status = 'published' ORDER BY category";
-        $result = $this->fetchAll($sql);
+        if ($limit) {
+            $query .= " LIMIT :limit";
+            return $this->fetchAll($query, ['user_id' => $userId, 'limit' => $limit]);
+        }
         
-        return array_column($result, 'category');
+        return $this->fetchAll($query, ['user_id' => $userId]);
     }
 
-    public function getRelatedArticles($articleId, $category, $limit = 3)
+    /**
+     * Increment article views
+     */
+    public function incrementViews($articleId)
     {
-        $sql = "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) as author_name 
-                FROM articles a 
-                LEFT JOIN users u ON a.author_id = u.user_id 
-                WHERE a.category = ? AND a.id != ? AND a.status = 'published' 
-                ORDER BY a.created_at DESC 
-                LIMIT " . (int)$limit;
-        
-        return $this->fetchAll($sql, [$category, $articleId]);
+        $query = "UPDATE articles SET views = views + 1 WHERE article_id = :article_id";
+        return $this->query($query, ['article_id' => $articleId]);
     }
 
-    public function incrementViews($id)
-    {
-        $sql = "UPDATE articles SET views = views + 1 WHERE id = ?";
-        return $this->query($sql, [$id]);
-    }
-
+    /**
+     * Create new article
+     */
     public function createArticle($data)
     {
-        $sql = "INSERT INTO articles (title, excerpt, content, category, author_id, image, status, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        $query = "INSERT INTO articles (title, slug, excerpt, content, category, user_id, featured_image, status)
+                  VALUES (:title, :slug, :excerpt, :content, :category, :user_id, :featured_image, :status)";
         
-        $params = [
-            $data['title'],
-            $data['excerpt'],
-            $data['content'],
-            $data['category'],
-            $data['author_id'],
-            $data['image'],
-            $data['status'] ?? 'draft'
-        ];
-        
-        $this->query($sql, $params);
-        return $this->lastInsertId();
+        return $this->query($query, [
+            'title' => $data['title'],
+            'slug' => $data['slug'],
+            'excerpt' => $data['excerpt'],
+            'content' => $data['content'],
+            'category' => $data['category'],
+            'user_id' => $data['user_id'],
+            'featured_image' => $data['featured_image'] ?? null,
+            'status' => $data['status'] ?? 'draft'
+        ]);
     }
 
-    public function updateArticle($id, $data)
+    /**
+     * Update article
+     */
+    public function updateArticle($articleId, $data)
     {
-        $sql = "UPDATE articles SET 
-                title = ?, excerpt = ?, content = ?, category = ?, 
-                image = ?, status = ?, updated_at = NOW() 
-                WHERE id = ?";
+        $query = "UPDATE articles 
+                  SET title = :title, slug = :slug, excerpt = :excerpt, content = :content,
+                      category = :category, featured_image = :featured_image, status = :status
+                  WHERE article_id = :article_id";
         
-        $params = [
-            $data['title'],
-            $data['excerpt'],
-            $data['content'],
-            $data['category'],
-            $data['image'],
-            $data['status'],
-            $id
-        ];
-        
-        return $this->query($sql, $params);
+        return $this->query($query, [
+            'article_id' => $articleId,
+            'title' => $data['title'],
+            'slug' => $data['slug'],
+            'excerpt' => $data['excerpt'],
+            'content' => $data['content'],
+            'category' => $data['category'],
+            'featured_image' => $data['featured_image'] ?? null,
+            'status' => $data['status'] ?? 'draft'
+        ]);
     }
 
-    public function deleteArticle($id)
+    /**
+     * Delete article
+     */
+    public function deleteArticle($articleId)
     {
-        $sql = "DELETE FROM articles WHERE id = ?";
-        return $this->query($sql, [$id]);
+        $query = "DELETE FROM articles WHERE article_id = :article_id";
+        return $this->query($query, ['article_id' => $articleId]);
+    }
+
+    /**
+     * Get article categories with count
+     */
+    public function getCategoriesWithCount()
+    {
+        $query = "SELECT category, COUNT(*) as count 
+                  FROM articles 
+                  WHERE status = 'published'
+                  GROUP BY category
+                  ORDER BY count DESC";
+        
+        $result = $this->fetchAll($query);
+        
+        // Debug log
+        error_log("Categories query result: " . print_r($result, true));
+        
+        return $result;
+    }
+
+    /**
+     * Get all unique categories
+     */
+    public function getCategories()
+    {
+        $query = "SELECT DISTINCT category 
+                  FROM articles 
+                  WHERE status = 'published'
+                  ORDER BY category ASC";
+        
+        return $this->fetchAll($query);
+    }
+
+    /**
+     * Search articles
+     */
+    public function searchArticles($searchTerm, $limit = null)
+    {
+        $query = "SELECT a.*, u.first_name, u.last_name 
+                  FROM articles a
+                  LEFT JOIN users u ON a.user_id = u.user_id
+                  WHERE a.status = 'published' 
+                  AND (a.title LIKE :search OR a.excerpt LIKE :search OR a.content LIKE :search)
+                  ORDER BY a.created_at DESC";
+        
+        $searchParam = '%' . $searchTerm . '%';
+        
+        if ($limit) {
+            $query .= " LIMIT :limit";
+            return $this->fetchAll($query, ['search' => $searchParam, 'limit' => $limit]);
+        }
+        
+        return $this->fetchAll($query, ['search' => $searchParam]);
     }
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-    <title>UniVerse - Add Achievement</title>
+    <title>UniVerse - <?= $data['title'] ?? 'Add Achievement' ?></title>
 </head>
 <body>
     <?php include 'Unavigation.view.php'; ?>
@@ -13,14 +13,27 @@
     <div class="profile-container">
         <!-- Page Header -->
         <div class="page-header">
-            <h1>Add New Achievement</h1>
+            <h1><?= $data['title'] ?? 'Add New Achievement' ?></h1>
             <a href="<?= BASE_URL ?>/uachievements" class="back-link">← Back to Achievements</a>
         </div>
 
-        <!-- Add Achievement Form -->
+        <!-- Success/Error Messages -->
+        <?php if (isset($_SESSION['achievement_error'])): ?>
+            <div class="alert alert-error">
+                <?= htmlspecialchars($_SESSION['achievement_error']) ?>
+            </div>
+            <?php unset($_SESSION['achievement_error']); ?>
+        <?php endif; ?>
+
+        <!-- Add/Edit Achievement Form -->
         <div class="form-container">
-            <form method="POST" action="<?= BASE_URL ?>/uachievements/add" class="achievement-form">
+            <form method="POST" action="<?= BASE_URL ?>/uachievements" class="achievement-form">
                 
+                <!-- Hidden field for edit mode -->
+                <?php if (isset($data['achievement']) && $data['achievement']): ?>
+                    <input type="hidden" name="achievement_id" value="<?= $data['achievement']['achievement_id'] ?>">
+                <?php endif; ?>
+
                 <!-- Achievement Title -->
                 <div class="form-group">
                     <label for="title">Achievement Title <span class="required">*</span></label>
@@ -29,6 +42,7 @@
                         id="title" 
                         name="title" 
                         placeholder="e.g., Dean's List - Fall 2023"
+                        value="<?= isset($data['achievement']) ? htmlspecialchars($data['achievement']['title']) : '' ?>"
                         required
                         class="form-input"
                     >
@@ -39,9 +53,15 @@
                     <label for="achievement_type">Achievement Type <span class="required">*</span></label>
                     <select id="achievement_type" name="achievement_type" required class="form-select">
                         <option value="">Select Type</option>
-                        <?php foreach($data['types'] as $key => $value): ?>
-                            <option value="<?= $key ?>"><?= $value ?></option>
-                        <?php endforeach; ?>
+                        <option value="certificate" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'certificate') ? 'selected' : '' ?>>Certificate</option>
+                        <option value="award" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'award') ? 'selected' : '' ?>>Award</option>
+                        <option value="project" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'project') ? 'selected' : '' ?>>Project</option>
+                        <option value="activity" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'activity') ? 'selected' : '' ?>>Activity</option>
+                        <option value="leadership" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'leadership') ? 'selected' : '' ?>>Leadership</option>
+                        <option value="internship" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'internship') ? 'selected' : '' ?>>Internship</option>
+                        <option value="competition" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'competition') ? 'selected' : '' ?>>Competition</option>
+                        <option value="publication" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'publication') ? 'selected' : '' ?>>Publication</option>
+                        <option value="volunteer" <?= (isset($data['achievement']) && $data['achievement']['achievement_type'] == 'volunteer') ? 'selected' : '' ?>>Volunteer</option>
                     </select>
                 </div>
 
@@ -52,20 +72,22 @@
                         type="date" 
                         id="date_achieved" 
                         name="date_achieved" 
+                        value="<?= isset($data['achievement']) ? htmlspecialchars($data['achievement']['date_achieved']) : '' ?>"
                         required
                         max="<?= date('Y-m-d') ?>"
                         class="form-input"
                     >
                 </div>
 
-                <!-- Institution -->
+                <!-- Institution/Organization (matches DB: issuing_organization) -->
                 <div class="form-group">
-                    <label for="institution">Institution/Organization</label>
+                    <label for="issuing_organization">Institution/Organization</label>
                     <input 
                         type="text" 
-                        id="institution" 
-                        name="institution" 
+                        id="issuing_organization" 
+                        name="issuing_organization" 
                         placeholder="e.g., University of Colombo"
+                        value="<?= isset($data['achievement']) ? htmlspecialchars($data['achievement']['institution'] ?? '') : '' ?>"
                         class="form-input"
                     >
                 </div>
@@ -80,18 +102,19 @@
                         placeholder="Describe your achievement in detail..."
                         required
                         class="form-textarea"
-                    ></textarea>
+                    ><?= isset($data['achievement']) ? htmlspecialchars($data['achievement']['description']) : '' ?></textarea>
                     <small class="form-hint">Provide details about what you accomplished and its significance.</small>
                 </div>
 
-                <!-- Certificate URL -->
+                <!-- Certificate URL (matches DB: verification_url) -->
                 <div class="form-group">
-                    <label for="certificate_url">Certificate/Proof URL</label>
+                    <label for="verification_url">Certificate/Proof URL</label>
                     <input 
                         type="url" 
-                        id="certificate_url" 
-                        name="certificate_url" 
+                        id="verification_url" 
+                        name="verification_url" 
                         placeholder="https://example.com/certificate"
+                        value="<?= isset($data['achievement']) ? htmlspecialchars($data['achievement']['certificate_url'] ?? '') : '' ?>"
                         class="form-input"
                     >
                     <small class="form-hint">Optional: Add a link to your certificate, badge, or proof of achievement.</small>
@@ -99,7 +122,9 @@
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Achievement</button>
+                    <button type="submit" class="btn btn-primary">
+                        <?= isset($data['achievement']) ? 'Update Achievement' : 'Save Achievement' ?>
+                    </button>
                     <a href="<?= BASE_URL ?>/uachievements" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
@@ -132,5 +157,31 @@
             }
         });
     </script>
+
+    <style>
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .form-hint {
+            display: block;
+            margin-top: 5px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+    </style>
 </body>
 </html>

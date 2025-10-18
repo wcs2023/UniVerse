@@ -35,10 +35,19 @@ class Login extends Controller {
             $user = $userModel->getUserByUsername($username);
             
             if ($user && password_verify($password, $user['password_hash'])) {
-                // Login successful
+                // Login successful - Set ALL session variables
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['user_type'] = $user['user_type'];
+                $_SESSION['user_role'] = $user['user_type'];
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['user_name'] = $user['first_name']; // ✅ Changed to just first name
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['last_name'] = $user['last_name'];
+                $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name']; // ✅ Added full name separately
+                $_SESSION['email'] = $user['email']; // ✅ Email
+                
+                // Log successful login
+                error_log("User logged in: " . $user['username'] . " (ID: " . $user['user_id'] . ")");
                 
                 // Redirect based on user type
                 switch ($user['user_type']) {
@@ -46,16 +55,17 @@ class Login extends Controller {
                         header('Location: ' . BASE_URL . '/uhome');
                         break;
                     case 'undergraduate':
+                    case 'student':
                         header('Location: ' . BASE_URL . '/uhome');
                         break;
                     case 'company':
-                        header('Location: ' . BASE_URL . '/');
+                        header('Location: ' . BASE_URL . '/company');
                         break;
                     case 'admin':
                         header('Location: ' . BASE_URL . '/admin');
                         break;
                     default:
-                        header('Location: ' . BASE_URL . '/');
+                        header('Location: ' . BASE_URL . '/home');
                 }
                 exit;
             } else {
@@ -63,6 +73,7 @@ class Login extends Controller {
             }
             
         } catch (Exception $e) {
+            error_log("Login error: " . $e->getMessage());
             $this->view('/auth/login', ['error' => 'Login error: ' . $e->getMessage()]);
         }
     }

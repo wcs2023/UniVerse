@@ -21,12 +21,16 @@ class Registration extends Controller {
             $userModel = new User();
             
             if ($userModel->getUserByEmail($userData['email'])) {
-                $this->view('/auth/registration', ['error' => 'Email already exists']);
+                $this->view('/auth/registration', [
+                    'error' => 'This email address is already registered. Please use a different email or try logging in.'
+                ]);
                 return;
             }
             
             if ($userModel->getUserByUsername($userData['username'])) {
-                $this->view('/auth/registration', ['error' => 'Username already exists']);
+                $this->view('/auth/registration', [
+                    'error' => 'This username is already taken. Please choose a different username.'
+                ]);
                 return;
             }
 
@@ -38,21 +42,46 @@ class Registration extends Controller {
             // Create user account
             $userId = $userModel->createUser($userData);
             
+            // Debug logging
+            error_log("User creation result - User ID: " . ($userId ? $userId : 'FAILED'));
+            error_log("User type: " . $userData['user_type']);
+            
             if ($userId) {
                 // Handle role-specific profile creation
-                $this->createRoleProfile($userId, $userData);
+                try {
+                    $this->createRoleProfile($userId, $userData);
+                } catch (Exception $profileError) {
+                    // Log the error but continue - basic user account is created
+                    error_log("Profile creation error for user $userId: " . $profileError->getMessage());
+                    // Optionally, you could show this error to the user
+                    // For now, we'll still redirect to login
+                }
                 
                 // Redirect to login page with success message
                 $_SESSION['registration_success'] = 'Registration successful! Please log in with your credentials.';
+                
+                // Use ob_clean to clear any output buffers before redirect
+                if (ob_get_level()) {
+                    ob_clean();
+                }
+                
                 header('Location: ' . BASE_URL . '/login');
-                exit;
+                exit();
             } else {
-                $this->view('/auth/registration', ['error' => 'Registration failed. Please try again.']);
+                // User creation failed - show detailed error
+                error_log("User creation failed - database returned false");
+                $this->view('/auth/registration', [
+                    'error' => 'Registration failed. Unable to create user account. Please try again or contact support if the problem persists.'
+                ]);
             }
             
         
         } catch (Exception $e) {
-            $this->view('/auth/registration', ['error' => 'Registration error: ' . $e->getMessage()]);
+            // Validation or other errors
+            error_log("Registration exception: " . $e->getMessage());
+            $this->view('/auth/registration', [
+                'error' => 'Registration error: ' . $e->getMessage()
+            ]);
         }
     }
     
@@ -61,16 +90,21 @@ class Registration extends Controller {
         
         foreach ($required as $field) {
             if (empty($data[$field])) {
-                throw new Exception("$field is required");
+                $fieldName = ucwords(str_replace('_', ' ', $field));
+                throw new Exception("$fieldName is required. Please fill in all required fields.");
             }
         }
         
         if ($data['password'] !== $data['confirmPassword']) {
-            throw new Exception("Passwords do not match");
+            throw new Exception("Passwords do not match. Please make sure both password fields are identical.");
         }
         
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Invalid email format");
+            throw new Exception("Invalid email format. Please enter a valid email address.");
+        }
+        
+        if (strlen($data['password']) < 8) {
+            throw new Exception("Password must be at least 8 characters long.");
         }
         
         return $data;
@@ -82,21 +116,52 @@ class Registration extends Controller {
                 $alumniModel = new Alumni();
                 $profileData = [
                     'user_id' => $userId,
-                    'university' => $userData['university'] ?? null,
+                    'university' => $userData['university_name'] ?? null,
                     'faculty' => $userData['faculty'] ?? null,
                     'graduation_year' => $userData['graduation_year'] ?? null,
-                    'field_of_study' => $userData['field_of_study'] ?? null
+                    'field_of_study' => $userData['degree_program'] ?? null
                 ];
                 $alumniModel->createProfile($profileData);
                 break;
                 
-            // Add other role profile creation here as needed
             case 'undergraduate':
+            case 'student':
                 // Handle undergraduate profile creation
+                $undergraduateModel = new UndergraduateProfile();  // ✅ Changed from Undergraduate
+                $profileData = [
+                    'user_id' => $userId,
+                    'university' => $userData['university_name'] ?? null,
+                    'faculty' => $userData['faculty'] ?? null,
+                    'degree_program' => $userData['degree_program'] ?? null,
+                    'academic_year' => $userData['academic_year'] ?? null,
+                    'expected_graduation_year' => $userData['expected_graduation_year'] ?? null,
+                    'interests' => $userData['skills_interests'] ?? null  // ✅ Removed 'skills' field
+                ];
+                $undergraduateModel->createProfile($profileData);
                 break;
                 
             case 'company':
+            case 'employer':
                 // Handle company profile creation
+                $companyModel = new CompanyProfile();
+                $profileData = [
+                    'user_id' => $userId,
+                    'company_name' => $userData['company_name'] ?? null,
+                    'company_size' => $userData['company_size'] ?? null,
+                    'industry' => $userData['industry'] ?? null,
+                    'website' => $userData['website'] ?? null,
+                    'founded_year' => $userData['founded_year'] ?? null,
+                    'company_description' => $userData['description'] ?? null,
+                    'contact_person' => $userData['contact_person_name'] ?? null,
+                    'contact_email' => $userData['contact_email'] ?? null,
+                    'contact_phone' => $userData['contact_phone'] ?? null
+                ];
+                $companyModel->createProfile($profileData);
+                break;
+                
+            case 'school_leaver':
+                // School leavers use basic user profile only
+                // No additional profile table needed
                 break;
         }
     }

@@ -14,23 +14,22 @@
         <div class="edit-profile-content">
             <div class="edit-main-content">
                 <section class="personal-info-section">
-                    <!-- <p class="section-description">Update your personal contact details and demographic information.</p> -->
                     
-                    <form class="edit-profile-form">
-                        <!-- Profile Picture Section -->
-                        <div class="form-section">
-                            <h2>Profile Picture</h2>
-                            
-                            <div class="profile-picture-section">
-                                <div class="current-picture" onclick="openPhotoModal()">
-                                    <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Picture" id="profile-preview">
-                                    <p class="picture-note">Click to edit</p>
-                                </div>
-                            </div>
+                    <?php if (isset($data['error'])): ?>
+                        <div class="alert alert-error">
+                            <?= htmlspecialchars($data['error']) ?>
                         </div>
+                    <?php endif; ?>
+                    
+                    <?php if (isset($data['success'])): ?>
+                        <div class="alert alert-success">
+                            <?= htmlspecialchars($data['success']) ?>
+                        </div>
+                    <?php endif; ?>
 
-                        <!-- Profile Photo Modal -->
-                        <div id="photoModal" class="photo-modal" style="display: none;">
+                    <!-- Profile Photo Modal -->
+                    <div id="photoModal" class="photo-modal" style="display: none;">
+                        <form method="POST" action="<?= BASE_URL ?>/ueditprofile" enctype="multipart/form-data" id="photo-upload-form">
                             <div class="photo-modal-content">
                                 <div class="photo-modal-header">
                                     <h3>Edit Profile Photo</h3>
@@ -39,14 +38,45 @@
                                 <div class="photo-modal-body">
                                     <p>Upload a new profile picture. Click save when you're done.</p>
                                     <div class="photo-preview-container">
-                                        <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Preview" id="modal-profile-preview">
+                                        <?php 
+                                        $profilePic = !empty($data['user']['profile_picture']) 
+                                            ? $data['user']['profile_picture'] 
+                                            : '/assets/images/default-avatar.png';
+                                        ?>
+                                        <img src="<?= BASE_URL ?><?= $profilePic ?>" 
+                                             alt="Profile Preview" 
+                                             id="modal-profile-preview"
+                                             onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                                     </div>
                                     <button type="button" class="upload-photo-btn" onclick="document.getElementById('modal-profile-picture').click()">Upload New Photo</button>
-                                    <input type="file" id="modal-profile-picture" name="profile-picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
+                                    <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
                                 </div>
                                 <div class="photo-modal-footer">
                                     <button type="button" class="btn btn-secondary" onclick="closePhotoModal()">Cancel</button>
-                                    <button type="button" class="btn btn-primary" onclick="savePhotoChanges()">Save Changes</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <form class="edit-profile-form" method="POST" action="<?= BASE_URL ?>/ueditprofile" enctype="multipart/form-data">
+                        <!-- Profile Picture Section -->
+                        <div class="form-section">
+                            <h2>Profile Picture</h2>
+                            
+                            <div class="profile-picture-section">
+                                <div class="current-picture" onclick="openPhotoModal()">
+                                    <?php 
+                                    $profilePicture = !empty($data['user']['profile_picture']) 
+                                        ? $data['user']['profile_picture'] 
+                                        : '/assets/images/default-avatar.png';
+                                    ?>
+                                    <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                                         alt="Profile Picture" 
+                                         id="profile-preview"
+                                         onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'"
+                                         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+                                    <p class="picture-note">Click to edit</p>
                                 </div>
                             </div>
                         </div>
@@ -56,42 +86,42 @@
                             
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="first-name">First Name</label>
-                                    <input type="text" id="first-name" name="first-name" value="John" required>
+                                    <label for="first-name">First Name </label>
+                                    <input type="text" id="first-name" name="first_name" value="<?= htmlspecialchars($data['user']['first_name'] ?? '') ?>">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="middle-name">Middle Name</label>
-                                    <input type="text" id="middle-name" name="middle-name" value="Michael">
+                                    <input type="text" id="middle-name" name="middle_name" value="<?= htmlspecialchars($data['user']['middle_name'] ?? '') ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="last-name">Last Name</label>
-                                    <input type="text" id="last-name" name="last-name" value="Doe" required>
+                                    <label for="last-name">Last Name </label>
+                                    <input type="text" id="last-name" name="last_name" value="<?= htmlspecialchars($data['user']['last_name'] ?? '') ?>">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="dob">Date of Birth</label>
-                                    <input type="date" id="dob" name="dob" value="2004-07-19" required>
+                                    <label for="dob">Date of Birth </label>
+                                    <input type="date" id="dob" name="date_of_birth" value="<?= htmlspecialchars($data['user']['date_of_birth'] ?? '') ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Gender</label>
+                                    <label>Gender </label>
                                     <div class="radio-group-horizontal">
                                         <label class="radio-option-inline">
-                                            <input type="radio" name="gender" value="male" checked>
+                                            <input type="radio" name="gender" value="male" <?= ($data['user']['gender'] ?? '') === 'male' ? 'checked' : '' ?>>
                                             <span class="radio-custom"></span>
                                             Male
                                         </label>
                                         <label class="radio-option-inline">
-                                            <input type="radio" name="gender" value="female">
+                                            <input type="radio" name="gender" value="female" <?= ($data['user']['gender'] ?? '') === 'female' ? 'checked' : '' ?>>
                                             <span class="radio-custom"></span>
                                             Female
                                         </label>
                                         <label class="radio-option-inline">
-                                            <input type="radio" name="gender" value="other">
+                                            <input type="radio" name="gender" value="other" <?= ($data['user']['gender'] ?? '') === 'other' ? 'checked' : '' ?>>
                                             <span class="radio-custom"></span>
                                             Other
                                         </label>
@@ -102,39 +132,19 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="email">Email Address</label>
-                                    <input type="email" id="email" name="email" value="john.doe@universe.edu" required>
+                                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($data['user']['email'] ?? '') ?>" readonly>
+                                    <small style="color: #666;">Email cannot be changed</small>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="phone">Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" value="+1 (555) 123-4567" required>
+                                    <label for="phone">Phone Number </label>
+                                    <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($data['user']['phone_number'] ?? '') ?>">
                                 </div>
-                            </div>
-
-                            <!-- <h3>Address Information</h3> -->
-
-                            <div class="form-group">
-                                <label for="address1">Address Line 1</label>
-                                <input type="text" id="address1" name="address1" value="123 University Ave">
                             </div>
 
                             <div class="form-group">
-                                <label for="address2">Address Line 2 (Optional)</label>
-                                <input type="text" id="address2" name="address2" value="">
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="city">City</label>
-                                    <input type="text" id="city" name="city" value="UniCity">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="state">State / Province</label>
-                                    <input type="text" id="state" name="state" value="State">
-                                </div>
-
-                              
+                                <label for="address1">Address </label>
+                                <input type="text" id="address1" name="address_line1" value="<?= htmlspecialchars($data['user']['address'] ?? '') ?>">
                             </div>
                         </div>
 
@@ -144,43 +154,42 @@
                             
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="university">University</label>
-                                    <input type="text" id="university" name="university" value="University of Colombo" required>
+                                    <label for="university">University </label>
+                                    <input type="text" id="university" name="university" value="<?= htmlspecialchars($data['profile']['university'] ?? '') ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="faculty">Faculty</label>
-                                    <input type="text" id="faculty" name="faculty" value="Faculty of Science" required>
+                                    <label for="faculty">Faculty </label>
+                                    <input type="text" id="faculty" name="faculty" value="<?= htmlspecialchars($data['profile']['faculty'] ?? '') ?>">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="degree">Degree Program</label>
-                                    <input type="text" id="degree" name="degree" value="B.Sc. Computer Science" required>
+                                    <label for="degree">Degree Program </label>
+                                    <input type="text" id="degree" name="degree_program" value="<?= htmlspecialchars($data['profile']['degree_program'] ?? '') ?>">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="academic-year">Academic Year</label>
-                                    <select id="academic-year" name="academic-year" required>
+                                    <label for="academic-year">Academic Year </label>
+                                    <select id="academic-year" name="academic_year">
                                         <option value="">Select Year</option>
-                                        <option value="1st Year">1st Year</option>
-                                        <option value="2nd Year">2nd Year</option>
-                                        <option value="3rd Year" selected>3rd Year</option>
-                                        <option value="4th Year">4th Year</option>
-                                        <option value="Graduate">Graduate</option>
+                                        <option value="1st year" <?= ($data['profile']['academic_year'] ?? '') === '1st year' ? 'selected' : '' ?>>1st Year</option>
+                                        <option value="2nd year" <?= ($data['profile']['academic_year'] ?? '') === '2nd year' ? 'selected' : '' ?>>2nd Year</option>
+                                        <option value="3rd year" <?= ($data['profile']['academic_year'] ?? '') === '3rd year' ? 'selected' : '' ?>>3rd Year</option>
+                                        <option value="4th year" <?= ($data['profile']['academic_year'] ?? '') === '4th year' ? 'selected' : '' ?>>4th Year</option>
+                                        <option value="Graduate" <?= ($data['profile']['academic_year'] ?? '') === 'Graduate' ? 'selected' : '' ?>>Graduate</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="graduation-year">Expected Graduation Year</label>
-                                    <input type="number" id="graduation-year" name="graduation-year" value="2026" min="2024" max="2030" required>
+                                    <label for="graduation-year">Expected Graduation Year *</label>
+                                    <input type="number" id="graduation-year" name="expected_graduation_year" value="<?= htmlspecialchars($data['profile']['expected_graduation_year'] ?? '') ?>" min="2024" max="2035">
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="form-actions">
                             <button type="button" class="btn btn-secondary" onclick="window.location.href='<?= BASE_URL ?>/umyprofile'">Cancel</button>
@@ -223,37 +232,18 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('modal-profile-preview').src = e.target.result;
+                    document.getElementById('profile-preview').src = e.target.result;
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        function savePhotoChanges() {
-            const modalPreview = document.getElementById('modal-profile-preview').src;
-            document.getElementById('profile-preview').src = modalPreview;
-            closePhotoModal();
-            alert('Profile photo updated successfully!');
-        }
-
-        // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('photoModal');
             if (event.target == modal) {
                 closePhotoModal();
             }
         }
-
-        // Form submission handling
-        document.querySelector('.edit-profile-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Here you would normally send the form data to the server
-            // For now, just show a success message
-            alert('Profile updated successfully!');
-            
-            // Redirect to profile page
-            window.location.href = '<?= BASE_URL ?>/umyprofile';
-        });
     </script>
 </body>
 </html>

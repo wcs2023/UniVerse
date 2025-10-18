@@ -33,7 +33,7 @@
             </div>
             <div class="hero-image">
                 <div class="hero-main-image">
-                    <img src="assets/images/hero.png" alt="Students connecting with industry professionals" class="main-hero-img">
+                    <img src="assets/images/heroImage.jpg" alt="Students connecting with industry professionals" class="main-hero-img">
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
             <div class="features-grid">
                 <div class="feature-card fade-in stagger-1">
                     <div class="feature-icon">📊</div>
-                    <h3>Smart Degree Recommendations</h3>
+                    <h3>Degree Recommendations</h3>
                     <p>Get personalized degree suggestions based on your Z-score, stream, and career preferences.</p>
                 </div>
                 <div class="feature-card fade-in stagger-2">

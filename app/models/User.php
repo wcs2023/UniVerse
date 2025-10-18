@@ -216,4 +216,15 @@ class User extends Model
         
         return $this->fetchAll($query);
     }
+
+    /**
+     * Update user password
+     */
+    public function updatePassword($userId, $hashedPassword) {
+        $sql = "UPDATE users SET password = :password WHERE user_id = :user_id";
+        return $this->query($sql, [
+            'user_id' => $userId,
+            'password' => $hashedPassword
+        ]);
+    }
 }

@@ -39,38 +39,44 @@
                     <?php foreach($data['articles'] as $article): ?>
                         <article class="article-card">
                             <div class="article-image">
-                                <img src="<?= BASE_URL ?>/assets/images/<?= $article['image'] ?>" alt="<?= $article['title'] ?>" 
+                                <?php 
+                                $imagePath = !empty($article['featured_image']) 
+                                    ? $article['featured_image'] 
+                                    : '/assets/images/articles/placeholder.svg';
+                                ?>
+                                <img src="<?= BASE_URL ?><?= $imagePath ?>" 
+                                     alt="<?= htmlspecialchars($article['title']) ?>" 
                                      onerror="this.src='<?= BASE_URL ?>/assets/images/articles/placeholder.svg'">
-                                <span class="article-category"><?= $article['category'] ?></span>
+                                <span class="article-category"><?= ucfirst(str_replace('-', ' ', $article['category'])) ?></span>
                             </div>
                             
                             <div class="article-content">
                                 <h3 class="article-title">
-                                    <a href="<?= BASE_URL ?>/articles/article/<?= $article['id'] ?>">
-                                        <?= $article['title'] ?>
+                                    <a href="<?= BASE_URL ?>/articles/article/<?= $article['article_id'] ?>">
+                                        <?= htmlspecialchars($article['title']) ?>
                                     </a>
                                 </h3>
                                 
-                                <p class="article-excerpt"><?= $article['excerpt'] ?></p>
+                                <p class="article-excerpt"><?= htmlspecialchars($article['excerpt']) ?></p>
                                 
                                 <div class="article-meta">
                                     <div class="article-author">
-                                        <span>By <?= $article['author_name'] ?? 'Unknown Author' ?></span>
+                                        <span>By <?= htmlspecialchars($article['first_name'] . ' ' . $article['last_name']) ?></span>
                                         <span class="article-date"><?= date('M j, Y', strtotime($article['created_at'])) ?></span>
                                     </div>
                                     
                                     <div class="article-stats">
                                         <span class="stat-item">
                                             <i class="icon-views"></i>
-                                            <?= $article['views'] ?>
+                                            <?= number_format($article['views']) ?>
                                         </span>
                                         <span class="stat-item">
                                             <i class="icon-likes"></i>
-                                            <?= $article['likes'] ?>
+                                            <?= number_format($article['likes_count']) ?>
                                         </span>
                                         <span class="stat-item">
-                                            <i class="icon-shares"></i>
-                                            <?= $article['shares'] ?>
+                                            <i class="icon-comments"></i>
+                                            <?= number_format($article['comments_count']) ?>
                                         </span>
                                     </div>
                                 </div>

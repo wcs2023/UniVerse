@@ -1,63 +1,76 @@
 <?php
 
-class Articles extends Controller
-{
-    private $articleModel;
-
-    public function __construct()
-    {
-        $this->articleModel = new Article();
-    }
-
-    public function index()
-    {
+class Articles extends Controller {
+    
+    public function index() {
+        // Create Article model instance
+        $articleModel = new Article();
+        
+        // Get all published articles
+        $articles = $articleModel->getAllArticles();
+        
+        // Get categories with counts
+        $categories = $articleModel->getCategoriesWithCount();
+        
+        // Prepare data for view
         $data = [
-            'title' => 'University Articles & Insights',
-            'categories' => $this->articleModel->getCategories(),
-            'articles' => $this->articleModel->getAllArticles()
+            'articles' => $articles ?? [],
+            'categories' => $categories ?? [],
+            'title' => 'Articles & Insights'
         ];
         
+        // Load the view
         $this->view('articles/index', $data);
     }
-
-    public function category($category = '')
-    {
-        if(empty($category)) {
-            redirect('articles');
+    
+    public function category($categoryName = null) {
+        if (!$categoryName) {
+            header('Location: ' . BASE_URL . '/articles');
+            exit();
         }
-
-        // Convert URL format back to normal (e.g., 'student-life' -> 'Student Life')
-        $categoryName = ucwords(str_replace('-', ' ', $category));
         
+        $articleModel = new Article();
+        
+        // Get articles by category
+        $articles = $articleModel->getArticlesByCategory($categoryName);
+        
+        // Prepare data for view
         $data = [
-            'title' => 'Articles - ' . $categoryName,
-            'category' => $category,
-            'articles' => $this->articleModel->getArticlesByCategory($categoryName)
+            'articles' => $articles ?? [],
+            'category' => $categoryName,
+            'title' => ucfirst(str_replace('-', ' ', $categoryName))
         ];
         
+        // Load the category view
         $this->view('articles/category', $data);
     }
-
-    public function article($id = '')
-    {
-        if(empty($id)) {
-            redirect('articles');
+    
+    public function article($articleId = null) {
+        if (!$articleId) {
+            header('Location: ' . BASE_URL . '/articles');
+            exit();
         }
-
-        $article = $this->articleModel->getArticleById($id);
         
-        if(!$article) {
-            redirect('articles');
+        $articleModel = new Article();
+        
+        // Get single article
+        $article = $articleModel->getArticleById($articleId);
+        
+        if (!$article) {
+            header('Location: ' . BASE_URL . '/articles');
+            exit();
         }
-
-        // Increment view count
-        $this->articleModel->incrementViews($id);
-
+        
+        // Increment views
+        $articleModel->incrementViews($articleId);
+        
+        // Prepare data for view
         $data = [
             'article' => $article,
-            'related_articles' => $this->articleModel->getRelatedArticles($id, $article['category'])
+            'title' => $article['title']
         ];
         
+        // Load the article detail view
         $this->view('articles/single', $data);
     }
 }

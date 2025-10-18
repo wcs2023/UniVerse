@@ -13,7 +13,7 @@
     <section class="Uhome welcome-section">
         <div class="container">
             <div class="welcome-content">
-                    <h1>Welcome back, Vinuja!</h1>
+                    <h1>Welcome back <?= htmlspecialchars($_SESSION['first_name']?? $_SESSION['first_name']) ?? 'user' ?>!</h1>
                     <p>Ready to catch up where you left off? Here's a quick overview of your academic journey and upcoming activities at UniVerse.</p>
                     <button class="explore-btn" onclick="document.getElementById('explore-section').scrollIntoView({ behavior: 'smooth' });">Start Exploring</button>
             </div>
@@ -28,7 +28,7 @@
             </div>
             <div class="image">
                 <div class="main-image">
-                    <img src="<?= BASE_URL ?>/assets/images/jobs.jpeg" alt="insert" class="image">
+                    <img src="<?= BASE_URL ?>/assets/images/jobs_04i.jpg" alt="insert" class="image">
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="container">
             <div class="image"> 
                 <div class="main-image">
-                    <img src="<?= BASE_URL ?>/assets/images/hero section.jpeg" alt="insert 2">
+                    <img src="<?= BASE_URL ?>/assets/images/mentoring.jpg" alt="insert 2">
                 </div>         
             </div>
             <div class="content">
@@ -56,7 +56,7 @@
             </div>
             <div class="image">
                 <div class="main-image">
-                    <img src="<?= BASE_URL ?>/assets/images/hero section.jpeg" alt="insert 3">
+                    <img src="<?= BASE_URL ?>/assets/images/career.jpg" alt="insert 3">
                 </div>
             </div>
         </div>

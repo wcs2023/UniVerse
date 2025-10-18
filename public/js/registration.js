@@ -65,6 +65,13 @@ document.addEventListener('DOMContentLoaded', function() {
         roleProfiles.forEach(profile => {
             profile.style.display = 'none';
             profile.classList.remove('active');
+            
+            // Disable required validation for hidden profiles
+            const requiredFields = profile.querySelectorAll('input[required], select[required], textarea[required]');
+            requiredFields.forEach(field => {
+                field.setAttribute('data-was-required', 'true');
+                field.removeAttribute('required');
+            });
         });
         
         // Show the selected role profile
@@ -72,6 +79,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (targetProfile) {
             targetProfile.style.display = 'block';
             targetProfile.classList.add('active');
+            
+            // Re-enable required validation for active profile
+            const requiredFields = targetProfile.querySelectorAll('[data-was-required="true"]');
+            requiredFields.forEach(field => {
+                field.setAttribute('required', 'required');
+            });
         }
     }
     

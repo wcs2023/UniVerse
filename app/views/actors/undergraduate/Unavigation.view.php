@@ -25,6 +25,9 @@
                 <li class="nav-item">
                     <a href="" class="nav-link">Mentorship</a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?= BASE_URL ?>/logout" class="nav-link logout-btn" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+                </li>
             </ul>
         </nav>
         <button class="mobile-menu-btn" id="mobile-menu-btn">
