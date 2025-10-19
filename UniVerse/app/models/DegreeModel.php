@@ -5,7 +5,7 @@ class DegreeModel extends Model
     protected $table = 'degrees_cutoff';
 
     public function searchByFilters($zscore,$stream,$district){
-        $query = "SELECT university,degree_programme,cutoff_marks,unicode,details FROM {$this->table} 
+        $query = "SELECT university,course_name,cutoff_marks,unicode,details FROM {$this->table} 
                   WHERE cutoff_marks <= :zscore 
                   AND stream = :stream 
                   AND district = :district
@@ -19,4 +19,5 @@ class DegreeModel extends Model
 
         return $this->query($query, $params);
     }
+
 }
