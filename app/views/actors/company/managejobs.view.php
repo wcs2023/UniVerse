@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Jobs - UniVerse</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/company.css">
-</head>
+    <style>
+        .alert { border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+        .alert-success { background: #e7f8ee; color: #0d6832; border: 1px solid #b6e6c8; }
+        .alert-error { background: #fde8e8; color: #8a1c1c; border: 1px solid #f5c2c2; }
+    </style>
+    </head>
 <body>
     <header class="company-header">
         <a href="<?= BASE_URL ?>/company/landing" class="company-logo">UniVerse</a>
@@ -15,8 +20,7 @@
             <a href="<?= BASE_URL ?>/company/postjobs">Post Jobs</a>
             <a href="<?= BASE_URL ?>/company/applications">View Applications</a>
         </nav>
-        
-        <!-- User Profile Dropdown -->
+
         <div class="user-profile-dropdown">
             <div class="profile-trigger">
                 <div class="profile-icon">
@@ -27,7 +31,6 @@
                 <span class="profile-name"><?= $user->firstname ?? 'User' ?></span>
                 <div class="dropdown-arrow">▼</div>
             </div>
-            
             <div class="dropdown-menu">
                 <a href="<?= BASE_URL ?>/company/profile" class="dropdown-item">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -46,90 +49,192 @@
     </header>
 
     <main class="main-content">
-        <!-- Search and Filter -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-error">
+                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
+
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">Job Listings</h2>
                 <p class="card-subtitle">Manage your active and past job postings</p>
             </div>
-            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" class="form-control" placeholder="Search jobs..." style="max-width: 300px;">
-                <select class="form-control" style="max-width: 200px;">
+
+            <div class="filter-section" style="margin-bottom: 1rem;">
+                <input type="text" id="jobSearch" class="form-control" placeholder="Search jobs by position..." style="max-width: 300px;">
+                <select id="statusFilter" class="form-control" style="max-width: 200px;">
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="closed">Closed</option>
                     <option value="draft">Draft</option>
                 </select>
+                <button id="resetFilters" class="btn btn-secondary" style="margin-left: auto;">Reset Filters</button>
             </div>
-            
-            <table class="table">
+
+            <table class="table" id="jobsTable">
                 <thead>
                     <tr>
-                        <th>Position</th>
-                        <th>Posted Date</th>
-                        <th>Applications</th>
-                        <th>Status</th>
+                        <th class="sortable" data-column="position" data-order="asc">
+                            Position <span class="sort-arrow">↕</span>
+                        </th>
+                        <th class="sortable" data-column="date" data-order="asc">
+                            Posted Date <span class="sort-arrow">↕</span>
+                        </th>
+                        <th class="sortable" data-column="applications" data-order="asc">
+                            Applications <span class="sort-arrow">↕</span>
+                        </th>
+                        <th class="sortable" data-column="status" data-order="asc">
+                            Status <span class="sort-arrow">↕</span>
+                        </th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Senior Software Engineer</td>
-                        <td>Aug 15, 2025</td>
-                        <td>12</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">Edit</button>
-                            <button class="action-btn delete-btn">Close</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>UX Designer</td>
-                        <td>Aug 20, 2025</td>
-                        <td>8</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">Edit</button>
-                            <button class="action-btn delete-btn">Close</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Product Manager</td>
-                        <td>Aug 10, 2025</td>
-                        <td>15</td>
-                        <td><span class="badge badge-warning">Closed</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">View</button>
-                            <button class="action-btn delete-btn">Delete</button>
-                        </td>
-                    </tr>
+                <tbody id="jobsTableBody">
+                    <?php if (!empty($data['jobs'])): ?>
+                        <?php foreach ($data['jobs'] as $job): ?>
+                            <tr data-position="<?= htmlspecialchars($job->job_title) ?>" 
+                                data-date="<?= $job->created_at ?>" 
+                                data-applications="0" 
+                                data-status="<?= $job->status ?>">
+                                <td><?= htmlspecialchars($job->job_title) ?></td>
+                                <td><?= date('M d, Y', strtotime($job->created_at)) ?></td>
+                                <td>0</td>
+                                <td>
+                                    <?php 
+                                    $badgeClass = 'badge-secondary';
+                                    if ($job->status === 'active') $badgeClass = 'badge-success';
+                                    elseif ($job->status === 'closed') $badgeClass = 'badge-warning';
+                                    ?>
+                                    <span class="badge <?= $badgeClass ?>"><?= ucfirst($job->status) ?></span>
+                                </td>
+                                <td class="action-buttons">
+                                    <a href="<?= BASE_URL ?>/company/jobdetails?id=<?= $job->id ?>" class="btn btn-sm btn-secondary" style="text-decoration: none;">View</a>
+                                    <a href="<?= BASE_URL ?>/company/postjobs?id=<?= $job->id ?>" class="btn btn-sm btn-primary" style="text-decoration: none;">Edit</a>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteJob(<?= $job->id ?>, '<?= htmlspecialchars($job->job_title) ?>')">Delete</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: #666;">
+                                No jobs posted yet. <a href="<?= BASE_URL ?>/company/postjobs" style="color: #4f46e5;">Post your first job</a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
-
     </main>
 
     <script>
-        // Profile dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
             const profileTrigger = document.querySelector('.profile-trigger');
             const dropdownMenu = document.querySelector('.dropdown-menu');
-            
-            profileTrigger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('active');
+
+            if (profileTrigger && dropdownMenu) {
+                profileTrigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                });
+
+                document.addEventListener('click', function() {
+                    dropdownMenu.classList.remove('active');
+                });
+
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+
+            // Search & Filter
+            const searchInput = document.getElementById('jobSearch');
+            const statusFilter = document.getElementById('statusFilter');
+            const resetBtn = document.getElementById('resetFilters');
+            const tableBody = document.getElementById('jobsTableBody');
+            const sortableHeaders = document.querySelectorAll('.sortable');
+
+            function filterJobs() {
+                const searchTerm = (searchInput.value || '').toLowerCase();
+                const statusValue = (statusFilter.value || '').toLowerCase();
+                const rows = tableBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const position = (row.getAttribute('data-position') || '').toLowerCase();
+                    const status = (row.getAttribute('data-status') || '').toLowerCase();
+                    const matchesSearch = position.includes(searchTerm);
+                    const matchesStatus = statusValue === '' || status === statusValue;
+                    row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterJobs);
+            statusFilter.addEventListener('change', filterJobs);
+            resetBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                statusFilter.value = '';
+                filterJobs();
             });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function() {
-                dropdownMenu.classList.remove('active');
+
+            // Sorting
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.getAttribute('data-column');
+                    const currentOrder = this.getAttribute('data-order');
+                    const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+
+                    sortableHeaders.forEach(h => {
+                        h.setAttribute('data-order', 'asc');
+                        h.classList.remove('sorted-asc', 'sorted-desc');
+                    });
+
+                    this.setAttribute('data-order', newOrder);
+                    this.classList.add(newOrder === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                    sortTable(column, newOrder);
+                });
             });
-            
-            // Prevent dropdown from closing when clicking inside
-            dropdownMenu.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
+
+            function sortTable(column, order) {
+                const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+                rows.sort((a, b) => {
+                    let aValue = a.getAttribute('data-' + column) || '';
+                    let bValue = b.getAttribute('data-' + column) || '';
+
+                    if (column === 'applications') { aValue = parseInt(aValue) || 0; bValue = parseInt(bValue) || 0; }
+                    else if (column === 'date') { aValue = new Date(aValue); bValue = new Date(bValue); }
+                    else { aValue = aValue.toLowerCase(); bValue = bValue.toLowerCase(); }
+
+                    if (order === 'asc') { return aValue > bValue ? 1 : -1; }
+                    else { return aValue < bValue ? 1 : -1; }
+                });
+
+                rows.forEach(row => tableBody.appendChild(row));
+            }
         });
+
+        // Expose deleteJob globally for inline onclick
+        function deleteJob(jobId, jobTitle) {
+            if (confirm(`Are you sure you want to delete the job "${jobTitle}"? This action cannot be undone.`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '<?= BASE_URL ?>/company/delete';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'job_id';
+                input.value = jobId;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        window.deleteJob = deleteJob;
     </script>
 </body>
 </html>
