@@ -95,20 +95,48 @@
             margin-right: 8px;
         }
         
-        .hero-image {
-            background: #d1d5db;
-            height: 400px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .hero-image-wrapper {
             position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
         
-        .hero-image::before {
-            content: "🖼️";
-            font-size: 4rem;
-            opacity: 0.5;
+        .hero-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .hero-image-wrapper:hover .hero-image {
+            transform: scale(1.05);
+        }
+        
+        .hero-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+        
+        .hero-badge-icon {
+            font-size: 1.25rem;
+        }
+        
+        .hero-badge-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-purple);
         }
         
         /* Mentor Section */
@@ -124,19 +152,59 @@
             align-items: center;
         }
         
-        .mentor-image {
-            background: #d1d5db;
-            height: 300px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .mentor-image-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
         
-        .mentor-image::before {
-            content: "🖼️";
-            font-size: 3rem;
-            opacity: 0.5;
+        .mentor-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .mentor-image-wrapper:hover .mentor-image {
+            transform: scale(1.05);
+        }
+        
+        .mentor-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .mentor-badge-icon {
+            font-size: 1.25rem;
+        }
+        
+        .mentor-badge-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-purple);
         }
         
         .mentor-text h2 {
@@ -217,7 +285,13 @@
                         <a href="client-articles.php" class="btn">Try Now</a>
                     </div>
                 </div>
-                <div class="hero-image"></div>
+                <div class="hero-image-wrapper">
+                    <img src="<?php echo defined('URLROOT') ? URLROOT : '/UniVerse/public'; ?>/assets/img/article.png" 
+                         alt="Article creation and content writing" 
+                         class="hero-image"
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'background:#d1d5db;height:400px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:4rem;opacity:0.5;\'>🖼️</div>';">
+                       
+                </div>
             </div>
         </div>
     </section>
@@ -226,10 +300,16 @@
     <section class="mentor-section">
         <div class="container">
             <div class="mentor-content">
-                <div class="mentor-image"></div>
+                <div class="mentor-image-wrapper">
+                    <img src="<?php echo defined('URLROOT') ? URLROOT : '/UniVerse/public'; ?>/assets/img/mentorship.png" 
+                         alt="Professional mentorship meeting between alumni and student" 
+                         class="mentor-image"
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'background:#d1d5db;height:400px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:0.5;\'>🖼️</div>';">
+                    
+                </div>
                 <div class="mentor-text">
                     <h2>Become a Mentor, Shape Careers</h2>
-                    <p>Support aspiring professionals by offering guidance, answering questions, and reviewing portfolios or resumes</p>
+                    <p>Support aspiring professionals by offering guidance, answering questions, and reviewing portfolios or resumes. Make a lasting impact on students' futures.</p>
                     <a href="mentoring.php" class="btn-mentor">Become a Mentor</a>
                 </div>
             </div>

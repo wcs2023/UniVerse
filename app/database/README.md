@@ -1,120 +1,128 @@
-# Database Setup Instructions
+# 🗄️ UniVerse Database Setup
 
-## Error: Unknown database 'my_db'
+## Quick Start (Choose One Method)
 
-This error occurs because the database hasn't been created yet. Follow the steps below to set up your database.
-
-## Option 1: Using phpMyAdmin (Recommended for beginners)
-
-1. **Start XAMPP** and ensure MySQL is running
-2. **Open phpMyAdmin** in your browser: http://localhost/phpmyadmin
-3. **Create the database:**
-   - Click on "New" in the left sidebar
-   - Enter database name: `my_db`
-   - Select collation: `utf8mb4_unicode_ci`
-   - Click "Create"
-4. **Import the schema:**
-   - Select the `my_db` database from the left sidebar
-   - Click on the "Import" tab at the top
-   - Click "Choose File" and navigate to:
-     `C:\xampp\htdocs\UniVerse\app\database\mentorship_complete_schema.sql`
-   - Click "Go" at the bottom
-   - Wait for success message
-5. **Import sample data (Optional):**
-   - Still in the Import tab
-   - Choose file: `mentorship_dummy_data.sql`
-   - Click "Go"
-
-## Option 2: Using MySQL Command Line
-
-1. **Open Command Prompt** or PowerShell
-2. **Navigate to MySQL bin directory:**
-   ```powershell
-   cd C:\xampp\mysql\bin
-   ```
-3. **Login to MySQL:**
-   ```powershell
-   .\mysql.exe -u root -p
-   ```
-   (Press Enter when prompted for password if you haven't set one)
-4. **Create the database:**
-   ```sql
-   CREATE DATABASE IF NOT EXISTS my_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   USE my_db;
-   ```
-5. **Import the schema:**
-   ```sql
-   SOURCE C:/xampp/htdocs/UniVerse/app/database/mentorship_complete_schema.sql
-   ```
-6. **Import sample data (Optional):**
-   ```sql
-   SOURCE C:/xampp/htdocs/UniVerse/app/database/mentorship_dummy_data.sql
-   ```
-7. **Exit MySQL:**
-   ```sql
-   EXIT;
-   ```
-
-## Option 3: Quick PowerShell Script
-
-Run this command in PowerShell (from the project root):
-
-```powershell
-cd C:\xampp\mysql\bin
-.\mysql.exe -u root -e "CREATE DATABASE IF NOT EXISTS my_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-.\mysql.exe -u root my_db < C:\xampp\htdocs\UniVerse\app\database\mentorship_complete_schema.sql
-```
-
-## Verify Setup
-
-After setup, verify the database was created correctly:
-
+### Method 1: phpMyAdmin (Easiest) ⭐
 1. Open phpMyAdmin: http://localhost/phpmyadmin
-2. Click on `my_db` in the left sidebar
-3. You should see these tables:
-   - Users
-   - Mentor_Profiles
-   - Mentee_Profiles
-   - Mentorship_Requests
-   - Proposed_Slots
-   - Mentorship_Sessions
-   - Feedback
-   - Notifications
-   - Messages
+2. Click **Import** tab
+3. Choose file: `00_complete_schema.sql`
+4. Click **Go** at the bottom
+5. ✅ Done! (Optionally import `01_sample_data.sql` for test accounts)
 
-## Troubleshooting
+### Method 2: Command Line
+```powershell
+# Navigate to database folder
+cd C:\xampp\htdocs\UniVerse\app\database
 
-### Error: Access denied
-- Make sure XAMPP MySQL is running
-- Default credentials are: username=`root`, password=`` (empty)
+# Import schema
+Get-Content "00_complete_schema.sql" -Raw | & "C:\xampp\mysql\bin\mysql.exe" -u root
 
-### Error: File not found
-- Check that the SQL file path is correct
-- Use forward slashes (/) or double backslashes (\\\\) in paths
-
-### Error: Table already exists
-- This is OK - it means tables were already created
-- You can drop and recreate: 
-  - In phpMyAdmin, select `my_db`, click "Operations" tab, scroll down and click "Drop the database"
-  - Then repeat the setup steps
-
-## Database Configuration
-
-The database configuration is set in: `app/core/config.php`
-
-Current settings:
-```php
-define('DBHOST', 'localhost');
-define('DBNAME', 'my_db');
-define('DBUSER', 'root');
-define('DBPASS', '');
+# Optional: Import sample data
+Get-Content "01_sample_data.sql" -Raw | & "C:\xampp\mysql\bin\mysql.exe" -u root
 ```
 
-If you want to use a different database name, update `DBNAME` in the config file.
+### Method 3: One-Line Setup
+```powershell
+cd C:\xampp\htdocs\UniVerse\app\database; Get-Content "00_complete_schema.sql" -Raw | & "C:\xampp\mysql\bin\mysql.exe" -u root; Get-Content "01_sample_data.sql" -Raw | & "C:\xampp\mysql\bin\mysql.exe" -u root
+```
 
-## Next Steps
+---
 
-After setting up the database:
-1. Refresh your browser page
-2. The "Unknown database" error should be resolved
-3. You can start using the application!
+## 📦 What's Included
+
+### File 1: `00_complete_schema.sql` 
+**Complete database structure** - All 16 tables:
+- ✅ Users & Authentication
+- ✅ Alumni Profiles (with Experience & Skills)
+- ✅ Undergraduate Profiles
+- ✅ Articles System
+- ✅ Mentorship System (Requests, Sessions, Slots)
+- ✅ Notifications & Messages
+- ✅ Feedback System
+
+### File 2: `01_sample_data.sql` (Optional)
+**Test data** for immediate testing:
+- 3 user accounts (Alumni, Student, Admin)
+- 1 complete alumni profile with skills and experience
+- 3 sample articles (2 published, 1 draft)
+- 1 mentorship request
+- Sample notifications
+
+---
+
+## 🔐 Test Accounts
+
+If you imported `01_sample_data.sql`:
+
+| Role | Email | Password | Description |
+|------|-------|----------|-------------|
+| Alumni | test.alumni@example.com | password | John Doe - Senior Engineer |
+| Student | test.student@example.com | password | Jane Smith - CS Student |
+| Admin | admin@universe.com | password | Admin User |
+
+---
+
+## 📊 Database Structure
+
+```
+Users (Central authentication)
+├── Alumni (Extended profile)
+│   ├── AlumniExperience (Work history)
+│   └── AlumniSkills (Skills list)
+├── Undergraduates (Student profile)
+└── Articles (Alumni articles)
+
+Mentorship System
+├── Mentorships (Simple requests)
+├── MentorshipTimeSlots (Time slots)
+├── Mentor_Profiles (Extended mentor data)
+├── Mentee_Profiles (Extended mentee data)
+├── Mentorship_Requests (Advanced requests)
+├── Proposed_Slots (Time slot proposals)
+├── Mentorship_Sessions (Confirmed sessions)
+└── Feedback (Session feedback)
+
+Communication
+├── Notifications (System notifications)
+└── Messages (Direct messaging)
+```
+
+---
+
+## ✨ Benefits of New Structure
+
+| Before | After |
+|--------|-------|
+| 5 separate SQL files | 2 organized files |
+| Manual column additions | Everything in one place |
+| Possible conflicts | No duplicate definitions |
+| Complex setup | One-click import |
+| Hard to maintain | Single source of truth |
+
+---
+
+## 🔧 Troubleshooting
+
+### Error: "Table already exists"
+```sql
+-- Drop the database and start fresh
+DROP DATABASE my_db;
+```
+Then import `00_complete_schema.sql` again.
+
+### Error: "Access denied"
+Make sure XAMPP MySQL is running and you're using the correct credentials (default: root with no password).
+
+### Error: "Database not found"
+The schema file creates the database automatically. Just import it directly.
+
+---
+
+## 🎯 Next Steps
+
+1. ✅ Import `00_complete_schema.sql`
+2. ✅ Import `01_sample_data.sql` (optional)
+3. ✅ Login with test accounts
+4. ✅ Start building features!
+
+---
