@@ -7,45 +7,21 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/company.css">
 </head>
 <body>
-    <header class="company-header">
-        <a href="<?= BASE_URL ?>/company/landing" class="company-logo">UniVerse</a>
-        <nav class="company-nav">
-            <a href="<?= BASE_URL ?>/company/landing">Dashboard</a>
-            <a href="<?= BASE_URL ?>/company/managejobs" class="active">Manage Jobs</a>
-            <a href="<?= BASE_URL ?>/company/postjobs">Post Jobs</a>
-            <a href="<?= BASE_URL ?>/company/applications">View Applications</a>
-        </nav>
-        
-        <!-- User Profile Dropdown -->
-        <div class="user-profile-dropdown">
-            <div class="profile-trigger">
-                <div class="profile-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>
-                <span class="profile-name"><?= $user->firstname ?? 'User' ?></span>
-                <div class="dropdown-arrow">▼</div>
-            </div>
-            
-            <div class="dropdown-menu">
-                <a href="<?= BASE_URL ?>/company/profile" class="dropdown-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    Update Profile
-                </a>
-                <a href="<?= BASE_URL ?>/login/logout" class="dropdown-item logout">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    Logout
-                </a>
-            </div>
-        </div>
-    </header>
 
+<?php require_once __DIR__ . '/companyHeader.view.php'; ?>
     <main class="main-content">
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-error">
+                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Search and Filter -->
         <div class="card">
             <div class="card-header">
@@ -53,8 +29,8 @@
                 <p class="card-subtitle">Manage your active and past job postings</p>
             </div>
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" class="form-control" placeholder="Search jobs..." style="max-width: 300px;">
-                <select class="form-control" style="max-width: 200px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search jobs..." style="max-width: 300px;">
+                <select id="statusFilter" class="form-control" style="max-width: 200px;" onchange="filterJobs()">
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="closed">Closed</option>
@@ -73,43 +49,48 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Senior Software Engineer</td>
-                        <td>Aug 15, 2025</td>
-                        <td>12</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">Edit</button>
-                            <button class="action-btn delete-btn">Close</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>UX Designer</td>
-                        <td>Aug 20, 2025</td>
-                        <td>8</td>
-                        <td><span class="badge badge-success">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">Edit</button>
-                            <button class="action-btn delete-btn">Close</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Product Manager</td>
-                        <td>Aug 10, 2025</td>
-                        <td>15</td>
-                        <td><span class="badge badge-warning">Closed</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">View</button>
-                            <button class="action-btn delete-btn">Delete</button>
-                        </td>
-                    </tr>
+                    <?php if (!empty($data['jobs'])): ?>
+                        <?php foreach ($data['jobs'] as $job): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($job['title']) ?></td>
+                                <td><?= date('M d, Y', strtotime($job['created_at'])) ?></td>
+                                <td><?= $job['applications_count'] ?? 0 ?></td>
+                                <td>
+                                    <?php if ($job['status'] === 'active'): ?>
+                                        <span class="badge badge-success">Active</span>
+                                    <?php elseif ($job['status'] === 'draft'): ?>
+                                        <span class="badge badge-secondary">Draft</span>
+                                    <?php else: ?>
+                                        <span class="badge badge-warning">Closed</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="<?= BASE_URL ?>/company/jobdetails/<?= $job['job_id'] ?>" class="action-btn edit-btn">View</a>
+                                    <a href="<?= BASE_URL ?>/company/editjob/<?= $job['job_id'] ?>" class="action-btn edit-btn">Edit</a>
+                                    <?php if ($job['status'] === 'active'): ?>
+                                        <button class="action-btn delete-btn" onclick="closeJob(<?= $job['job_id'] ?>)">Close</button>
+                                    <?php else: ?>
+                                        <button class="action-btn delete-btn" onclick="deleteJob(<?= $job['job_id'] ?>)">Delete</button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                No jobs posted yet. <a href="<?= BASE_URL ?>/company/postjobs">Post your first job</a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
-
     </main>
+    <?php require_once __DIR__ . '/../../layout/footer.php'; ?>
+</body>
+</html>
 
-    <script>
+<script>
         // Profile dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
             const profileTrigger = document.querySelector('.profile-trigger');
@@ -130,6 +111,35 @@
                 e.stopPropagation();
             });
         });
+
+        function filterJobs() {
+            const status = document.getElementById('statusFilter').value;
+            window.location.href = '<?= BASE_URL ?>/company/managejobs' + (status ? '?status=' + status : '');
+        }
+
+        function closeJob(jobId) {
+            if (confirm('Are you sure you want to close this job posting?')) {
+                fetch('<?= BASE_URL ?>/company/updatejobstatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'job_id=' + jobId + '&status=closed'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Failed to close job');
+                    }
+                });
+            }
+        }
+
+        function deleteJob(jobId) {
+            if (confirm('Are you sure you want to delete this job? This action cannot be undone.')) {
+                window.location.href = '<?= BASE_URL ?>/company/deletejob/' + jobId;
+            }
+        }
     </script>
-</body>
-</html>

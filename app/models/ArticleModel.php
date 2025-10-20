@@ -1,8 +1,8 @@
 <?php
 
-class Article
+class ArticleModel extends Model
 {
-    private $db;
+    protected $db;
     
     public function __construct()
     {
@@ -27,8 +27,8 @@ class Article
                         a.created_at,
                         a.updated_at,
                         a.published_at
-                      FROM Articles a
-                      WHERE a.author_id = ?
+                      FROM articles a
+                      WHERE a.user_id = ?
                       AND a.status = ?
                       ORDER BY a.updated_at DESC";
             
@@ -51,10 +51,10 @@ class Article
                         a.*,
                         u.first_name,
                         u.last_name,
-                        u.profile_picture_url,
+                        u.profile_picture,
                         CONCAT(u.first_name, ' ', u.last_name) as author_name
-                      FROM Articles a
-                      JOIN Users u ON a.author_id = u.user_id
+                      FROM articles a
+                      JOIN users u ON a.user_id = u.user_id
                       WHERE a.article_id = ?";
             
             $stmt = $this->db->prepare($query);
@@ -74,8 +74,8 @@ class Article
         try {
             $publishedAt = ($status === 'published') ? date('Y-m-d H:i:s') : null;
             
-            $query = "INSERT INTO Articles 
-                      (author_id, title, content, status, category, tags, published_at, created_at, updated_at)
+            $query = "INSERT INTO articles 
+                      (user_id, title, content, status, category, tags, published_at, created_at, updated_at)
                       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
             
             $stmt = $this->db->prepare($query);
@@ -106,7 +106,7 @@ class Article
                 $publishedAt = $currentArticle['published_at'];
             }
             
-            $query = "UPDATE Articles 
+            $query = "UPDATE articles 
                       SET title = ?,
                           content = ?,
                           status = ?,
@@ -130,7 +130,7 @@ class Article
     public function deleteArticle($articleId)
     {
         try {
-            $query = "DELETE FROM Articles WHERE article_id = ?";
+            $query = "DELETE FROM articles WHERE article_id = ?";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([$articleId]);
         } catch(PDOException $e) {
@@ -145,7 +145,7 @@ class Article
     public function incrementViews($articleId)
     {
         try {
-            $query = "UPDATE Articles SET views = views + 1 WHERE article_id = ?";
+            $query = "UPDATE articles SET views = views + 1 WHERE article_id = ?";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([$articleId]);
         } catch(PDOException $e) {
@@ -160,7 +160,7 @@ class Article
     public function incrementLikes($articleId)
     {
         try {
-            $query = "UPDATE Articles SET likes = likes + 1 WHERE article_id = ?";
+            $query = "UPDATE articles SET likes = likes + 1 WHERE article_id = ?";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([$articleId]);
         } catch(PDOException $e) {
@@ -179,10 +179,10 @@ class Article
                         a.*,
                         u.first_name,
                         u.last_name,
-                        u.profile_picture_url,
+                        u.profile_picture,
                         CONCAT(u.first_name, ' ', u.last_name) as author_name
-                      FROM Articles a
-                      JOIN Users u ON a.author_id = u.user_id
+                      FROM articles a
+                      JOIN users u ON a.user_id = u.user_id
                       WHERE a.status = 'published'
                       ORDER BY a.published_at DESC
                       LIMIT ? OFFSET ?";
@@ -209,8 +209,8 @@ class Article
                         u.first_name,
                         u.last_name,
                         CONCAT(u.first_name, ' ', u.last_name) as author_name
-                      FROM Articles a
-                      JOIN Users u ON a.author_id = u.user_id
+                      FROM articles a
+                      JOIN users u ON a.user_id = u.user_id
                       WHERE a.status = 'published'
                       AND (a.title LIKE ? OR a.content LIKE ? OR a.tags LIKE ?)
                       ORDER BY a.published_at DESC

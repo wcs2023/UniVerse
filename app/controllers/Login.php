@@ -52,7 +52,7 @@ class Login extends Controller {
                 // Redirect based on user type
                 switch ($user['user_type']) {
                     case 'alumni':
-                        header('Location: ' . BASE_URL . '/uhome');
+                        header('Location: ' . BASE_URL . '/alumni');
                         break;
                     case 'undergraduate':
                     case 'student':

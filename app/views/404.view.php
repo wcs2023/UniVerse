@@ -14,10 +14,10 @@
             
             <img src="assets/images/404.png" alt="404 - Page Not Found" class="error-image">
             <h1 class="error-title">Oops! Page Not Found</h1>
-            <p class="error-message">
+            <p>
                 The page you're looking for seems to have wandered off into the universe. 
                 Don't worry, we'll help you find your way back to your educational journey!
-            </p>
+            </p><br>
             <a href="index.php?url=home" class="error-btn">Return to Home</a>
         </div>
     </div>

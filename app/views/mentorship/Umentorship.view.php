@@ -1,8 +1,13 @@
-<?php 
-// Check if APPROOT is defined, if not define it for direct access
+<?php
+// Define constants if not already defined (for direct access)
 if (!defined('APPROOT')) {
     define('APPROOT', dirname(dirname(dirname(__FILE__))));
+}
+if (!defined('URLROOT')) {
     define('URLROOT', 'http://localhost/UniVerse/public');
+}
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://localhost/UniVerse/public');
 }
 
 // Include navigation if it exists, otherwise we'll use inline navigation
@@ -56,6 +61,7 @@ if (file_exists($navFile)) {
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            margin-top: 4rem;
             padding: 2rem 0 1rem;
         }
 
@@ -163,7 +169,7 @@ if (file_exists($navFile)) {
             background-color: rgba(124, 58, 237, 0.1);
             color: var(--primary-purple);
         }
-
+        
         .btn-view-times {
             background-color: var(--primary-purple);
             color: white;
@@ -407,7 +413,7 @@ if (file_exists($navFile)) {
             background-color: #6b7280;
             color: white;
         }
-
+        
         .text-success {
             color: var(--success-green);
         }
@@ -429,7 +435,7 @@ if (file_exists($navFile)) {
             .btn-view-times {
                 width: 100%;
             }
-
+            
             .container {
                 padding: 0 1rem;
             }
@@ -439,14 +445,15 @@ if (file_exists($navFile)) {
             }
         }
     </style>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
 </head>
 <body>
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
             <h1>My Mentorships</h1>
-            <a href="<?= URLROOT ?>/mentorships/exploreMentors" class="btn-explore">
-                <span>🔍 Explore Mentors</span>
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-explore">
+                <span>Explore Mentors</span>
             </a>
         </div>
 
@@ -527,7 +534,7 @@ if (file_exists($navFile)) {
         <div class="cta-section">
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
-            <a href="<?= URLROOT ?>/mentorships/exploreMentors" class="btn-view-times" style="text-decoration: none;">
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-view-times" style="text-decoration: none;">
                 <span>🧭 Explore Mentors</span>
             </a>
         </div>
@@ -585,7 +592,7 @@ if (file_exists($navFile)) {
         function loadTimeSlots(mentorshipId) {
             const container = document.getElementById('timeSlotsContainer');
             
-            fetch(`<?= URLROOT ?>/mentorships/getTimeSlots/${mentorshipId}`)
+            fetch(`<?= BASE_URL ?>/umentorships/getTimeSlots/${mentorshipId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.slots.length > 0) {
@@ -660,7 +667,7 @@ if (file_exists($navFile)) {
             formData.append('mentorship_id', currentMentorshipId);
             formData.append('slot_id', selectedSlotId);
             
-            fetch('<?= URLROOT ?>/mentorships/schedule', {
+            fetch('<?= BASE_URL ?>/umentorships/schedule', {
                 method: 'POST',
                 body: formData
             })
@@ -706,5 +713,6 @@ if (file_exists($navFile)) {
             });
         });
     </script>
+    <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
 </html>

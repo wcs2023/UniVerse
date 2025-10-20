@@ -1,7 +1,7 @@
 <?php
-class AlumniModel
+class AlumniModel extends Model
 {
-    private $db;
+    protected $db;
     
     public function __construct()
     {
@@ -46,6 +46,32 @@ class AlumniModel
             return $alumni;
         } catch(PDOException $e) {
             error_log("Error getting alumni: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Get an alumni by user ID
+     * 
+     * @param int $user_id The user ID
+     * @return array|bool The alumni data or false on failure
+     */
+    public function getAlumniByUserId($user_id)
+    {
+        try {
+            // Get alumni basic information
+            $query = "SELECT * FROM Alumni WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$user_id]);
+            $alumni = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$alumni) {
+                return false;
+            }
+            
+            return $alumni;
+        } catch(PDOException $e) {
+            error_log("Error getting alumni by user_id: " . $e->getMessage());
             return false;
         }
     }

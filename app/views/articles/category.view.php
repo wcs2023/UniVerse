@@ -14,7 +14,7 @@
     <div class="articles-container">
         <!-- Breadcrumb -->
         <nav class="breadcrumb">
-            <a href="<?= BASE_URL ?>/articles">Articles</a>
+            <a href="<?= BASE_URL ?>/uarticles">Articles</a>
             <span class="breadcrumb-separator">></span>
             <span class="breadcrumb-current"><?= ucfirst($data['category']) ?></span>
         </nav>
@@ -27,7 +27,7 @@
 
         <!-- Back to Categories -->
         <div class="category-navigation">
-            <a href="<?= BASE_URL ?>/articles" class="back-to-articles">
+            <a href="<?= BASE_URL ?>/uarticles" class="back-to-articles">
                 ← Back to All Articles
             </a>
         </div>
@@ -52,7 +52,7 @@
                             
                             <div class="article-content">
                                 <h3 class="article-title">
-                                    <a href="<?= BASE_URL ?>/articles/article/<?= $article['article_id'] ?>">
+                                    <a href="<?= BASE_URL ?>/uarticles/viewDetails/<?= $article['article_id'] ?>">
                                         <?= htmlspecialchars($article['title']) ?>
                                     </a>
                                 </h3>
@@ -68,15 +68,15 @@
                                     <div class="article-stats">
                                         <span class="stat-item">
                                             <i class="icon-views"></i>
-                                            <?= number_format($article['views']) ?>
+                                            <?= number_format($article['views'] ?? 0) ?>
                                         </span>
                                         <span class="stat-item">
                                             <i class="icon-likes"></i>
-                                            <?= number_format($article['likes_count']) ?>
+                                            <?= number_format($article['likes_count'] ?? 0) ?>
                                         </span>
                                         <span class="stat-item">
                                             <i class="icon-comments"></i>
-                                            <?= number_format($article['comments_count']) ?>
+                                            <?= number_format($article['comments_count'] ?? 0) ?>
                                         </span>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@
                 <div class="no-articles">
                     <h3>No articles found in this category</h3>
                     <p>Check back later for new content, or explore other categories.</p>
-                    <a href="<?= BASE_URL ?>/articles" class="btn btn-primary">Browse All Articles</a>
+                    <a href="<?= BASE_URL ?>/uarticles" class="btn btn-primary">Browse All Articles</a>
                 </div>
             <?php endif; ?>
         </div>

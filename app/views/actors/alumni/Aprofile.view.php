@@ -24,9 +24,10 @@ $userData = [
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <title>Manage Profile - UniVerse</title>
     <style>
         * {
@@ -474,7 +475,7 @@ $userData = [
 <body>
     <?php 
     // Include navigation
-    $navFile = APPROOT . '/views/actors/alumini/Anavbar.php';
+    $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
@@ -925,10 +926,8 @@ $userData = [
 
     <?php 
     // Include footer
-    $footerFile = APPROOT . '/views/actors/alumini/Afooter.php';
-    if (file_exists($footerFile)) {
-        include $footerFile;
-    }
+    include __DIR__ . '/../../layout/footer.php';
     ?>
 </body>
 </html>
+

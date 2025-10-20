@@ -16,10 +16,12 @@
             <div class="profile-image">
                 <?php 
                 $profilePicture = !empty($data['user']['profile_picture']) 
-                    ? BASE_URL . $data['user']['profile_picture'] 
-                    : BASE_URL . '/assets/images/default-avatar.png';
+                    ? $data['user']['profile_picture'] 
+                    : '/assets/images/default-avatar.png';
                 ?>
-                <img src="<?= $profilePicture ?>" alt="Profile Photo">
+                <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                     alt="Profile Photo"
+                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
             </div>
             <div class="profile-info">
                 <h1><?= htmlspecialchars($data['user']['first_name'] . ' ' . $data['user']['last_name']) ?></h1>
@@ -36,13 +38,16 @@
         <!-- Profile Navigation -->
         <div class="profile-nav">
             <a href="<?= BASE_URL ?>/umyprofile" class="nav-item active">
-                Profile Overview
+            Profile Overview
             </a>
             <a href="<?= BASE_URL ?>/uachievements" class="nav-item">
-                Achievements
+            Achievements
+            </a>
+            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            Bookmarked Articles
             </a>
             <a href="<?= BASE_URL ?>/usettings" class="nav-item">
-                Settings
+            Settings
             </a>
         </div>
 

@@ -23,7 +23,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>📊 Dashboard</h1>
+                <h1>Dashboard</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">

@@ -23,7 +23,7 @@
         <div class="articles-categories">
             <h3>Categories</h3>
             <div class="category-filters">
-                <a href="<?= BASE_URL ?>/articles" class="category-btn active">
+                <a href="<?= BASE_URL ?>/uarticles" class="category-btn active">
                     All (<?= count($data['articles']) ?>)
                 </a>
                 <?php if (!empty($data['categories'])): ?>
@@ -35,7 +35,7 @@
                         ?>
                         
                         <?php if (!empty($categoryName)): ?>
-                        <a href="<?= BASE_URL ?>/articles/category/<?= strtolower($categoryName) ?>" 
+                        <a href="<?= BASE_URL ?>/uarticles/category/<?= strtolower($categoryName) ?>" 
                            class="category-btn">
                             <?= ucfirst(str_replace('-', ' ', $categoryName)) ?> (<?= $categoryCount ?>)
                         </a>
@@ -66,6 +66,7 @@
                                     ? $article['featured_image'] 
                                     : '/assets/images/articles/placeholder.svg';
                                 ?>
+
                                 <img src="<?= BASE_URL ?><?= $imagePath ?>" 
                                      alt="<?= htmlspecialchars($article['title']) ?>" 
                                      onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
@@ -74,7 +75,7 @@
                             
                             <div class="article-content">
                                 <h3 class="article-title">
-                                    <a href="<?= BASE_URL ?>/articles/article/<?= $article['article_id'] ?>">
+                                    <a href="<?= BASE_URL ?>/uarticles/viewDetails/<?= $article['article_id'] ?>">
                                         <?= htmlspecialchars($article['title']) ?>
                                     </a>
                                 </h3>
@@ -89,13 +90,13 @@
                                     
                                     <div class="article-stats">
                                         <span class="stat-item" title="Views">
-                                            👁️ <?= number_format($article['views']) ?>
+                                            👁️ <?= number_format($article['views'] ?? 0) ?>
                                         </span>
                                         <span class="stat-item" title="Likes">
-                                            ❤️ <?= number_format($article['likes_count']) ?>
+                                            ❤️ <?= number_format($article['likes'] ?? 0) ?>
                                         </span>
                                         <span class="stat-item" title="Comments">
-                                            💬 <?= number_format($article['comments_count']) ?>
+                                            💬 <?= number_format($article['comments_count'] ?? 0) ?>
                                         </span>
                                     </div>
                                 </div>

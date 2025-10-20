@@ -6,6 +6,9 @@ if (!defined('APPROOT')) {
 if (!defined('URLROOT')) {
     define('URLROOT', 'http://localhost/UniVerse/public');
 }
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://localhost/UniVerse/public');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -281,7 +284,7 @@ if (!defined('URLROOT')) {
 <body>
     <?php 
     // Include navigation
-    $navFile = APPROOT . '/views/actors/alumini/Anavbar.php';
+    $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
@@ -291,8 +294,8 @@ if (!defined('URLROOT')) {
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">Manage My Articles</h1>
-            <a href="<?= URLROOT ?>/articles/create" class="btn-create">
-                <span class="btn-icon">⊕</span>
+            <a href="<?= BASE_URL ?>/aarticles/create" class="btn-create">
+                <!-- <span class="btn-icon">⊕</span> -->
                 <span>Create New Article</span>
             </a>
         </div>
@@ -308,7 +311,7 @@ if (!defined('URLROOT')) {
                             <div class="article-header">
                                 <span class="status-badge status-draft">Draft</span>
                                 <div class="article-actions">
-                                    <a href="<?= URLROOT ?>/articles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
+                                    <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
                                         ✏️
                                     </a>
                                     <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'draft')" class="btn-icon-action delete" title="Delete">
@@ -346,6 +349,18 @@ if (!defined('URLROOT')) {
         <div class="section">
             <h2 class="section-title">Published</h2>
             
+            <!-- Debug Info (Remove this after testing) -->
+            <?php if (isset($_GET['debug'])): ?>
+                <div style="background: #fff; padding: 1rem; margin-bottom: 1rem; border: 2px solid #8b5cf6; border-radius: 8px;">
+                    <strong>Debug Info:</strong><br>
+                    Published Count: <?= isset($data['published']) ? count($data['published']) : 'not set' ?><br>
+                    Drafts Count: <?= isset($data['drafts']) ? count($data['drafts']) : 'not set' ?><br>
+                    <?php if (isset($data['published'])): ?>
+                        <pre><?= print_r($data['published'], true) ?></pre>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            
             <div class="articles-grid">
                 <?php if (isset($data['published']) && count($data['published']) > 0): ?>
                     <?php foreach ($data['published'] as $index => $article): ?>
@@ -353,7 +368,7 @@ if (!defined('URLROOT')) {
                             <div class="article-header">
                                 <span class="status-badge status-published">Published</span>
                                 <div class="article-actions">
-                                    <a href="<?= URLROOT ?>/articles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
+                                    <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
                                         ✏️
                                     </a>
                                     <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'published')" class="btn-icon-action delete" title="Delete">
@@ -396,7 +411,7 @@ if (!defined('URLROOT')) {
             
             if (confirm(confirmMessage)) {
                 // Send delete request
-                fetch('<?= URLROOT ?>/articles/delete/' + articleId, {
+                fetch('<?= BASE_URL ?>/aarticles/delete/' + articleId, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -430,10 +445,8 @@ if (!defined('URLROOT')) {
 
     <?php 
     // Include footer
-    $footerFile = APPROOT . '/views/actors/alumini/Afooter.php';
-    if (file_exists($footerFile)) {
-        include $footerFile;
-    }
+    include __DIR__ . '/../../layout/footer.php';
     ?>
 </body>
 </html>
+

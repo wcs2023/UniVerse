@@ -14,16 +14,16 @@
                     <a href="<?= BASE_URL ?>/umyprofile" class="nav-link">My Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= BASE_URL ?>/articles" class="nav-link">Articles</a>
+                    <a href="<?= BASE_URL ?>/uarticles" class="nav-link">Articles</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">Jobs</a>
+                    <a href="<?= BASE_URL ?>/ujobs" class="nav-link">Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">Discussion Forums</a>
+                    <a href="<?= BASE_URL ?>/udiscussion" class="nav-link">Discussion Forums</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">Mentorship</a>
+                    <a href="<?= BASE_URL ?>/umentorships" class="nav-link">Mentorship</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?= BASE_URL ?>/logout" class="nav-link logout-btn" onclick="return confirm('Are you sure you want to logout?')">Logout</a>

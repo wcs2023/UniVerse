@@ -43,6 +43,15 @@ class Database
     }
 
     /**
+     * Get the PDO connection instance
+     * @return PDO - The PDO database connection
+     */
+    public function getConnection()
+    {
+        return $this->pdo;
+    }
+
+    /**
      * Execute a prepared SQL query
      * @param string $sql - The SQL query with placeholders
      * @param array $params - Parameters to bind to the query

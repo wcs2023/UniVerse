@@ -13,11 +13,7 @@
     <div class="article-single-container">
         <!-- Breadcrumb -->
         <nav class="breadcrumb">
-            <a href="<?= BASE_URL ?>/articles">Articles</a>
-            <span class="breadcrumb-separator">></span>
-            <a href="<?= BASE_URL ?>/articles/category/<?= strtolower($data['article']['category']) ?>">
-                <?= ucfirst(str_replace('-', ' ', $data['article']['category'])) ?>
-            </a>
+            <a href="<?= BASE_URL ?>/uarticles">Articles</a>
             <span class="breadcrumb-separator">></span>
             <span class="breadcrumb-current"><?= htmlspecialchars($data['article']['title']) ?></span>
         </nav>
@@ -39,15 +35,15 @@
                     <div class="article-stats">
                         <span class="stat-item">
                             <i class="icon-views"></i>
-                            <?= number_format($data['article']['views']) ?> views
+                            <?= number_format($data['article']['views'] ?? 0) ?> views
                         </span>
                         <span class="stat-item">
                             <i class="icon-likes"></i>
-                            <?= number_format($data['article']['likes_count']) ?> likes
+                            <?= number_format($data['article']['likes_count'] ?? 0) ?> likes
                         </span>
                         <span class="stat-item">
                             <i class="icon-comments"></i>
-                            <?= number_format($data['article']['comments_count']) ?> comments
+                            <?= number_format($data['article']['comments_count'] ?? 0) ?> comments
                         </span>
                     </div>
                 </div>
@@ -79,7 +75,7 @@
                 <div class="article-actions">
                     <button class="action-btn like-btn" data-article-id="<?= $data['article']['article_id'] ?>">
                         <i class="icon-like"></i>
-                        Like (<?= number_format($data['article']['likes_count']) ?>)
+                        Like (<?= number_format($data['article']['likes']) ?>)
                     </button>
                     <button class="action-btn share-btn">
                         <i class="icon-share"></i>
@@ -93,13 +89,13 @@
 
                 <!-- Back to Articles Navigation -->
                 <div class="article-navigation">
-                    <a href="<?= BASE_URL ?>/articles" class="btn-back">← Back to All Articles</a>
-                    <a href="<?= BASE_URL ?>/articles/category/<?= strtolower($data['article']['category']) ?>" class="btn-category">
+                    <a href="<?= BASE_URL ?>/uarticles" class="btn-back">← Back to All Articles</a>
+                    <!-- <a href="<?= BASE_URL ?>/uarticles/category/<?= strtolower($data['article']['category']) ?>" class="btn-category">
                         More in <?= ucfirst(str_replace('-', ' ', $data['article']['category'])) ?>
-                    </a>
+                    </a> -->
                 </div>
             </div>
-        </article>
+        </art>
     </div>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>

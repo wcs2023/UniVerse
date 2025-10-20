@@ -42,18 +42,23 @@
             </div>
         </div>
 
-        <!-- Profile Navigation -->
+         <!-- Profile Navigation -->
         <div class="profile-nav">
-            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item">
-                Profile Overview
+            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item ">
+            Profile Overview
             </a>
             <a href="<?= BASE_URL ?>/uachievements" class="nav-item">
-                Achievements
+            Achievements
+            </a>
+            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            Bookmarked Articles
             </a>
             <a href="<?= BASE_URL ?>/usettings" class="nav-item active">
-                Settings
+            Settings
             </a>
         </div>
+
+
 
         <!-- Success/Error Messages -->
         <?php if (isset($data['success'])): ?>

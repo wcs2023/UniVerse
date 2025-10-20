@@ -1,10 +1,4 @@
 <?php 
-// Check if APPROOT is defined, if not define it for direct access
-if (!defined('APPROOT')) {
-    define('APPROOT', dirname(dirname(dirname(__FILE__))));
-    define('URLROOT', 'http://localhost/UniVerse/public');
-}
-
 // Include navigation if it exists
 $navFile = APPROOT . '/views/actors/undergraduate/Unavigation.view.php';
 if (file_exists($navFile)) {
@@ -374,7 +368,7 @@ if (file_exists($navFile)) {
     <div class="container">
         <!-- Search Section -->
         <div class="search-section">
-            <form action="<?= URLROOT ?>/mentorships/exploreMentors" method="GET" class="search-bar">
+            <form action="<?= BASE_URL ?>/mentorships/exploreMentors" method="GET" class="search-bar">
                 <div class="search-input-wrapper">
                     <span class="search-icon">🔍</span>
                     <input 
@@ -414,7 +408,7 @@ if (file_exists($navFile)) {
         <?php if (isset($data['mentors']) && count($data['mentors']) > 0): ?>
             <div class="mentors-grid">
                 <?php foreach ($data['mentors'] as $index => $mentor): ?>
-                    <div class="mentor-card" style="animation-delay: <?= $index * 0.05 ?>s" onclick="window.location.href='<?= URLROOT ?>/mentorships/viewProfile/<?= $mentor['mentor_id'] ?>'"
+                    <div class="mentor-card" style="animation-delay: <?= $index * 0.05 ?>s" onclick="window.location.href='<?= BASE_URL ?>/mentorships/viewProfile/<?= $mentor['mentor_id'] ?>'">
                         <img 
                             src="<?= !empty($mentor['profile_picture_url']) ? htmlspecialchars($mentor['profile_picture_url']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>" 
                             alt="<?= htmlspecialchars($mentor['first_name'] . ' ' . $mentor['last_name']) ?>" 

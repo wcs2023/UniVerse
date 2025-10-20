@@ -6,13 +6,17 @@ if (!defined('APPROOT')) {
 if (!defined('URLROOT')) {
     define('URLROOT', 'http://localhost/UniVerse/public');
 }
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://localhost/UniVerse/public');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Article - UniVerse</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Create New Article - UniVerse</title>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <style>
         * {
             margin: 0;
@@ -62,23 +66,6 @@ if (!defined('URLROOT')) {
             font-size: 2rem;
             font-weight: 700;
             color: var(--text-dark);
-        }
-
-        .status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .status-draft {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-published {
-            background: #d1fae5;
-            color: #065f46;
         }
 
         .btn-back {
@@ -151,7 +138,6 @@ if (!defined('URLROOT')) {
             margin-top: 2.5rem;
             padding-top: 1.5rem;
             border-top: 2px solid var(--bg-light);
-            flex-wrap: wrap;
         }
 
         .btn {
@@ -198,16 +184,6 @@ if (!defined('URLROOT')) {
         .btn-outline:hover {
             background: var(--bg-light);
             border-color: var(--text-light);
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-            margin-left: auto;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
         }
 
         .btn:disabled {
@@ -263,17 +239,13 @@ if (!defined('URLROOT')) {
             .btn {
                 justify-content: center;
             }
-
-            .btn-danger {
-                margin-left: 0;
-            }
         }
     </style>
 </head>
 <body>
     <?php 
     // Include navigation
-    $navFile = APPROOT . '/views/actors/alumini/Anavbar.php';
+    $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
@@ -282,31 +254,20 @@ if (!defined('URLROOT')) {
     <div class="container">
         <div class="form-card">
             <div class="form-header">
-                <div>
-                    <h1 class="form-title">✏️ Edit Article</h1>
-                    <?php if (isset($data['article'])): ?>
-                        <span class="status-badge status-<?= $data['article']['status'] ?>">
-                            <?= ucfirst($data['article']['status']) ?>
-                        </span>
-                    <?php endif; ?>
-                </div>
-                <a href="<?= URLROOT ?>/articles" class="btn-back">
+                <h1 class="form-title">✍️ Create New Article</h1>
+                <a href="<?= BASE_URL ?>/aarticles" class="btn-back">
                     ← Back to Articles
                 </a>
             </div>
 
             <div id="alert-success" class="alert alert-success">
-                Article updated successfully!
+                Article saved successfully!
             </div>
             <div id="alert-error" class="alert alert-error">
-                Error updating article. Please try again.
+                Error saving article. Please try again.
             </div>
 
-            <?php if (isset($data['article'])): ?>
             <form id="article-form">
-                <input type="hidden" id="article_id" value="<?= $data['article']['article_id'] ?>">
-                <input type="hidden" id="current_status" value="<?= $data['article']['status'] ?>">
-
                 <div class="form-group">
                     <label for="title" class="form-label">
                         Article Title <span class="required">*</span>
@@ -317,7 +278,6 @@ if (!defined('URLROOT')) {
                         name="title" 
                         class="form-input"
                         placeholder="Enter an engaging title for your article"
-                        value="<?= htmlspecialchars($data['article']['title']) ?>"
                         required
                         maxlength="255"
                     >
@@ -330,16 +290,16 @@ if (!defined('URLROOT')) {
                     <label for="category" class="form-label">Category</label>
                     <select id="category" name="category" class="form-select">
                         <option value="">Select a category (optional)</option>
-                        <option value="Career Advice" <?= $data['article']['category'] == 'Career Advice' ? 'selected' : '' ?>>Career Advice</option>
-                        <option value="Industry Insights" <?= $data['article']['category'] == 'Industry Insights' ? 'selected' : '' ?>>Industry Insights</option>
-                        <option value="Success Stories" <?= $data['article']['category'] == 'Success Stories' ? 'selected' : '' ?>>Success Stories</option>
-                        <option value="Technical Skills" <?= $data['article']['category'] == 'Technical Skills' ? 'selected' : '' ?>>Technical Skills</option>
-                        <option value="Interview Tips" <?= $data['article']['category'] == 'Interview Tips' ? 'selected' : '' ?>>Interview Tips</option>
-                        <option value="Networking" <?= $data['article']['category'] == 'Networking' ? 'selected' : '' ?>>Networking</option>
-                        <option value="Professional Development" <?= $data['article']['category'] == 'Professional Development' ? 'selected' : '' ?>>Professional Development</option>
-                        <option value="Work-Life Balance" <?= $data['article']['category'] == 'Work-Life Balance' ? 'selected' : '' ?>>Work-Life Balance</option>
-                        <option value="Entrepreneurship" <?= $data['article']['category'] == 'Entrepreneurship' ? 'selected' : '' ?>>Entrepreneurship</option>
-                        <option value="Other" <?= $data['article']['category'] == 'Other' ? 'selected' : '' ?>>Other</option>
+                        <option value="Career Advice">Career Advice</option>
+                        <option value="Industry Insights">Industry Insights</option>
+                        <option value="Success Stories">Success Stories</option>
+                        <option value="Technical Skills">Technical Skills</option>
+                        <option value="Interview Tips">Interview Tips</option>
+                        <option value="Networking">Networking</option>
+                        <option value="Professional Development">Professional Development</option>
+                        <option value="Work-Life Balance">Work-Life Balance</option>
+                        <option value="Entrepreneurship">Entrepreneurship</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
@@ -351,7 +311,6 @@ if (!defined('URLROOT')) {
                         name="tags" 
                         class="form-input"
                         placeholder="e.g., career, technology, interview, tips"
-                        value="<?= htmlspecialchars($data['article']['tags'] ?? '') ?>"
                     >
                     <div class="form-hint">
                         Separate tags with commas. Tags help students find your article.
@@ -366,67 +325,46 @@ if (!defined('URLROOT')) {
                         id="content" 
                         name="content" 
                         class="form-textarea"
-                        placeholder="Share your knowledge and experience..."
+                        placeholder="Share your knowledge and experience... Write your article content here."
                         required
-                    ><?= htmlspecialchars($data['article']['content']) ?></textarea>
+                    ></textarea>
                     <div class="char-count">
                         <span id="content-count">0</span> characters
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <?php if ($data['article']['status'] == 'draft'): ?>
-                        <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                            📝 Publish Article
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                            💾 Update Draft
-                        </button>
-                    <?php else: ?>
-                        <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                            💾 Save Changes
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                            ⏸️ Unpublish (Move to Drafts)
-                        </button>
-                    <?php endif; ?>
-                    <a href="<?= URLROOT ?>/articles" class="btn btn-outline">
+                    <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
+                        📝 Publish Article
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
+                        💾 Save as Draft
+                    </button>
+                    <a href="<?= BASE_URL ?>/aarticles" class="btn btn-outline">
                         Cancel
                     </a>
-                    <button type="button" class="btn btn-danger" onclick="deleteArticle()">
-                        🗑️ Delete
-                    </button>
                 </div>
             </form>
-            <?php else: ?>
-                <div class="alert alert-error" style="display: block;">
-                    Article not found or you don't have permission to edit it.
-                </div>
-            <?php endif; ?>
         </div>
     </div>
 
     <script>
-        // Initialize character counters
+        // Character counters
         const titleInput = document.getElementById('title');
         const contentInput = document.getElementById('content');
         const titleCount = document.getElementById('title-count');
         const contentCount = document.getElementById('content-count');
 
-        function updateCounts() {
-            if (titleInput) titleCount.textContent = titleInput.value.length;
-            if (contentInput) contentCount.textContent = contentInput.value.length;
-        }
+        titleInput.addEventListener('input', function() {
+            titleCount.textContent = this.value.length;
+        });
 
-        // Set initial counts
-        updateCounts();
-
-        titleInput?.addEventListener('input', updateCounts);
-        contentInput?.addEventListener('input', updateCounts);
+        contentInput.addEventListener('input', function() {
+            contentCount.textContent = this.value.length;
+        });
 
         // Save article function
         async function saveArticle(status) {
-            const articleId = document.getElementById('article_id').value;
             const title = document.getElementById('title').value.trim();
             const content = document.getElementById('content').value.trim();
             const category = document.getElementById('category').value;
@@ -439,7 +377,7 @@ if (!defined('URLROOT')) {
                 return;
             }
 
-            if (title.length < 10) {
+            if (title.length < 1) {
                 showAlert('error', 'Title must be at least 10 characters long');
                 document.getElementById('title').focus();
                 return;
@@ -451,7 +389,7 @@ if (!defined('URLROOT')) {
                 return;
             }
 
-            if (content.length < 100) {
+            if (content.length < 10) {
                 showAlert('error', 'Article content must be at least 100 characters long');
                 document.getElementById('content').focus();
                 return;
@@ -462,7 +400,6 @@ if (!defined('URLROOT')) {
             buttons.forEach(btn => btn.disabled = true);
 
             const data = {
-                article_id: articleId,
                 title: title,
                 content: content,
                 category: category,
@@ -471,7 +408,7 @@ if (!defined('URLROOT')) {
             };
 
             try {
-                const response = await fetch('<?= URLROOT ?>/articles/save', {
+                const response = await fetch('<?= BASE_URL ?>/Aarticles/save', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -482,52 +419,18 @@ if (!defined('URLROOT')) {
                 const result = await response.json();
 
                 if (result.success) {
-                    showAlert('success', result.message || 'Article updated successfully!');
+                    showAlert('success', result.message || 'Article saved successfully!');
                     setTimeout(() => {
-                        window.location.href = '<?= URLROOT ?>/articles';
+                        window.location.href = '<?= BASE_URL ?>/aarticles';
                     }, 1500);
                 } else {
-                    showAlert('error', result.message || 'Error updating article. Please try again.');
+                    showAlert('error', result.message || 'Error saving article. Please try again.');
                     buttons.forEach(btn => btn.disabled = false);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showAlert('error', 'Network error. Please check your connection and try again.');
+                showAlert('error', 'Error. Please check your connection and try again.');
                 buttons.forEach(btn => btn.disabled = false);
-            }
-        }
-
-        // Delete article function
-        async function deleteArticle() {
-            const articleId = document.getElementById('article_id').value;
-            const title = document.getElementById('title').value;
-
-            if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch('<?= URLROOT ?>/articles/delete/' + articleId, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ article_id: articleId })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showAlert('success', 'Article deleted successfully!');
-                    setTimeout(() => {
-                        window.location.href = '<?= URLROOT ?>/articles';
-                    }, 1500);
-                } else {
-                    showAlert('error', result.message || 'Error deleting article. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('error', 'Network error. Please check your connection and try again.');
             }
         }
 
@@ -550,14 +453,17 @@ if (!defined('URLROOT')) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            document.getElementById('alert-success').style.display = 'none';
+            document.getElementById('alert-error').style.display = 'none';
+        }, 5000);
     </script>
 
     <?php 
     // Include footer
-    $footerFile = APPROOT . '/views/actors/alumini/Afooter.php';
-    if (file_exists($footerFile)) {
-        include $footerFile;
-    }
+    include __DIR__ . '/../../layout/footer.php';
     ?>
 </body>
 </html>

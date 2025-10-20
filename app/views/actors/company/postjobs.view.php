@@ -7,44 +7,8 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/company.css">
 </head>
 <body>
-    <header class="company-header">
-        <a href="<?= BASE_URL ?>/company/landing" class="company-logo">UniVerse</a>
-        <nav class="company-nav">
-            <a href="<?= BASE_URL ?>/company/landing">Dashboard</a>
-            <a href="<?= BASE_URL ?>/company/managejobs">Manage Jobs</a>
-            <a href="<?= BASE_URL ?>/company/postjobs" class="active">Post Jobs</a>
-            <a href="<?= BASE_URL ?>/company/applications">View Applications</a>
-        </nav>
-        
-        <!-- User Profile Dropdown -->
-        <div class="user-profile-dropdown">
-            <div class="profile-trigger">
-                <div class="profile-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
-                </div>
-                <span class="profile-name"><?= $user->firstname ?? 'User' ?></span>
-                <div class="dropdown-arrow">▼</div>
-            </div>
-            
-            <div class="dropdown-menu">
-                <a href="<?= BASE_URL ?>/company/profile" class="dropdown-item">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    Update Profile
-                </a>
-                <a href="<?= BASE_URL ?>/login/logout" class="dropdown-item logout">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    Logout
-                </a>
-            </div>
-        </div>
-    </header>
 
+<?php require_once __DIR__ . '/companyHeader.view.php'; ?>
     <main class="main-content">
         <div class="card">
             <div class="card-header">
@@ -52,16 +16,16 @@
                 <p class="card-subtitle">Fill in the details below to create a new job listing</p>
             </div>
             
-            <form action="/company/postjobs/create" method="POST">
+            <form action="<?= BASE_URL ?>/company/postjobs" method="POST">
                 <div class="form-group">
-                    <label for="jobTitle">Job Title*</label>
-                    <input type="text" id="jobTitle" name="jobTitle" class="form-control" required>
+                    <label for="title">Job Title*</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
                     <div class="form-group">
-                        <label for="jobType">Job Type*</label>
-                        <select id="jobType" name="jobType" class="form-control" required>
+                        <label for="job_type">Job Type*</label>
+                        <select id="job_type" name="job_type" class="form-control" required>
                             <option value="">Select Job Type</option>
                             <option value="full-time">Full Time</option>
                             <option value="part-time">Part Time</option>
@@ -78,13 +42,31 @@
 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
                     <div class="form-group">
-                        <label for="salary">Salary Range</label>
-                        <input type="text" id="salary" name="salary" class="form-control" placeholder="e.g., $50,000 - $70,000">
+                        <label for="experience_level">Experience Level*</label>
+                        <select id="experience_level" name="experience_level" class="form-control" required>
+                            <option value="">Select Level</option>
+                            <option value="entry">Entry Level</option>
+                            <option value="mid">Mid Level</option>
+                            <option value="senior">Senior Level</option>
+                            <option value="lead">Lead</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="deadline">Application Deadline*</label>
-                        <input type="date" id="deadline" name="deadline" class="form-control" required>
+                        <label for="application_deadline">Application Deadline*</label>
+                        <input type="date" id="application_deadline" name="application_deadline" class="form-control" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="salary_min">Minimum Salary (LKR)</label>
+                        <input type="number" id="salary_min" name="salary_min" class="form-control" placeholder="e.g., 50000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="salary_max">Maximum Salary (LKR)</label>
+                        <input type="number" id="salary_max" name="salary_max" class="form-control" placeholder="e.g., 100000">
                     </div>
                 </div>
 
@@ -99,17 +81,48 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="responsibilities">Responsibilities*</label>
+                    <textarea id="responsibilities" name="responsibilities" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
                     <label for="benefits">Benefits</label>
                     <textarea id="benefits" name="benefits" class="form-control" rows="4"></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label for="work_arrangement">Work Arrangement*</label>
+                    <select id="work_arrangement" name="work_arrangement" class="form-control" required>
+                        <option value="onsite">On-site</option>
+                        <option value="remote">Remote</option>
+                        <option value="hybrid">Hybrid</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="contact_email">Contact Email</label>
+                        <input type="email" id="contact_email" name="contact_email" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact_phone">Contact Phone</label>
+                        <input type="tel" id="contact_phone" name="contact_phone" class="form-control">
+                    </div>
+                </div>
+
+                <input type="hidden" name="status" value="active">
+
                 <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                    <button type="button" class="btn btn-secondary">Save as Draft</button>
+                    <button type="button" class="btn btn-secondary" onclick="saveDraft()">Save as Draft</button>
                     <button type="submit" class="btn btn-primary">Post Job</button>
                 </div>
             </form>
         </div>
     </main>
+<?php require_once __DIR__ . '/../../layout/footer.php'; ?>
+</body>
+</html>
 
     <script>
         // Profile dropdown functionality
@@ -132,6 +145,9 @@
                 e.stopPropagation();
             });
         });
+
+        function saveDraft() {
+            document.querySelector('input[name="status"]').value = 'draft';
+            document.querySelector('form').submit();
+        }
     </script>
-</body>
-</html>

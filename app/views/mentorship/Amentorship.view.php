@@ -6,6 +6,9 @@ if (!defined('APPROOT')) {
 if (!defined('URLROOT')) {
     define('URLROOT', 'http://localhost/UniVerse/public');
 }
+if (!defined('BASE_URL')) {
+    define('BASE_URL', 'http://localhost/UniVerse/public');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -403,7 +406,7 @@ if (!defined('URLROOT')) {
 <body>
     <?php 
     // Include navigation
-    $navFile = APPROOT . '/views/actors/alumini/Anavbar.php';
+    $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
@@ -541,7 +544,7 @@ if (!defined('URLROOT')) {
 
         function declineRequest(requestId) {
             if (confirm('Are you sure you want to decline this request?')) {
-                fetch('<?= URLROOT ?>/mentorships/declineRequest', {
+                fetch('<?= BASE_URL ?>/amentorships/declineRequest', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -624,7 +627,7 @@ if (!defined('URLROOT')) {
 
             const requestId = document.getElementById('requestId').value;
             
-            fetch('<?= URLROOT ?>/mentorships/proposeTimeSlots', {
+            fetch('<?= BASE_URL ?>/amentorships/proposeTimeSlots', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -659,10 +662,8 @@ if (!defined('URLROOT')) {
 
     <?php 
     // Include footer
-    $footerFile = APPROOT . '/views/actors/alumini/Afooter.php';
-    if (file_exists($footerFile)) {
-        include $footerFile;
-    }
+    include __DIR__ . '/../layout/footer.php';
     ?>
 </body>
 </html>
+
