@@ -55,8 +55,10 @@ class Login extends Controller {
                         header('Location: ' . BASE_URL . '/alumni');
                         break;
                     case 'undergraduate':
-                    case 'student':
                         header('Location: ' . BASE_URL . '/uhome');
+                        break;
+                    case 'school_leaver':
+                        header('Location: ' . BASE_URL . '/schoolleaver');
                         break;
                     case 'company':
                         header('Location: ' . BASE_URL . '/company');
