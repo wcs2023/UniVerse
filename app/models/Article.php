@@ -1,193 +1,227 @@
 <?php
 
-class Article extends Model 
+class Article
 {
+    private $db;
+    
     public function __construct()
     {
-        parent::__construct();
+        $this->db = Database::getInstance()->getConnection();
     }
-
+    
     /**
-     * Get all published articles
+     * Get articles by author and status
      */
-    public function getAllArticles($limit = null)
+    public function getArticlesByStatus($authorId, $status)
     {
-        $query = "SELECT a.*, u.first_name, u.last_name 
-                  FROM articles a
-                  LEFT JOIN users u ON a.user_id = u.user_id
-                  WHERE a.status = 'published'
-                  ORDER BY a.created_at DESC";
-        
-        if ($limit) {
-            $query .= " LIMIT :limit";
-            return $this->fetchAll($query, ['limit' => $limit]);
+        try {
+            $query = "SELECT 
+                        a.article_id,
+                        a.title,
+                        a.content,
+                        a.status,
+                        a.category,
+                        a.tags,
+                        a.views,
+                        a.likes,
+                        a.created_at,
+                        a.updated_at,
+                        a.published_at
+                      FROM Articles a
+                      WHERE a.author_id = ?
+                      AND a.status = ?
+                      ORDER BY a.updated_at DESC";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$authorId, $status]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            error_log("Error getting articles by status: " . $e->getMessage());
+            return [];
         }
-        
-        return $this->fetchAll($query);
     }
-
+    
     /**
      * Get article by ID
      */
     public function getArticleById($articleId)
     {
-        $query = "SELECT a.*, u.first_name, u.last_name, u.email
-                  FROM articles a
-                  LEFT JOIN users u ON a.user_id = u.user_id
-                  WHERE a.article_id = :article_id";
-        
-        return $this->fetch($query, ['article_id' => $articleId]);
-    }
-
-    /**
-     * Get articles by category
-     */
-    public function getArticlesByCategory($category, $limit = null)
-    {
-        $query = "SELECT a.*, u.first_name, u.last_name 
-                  FROM articles a
-                  LEFT JOIN users u ON a.user_id = u.user_id
-                  WHERE a.category = :category AND a.status = 'published'
-                  ORDER BY a.created_at DESC";
-        
-        if ($limit) {
-            $query .= " LIMIT :limit";
-            return $this->fetchAll($query, ['category' => $category, 'limit' => $limit]);
+        try {
+            $query = "SELECT 
+                        a.*,
+                        u.first_name,
+                        u.last_name,
+                        u.profile_picture_url,
+                        CONCAT(u.first_name, ' ', u.last_name) as author_name
+                      FROM Articles a
+                      JOIN Users u ON a.author_id = u.user_id
+                      WHERE a.article_id = ?";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$articleId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            error_log("Error getting article by ID: " . $e->getMessage());
+            return null;
         }
-        
-        return $this->fetchAll($query, ['category' => $category]);
     }
-
+    
     /**
-     * Get articles by author/user
+     * Create a new article
      */
-    public function getArticlesByUser($userId, $limit = null)
+    public function createArticle($authorId, $title, $content, $status = 'draft', $category = '', $tags = '')
     {
-        $query = "SELECT a.*, u.first_name, u.last_name 
-                  FROM articles a
-                  LEFT JOIN users u ON a.user_id = u.user_id
-                  WHERE a.user_id = :user_id
-                  ORDER BY a.created_at DESC";
-        
-        if ($limit) {
-            $query .= " LIMIT :limit";
-            return $this->fetchAll($query, ['user_id' => $userId, 'limit' => $limit]);
+        try {
+            $publishedAt = ($status === 'published') ? date('Y-m-d H:i:s') : null;
+            
+            $query = "INSERT INTO Articles 
+                      (author_id, title, content, status, category, tags, published_at, created_at, updated_at)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$authorId, $title, $content, $status, $category, $tags, $publishedAt]);
+            
+            return $this->db->lastInsertId();
+        } catch(PDOException $e) {
+            error_log("Error creating article: " . $e->getMessage());
+            return false;
         }
-        
-        return $this->fetchAll($query, ['user_id' => $userId]);
     }
-
+    
     /**
-     * Increment article views
+     * Update an existing article
      */
-    public function incrementViews($articleId)
+    public function updateArticle($articleId, $title, $content, $status, $category = '', $tags = '')
     {
-        $query = "UPDATE articles SET views = views + 1 WHERE article_id = :article_id";
-        return $this->query($query, ['article_id' => $articleId]);
+        try {
+            // Get current article to check if status changed to published
+            $currentArticle = $this->getArticleById($articleId);
+            $publishedAt = null;
+            
+            if ($status === 'published' && $currentArticle['status'] !== 'published') {
+                // First time publishing
+                $publishedAt = date('Y-m-d H:i:s');
+            } elseif ($status === 'published' && $currentArticle['published_at']) {
+                // Already published, keep original date
+                $publishedAt = $currentArticle['published_at'];
+            }
+            
+            $query = "UPDATE Articles 
+                      SET title = ?,
+                          content = ?,
+                          status = ?,
+                          category = ?,
+                          tags = ?,
+                          published_at = ?,
+                          updated_at = NOW()
+                      WHERE article_id = ?";
+            
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$title, $content, $status, $category, $tags, $publishedAt, $articleId]);
+        } catch(PDOException $e) {
+            error_log("Error updating article: " . $e->getMessage());
+            return false;
+        }
     }
-
+    
     /**
-     * Create new article
-     */
-    public function createArticle($data)
-    {
-        $query = "INSERT INTO articles (title, slug, excerpt, content, category, user_id, featured_image, status)
-                  VALUES (:title, :slug, :excerpt, :content, :category, :user_id, :featured_image, :status)";
-        
-        return $this->query($query, [
-            'title' => $data['title'],
-            'slug' => $data['slug'],
-            'excerpt' => $data['excerpt'],
-            'content' => $data['content'],
-            'category' => $data['category'],
-            'user_id' => $data['user_id'],
-            'featured_image' => $data['featured_image'] ?? null,
-            'status' => $data['status'] ?? 'draft'
-        ]);
-    }
-
-    /**
-     * Update article
-     */
-    public function updateArticle($articleId, $data)
-    {
-        $query = "UPDATE articles 
-                  SET title = :title, slug = :slug, excerpt = :excerpt, content = :content,
-                      category = :category, featured_image = :featured_image, status = :status
-                  WHERE article_id = :article_id";
-        
-        return $this->query($query, [
-            'article_id' => $articleId,
-            'title' => $data['title'],
-            'slug' => $data['slug'],
-            'excerpt' => $data['excerpt'],
-            'content' => $data['content'],
-            'category' => $data['category'],
-            'featured_image' => $data['featured_image'] ?? null,
-            'status' => $data['status'] ?? 'draft'
-        ]);
-    }
-
-    /**
-     * Delete article
+     * Delete an article
      */
     public function deleteArticle($articleId)
     {
-        $query = "DELETE FROM articles WHERE article_id = :article_id";
-        return $this->query($query, ['article_id' => $articleId]);
-    }
-
-    /**
-     * Get article categories with count
-     */
-    public function getCategoriesWithCount()
-    {
-        $query = "SELECT category, COUNT(*) as count 
-                  FROM articles 
-                  WHERE status = 'published'
-                  GROUP BY category
-                  ORDER BY count DESC";
-        
-        $result = $this->fetchAll($query);
-        
-        // Debug log
-        error_log("Categories query result: " . print_r($result, true));
-        
-        return $result;
-    }
-
-    /**
-     * Get all unique categories
-     */
-    public function getCategories()
-    {
-        $query = "SELECT DISTINCT category 
-                  FROM articles 
-                  WHERE status = 'published'
-                  ORDER BY category ASC";
-        
-        return $this->fetchAll($query);
-    }
-
-    /**
-     * Search articles
-     */
-    public function searchArticles($searchTerm, $limit = null)
-    {
-        $query = "SELECT a.*, u.first_name, u.last_name 
-                  FROM articles a
-                  LEFT JOIN users u ON a.user_id = u.user_id
-                  WHERE a.status = 'published' 
-                  AND (a.title LIKE :search OR a.excerpt LIKE :search OR a.content LIKE :search)
-                  ORDER BY a.created_at DESC";
-        
-        $searchParam = '%' . $searchTerm . '%';
-        
-        if ($limit) {
-            $query .= " LIMIT :limit";
-            return $this->fetchAll($query, ['search' => $searchParam, 'limit' => $limit]);
+        try {
+            $query = "DELETE FROM Articles WHERE article_id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$articleId]);
+        } catch(PDOException $e) {
+            error_log("Error deleting article: " . $e->getMessage());
+            return false;
         }
-        
-        return $this->fetchAll($query, ['search' => $searchParam]);
+    }
+    
+    /**
+     * Increment article view count
+     */
+    public function incrementViews($articleId)
+    {
+        try {
+            $query = "UPDATE Articles SET views = views + 1 WHERE article_id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$articleId]);
+        } catch(PDOException $e) {
+            error_log("Error incrementing views: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Increment article like count
+     */
+    public function incrementLikes($articleId)
+    {
+        try {
+            $query = "UPDATE Articles SET likes = likes + 1 WHERE article_id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$articleId]);
+        } catch(PDOException $e) {
+            error_log("Error incrementing likes: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Get all published articles (for public viewing)
+     */
+    public function getAllPublishedArticles($limit = 10, $offset = 0)
+    {
+        try {
+            $query = "SELECT 
+                        a.*,
+                        u.first_name,
+                        u.last_name,
+                        u.profile_picture_url,
+                        CONCAT(u.first_name, ' ', u.last_name) as author_name
+                      FROM Articles a
+                      JOIN Users u ON a.author_id = u.user_id
+                      WHERE a.status = 'published'
+                      ORDER BY a.published_at DESC
+                      LIMIT ? OFFSET ?";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$limit, $offset]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            error_log("Error getting published articles: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Search articles by keyword
+     */
+    public function searchArticles($keyword, $limit = 10)
+    {
+        try {
+            $searchTerm = "%$keyword%";
+            
+            $query = "SELECT 
+                        a.*,
+                        u.first_name,
+                        u.last_name,
+                        CONCAT(u.first_name, ' ', u.last_name) as author_name
+                      FROM Articles a
+                      JOIN Users u ON a.author_id = u.user_id
+                      WHERE a.status = 'published'
+                      AND (a.title LIKE ? OR a.content LIKE ? OR a.tags LIKE ?)
+                      ORDER BY a.published_at DESC
+                      LIMIT ?";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$searchTerm, $searchTerm, $searchTerm, $limit]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            error_log("Error searching articles: " . $e->getMessage());
+            return [];
+        }
     }
 }
