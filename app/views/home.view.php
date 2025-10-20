@@ -1,146 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniVerse - Bridge Your Future</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" type="image/png" href="assets/images/U.png">
-</head>
-<body>
-    <!-- Scroll Progress Bar -->
-    <div class="scroll-progress" id="scroll-progress"></div>
-
-    <!-- Header (included) -->
-    <?php include __DIR__ . '/layout/nav_home.php'; ?>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniVerse - Empowering Your Career Journey</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/home.css">
+    
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">Logo</div>
+      <nav class="nav">
+        <a href="#">For Students</a>
+        <a href="#">Resources</a>
+        <div class="dropdown">
+          <a href="#" class="dropbtn">Contact Us <span>&#9660;</span></a>
+          <div class="dropdown-content">
+            <a href="#">Email</a>
+            <a href="#">Phone</a>
+            <a href="#">Office</a>
+          </div>
+        </div>
+      </nav>
+      <button class="join-btn" >
+        <a href="/UniVerse/public/register">Register</a>
+      </button>
+      <button class="join-btn" >
+        <a href="/UniVerse/public/login">Login</a>
+      </button>
+    </header>
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Bridge the Gap Between <span class="highlight">Students</span> and
-                    <span class="highlight">Industry</span>
-                </h1>
-                <p class="hero-description">
-                    UniVerse empowers Sri Lankan students with career guidance, degree recommendations, internship
-                    opportunities, and industry connections to build successful careers.
-                </p>
-                <div class="hero-buttons">
-                <a href="registration" class="btn btn-primary btn-large">Get Started</a>
-                    <button class="btn btn-secondary btn-large" id="learn-more-btn">Learn More</button>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="hero-main-image">
-                    <img src="assets/images/heroImage.jpg" alt="Students connecting with industry professionals" class="main-hero-img">
-                </div>
-            </div>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Empowering Your<br />Career Journey Starts<br />Here</h1>
+        <p>
+          Discover the right path for your future with personalized career
+          guidance and opportunities. Join our community to connect with
+          mentors, explore internships, and build your professional profile.
+        </p>
+        <div class="hero-buttons">
+          <button class="primary" onclick="window.location.href='signup.html'">
+            Get Started
+          </button>
+          <button class="secondary">Learn More</button>
         </div>
+      </div>
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title fade-in">Empowering Your Journey</h2>
-            <div class="features-grid">
-                <div class="feature-card fade-in stagger-1">
-                    <div class="feature-icon">📊</div>
-                    <h3>Degree Recommendations</h3>
-                    <p>Get personalized degree suggestions based on your Z-score, stream, and career preferences.</p>
-                </div>
-                <div class="feature-card fade-in stagger-2">
-                    <div class="feature-icon">💡</div>
-                    <h3>Career Guidance Hub</h3>
-                    <p>Access expert articles, discussion forums, and industry insights to make informed career decisions.</p>
-                </div>
-                <div class="feature-card fade-in stagger-3">
-                    <div class="feature-icon">🔗</div>
-                    <h3>Industry Connections</h3>
-                    <p>Connect with internships, job opportunities, and companies tailored to your field of study.</p>
-                </div>
-                <div class="feature-card fade-in stagger-4">
-                    <div class="feature-icon">👥</div>
-                    <h3>Mentorship Network</h3>
-                    <p>Get guidance from experienced alumni and industry professionals to accelerate your growth.</p>
-                </div>
-                <div class="feature-card fade-in stagger-5">
-                    <div class="feature-icon">📱</div>
-                    <h3>Portfolio Building</h3>
-                    <p>Showcase your achievements, projects, and skills to increase industry visibility.</p>
-                </div>
-                <div class="feature-card fade-in stagger-6">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Targeted Opportunities</h3>
-                    <p>Discover internships and jobs specifically matched to your skills and career goals.</p>
-                </div>
-            </div>
+    <section class="features">
+      <h2>Unlock Your Future with UniVerse</h2>
+      <p class="features-desc">
+        At UniVerse, we provide comprehensive support for students navigating
+        their educational and career paths. Our platform connects you with the
+        resources you need to make informed decisions about your future.
+      </p>
+      <div class="features-list">
+        <div class="feature">
+          <div class="feature-icon">&#128230;</div>
+          <h3>Guided Degree Selection<br />Tailored to You</h3>
+          <p>
+            Receive personalized degree recommendations based on your strengths
+            and preferences.
+          </p>
         </div>
+        <div class="feature">
+          <div class="feature-icon">&#128218;</div>
+          <h3>Career Advice from<br />Industry Experts</h3>
+          <p>
+            Access valuable insights and articles to guide your career choices.
+          </p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">&#128188;</div>
+          <h3>Internships and Job<br />Opportunities Await</h3>
+          <p>
+            Explore tailored internship and job listings to kickstart your
+            career.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <!-- Target Audience Section -->
-    <section class="audience" id="audience">
-        <div class="container">
-            <h2 class="section-title fade-in">Who We Serve</h2>
-            <div class="audience-grid">
-                <div class="audience-card slide-in-left stagger-1">
-                    <div class="audience-icon">🎓</div>
-                    <h3>School Leavers</h3>
-                    <p>Get degree recommendations based on your A/L results and explore career paths that align with your interests.</p>
-                    <ul>
-                        <li>Z-score based degree suggestions</li>
-                        <li>Career exploration resources</li>
-                        <li>University guidance</li>
-                    </ul>
-                </div>
-                <div class="audience-card slide-in-right stagger-2">
-                    <div class="audience-icon">📚</div>
-                    <h3>Undergraduates</h3>
-                    <p>Build your professional network, find internships, and prepare for your dream career with expert guidance.</p>
-                    <ul>
-                        <li>Internship & job opportunities</li>
-                        <li>Mentorship programs</li>
-                        <li>Portfolio building tools</li>
-                    </ul>
-                </div>
-                <div class="audience-card slide-in-left stagger-3">
-                    <div class="audience-icon">🏢</div>
-                    <h3>Companies</h3>
-                    <p>Connect with talented students and graduates to find the perfect candidates for your organization.</p>
-                    <ul>
-                        <li>Post job & internship openings</li>
-                        <li>Access student profiles</li>
-                        <li>Streamlined hiring process</li>
-                    </ul>
-                </div>
-                <div class="audience-card slide-in-right stagger-4">
-                    <div class="audience-icon">🌟</div>
-                    <h3>Alumni</h3>
-                    <p>Give back to the community by mentoring students and sharing your professional experiences.</p>
-                    <ul>
-                        <li>Mentorship opportunities</li>
-                        <li>Knowledge sharing platform</li>
-                        <li>Professional networking</li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Contact Section -->
+    <section class="contact">
+      <div class="contact-methods">
+        <div class="contact-item">
+          <div class="contact-icon">&#9993;</div>
+          <h4>Email</h4>
+          <p>For support and inquiries, reach out to us anytime.</p>
+          <a href="mailto:support@universe.com">support@universe.com</a>
         </div>
+        <div class="contact-item">
+          <div class="contact-icon">&#128222;</div>
+          <h4>Phone</h4>
+          <p>Call us for immediate assistance or questions.</p>
+          <a href="tel:+15551234567">+1 (555) 123-4567</a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">&#128205;</div>
+          <h4>Office</h4>
+          <p>Visit us at our headquarters for more information.</p>
+          <address>456 Example Ave, Colombo 07, 10000 LK</address>
+        </div>
+      </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content scale-in">
-                <h1>Ready to Bridge Your Future?</h1>
-                <p>Join thousands of students and professionals already using UniVerse to build successful careers.</p>
-                <div class="cta-buttons">
-                    <a href="registration" class="btn btn-primary btn-large">Join with us</a>
-                    <!-- <a href="register.html" class="btn btn-outline btn-large">Join as Company</a> -->
-                </div>
-            </div>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-logo">Logo</div>
+        <div class="footer-links">
+          <a href="#">Blog Posts</a>
+          <a href="#">Career Tips</a>
+          <a href="#">Events</a>
+          <a href="#">About Us</a>
+          <a href="#">Contact Us</a>
         </div>
-    </section>
-    <?php include __DIR__ . '/layout/footer.php'; ?>
-    <script src="js/main.js"></script>
-</body>
+        <div class="footer-social">
+          <a href="#"><img src="https://img.icons8.com/ios-filled/20/000000/facebook-new.png" alt="Facebook"/></a>
+          <a href="#"><img src="https://img.icons8.com/ios-filled/20/000000/instagram-new.png" alt="Instagram"/></a>
+          <a href="#"><img src="https://img.icons8.com/ios-filled/20/000000/linkedin.png" alt="LinkedIn"/></a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 UniVerse. All rights reserved.</span>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Settings</a>
+      </div>
+    </footer>
+  </body>
 </html>

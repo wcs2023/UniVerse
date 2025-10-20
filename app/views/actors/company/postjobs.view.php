@@ -48,14 +48,25 @@
     <main class="main-content">
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">Post a New Job</h2>
-                <p class="card-subtitle">Fill in the details below to create a new job listing</p>
+                    <h2 class="card-title"><?= isset($data['mode']) && $data['mode'] === 'edit' ? 'Edit Job' : 'Post a New Job' ?></h2>
+                    <p class="card-subtitle"><?= isset($data['mode']) && $data['mode'] === 'edit' ? 'Update the job listing details' : 'Fill in the details below to create a new job listing' ?></p>
             </div>
             
-            <form action="/company/postjobs/create" method="POST">
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-error" style="background: #fee; color: #c33; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+                    </div>
+                <?php endif; ?>
+            
+                <form action="<?= BASE_URL ?>/company/<?= isset($data['mode']) && $data['mode'] === 'edit' ? 'update' : 'create' ?>" method="POST">
+                    <?php if (isset($data['mode']) && $data['mode'] === 'edit' && isset($data['job'])): ?>
+                        <input type="hidden" name="job_id" value="<?= $data['job']->id ?>">
+                    <?php endif; ?>
+                
                 <div class="form-group">
                     <label for="jobTitle">Job Title*</label>
-                    <input type="text" id="jobTitle" name="jobTitle" class="form-control" required>
+                        <input type="text" id="jobTitle" name="jobTitle" class="form-control" 
+                               value="<?= isset($data['job']) ? htmlspecialchars($data['job']->job_title) : '' ?>" required>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
@@ -63,49 +74,64 @@
                         <label for="jobType">Job Type*</label>
                         <select id="jobType" name="jobType" class="form-control" required>
                             <option value="">Select Job Type</option>
-                            <option value="full-time">Full Time</option>
-                            <option value="part-time">Part Time</option>
-                            <option value="internship">Internship</option>
-                            <option value="contract">Contract</option>
+                                <option value="full-time" <?= isset($data['job']) && $data['job']->job_type === 'full-time' ? 'selected' : '' ?>>Full Time</option>
+                                <option value="part-time" <?= isset($data['job']) && $data['job']->job_type === 'part-time' ? 'selected' : '' ?>>Part Time</option>
+                                <option value="internship" <?= isset($data['job']) && $data['job']->job_type === 'internship' ? 'selected' : '' ?>>Internship</option>
+                                <option value="contract" <?= isset($data['job']) && $data['job']->job_type === 'contract' ? 'selected' : '' ?>>Contract</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="location">Location*</label>
-                        <input type="text" id="location" name="location" class="form-control" required>
+                            <input type="text" id="location" name="location" class="form-control" 
+                                   value="<?= isset($data['job']) ? htmlspecialchars($data['job']->location) : '' ?>" required>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
                     <div class="form-group">
                         <label for="salary">Salary Range</label>
-                        <input type="text" id="salary" name="salary" class="form-control" placeholder="e.g., $50,000 - $70,000">
+                            <input type="text" id="salary" name="salary" class="form-control" 
+                                   value="<?= isset($data['job']) ? htmlspecialchars($data['job']->salary) : '' ?>" 
+                                   placeholder="e.g., LKR 100,000 - 150,000">
                     </div>
 
                     <div class="form-group">
                         <label for="deadline">Application Deadline*</label>
-                        <input type="date" id="deadline" name="deadline" class="form-control" required>
+                            <input type="date" id="deadline" name="deadline" class="form-control" 
+                                   value="<?= isset($data['job']) ? $data['job']->deadline : '' ?>" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="description">Job Description*</label>
-                    <textarea id="description" name="description" class="form-control" rows="6" required></textarea>
+                        <textarea id="description" name="description" class="form-control" rows="6" required><?= isset($data['job']) ? htmlspecialchars($data['job']->description) : '' ?></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="requirements">Requirements*</label>
-                    <textarea id="requirements" name="requirements" class="form-control" rows="4" required></textarea>
+                        <textarea id="requirements" name="requirements" class="form-control" rows="4" required><?= isset($data['job']) ? htmlspecialchars($data['job']->requirements) : '' ?></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsibilities">Responsibilities</label>
+                        <textarea id="responsibilities" name="responsibilities" class="form-control" rows="4"><?= isset($data['job']) ? htmlspecialchars($data['job']->responsibilities) : '' ?></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="benefits">Benefits</label>
-                    <textarea id="benefits" name="benefits" class="form-control" rows="4"></textarea>
+                        <label for="status">Status*</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="active" <?= isset($data['job']) && $data['job']->status === 'active' ? 'selected' : '' ?>>Active</option>
+                            <option value="draft" <?= isset($data['job']) && $data['job']->status === 'draft' ? 'selected' : '' ?>>Draft</option>
+                            <option value="closed" <?= isset($data['job']) && $data['job']->status === 'closed' ? 'selected' : '' ?>>Closed</option>
+                        </select>
                 </div>
 
                 <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                    <button type="button" class="btn btn-secondary">Save as Draft</button>
-                    <button type="submit" class="btn btn-primary">Post Job</button>
+                        <a href="<?= BASE_URL ?>/company/managejobs" class="btn btn-secondary" style="text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <?= isset($data['mode']) && $data['mode'] === 'edit' ? 'Update Job' : 'Post Job' ?>
+                        </button>
                 </div>
             </form>
         </div>

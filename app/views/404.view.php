@@ -4,22 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Not Found | UniVerse</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/404.css">
-    <link rel="icon" type="image/png" href="assets/images/U.png">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/404.css">
 </head>
 <body>
-    <div class="error-404">
-        <div class="error-content">
-            
-            <img src="assets/images/404.png" alt="404 - Page Not Found" class="error-image">
-            <h1 class="error-title">Oops! Page Not Found</h1>
+    <header class="header">
+        <a href="<?= BASE_URL ?>" class="logo">UniVerse</a>
+    </header>
+
+    <main class="main-content">
+        <div class="error-container">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page Not Found</h1>
             <p class="error-message">
-                The page you're looking for seems to have wandered off into the universe. 
-                Don't worry, we'll help you find your way back to your educational journey!
+                Oops! The page you're looking for seems to have vanished into the universe. 
+                Don't worry though, you can always find your way back home.
             </p>
-            <a href="index.php?url=home" class="error-btn">Return to Home</a>
+            <a href="<?= BASE_URL ?>" class="btn btn-primary">Return to Homepage</a>
         </div>
-    </div>
+    </main>
 </body>
 </html>

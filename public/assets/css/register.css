@@ -1,0 +1,218 @@
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      background: #2c3e50;
+      color: white;
+    }
+    .header .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: white;
+      font-size: 15px;
+    }
+    .nav a:hover {
+      color: #1abc9c;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropbtn span {
+      font-size: 12px;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: #fff;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      z-index: 1;
+      min-width: 150px;
+      border-radius: 6px;
+    }
+    .dropdown-content a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: #333;
+    }
+    .dropdown-content a:hover {
+      background: #f0f0f0;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .join-btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      background: #1abc9c;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .join-btn:hover {
+      background: #16a085;
+    }
+
+    /* Signup Main */
+    .signup-main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .signup-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+    }
+    .signup-welcome {
+      font-size: 16px;
+      color: #7f8c8d;
+    }
+    .signup-title {
+      font-size: 28px;
+      margin: 10px 0;
+      color: #2c3e50;
+    }
+    .signup-sub {
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #555;
+    }
+    .signup-form .form-group {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .signup-form label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+    .signup-form input[type="text"],
+    .signup-form input[type="email"],
+    .signup-form input[type="tel"],
+    .signup-form input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+    .signup-form input:focus {
+      border: 1px solid #1abc9c;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin: 15px 0;
+    }
+    .checkbox-group input {
+      margin-right: 8px;
+    }
+    .signup-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .back-btn, .submit-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .back-btn {
+      background: #bdc3c7;
+      color: #fff;
+    }
+    .back-btn:hover {
+      background: #95a5a6;
+    }
+    .submit-btn {
+      background: #1abc9c;
+      color: white;
+    }
+    .submit-btn:hover {
+      background: #16a085;
+    }
+    .signup-login {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .signup-login a {
+      color: #1abc9c;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Footer */
+    .footer {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 50px;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      margin: 0 10px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .footer-links a:hover {
+      color: #1abc9c;
+    }
+    .footer-social a {
+      margin: 0 8px;
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 10px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .footer-bottom a {
+      color: #1abc9c;
+      margin-left: 10px;
+      text-decoration: none;
+    }

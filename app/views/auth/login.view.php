@@ -4,76 +4,75 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - UniVerse</title>
-  <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
-  <link rel="stylesheet" href="<?= BASE_URL ?>/css/login.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/login.css">
+
 </head>
 <body>
-  <!-- ✅ Custom navigation for login page -->
+  <!-- Header -->
   <header class="header">
-    <div class="container">
-        <div class="nav-brand">
-            <a href="<?= BASE_URL ?>">
-                <img src="<?= BASE_URL ?>/assets/images/U.png" alt="UniVerse Logo" class="logo">
-            </a>
+    <div class="logo">UniVerse</div>
+    <nav class="nav">
+      <a href="#">For Students</a>
+      <a href="#">Resources</a>
+      <div class="dropdown">
+        <a href="#" class="dropbtn">Contact Us <span>&#9660;</span></a>
+        <div class="dropdown-content">
+          <a href="#">Email</a>
+          <a href="#">Phone</a>
+          <a href="#">Office</a>
         </div>
-        
-        <!-- Auth Navigation Actions -->
-        <div class="auth-nav-actions">
-            <!-- ✅ Always go to home page instead of history.back() -->
-            <a href="<?= BASE_URL ?>" class="back-btn" title="Go to Home">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-                <span>Back</span>
-            </a>
-        </div>
-
-        <button class="mobile-menu-btn" id="mobile-menu-btn">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </div>
+      </div>
+    </nav>
+    <button class="join-btn">Join</button>
   </header>
-  
+
   <!-- Login Form -->
   <main class="login-main">
     <div class="login-container">
       <h1>UniVerse</h1>
-      
-      <?php if (isset($success)): ?>
-        <div class="alert alert-success">
-          <?= htmlspecialchars($success) ?>
-        </div>
-      <?php endif; ?>
-      
-      <?php if (isset($error)): ?>
-        <div class="alert alert-error">
-          <?= htmlspecialchars($error) ?>
-        </div>
-      <?php endif; ?>
-      
-      <form class="login-form" method="POST" action="<?= BASE_URL ?>/login">
+      <form class="login-form">
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" required />
+          <label for="login-username">Username</label>
+          <input type="text" id="login-username" name="login-username" required />
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required />
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" name="login-password" required />
         </div>
         <div class="login-links">
-          <a href="#" style="color: var(--primary-purple);">Forgot Password?</a>
+          <a href="#">Forgot Password?</a>
         </div>
-        <button type="submit" class="login-btn btn btn-primary">Log In</button>
+        <button type="submit" class="login-btn">Log In</button>
       </form>
-      <p class="signup-text">
-        Don't have an account? <a href="<?= BASE_URL ?>/registration" style="color: var(--primary-purple);">Sign Up</a>
+      <p style="margin-top:15px;font-size:0.95rem;">
+        Don't have an account? <a href="signup.html" style="color:#1abc9c;">Sign Up</a>
       </p>
     </div>
   </main>
 
   <!-- Footer -->
-  <?php include __DIR__ . '/../layout/footer.php'; ?>
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-logo">UniVerse</div>
+      <div class="footer-links">
+        <a href="#">Blog Posts</a>
+        <a href="#">Career Tips</a>
+        <a href="#">Events</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook"><img src="https://img.icons8.com/ios-filled/20/ffffff/facebook-new.png" alt="Facebook"/></a>
+        <a href="#" aria-label="Instagram"><img src="https://img.icons8.com/ios-filled/20/ffffff/instagram-new.png" alt="Instagram"/></a>
+        <a href="#" aria-label="LinkedIn"><img src="https://img.icons8.com/ios-filled/20/ffffff/linkedin.png" alt="LinkedIn"/></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 UniVerse. All rights reserved.</span>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Cookie Settings</a>
+    </div>
+  </footer>
 </body>
 </html>
