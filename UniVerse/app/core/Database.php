@@ -49,7 +49,7 @@ trait Database
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
-            return $stmt;
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             die("Query failed: " . $e->getMessage());
         }

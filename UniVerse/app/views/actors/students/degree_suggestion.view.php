@@ -52,7 +52,7 @@
             <div class="form-group">
                 <label for="district">District</label>
                 <select name="district" id="district" required>
-                    <option value="" disabled <?=empty($old['$district'])?'selected' : '' ?>>Select your district</option>
+                    <option value="" disabled <?=empty($old['district'])?'selected' : '' ?>>Select your district</option>
                     <?php foreach($districts as $district): ?>
                         <option value="<?= strtolower($district) ?>" <?= (isset($old['district']) && $old['district'] === strtolower($district)) ? 'selected' : '' ?>> <?= $district?> </option>
                     <?php endforeach; ?>

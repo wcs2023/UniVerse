@@ -1,0 +1,56 @@
+-- Discussion forum schema (MySQL)
+CREATE TABLE IF NOT EXISTS forum_categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(120) UNIQUE NOT NULL,
+  name VARCHAR(160) NOT NULL,
+  description TEXT NULL,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS forum_threads (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  category_id INT NOT NULL,
+  user_id INT NOT NULL,
+  title VARCHAR(180) NOT NULL,
+  body MEDIUMTEXT NOT NULL,
+  views INT DEFAULT 0,
+  is_locked TINYINT(1) DEFAULT 0,
+  is_pinned TINYINT(1) DEFAULT 0,
+  last_post_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL,
+  FOREIGN KEY (category_id) REFERENCES forum_categories(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS forum_posts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  thread_id INT NOT NULL,
+  user_id INT NOT NULL,
+  body MEDIUMTEXT NOT NULL,
+  upvotes INT DEFAULT 0,
+  is_deleted TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL,
+  FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS forum_post_votes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  post_id INT NOT NULL,
+  user_id INT NOT NULL,
+  value TINYINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_vote (post_id, user_id),
+  FOREIGN KEY (post_id) REFERENCES forum_posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS forum_edit_history (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  entity_type ENUM('thread','post') NOT NULL,
+  entity_id INT NOT NULL,
+  editor_user_id INT NOT NULL,
+  old_title VARCHAR(180) NULL,
+  old_body MEDIUMTEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
