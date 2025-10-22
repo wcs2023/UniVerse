@@ -247,6 +247,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 isValid = false;
             }
         }
+        // Phone number validation (Sri Lankan numbers only)
+        else if (field.type === 'tel' && field.value) {
+            const phonePattern = /^\+94\d{9}$/;
+            if (!phonePattern.test(field.value)) {
+                errorMessage = 'Phone number must be in format +94xxxxxxxxx (e.g., +94771234567)';
+                isValid = false;
+            }
+        }
         
         if (!isValid) {
             showFieldError(field, errorMessage);

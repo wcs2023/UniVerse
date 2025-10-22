@@ -41,54 +41,38 @@ if (!defined('URLROOT')) {
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-icon primary">
-                            👥
-                        </div>
+                        
                     </div>
                     <div class="stat-card-value"><?= $data['stats']['total_users'] ?? 0 ?></div>
                     <div class="stat-card-label">Total Users</div>
-                    <div class="stat-card-trend trend-up">
-                        ↑ 12% from last month
-                    </div>
+                    
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-icon warning">
-                            ⏳
-                        </div>
+                        
                     </div>
                     <div class="stat-card-value"><?= $data['stats']['pending_registrations'] ?? 0 ?></div>
                     <div class="stat-card-label">Pending Registrations</div>
-                    <div class="stat-card-trend">
-                        Requires attention
-                    </div>
+                    
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-icon success">
-                            📝
-                        </div>
+                      
                     </div>
                     <div class="stat-card-value"><?= $data['stats']['total_articles'] ?? 0 ?></div>
                     <div class="stat-card-label">Total Articles</div>
-                    <div class="stat-card-trend trend-up">
-                        ↑ 8% from last month
-                    </div>
+                    
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <div class="stat-card-icon info">
-                            🔍
-                        </div>
+                        
                     </div>
                     <div class="stat-card-value"><?= $data['stats']['pending_articles'] ?? 0 ?></div>
                     <div class="stat-card-label">Pending Moderation</div>
-                    <div class="stat-card-trend">
-                        Needs review
-                    </div>
+                   
                 </div>
             </div>
             

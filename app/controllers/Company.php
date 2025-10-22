@@ -111,7 +111,12 @@ class Company extends Controller
             // Validate required fields
             if (empty($data['title']) || empty($data['description']) || empty($data['responsibilities'])) {
                 $_SESSION['error'] = 'Please fill in all required fields';
-            } else {
+            } 
+            // Validate phone number if provided (Sri Lankan format)
+            elseif (!empty($data['contact_phone']) && !preg_match('/^\+94\d{9}$/', $data['contact_phone'])) {
+                $_SESSION['error'] = 'Contact phone must be in format +94xxxxxxxxx (e.g., +94771234567)';
+            } 
+            else {
                 // Create job
                 $jobId = $this->jobModel->createJob($data);
                 
@@ -306,6 +311,10 @@ class Company extends Controller
         // Get job details
         $job = $this->jobModel->getJobById($jobId);
         
+        // Debug: Log the job data
+        error_log("Edit Job - Job ID: $jobId");
+        error_log("Edit Job - Job data: " . print_r($job, true));
+        
         // Verify this job belongs to the company
         if (!$job || $job['company_id'] != $companyId) {
             $_SESSION['error'] = 'Job not found or access denied';
@@ -334,7 +343,11 @@ class Company extends Controller
                 'status' => $_POST['status'] ?? 'active'
             ];
             
-            if ($this->jobModel->updateJob($jobId, $data)) {
+            // Validate phone number if provided (Sri Lankan format)
+            if (!empty($data['contact_phone']) && !preg_match('/^\+94\d{9}$/', $data['contact_phone'])) {
+                $_SESSION['error'] = 'Contact phone must be in format +94xxxxxxxxx (e.g., +94771234567)';
+            }
+            elseif ($this->jobModel->updateJob($jobId, $data)) {
                 $_SESSION['success'] = 'Job updated successfully!';
                 header('Location: ' . BASE_URL . '/company/managejobs');
                 exit;
@@ -343,7 +356,13 @@ class Company extends Controller
             }
         }
         
-        $this->view('actors/company/editjob', ['user' => $user, 'job' => $job]);
+        // Pass data correctly for the view
+        $data = [
+            'user' => $user,
+            'job' => $job
+        ];
+        
+        $this->view('actors/company/editjob', $data);
     }
     
     /**
@@ -398,8 +417,14 @@ class Company extends Controller
                 'contact_phone' => trim($_POST['contact_phone'] ?? '')
             ];
             
+            // Validate phone number if provided (Sri Lankan format)
+            if (!empty($data['contact_phone']) && !preg_match('/^\+94\d{9}$/', $data['contact_phone'])) {
+                $_SESSION['error'] = 'Contact phone must be in format +94xxxxxxxxx (e.g., +94771234567)';
+                $this->view('actors/company/profile', ['user' => $user, 'profile' => $profile]);
+                return;
+            }
+            
             if ($profile) {
-                // Update existing profile
                 if ($this->companyProfileModel->updateProfile($companyId, $data)) {
                     $_SESSION['success'] = 'Profile updated successfully!';
                 } else {

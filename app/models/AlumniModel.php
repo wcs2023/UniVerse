@@ -291,4 +291,39 @@ class AlumniModel extends Model
             return false;
         }
     }
+
+    /**
+     * Create alumni profile linked to a user
+     *
+     * @param array $data Profile data (must include user_id)
+     * @return int|bool Inserted alumni_id on success, false on failure
+     */
+    public function createProfile($data)
+    {
+        if (empty($data['user_id'])) {
+            error_log('AlumniModel::createProfile called without user_id');
+            return false;
+        }
+
+        try {
+            $query = "INSERT INTO Alumni (user_id, first_name, last_name, university, faculty, graduation_year, field_of_study, created_at)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                $data['user_id'],
+                $data['first_name'] ?? null,
+                $data['last_name'] ?? null,
+                $data['university'] ?? null,
+                $data['faculty'] ?? null,
+                $data['graduation_year'] ?? null,
+                $data['field_of_study'] ?? null
+            ]);
+
+            $alumniId = $this->db->lastInsertId();
+            return $alumniId ? (int)$alumniId : false;
+        } catch (PDOException $e) {
+            error_log('Error creating alumni profile: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

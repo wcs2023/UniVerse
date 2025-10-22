@@ -138,7 +138,10 @@
 
                                 <div class="form-group">
                                     <label for="phone">Phone Number </label>
-                                    <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($data['user']['phone_number'] ?? '') ?>">
+                                    <input type="tel" id="phone" name="phone" 
+                                           value="<?= htmlspecialchars($data['user']['phone_number'] ?? '') ?>"
+                                           placeholder="+94771234567" pattern="\+94\d{9}">
+                                    <small style="color: #666;">Format: +94xxxxxxxxx (e.g., +94771234567)</small>
                                 </div>
                             </div>
 

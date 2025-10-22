@@ -107,13 +107,28 @@ class Registration extends Controller {
             throw new Exception("Password must be at least 8 characters long.");
         }
         
+        // Validate phone number if provided (Sri Lankan format only)
+        if (!empty($data['phone'])) {
+            if (!preg_match('/^\+94\d{9}$/', $data['phone'])) {
+                throw new Exception("Phone number must be in format +94xxxxxxxxx (e.g., +94771234567).");
+            }
+        }
+        
+        // Validate contact phone for company if provided
+        if (!empty($data['contact_phone'])) {
+            if (!preg_match('/^\+94\d{9}$/', $data['contact_phone'])) {
+                throw new Exception("Contact phone number must be in format +94xxxxxxxxx (e.g., +94771234567).");
+            }
+        }
+        
         return $data;
     }
     
     private function createRoleProfile($userId, $userData) {
         switch ($userData['user_type']) {
             case 'alumni':
-                $alumniModel = new Alumni();
+                // ✅ Use AlumniModel instead of Alumni
+                $alumniModel = $this->model('AlumniModel');
                 $profileData = [
                     'user_id' => $userId,
                     'university' => $userData['university_name'] ?? null,
@@ -126,8 +141,8 @@ class Registration extends Controller {
                 
             case 'undergraduate':
             case 'student':
-                // Handle undergraduate profile creation
-                $undergraduateModel = new UndergraduateProfile();  // ✅ Changed from Undergraduate
+                // ✅ Use the model() method to load the model
+                $undergraduateModel = $this->model('UndergraduateProfile');
                 $profileData = [
                     'user_id' => $userId,
                     'university' => $userData['university_name'] ?? null,
@@ -135,15 +150,15 @@ class Registration extends Controller {
                     'degree_program' => $userData['degree_program'] ?? null,
                     'academic_year' => $userData['academic_year'] ?? null,
                     'expected_graduation_year' => $userData['expected_graduation_year'] ?? null,
-                    'interests' => $userData['skills_interests'] ?? null  // ✅ Removed 'skills' field
+                    'interests' => $userData['skills_interests'] ?? null
                 ];
                 $undergraduateModel->createProfile($profileData);
                 break;
                 
             case 'company':
             case 'employer':
-                // Handle company profile creation
-                $companyModel = new CompanyProfile();
+                // ✅ Use the model() method to load the model
+                $companyModel = $this->model('CompanyProfile');
                 $profileData = [
                     'user_id' => $userId,
                     'company_name' => $userData['company_name'] ?? null,

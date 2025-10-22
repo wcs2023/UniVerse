@@ -198,6 +198,45 @@ class Aarticles extends Controller
     }
     
     /**
+     * Preview single article (alumni's own view)
+     */
+    public function preview($articleId = null)
+    {
+        // Check authentication
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'alumni') {
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
+        
+        if (!$articleId) {
+            header('Location: ' . BASE_URL . '/aarticles');
+            exit;
+        }
+        
+        // Get article details
+        $article = $this->articleModel->getArticleById($articleId);
+        
+        if (!$article) {
+            $_SESSION['error'] = 'Article not found';
+            header('Location: ' . BASE_URL . '/aarticles');
+            exit;
+        }
+        
+        // Check if user owns this article
+        if ($article['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['error'] = 'You do not have permission to view this article';
+            header('Location: ' . BASE_URL . '/aarticles');
+            exit;
+        }
+        
+        $data = [
+            'article' => $article
+        ];
+        
+        $this->view('actors/alumni/Aarticlepreview', $data);
+    }
+    
+    /**
      * View single article (public view)
      */
     public function viewArticle($articleId = null)

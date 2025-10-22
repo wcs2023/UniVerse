@@ -2966,3 +2966,445 @@ body {
   outline: 3px solid var(--primary-purple);
   outline-offset: 2px;
 }
+
+/* ========================================
+   LEGAL PAGES (Privacy Policy, Terms of Service)
+   ======================================== */
+
+.legal-page {
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e9e6ff 100%);
+}
+
+.legal-page .container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Legal Header */
+.legal-header {
+  text-align: center;
+  margin-bottom: 50px;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(107, 70, 193, 0.1);
+}
+
+.legal-header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary-purple);
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #6b46c1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.legal-header .last-updated,
+.legal-header .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* Legal Content Container */
+.legal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 10px 40px rgba(107, 70, 193, 0.1);
+}
+
+/* Legal Sections */
+.legal-section {
+  margin-bottom: 50px;
+  padding-bottom: 40px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.legal-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.legal-section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.legal-section h2::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 35px;
+  background: linear-gradient(180deg, #6b46c1, #8b5cf6);
+  border-radius: 3px;
+}
+
+.legal-section h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 30px 0 15px;
+}
+
+.section-content {
+  color: var(--text-dark);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.section-content p {
+  margin-bottom: 20px;
+}
+
+.section-content ul,
+.section-content ol {
+  margin: 20px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.section-content ul li,
+.section-content ol li {
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 15px;
+  line-height: 1.8;
+}
+
+.section-content ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--secondary-purple);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.section-content ol {
+  counter-reset: item;
+}
+
+.section-content ol li {
+  counter-increment: item;
+}
+
+.section-content ol li::before {
+  content: counter(item) ".";
+  position: absolute;
+  left: 0;
+  color: var(--secondary-purple);
+  font-weight: bold;
+}
+
+.section-content strong {
+  color: var(--primary-purple);
+  font-weight: 600;
+}
+
+.section-content a {
+  color: var(--secondary-purple);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.section-content a:hover {
+  border-bottom-color: var(--secondary-purple);
+}
+
+/* ========================================
+   CONTACT PAGE
+   ======================================== */
+
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+/* Contact Form Section */
+.contact-form-section {
+  background: white;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 10px 40px rgba(107, 70, 193, 0.1);
+}
+
+.contact-form-section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 30px;
+}
+
+.contact-form .form-group {
+  margin-bottom: 25px;
+}
+
+.contact-form label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.contact-form .required {
+  color: var(--error-color);
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--secondary-purple);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.contact-form .submit-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 15px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.contact-form .submit-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.contact-form .submit-btn:hover svg {
+  transform: translateX(5px);
+}
+
+/* FAQ Section */
+.faq-section {
+  background: white;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 10px 40px rgba(107, 70, 193, 0.1);
+}
+
+.faq-section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-purple);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 25px;
+}
+
+.faq-item {
+  padding: 25px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0edff 100%);
+  border-radius: 15px;
+  border-left: 4px solid var(--secondary-purple);
+  transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(107, 70, 193, 0.15);
+}
+
+.faq-item h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-purple);
+  margin-bottom: 12px;
+}
+
+.faq-item p {
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN FOR LEGAL & CONTACT PAGES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .legal-page {
+    padding: 100px 15px 40px;
+  }
+
+  .legal-header {
+    padding: 30px 20px;
+    margin-bottom: 30px;
+  }
+
+  .legal-header h1 {
+    font-size: 2rem;
+  }
+
+  .legal-content {
+    padding: 30px 20px;
+    border-radius: 15px;
+  }
+
+  .legal-section {
+    margin-bottom: 35px;
+    padding-bottom: 30px;
+  }
+
+  .legal-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .legal-section h2::before {
+    width: 4px;
+    height: 25px;
+  }
+
+  .legal-section h3 {
+    font-size: 1.2rem;
+  }
+
+  .section-content {
+    font-size: 1rem;
+  }
+
+  .contact-form-section,
+  .faq-section {
+    padding: 30px 20px;
+    border-radius: 15px;
+  }
+
+  .contact-form-section h2,
+  .faq-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+  }
+
+  .faq-item p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .legal-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .legal-header .last-updated,
+  .legal-header .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .legal-content {
+    padding: 20px 15px;
+  }
+
+  .legal-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .legal-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .section-content ul li,
+  .section-content ol li {
+    padding-left: 28px;
+  }
+
+  .contact-form-section,
+  .faq-section {
+    padding: 25px 15px;
+  }
+
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+  }
+
+  .contact-form .submit-btn {
+    padding: 14px;
+    font-size: 1rem;
+  }
+}
+
+/* Animation for legal pages */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.legal-header,
+.legal-section,
+.contact-form-section,
+.faq-section {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.legal-section:nth-child(1) { animation-delay: 0.1s; }
+.legal-section:nth-child(2) { animation-delay: 0.15s; }
+.legal-section:nth-child(3) { animation-delay: 0.2s; }
+.legal-section:nth-child(4) { animation-delay: 0.25s; }
+.legal-section:nth-child(5) { animation-delay: 0.3s; }
+.legal-section:nth-child(6) { animation-delay: 0.35s; }
+.legal-section:nth-child(7) { animation-delay: 0.4s; }
+
+.faq-item {
+  animation: fadeInUp 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+.faq-item:nth-child(1) { animation-delay: 0.1s; }
+.faq-item:nth-child(2) { animation-delay: 0.2s; }
+.faq-item:nth-child(3) { animation-delay: 0.3s; }
+.faq-item:nth-child(4) { animation-delay: 0.4s; }

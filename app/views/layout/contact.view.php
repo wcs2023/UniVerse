@@ -22,33 +22,46 @@
                 <section class="contact-form-section">
                     <div class="form-container">
                         <h2>Send us a Message</h2>
+
+                        <?php if (isset($_SESSION['success'])): ?>
+                            <div class="alert alert-success" style="padding: 15px; margin-bottom: 20px; background: #d1fae5; border: 2px solid #10b981; border-radius: 10px; color: #065f46;">
+                                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (isset($_SESSION['error'])): ?>
+                            <div class="alert alert-error" style="padding: 15px; margin-bottom: 20px; background: #fee2e2; border: 2px solid #ef4444; border-radius: 10px; color: #991b1b;">
+                                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+                            </div>
+                        <?php endif; ?>
+
                         <form class="contact-form" action="<?= BASE_URL ?>/contact" method="POST">
                             <div class="form-group">
                                 <label for="name">Full Name <span class="required">*</span></label>
-                                <input type="text" id="name" name="name" required>
+                                <input type="text" id="name" name="name" value="<?= htmlspecialchars($name ?? '') ?>" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email Address <span class="required">*</span></label>
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="subject">Subject <span class="required">*</span></label>
                                 <select id="subject" name="subject" required>
                                     <option value="">Select a subject</option>
-                                    <option value="general">General Inquiry</option>
-                                    <option value="technical">Technical Support</option>
-                                    <option value="partnerships">Partnership Opportunities</option>
-                                    <option value="feedback">Feedback & Suggestions</option>
-                                    <option value="account">Account Issues</option>
-                                    <option value="other">Other</option>
+                                    <option value="general" <?= (($subject ?? '') === 'general') ? 'selected' : '' ?>>General Inquiry</option>
+                                    <option value="technical" <?= (($subject ?? '') === 'technical') ? 'selected' : '' ?>>Technical Support</option>
+                                    <option value="partnerships" <?= (($subject ?? '') === 'partnerships') ? 'selected' : '' ?>>Partnership Opportunities</option>
+                                    <option value="feedback" <?= (($subject ?? '') === 'feedback') ? 'selected' : '' ?>>Feedback & Suggestions</option>
+                                    <option value="account" <?= (($subject ?? '') === 'account') ? 'selected' : '' ?>>Account Issues</option>
+                                    <option value="other" <?= (($subject ?? '') === 'other') ? 'selected' : '' ?>>Other</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="message">Message <span class="required">*</span></label>
-                                <textarea id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required></textarea>
+                                <textarea id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required><?= htmlspecialchars($message ?? '') ?></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary submit-btn">

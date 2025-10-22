@@ -114,6 +114,13 @@ class Ueditprofile extends Controller {
             throw new Exception("Invalid email format");
         }
         
+        // Validate phone number (Sri Lankan format)
+        if (!empty($data['phone'])) {
+            if (!preg_match('/^\+94\d{9}$/', $data['phone'])) {
+                throw new Exception("Phone number must be in format +94xxxxxxxxx (e.g., +94771234567)");
+            }
+        }
+        
         return $data;
     }
 
@@ -151,7 +158,7 @@ class Ueditprofile extends Controller {
             // Update user profile picture in database
             $userModel = new User();
             $dbPath = '/assets/images/profiles/' . $filename;
-            $userModel->updateProfilePicture($userId, $dbPath);
+            // $userModel->updateProfilePicture($userId, $dbPath);
         } else {
             throw new Exception("Failed to upload profile picture");
         }

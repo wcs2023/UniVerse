@@ -154,7 +154,7 @@ if (!defined('URLROOT')) {
                                                 <?= ucfirst(htmlspecialchars($user['user_type'])) ?>
                                             </span>
                                         </td>
-                                        <!-- <td>
+                                        <td>
                                             <?php 
                                             $status = $user['account_status'] ?? 'active';
                                             $statusClass = $status === 'active' ? 'status-active' : 'status-inactive';
@@ -162,7 +162,7 @@ if (!defined('URLROOT')) {
                                             <span class="status-badge <?= $statusClass ?>">
                                                 <?= ucfirst($status) ?>
                                             </span>
-                                        </td> -->
+                                        </td>
                                         <td><?= date('M d, Y', strtotime($user['created_at'])) ?></td>
                                         <td>
                                             <div class="action-buttons">
@@ -358,7 +358,9 @@ if (!defined('URLROOT')) {
                                     <div class="form-group">
                                         <label for="phone" class="form-label">Phone</label>
                                         <input type="tel" id="phone" name="phone" class="form-input" 
-                                               value="${user.phone || ''}">
+                                               value="${user.phone || ''}"
+                                               placeholder="+94771234567" pattern="\\+94\\d{9}">
+                                        <small style="color: #666; font-size: 0.85rem;">Format: +94xxxxxxxxx (e.g., +94771234567)</small>
                                     </div>
                                     
                                     <div class="form-group">

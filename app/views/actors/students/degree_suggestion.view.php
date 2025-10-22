@@ -113,7 +113,7 @@
                 </div>
 
                 <!-- Interests (Optional) -->
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="interests" class="form-label">
                         <i class="fa-solid fa-heart"></i> Areas of Interest (Optional)
                     </label>
@@ -125,7 +125,7 @@
                         rows="4"
                     ><?= isset($data['old']['interests']) ? htmlspecialchars($data['old']['interests']) : '' ?></textarea>
                     <small class="form-hint">This helps us provide more personalized recommendations</small>
-                </div>
+                </div> -->
 
                 <!-- Submit Button -->
                 <div class="form-actions">
@@ -167,10 +167,8 @@
     </section>
 </main>
 
-<!-- Footer -->
-<footer style="margin-top: 4rem; padding: 2rem; text-align: center; background: rgba(255, 255, 255, 0.9); border-radius: 15px; max-width: 1200px; margin-left: auto; margin-right: auto;">
-    <p style="color: #6b7280; margin: 0;">&copy; 2024 UniVerse. All rights reserved.</p>
-</footer>
+
+<?php include __DIR__ . '/../../layout/footer.php'; ?>
 
 <style>
 /* CSS Variables */

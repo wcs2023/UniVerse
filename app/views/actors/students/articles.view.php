@@ -118,11 +118,7 @@
     </section>
 </main>
 
-<!-- Footer -->
-<footer style="margin-top: 4rem; padding: 2rem; text-align: center; background: rgba(255, 255, 255, 0.9); border-radius: 15px; max-width: 1200px; margin-left: auto; margin-right: auto;">
-    <p style="color: #6b7280; margin: 0;">&copy; 2024 UniVerse. All rights reserved.</p>
-</footer>
-
+<?php include __DIR__ . '/../../layout/footer.php'; ?>
 <style>
 /* Articles page specific styles */
 .page-header {

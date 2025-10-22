@@ -258,6 +258,15 @@ class Admin extends Controller
             exit;
         }
         
+        // Validate phone number if provided (Sri Lankan format)
+        if (!empty($phone)) {
+            if (!preg_match('/^\+94\d{9}$/', $phone)) {
+                error_log("ERROR: Invalid phone number format");
+                header('Location: ' . BASE_URL . '/admin/users?error=invalid_phone');
+                exit;
+            }
+        }
+        
         // Check if email already exists for another user
         if ($userModel->emailExists($email, $userId)) {
             error_log("ERROR: Email already exists for another user");

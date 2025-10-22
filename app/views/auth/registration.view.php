@@ -149,9 +149,10 @@
             
             <div class="form-group">
               <label for="phone">Phone Number</label>
-              <input type="tel" id="phone" name="phone" autocomplete="tel">
+              <input type="tel" id="phone" name="phone" autocomplete="tel" 
+                     placeholder="+94771234567" pattern="\+94\d{9}">
               <div class="field-error"></div>
-              <div class="field-hint">Optional - for account recovery</div>
+              <div class="field-hint">Format: +94xxxxxxxxx (9 digits after +94)</div>
             </div>
             
             <div class="form-group">
@@ -335,8 +336,10 @@
               
               <div class="form-group full-width">
                 <label for="contactPhone">Contact Phone</label>
-                <input type="tel" id="contactPhone" name="contact_phone" placeholder="+1 (555) 123-4567">
+                <input type="tel" id="contactPhone" name="contact_phone" 
+                       placeholder="+94771234567" pattern="\+94\d{9}">
                 <div class="field-error"></div>
+                <div class="field-hint">Format: +94xxxxxxxxx (9 digits after +94)</div>
               </div>
             </div>
           </div>

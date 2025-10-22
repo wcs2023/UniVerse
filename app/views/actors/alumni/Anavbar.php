@@ -16,7 +16,7 @@ $current_path = parse_url($current_uri, PHP_URL_PATH);
     <div class="nav-container">
         <div class="nav-logo">
             <a href="<?= BASE_URL ?>/alumni">
-                <img src="<?= BASE_URL ?>/assets/images/u.png" alt="UniVerse Logo" class="logo-img">
+                <!-- <img src="<?= BASE_URL ?>/assets/images/u.png" alt="UniVerse Logo" class="logo-img"> -->UniVerse
             </a>
         </div>
         

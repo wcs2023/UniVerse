@@ -1,8 +1,8 @@
 <header class="header">
     <div class="container">
         <div class="nav-brand">
-            <a href="<?= BASE_URL ?>/home">
-                <img src="<?= BASE_URL ?>/assets/images/U.png" alt="UniVerse Logo" class="logo">
+            <a href="<?= BASE_URL ?>/home" style="font-size: 1.5rem; font-weight: bold; color: #6b46c1; text-decoration: none;">
+                <!-- <img src="<?= BASE_URL ?>/assets/images/U.png" alt="UniVerse Logo" class="logo"> -->UniVerse
             </a>
         </div>
         <nav class="nav-menu" id="nav-menu">

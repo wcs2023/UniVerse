@@ -107,7 +107,9 @@
 
                     <div class="form-group">
                         <label for="contact_phone">Contact Phone</label>
-                        <input type="tel" id="contact_phone" name="contact_phone" class="form-control">
+                        <input type="tel" id="contact_phone" name="contact_phone" class="form-control"
+                               placeholder="+94771234567" pattern="\+94\d{9}">
+                        <small style="color: #666; font-size: 0.85rem;">Format: +94xxxxxxxxx (e.g., +94771234567)</small>
                     </div>
                 </div>
 

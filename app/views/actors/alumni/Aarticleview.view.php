@@ -368,8 +368,11 @@ if (!defined('BASE_URL')) {
                             <div class="article-header">
                                 <span class="status-badge status-published">Published</span>
                                 <div class="article-actions">
+                                    <a href="<?= BASE_URL ?>/aarticles/preview/<?= $article['article_id'] ?>" class="btn-icon-action" title="View Article">
+                                        view
+                                    </a>
                                     <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
-                                        ✏️
+                                        edit
                                     </a>
                                     <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'published')" class="btn-icon-action delete" title="Delete">
                                         🗑️
@@ -382,11 +385,11 @@ if (!defined('BASE_URL')) {
                             
                             <div class="article-stats">
                                 <div class="stat-item">
-                                    <span class="stat-icon">👁️</span>
+                                    <span class="stat-icon">views</span>
                                     <span><?= number_format($article['views'] ?? 0) ?></span>
                                 </div>
                                 <div class="stat-item">
-                                    <span class="stat-icon">👍</span>
+                                    <span class="stat-icon">likes</span>
                                     <span><?= number_format($article['likes'] ?? 0) ?></span>
                                 </div>
                             </div>

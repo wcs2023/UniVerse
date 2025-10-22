@@ -395,13 +395,14 @@
 
 <header class="header">
     <div class="nav-container">
-        <a href="<?= BASE_URL ?>/schoolleaver" class="logo">UniVerse</a>
+        <a href="<?= BASE_URL ?>/home" class="logo">UniVerse</a>
         <ul class="nav-menu" id="nav_menu">
             <li><a href="<?= BASE_URL ?>/schoolleaver" class="nav-link">Home</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/profile" class="nav-link">My Profile</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/articles" class="nav-link">Career Articles</a></li>
             <li><a href="<?= BASE_URL ?>/sdiscussion" class="nav-link">Discussion Forums</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/degreeSuggestion" class="nav-link">Degree Suggestions</a></li>
+            <li><a href="<?= BASE_URL ?>/logout" class="nav-link">Logout</a></li>
             <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
         </ul>
         <i class="fa-solid fa-bars" onclick="openmenu()"></i>
