@@ -8,11 +8,6 @@
    
 </head>
 <body>
-<?php
-    $title = $data['title'] ?? 'Forum Category';
-    $userType = $data['user_type'] ?? 'student';
-    include_once __DIR__ . '/includes/header2.view.php';
-?>
 
 <main class="main-container">
     <!-- Category Header -->

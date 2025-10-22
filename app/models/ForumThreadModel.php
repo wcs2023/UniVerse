@@ -58,7 +58,7 @@ class ForumThreadModel extends Model {
       ['t' => $title, 'b' => $body, 'id' => $id]);
   }
 
-  public function delete($id) {
+  public function deleteThread($id) {
     $this->query("DELETE FROM {$this->table} WHERE id = :id", ['id' => $id]);
   }
 }

@@ -47,6 +47,188 @@ class AarticleModel extends Model
         
         return $this->fetch($query, ['article_id' => $articleId]);
     }
+
+    /**
+     * Get all published articles (for public viewing) - FIXED FOR SCHOOL LEAVERS
+     */
+    public function getAllPublishedArticles($limit = null, $offset = 0)
+    {
+        $sql = "SELECT 
+                    a.article_id,
+                    a.title,
+                    a.content,
+                    a.category,
+                    a.tags,
+                    a.views,
+                    a.likes,
+                    a.created_at,
+                    a.published_at,
+                    u.first_name,
+                    u.last_name,
+                    u.profile_picture,
+                    CONCAT(u.first_name, ' ', u.last_name) as author_name,
+                    SUBSTRING(a.content, 1, 200) as excerpt,
+                    CONCAT(CEIL(CHAR_LENGTH(a.content) / 200), ' min read') as read_time
+                  FROM Articles a
+                  JOIN Users u ON a.user_id = u.user_id
+                  WHERE a.status = 'published'
+                  ORDER BY a.published_at DESC";
+        
+        if ($limit) {
+            $sql .= " LIMIT " . intval($limit) . " OFFSET " . intval($offset);
+        }
+        
+        return $this->fetchAll($sql);
+    }
+
+    /**
+     * Get articles by category - NEW METHOD
+     */
+    public function getArticlesByCategory($category, $limit = null)
+    {
+        $sql = "SELECT 
+                    a.article_id,
+                    a.title,
+                    a.content,
+                    a.category,
+                    a.tags,
+                    a.views,
+                    a.likes,
+                    a.created_at,
+                    a.published_at,
+                    u.first_name,
+                    u.last_name,
+                    CONCAT(u.first_name, ' ', u.last_name) as author_name,
+                    SUBSTRING(a.content, 1, 200) as excerpt,
+                    CONCAT(CEIL(CHAR_LENGTH(a.content) / 200), ' min read') as read_time
+                  FROM Articles a
+                  JOIN Users u ON a.user_id = u.user_id
+                  WHERE a.status = 'published' AND a.category = :category
+                  ORDER BY a.published_at DESC";
+        
+        if ($limit) {
+            $sql .= " LIMIT " . intval($limit);
+        }
+        
+        return $this->fetchAll($sql, ['category' => $category]);
+    }
+
+    /**
+     * Search articles - NEW METHOD
+     */
+    public function searchArticles($query, $limit = null)
+    {
+        $searchTerm = '%' . $query . '%';
+        
+        $sql = "SELECT 
+                    a.article_id,
+                    a.title,
+                    a.content,
+                    a.category,
+                    a.tags,
+                    a.views,
+                    a.likes,
+                    a.created_at,
+                    a.published_at,
+                    u.first_name,
+                    u.last_name,
+                    CONCAT(u.first_name, ' ', u.last_name) as author_name,
+                    SUBSTRING(a.content, 1, 200) as excerpt,
+                    CONCAT(CEIL(CHAR_LENGTH(a.content) / 200), ' min read') as read_time
+                  FROM Articles a
+                  JOIN Users u ON a.user_id = u.user_id
+                  WHERE a.status = 'published' 
+                  AND (a.title LIKE :search1 OR a.content LIKE :search2 OR a.category LIKE :search3)
+                  ORDER BY a.published_at DESC";
+        
+        if ($limit) {
+            $sql .= " LIMIT " . intval($limit);
+        }
+        
+        return $this->fetchAll($sql, [
+            'search1' => $searchTerm,
+            'search2' => $searchTerm,
+            'search3' => $searchTerm
+        ]);
+    }
+
+    /**
+     * Get all categories - NEW METHOD
+     */
+    public function getCategories()
+    {
+        try {
+            $query = "SELECT DISTINCT category 
+                     FROM Articles 
+                     WHERE status = 'published' 
+                     AND category IS NOT NULL 
+                     AND category != ''
+                     ORDER BY category ASC";
+            
+            $result = $this->fetchAll($query);
+            
+            if ($result && count($result) > 0) {
+                return array_column($result, 'category');
+            }
+            
+            // Fallback categories if no articles exist
+            return [
+                'Career Guidance',
+                'University Selection', 
+                'Study Tips',
+                'Industry Insights',
+                'Scholarship Information',
+                'Career Planning'
+            ];
+        } catch (Exception $e) {
+            // Return default categories on error
+            return [
+                'Career Guidance',
+                'University Selection', 
+                'Study Tips',
+                'Industry Insights',
+                'Scholarship Information',
+                'Career Planning'
+            ];
+        }
+    }
+
+    /**
+     * Get related articles - NEW METHOD
+     */
+    public function getRelatedArticles($articleId, $category, $limit = 3)
+    {
+        $query = "SELECT 
+                    a.article_id,
+                    a.title,
+                    a.category,
+                    a.created_at,
+                    a.published_at,
+                    CONCAT(u.first_name, ' ', u.last_name) as author_name,
+                    SUBSTRING(a.content, 1, 150) as excerpt
+                  FROM Articles a
+                  JOIN Users u ON a.user_id = u.user_id
+                  WHERE a.status = 'published' 
+                  AND a.category = :category 
+                  AND a.article_id != :article_id
+                  ORDER BY a.published_at DESC
+                  LIMIT :limit";
+        
+        return $this->fetchAll($query, [
+            'category' => $category,
+            'article_id' => $articleId,
+            'limit' => $limit
+        ]);
+    }
+
+    /**
+     * Increment view count - NEW METHOD
+     */
+    public function incrementViewCount($articleId)
+    {
+        $query = "UPDATE Articles SET views = views + 1 WHERE article_id = :article_id";
+        return $this->query($query, ['article_id' => $articleId]);
+    }
     
     /**
      * Create a new article
@@ -126,29 +308,6 @@ class AarticleModel extends Model
     {
         $query = "UPDATE Articles SET views = views + 1 WHERE article_id = :article_id";
         return $this->query($query, ['article_id' => $articleId]);
-    }
-    
-    /**
-     * Get all published articles (for public viewing)
-     */
-    public function getAllPublishedArticles($limit = 10, $offset = 0)
-    {
-        $query = "SELECT 
-                    a.*,
-                    u.first_name,
-                    u.last_name,
-                    u.profile_picture,
-                    CONCAT(u.first_name, ' ', u.last_name) as author_name
-                  FROM Articles a
-                  JOIN Users u ON a.user_id = u.user_id
-                  WHERE a.status = 'published'
-                  ORDER BY a.published_at DESC
-                  LIMIT :limit OFFSET :offset";
-        
-        return $this->fetchAll($query, [
-            'limit' => $limit,
-            'offset' => $offset
-        ]);
     }
 
     // ==================== ADMIN METHODS ====================

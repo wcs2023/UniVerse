@@ -400,7 +400,7 @@
             <li><a href="<?= BASE_URL ?>/schoolleaver" class="nav-link">Home</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/profile" class="nav-link">My Profile</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/articles" class="nav-link">Career Articles</a></li>
-            <li><a href="<?= BASE_URL ?>/schoolleaver/forums" class="nav-link">Discussion Forums</a></li>
+            <li><a href="<?= BASE_URL ?>/sdiscussion" class="nav-link">Discussion Forums</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/degreeSuggestion" class="nav-link">Degree Suggestions</a></li>
             <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
         </ul>

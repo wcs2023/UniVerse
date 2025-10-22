@@ -9,7 +9,7 @@
    
 </head>
 <body>
-    <?php include 'Anavbar.php'; ?>
+    <?php include __DIR__ . '/Anavbar.php'; ?>
     
     <!-- Hero Section -->
     <section class="hero-section">

@@ -1,22 +1,15 @@
-<?php
-// filepath: c:\xampp\htdocs\UniVerse\app\views\actors\students\forum_home.view.php
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? 'Discussion Forums') ?></title>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title><?= htmlspecialchars($title ?? 'Forum') ?></title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum_home.css">
+    <script>window.__APP_ROOT__=<?= json_encode(BASE_URL) ?>;</script>
 </head>
 <body>
 
-<?php
-    $pageTitle = $title ?? 'Discussion Forums';
-    include_once __DIR__ . '/includes/header2.view.php';
-?>
+<?Php include __DIR__ . '/Anavbar.php'; ?>
 
 <main class="main-container">
     <!-- Forum Header -->
@@ -30,18 +23,18 @@
         </div>
 
         <!-- Forum Stats -->
-        <?php if (isset($stats)): ?>
+        <?php if (isset($data['stats'])): ?>
         <div class="forum-stats">
             <div class="stat-item">
-                <div class="stat-number"><?= $stats['total_threads'] ?? '0' ?></div>
+                <div class="stat-number"><?= $data['stats']['total_threads'] ?? '0' ?></div>
                 <div class="stat-label">Discussions</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number"><?= $stats['total_posts'] ?? '0' ?></div>
+                <div class="stat-number"><?= $data['stats']['total_posts'] ?? '0' ?></div>
                 <div class="stat-label">Posts</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number"><?= $stats['total_members'] ?? '0' ?></div>
+                <div class="stat-number"><?= $data['stats']['total_members'] ?? '0' ?></div>
                 <div class="stat-label">Members</div>
             </div>
         </div>
@@ -53,16 +46,15 @@
         <h2><i class="fa-solid fa-folder"></i> Forum Categories</h2>
         
         <div class="categories-list">
-            <?php if (isset($categories) && is_array($categories) && count($categories) > 0): ?>
-                <?php foreach ($categories as $category): ?>
+            <?php if (isset($data['categories']) && is_array($data['categories'])): ?>
+                <?php foreach ($data['categories'] as $category): ?>
                     <div class="category-card fade-in">
                         <div class="category-icon">
                             <i class="fa-solid <?= $category['icon'] ?? 'fa-comments' ?>"></i>
                         </div>
                         <div class="category-content">
                             <h3>
-                                <!-- FIXED: Changed from /schoolleaver/forumCategory/ to /sdiscussion/category/ -->
-                                <a href="<?= BASE_URL ?>/sdiscussion/category/<?= $category['id'] ?? '#' ?>">
+                                <a href="<?= BASE_URL ?>/schoolleaver/forumCategory/<?= $category['id'] ?? '#' ?>">
                                     <?= htmlspecialchars($category['name'] ?? 'Category') ?>
                                 </a>
                             </h3>
@@ -105,23 +97,22 @@
                 <div class="col-last-post">Last Post</div>
             </div>
             
-            <?php if (isset($recent_threads) && is_array($recent_threads) && count($recent_threads) > 0): ?>
-                <?php foreach ($recent_threads as $thread): ?>
+            <?php if (isset($data['recent_threads']) && is_array($data['recent_threads']) && count($data['recent_threads']) > 0): ?>
+                <?php foreach ($data['recent_threads'] as $thread): ?>
                     <div class="discussion-row fade-in">
                         <div class="col-topic">
                             <div class="topic-title">
-                                <!-- FIXED: Changed from /schoolleaver/forumThread/ to /sdiscussion/thread/ -->
-                                <a href="<?= BASE_URL ?>/sdiscussion/thread/<?= $thread['id'] ?? '#' ?>">
+                                <a href="<?= BASE_URL ?>/schoolleaver/forumThread/<?= $thread['id'] ?? '#' ?>">
                                     <?= htmlspecialchars($thread['title'] ?? 'No title') ?>
                                 </a>
                             </div>
                             <div class="topic-meta">
-                                by <strong><?= htmlspecialchars($thread['author_name'] ?? 'Anonymous') ?></strong>
+                                by <strong><?= htmlspecialchars($thread['author'] ?? 'Anonymous') ?></strong>
                             </div>
                         </div>
                         <div class="col-category">
                             <span class="category-tag">
-                                <?= htmlspecialchars($thread['category_name'] ?? 'General') ?>
+                                <?= htmlspecialchars($thread['category'] ?? 'General') ?>
                             </span>
                         </div>
                         <div class="col-replies">
@@ -132,10 +123,10 @@
                         </div>
                         <div class="col-last-post">
                             <div class="last-post-time">
-                                <?= isset($thread['last_activity']) ? date('M j, g:i A', strtotime($thread['last_activity'])) : 'No posts' ?>
+                                <?= isset($thread['last_post_time']) ? date('M j, g:i A', strtotime($thread['last_post_time'])) : 'No posts' ?>
                             </div>
                             <div class="last-post-author">
-                                by <?= htmlspecialchars($thread['author_name'] ?? 'No one') ?>
+                                by <?= htmlspecialchars($thread['last_post_author'] ?? 'No one') ?>
                             </div>
                         </div>
                     </div>
@@ -146,10 +137,6 @@
                         <i class="fa-solid fa-comments"></i>
                         <h3>No recent discussions</h3>
                         <p>Be the first to start a discussion!</p>
-                        <!-- FIXED: Added correct create link here too -->
-                        <a href="<?= BASE_URL ?>/sdiscussion/create" class="btn btn-primary" style="margin-top: 1rem;">
-                            <i class="fa-solid fa-plus"></i> Start New Discussion
-                        </a>
                     </div>
                 </div>
             <?php endif; ?>
@@ -159,15 +146,13 @@
     <!-- Quick Actions -->
     <section class="forum-actions">
         <div class="action-buttons">
-            <!-- FIXED: Changed from /students/create to /sdiscussion/create -->
-            <a href="<?= BASE_URL ?>/sdiscussion/create" class="btn btn-primary">
+            <a href="<?= BASE_URL ?>/adiscussion/create" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i> Start New Discussion
             </a>
         </div>
     </section>
 </main>
 
-<!-- Footer -->
 <?php include __DIR__ . '/../../layout/footer.php'; ?>
 
 <style>

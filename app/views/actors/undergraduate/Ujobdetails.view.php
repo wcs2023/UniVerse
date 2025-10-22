@@ -398,7 +398,7 @@
             <div class="apply-section">
                 <h3>Interested in this opportunity?</h3>
                 <p>Submit your application and take the next step in your career journey!</p>
-                <a href="<?= BASE_URL ?>/ujobs/apply/<?= $data['job']['job_id'] ?>" class="apply-btn">Apply Now</a>
+                <a href="<?= BASE_URL ?>/ujobs/<?= $data['job']['job_id'] ?>" class="apply-btn">Apply Now</a>
             </div>
         </div>
     </div>

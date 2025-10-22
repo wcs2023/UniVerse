@@ -1,16 +1,11 @@
-<?php 
-// Include navigation if it exists
-$navFile = APPROOT . '/views/actors/undergraduate/Unavigation.view.php';
-if (file_exists($navFile)) {
-    require_once $navFile;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
     <title>Discover Your Mentor - UniVerse</title>
     <style>
         * {
@@ -30,7 +25,7 @@ if (file_exists($navFile)) {
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg-light);
+            background-color: #a78bfa45;
             color: var(--text-dark);
             line-height: 1.6;
             margin: 0;
@@ -46,9 +41,10 @@ if (file_exists($navFile)) {
         /* Page Header */
         .page-header {
             text-align: center;
-            padding: 3rem 0 2rem;
+            padding: 5rem 0 2rem; /* Increased top padding from 3rem to 5rem */
             background-color: white;
             margin-bottom: 2rem;
+            margin-top: 80px; /* Add margin to account for fixed navbar */
         }
 
         .page-header h1 {
@@ -138,6 +134,9 @@ if (file_exists($navFile)) {
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-search:hover {
@@ -357,6 +356,8 @@ if (file_exists($navFile)) {
     </style>
 </head>
 <body>
+    <?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
+
     <!-- Page Header -->
     <div class="page-header">
         <div class="container">
@@ -370,7 +371,7 @@ if (file_exists($navFile)) {
         <div class="search-section">
             <form action="<?= BASE_URL ?>/mentorships/exploreMentors" method="GET" class="search-bar">
                 <div class="search-input-wrapper">
-                    <span class="search-icon">🔍</span>
+                    <i class="fas fa-search search-icon"></i>
                     <input 
                         type="text" 
                         name="search" 
@@ -381,7 +382,7 @@ if (file_exists($navFile)) {
                 </div>
                 
                 <select name="industry" class="filter-select">
-                    <option value="">Industry</option>
+                    <option value="">All Industries</option>
                     <option value="Technology" <?= (isset($data['industry']) && $data['industry'] === 'Technology') ? 'selected' : '' ?>>Technology</option>
                     <option value="Finance" <?= (isset($data['industry']) && $data['industry'] === 'Finance') ? 'selected' : '' ?>>Finance</option>
                     <option value="Healthcare" <?= (isset($data['industry']) && $data['industry'] === 'Healthcare') ? 'selected' : '' ?>>Healthcare</option>
@@ -390,7 +391,7 @@ if (file_exists($navFile)) {
                 </select>
                 
                 <select name="expertise" class="filter-select">
-                    <option value="">Expertise</option>
+                    <option value="">All Expertise</option>
                     <option value="Software Engineering" <?= (isset($data['expertise']) && $data['expertise'] === 'Software Engineering') ? 'selected' : '' ?>>Software Engineering</option>
                     <option value="Data Science" <?= (isset($data['expertise']) && $data['expertise'] === 'Data Science') ? 'selected' : '' ?>>Data Science</option>
                     <option value="Product Management" <?= (isset($data['expertise']) && $data['expertise'] === 'Product Management') ? 'selected' : '' ?>>Product Management</option>
@@ -399,7 +400,8 @@ if (file_exists($navFile)) {
                 </select>
                 
                 <button type="submit" class="btn-search">
-                    <span>🔍 Search</span>
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
                 </button>
             </form>
         </div>
@@ -410,9 +412,10 @@ if (file_exists($navFile)) {
                 <?php foreach ($data['mentors'] as $index => $mentor): ?>
                     <div class="mentor-card" style="animation-delay: <?= $index * 0.05 ?>s" onclick="window.location.href='<?= BASE_URL ?>/mentorships/viewProfile/<?= $mentor['mentor_id'] ?>'">
                         <img 
-                            src="<?= !empty($mentor['profile_picture_url']) ? htmlspecialchars($mentor['profile_picture_url']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>" 
+                            src="<?= !empty($mentor['profile_picture_url']) ? htmlspecialchars($mentor['profile_picture_url']) : BASE_URL . '/assets/images/avatars/default.png' ?>" 
                             alt="<?= htmlspecialchars($mentor['first_name'] . ' ' . $mentor['last_name']) ?>" 
                             class="mentor-avatar"
+                            onerror="this.src='<?= BASE_URL ?>/assets/images/avatars/default.png'"
                         >
                         
                         <h3 class="mentor-name">
@@ -420,10 +423,10 @@ if (file_exists($navFile)) {
                         </h3>
                         
                         <p class="mentor-position">
-                            <?= htmlspecialchars($mentor['current_position']) ?>
+                            <?= htmlspecialchars($mentor['current_position'] ?? 'Professional Mentor') ?>
                         </p>
                         
-                        <?php if ($mentor['average_rating'] > 0): ?>
+                        <?php if (isset($mentor['average_rating']) && $mentor['average_rating'] > 0): ?>
                             <div class="mentor-rating">
                                 <span class="stars">
                                     <?php 
@@ -431,18 +434,20 @@ if (file_exists($navFile)) {
                                     $fullStars = floor($rating);
                                     $halfStar = ($rating - $fullStars) >= 0.5;
                                     
-                                    for ($i = 0; $i < $fullStars; $i++) echo '★';
-                                    if ($halfStar) echo '⯨';
-                                    for ($i = 0; $i < (5 - $fullStars - ($halfStar ? 1 : 0)); $i++) echo '☆';
+                                    for ($i = 0; $i < $fullStars; $i++) echo '<i class="fas fa-star"></i>';
+                                    if ($halfStar) echo '<i class="fas fa-star-half-alt"></i>';
+                                    for ($i = 0; $i < (5 - $fullStars - ($halfStar ? 1 : 0)); $i++) echo '<i class="far fa-star"></i>';
                                     ?>
                                 </span>
-                                <span>(<?= $mentor['total_sessions'] ?> sessions)</span>
+                                <span>(<?= $mentor['total_sessions'] ?? 0 ?> sessions)</span>
                             </div>
                         <?php endif; ?>
                         
                         <div class="expertise-tags">
                             <?php 
-                            $expertiseArray = isset($mentor['expertise_array']) ? $mentor['expertise_array'] : [];
+                            $expertiseArray = isset($mentor['expertise_array']) ? $mentor['expertise_array'] : 
+                                             (isset($mentor['expertise']) ? explode(',', $mentor['expertise']) : 
+                                             ['General Mentoring']);
                             $displayCount = 0;
                             foreach ($expertiseArray as $expertise): 
                                 if ($displayCount >= 3) break;
@@ -456,6 +461,7 @@ if (file_exists($navFile)) {
                         </div>
                         
                         <button class="btn-view-profile">
+                            <i class="fas fa-user"></i>
                             View Profile
                         </button>
                     </div>
@@ -463,37 +469,54 @@ if (file_exists($navFile)) {
             </div>
 
             <!-- Pagination -->
+            <?php if (isset($data['pagination']) && $data['pagination']['totalPages'] > 1): ?>
             <div class="pagination-wrapper">
                 <ul class="pagination">
                     <li>
-                        <a class="page-link disabled" href="#" tabindex="-1">
-                            ←
-                        </a>
+                        <?php if ($data['pagination']['currentPage'] > 1): ?>
+                            <a class="page-link" href="?page=<?= $data['pagination']['currentPage'] - 1 ?>">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        <?php else: ?>
+                            <span class="page-link disabled">
+                                <i class="fas fa-chevron-left"></i>
+                            </span>
+                        <?php endif; ?>
                     </li>
+                    
+                    <?php for ($i = 1; $i <= $data['pagination']['totalPages']; $i++): ?>
+                        <li>
+                            <a class="page-link <?= ($i === $data['pagination']['currentPage']) ? 'active' : '' ?>" 
+                               href="?page=<?= $i ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    
                     <li>
-                        <a class="page-link active" href="#">1</a>
-                    </li>
-                    <li>
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li>
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li>
-                        <a class="page-link" href="#">
-                            →
-                        </a>
+                        <?php if ($data['pagination']['currentPage'] < $data['pagination']['totalPages']): ?>
+                            <a class="page-link" href="?page=<?= $data['pagination']['currentPage'] + 1 ?>">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        <?php else: ?>
+                            <span class="page-link disabled">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        <?php endif; ?>
                     </li>
                 </ul>
             </div>
+            <?php endif; ?>
         <?php else: ?>
             <!-- Empty State -->
             <div class="empty-state">
-                <div class="empty-icon">👥</div>
+                <div class="empty-icon">
+                    <i class="fas fa-users"></i>
+                </div>
                 <h3>No Mentors Found</h3>
                 <p>Try adjusting your search filters to find more mentors.</p>
             </div>
         <?php endif; ?>
     </div>
+
+    <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
 </html>

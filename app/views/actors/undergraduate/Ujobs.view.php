@@ -421,7 +421,7 @@
                             <?php else: ?>
                                 <span class="salary-range">Competitive Salary</span>
                             <?php endif; ?>
-                            <a href="<?= BASE_URL ?>/ujobs/view/<?= $job['job_id'] ?>" class="view-btn" onclick="event.stopPropagation()">View Details →</a>
+                            <a href="<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>" class="view-btn" onclick="event.stopPropagation()">View Details →</a>
                         </div>
                     </div>
                 <?php endforeach; ?>

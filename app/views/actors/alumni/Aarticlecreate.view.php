@@ -390,7 +390,7 @@ if (!defined('BASE_URL')) {
             }
 
             if (content.length < 10) {
-                showAlert('error', 'Article content must be at least 100 characters long');
+                showAlert('error', 'Article content must be at least 10 characters long');
                 document.getElementById('content').focus();
                 return;
             }

@@ -34,8 +34,8 @@ $current_path = parse_url($current_uri, PHP_URL_PATH);
                 </a>
             </li>
             <li>
-                <a href="<?= BASE_URL ?>/forums" 
-                   class="<?= (strpos($current_path, '/forums') !== false) ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>/adiscussion" 
+                   class="<?= (strpos($current_path, '/adiscussion') !== false) ? 'active' : '' ?>">
                     Discussion Forums
                 </a>
             </li>

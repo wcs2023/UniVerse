@@ -115,7 +115,7 @@ class SchoolLeaver extends Controller
     {
         try {
             // Load the Article model to get real articles from database
-            $articleModel = $this->model('Article');
+            $articleModel = $this->model('AarticleModel');
             
             // Get all published articles (same as undergraduate system)
             $articles = $articleModel->getAllPublishedArticles();
@@ -332,36 +332,216 @@ class SchoolLeaver extends Controller
     }
 
     /**
-     * Display discussion forums
+     * Display discussion forums - FIXED
      */
     public function forums()
     {
-        // Mock forum data
-        $discussions = [
+        // Mock forum data with categories and recent discussions
+        $categories = [
             [
                 'id' => 1,
-                'title' => 'Best Universities for Engineering',
-                'author' => 'Student123',
-                'replies' => 15,
-                'last_reply' => '2024-10-20',
-                'category' => 'University Selection'
+                'name' => 'University Selection',
+                'description' => 'Discuss different universities, programs, and admission requirements',
+                'thread_count' => 24,
+                'post_count' => 156,
+                'last_activity' => '2024-10-21 10:30:00',
+                'icon' => 'fa-graduation-cap'
             ],
             [
                 'id' => 2,
-                'title' => 'Scholarship Opportunities',
+                'name' => 'Career Planning',
+                'description' => 'Share career advice, job market insights, and professional development tips',
+                'thread_count' => 18,
+                'post_count' => 89,
+                'last_activity' => '2024-10-21 09:15:00',
+                'icon' => 'fa-briefcase'
+            ],
+            [
+                'id' => 3,
+                'name' => 'Study Tips & Advice',
+                'description' => 'Exchange study methods, exam preparation strategies, and academic support',
+                'thread_count' => 32,
+                'post_count' => 201,
+                'last_activity' => '2024-10-21 11:45:00',
+                'icon' => 'fa-book-open'
+            ],
+            [
+                'id' => 4,
+                'name' => 'Scholarships & Financial Aid',
+                'description' => 'Information about scholarships, grants, and funding opportunities',
+                'thread_count' => 15,
+                'post_count' => 67,
+                'last_activity' => '2024-10-20 16:22:00',
+                'icon' => 'fa-dollar-sign'
+            ],
+            [
+                'id' => 5,
+                'name' => 'General Discussion',
+                'description' => 'Open discussion about student life, experiences, and other topics',
+                'thread_count' => 41,
+                'post_count' => 298,
+                'last_activity' => '2024-10-21 12:10:00',
+                'icon' => 'fa-comments'
+            ]
+        ];
+
+        $recent_threads = [
+            [
+                'id' => 1,
+                'title' => 'Best Universities for Engineering in 2024',
+                'author' => 'TechStudent2024',
+                'category' => 'University Selection',
+                'replies' => 15,
+                'views' => 234,
+                'last_post_time' => '2024-10-21 10:30:00',
+                'last_post_author' => 'EngineeringGuru'
+            ],
+            [
+                'id' => 2,
+                'title' => 'How to improve Z-score for university admission?',
                 'author' => 'FutureDoc',
+                'category' => 'Study Tips & Advice',
+                'replies' => 22,
+                'views' => 187,
+                'last_post_time' => '2024-10-21 09:45:00',
+                'last_post_author' => 'StudyExpert'
+            ],
+            [
+                'id' => 3,
+                'title' => 'Scholarship opportunities for Computer Science students',
+                'author' => 'CodeMaster',
+                'category' => 'Scholarships & Financial Aid',
                 'replies' => 8,
-                'last_reply' => '2024-10-19',
-                'category' => 'Financial Aid'
+                'views' => 156,
+                'last_post_time' => '2024-10-21 08:20:00',
+                'last_post_author' => 'ScholarshipHunter'
+            ],
+            [
+                'id' => 4,
+                'title' => 'Career prospects in Data Science',
+                'author' => 'DataAnalyst2024',
+                'category' => 'Career Planning',
+                'replies' => 12,
+                'views' => 198,
+                'last_post_time' => '2024-10-20 17:30:00',
+                'last_post_author' => 'DataSciencePro'
             ]
         ];
         
         $data = [
             'title' => 'Discussion Forums',
-            'discussions' => $discussions
+            'categories' => $categories,
+            'recent_threads' => $recent_threads,
+            'user_type' => 'school_leaver',
+            'stats' => [
+                'total_threads' => 130,
+                'total_posts' => 811,
+                'total_members' => 245,
+                'newest_member' => 'NewStudent2024'
+            ]
         ];
 
-        $this->view('actors/students/forums', $data);
+        // Use the correct view file name
+        $this->view('actors/students/forum_home', $data);
+    }
+
+    /**
+     * Display forum category - NEW METHOD
+     */
+    public function forumCategory($categoryId = null)
+    {
+        if (!$categoryId) {
+            header('Location: ' . BASE_URL . '/schoolleaver/forums');
+            exit;
+        }
+
+        // Mock category data
+        $category = [
+            'id' => $categoryId,
+            'name' => 'University Selection',
+            'description' => 'Discuss different universities, programs, and admission requirements'
+        ];
+
+        $threads = [
+            [
+                'id' => 1,
+                'title' => 'Best Universities for Engineering',
+                'author' => 'TechStudent2024',
+                'replies' => 15,
+                'views' => 234,
+                'created_at' => '2024-10-15 14:30:00',
+                'last_post_time' => '2024-10-21 10:30:00',
+                'last_post_author' => 'EngineeringGuru',
+                'is_pinned' => true
+            ],
+            [
+                'id' => 2,
+                'title' => 'University of Colombo vs SLIIT - Which is better?',
+                'author' => 'ConfusedStudent',
+                'replies' => 28,
+                'views' => 456,
+                'created_at' => '2024-10-12 09:15:00',
+                'last_post_time' => '2024-10-21 08:45:00',
+                'last_post_author' => 'UniExpert',
+                'is_pinned' => false
+            ]
+        ];
+
+        $data = [
+            'title' => $category['name'] . ' - Forum Category',
+            'category' => $category,
+            'threads' => $threads,
+            'user_type' => 'school_leaver'
+        ];
+
+        $this->view('actors/students/forum_category', $data);
+    }
+
+    /**
+     * Display forum thread - NEW METHOD
+     */
+    public function forumThread($threadId = null)
+    {
+        if (!$threadId) {
+            header('Location: ' . BASE_URL . '/schoolleaver/forums');
+            exit;
+        }
+
+        // Mock thread data
+        $thread = [
+            'id' => $threadId,
+            'title' => 'Best Universities for Engineering',
+            'author' => 'TechStudent2024',
+            'created_at' => '2024-10-15 14:30:00',
+            'views' => 234,
+            'category' => 'University Selection'
+        ];
+
+        $posts = [
+            [
+                'id' => 1,
+                'content' => 'Hi everyone! I\'m looking for advice on the best universities for engineering in Sri Lanka. Can anyone share their experiences?',
+                'author' => 'TechStudent2024',
+                'created_at' => '2024-10-15 14:30:00',
+                'is_original_post' => true
+            ],
+            [
+                'id' => 2,
+                'content' => 'I would highly recommend University of Moratuwa for engineering. Great faculty and industry connections!',
+                'author' => 'EngineeringGuru',
+                'created_at' => '2024-10-15 16:45:00',
+                'is_original_post' => false
+            ]
+        ];
+
+        $data = [
+            'title' => $thread['title'],
+            'thread' => $thread,
+            'posts' => $posts,
+            'user_type' => 'school_leaver'
+        ];
+
+        $this->view('actors/students/forum_thread', $data);
     }
 
     /**
