@@ -3,80 +3,98 @@
 class Database
 {
     private static $instance = null;
-    private $conn;
-    
-    private function __construct()
-    {
-        $string = "mysql:host=" . DBHOST . ";dbname=" . DBNAME;
-        $this->conn = new PDO($string, DBUSER, DBPASS);
-        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    }
-    
+    private $pdo;
+
+    /**
+     * Get the singleton instance of the Database class
+     * @return Database - The instance of the Database class
+     */
     public static function getInstance()
     {
-        if(self::$instance === null)
-        {
+        if (self::$instance === null) {
             self::$instance = new self();
         }
-        
         return self::$instance;
     }
-    
+
+    /**
+     * Constructor - Initialize database connection
+     * Sets up database credentials from config constants and establishes connection
+     */
+    private function __construct()
+    {
+        try {
+            // Use constants from config.php instead of requiring a separate file
+            $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+            
+            $this->pdo = new PDO(
+                $dsn,
+                DBUSER,
+                DBPASS,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]
+            );
+        } catch (PDOException $e) {
+            die("Database connection failed: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get the PDO connection instance
+     * @return PDO - The PDO database connection
+     */
     public function getConnection()
     {
-        return $this->conn;
+        return $this->pdo;
     }
-    
+
     /**
-     * Execute a SQL query directly (for schema changes, etc.)
-     * 
-     * @param string $sql The SQL query to execute
-     * @return bool True on success, false on failure
+     * Execute a prepared SQL query
+     * @param string $sql - The SQL query with placeholders
+     * @param array $params - Parameters to bind to the query
+     * @return PDOStatement - The prepared statement object
      */
-    public function executeSQL($sql)
+    public function query($sql, $params = [])
     {
-        try {
-            $this->conn->exec($sql);
-            return true;
-        } catch(PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            return false;
-        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
     }
-    
+
     /**
-     * Execute a SQL file
-     * 
-     * @param string $filePath Path to the SQL file
-     * @return bool True on success, false on failure
+     * Execute query and fetch all results as associative array
+     * @param string $sql - The SQL query
+     * @param array $params - Parameters to bind
+     * @return array - Array of all matching rows
      */
-    public function executeSQLFile($filePath)
+    public function fetchAll($sql, $params = [])
     {
-        if (!file_exists($filePath)) {
-            error_log("SQL file not found: $filePath");
-            return false;
-        }
-        
-        try {
-            $sql = file_get_contents($filePath);
-            // Split SQL file into individual queries
-            $queries = array_filter(array_map('trim', explode(';', $sql)), 'strlen');
-            
-            // Begin transaction
-            $this->conn->beginTransaction();
-            
-            foreach ($queries as $query) {
-                $this->conn->exec($query);
-            }
-            
-            // Commit transaction
-            $this->conn->commit();
-            return true;
-        } catch(PDOException $e) {
-            // Rollback transaction on error
-            $this->conn->rollBack();
-            error_log("Database error executing SQL file: " . $e->getMessage());
-            return false;
-        }
+        $stmt = $this->query($sql, $params);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Execute query and fetch single result as associative array
+     * @param string $sql - The SQL query
+     * @param array $params - Parameters to bind
+     * @return array|false - Single row or false if no results
+     */
+    public function fetch($sql, $params = [])
+    {
+        $stmt = $this->query($sql, $params);
+        return $stmt->fetch();
+    }
+
+    /**
+     * Get the ID of the last inserted row
+     * Useful after INSERT operations to get the auto-generated ID
+     * @return string - The last insert ID
+     */
+    public function lastInsertId()
+    {
+        return $this->pdo->lastInsertId();
     }
 }

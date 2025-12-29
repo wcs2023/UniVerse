@@ -490,27 +490,31 @@ class Mentorship
     
     /**
      * Get pending mentorship requests for a mentor
+     * Updated to use Users table directly instead of Alumni table
      */
     public function getPendingRequestsForMentor($mentorId)
     {
         try {
+            // Query uses alumni_id but we pass user_id (they should be same in simplified approach)
             $query = "SELECT 
-                        mr.request_id,
-                        mr.request_date,
-                        mr.message,
+                        m.mentorship_id as request_id,
+                        m.request_date,
+                        m.message,
+                        m.topic,
+                        m.expectations,
                         u.user_id,
                         u.first_name,
                         u.last_name,
                         CONCAT(u.first_name, ' ', u.last_name) as mentee_name,
-                        u.profile_picture_url,
-                        mp.major,
-                        mp.year_of_study
-                      FROM Mentorship_Requests mr
-                      JOIN Users u ON mr.mentee_id = u.user_id
-                      LEFT JOIN Mentee_Profiles mp ON u.user_id = mp.user_id
-                      WHERE mr.mentor_id = ?
-                      AND mr.status = 'pending'
-                      ORDER BY mr.request_date DESC";
+                        u.profile_picture as profile_picture_url,
+                        up.degree_program as major,
+                        up.current_year as year_of_study
+                      FROM Mentorships m
+                      JOIN undergraduate_profiles up ON m.undergraduate_id = up.student_id
+                      JOIN users u ON up.user_id = u.user_id
+                      WHERE m.alumni_id = ?
+                      AND m.status = 'pending'
+                      ORDER BY m.request_date DESC";
             
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
@@ -523,24 +527,26 @@ class Mentorship
     
     /**
      * Get upcoming sessions for a mentor
+     * Updated to use Users table directly
      */
     public function getUpcomingSessionsForMentor($mentorId)
     {
         try {
             $query = "SELECT 
-                        ms.session_id,
-                        ms.scheduled_time,
-                        ms.meeting_link,
+                        m.mentorship_id as session_id,
+                        m.scheduled_date as scheduled_time,
+                        m.topic as meeting_link,
                         u.first_name,
                         u.last_name,
                         CONCAT(u.first_name, ' ', u.last_name) as mentee_name,
-                        u.profile_picture_url
-                      FROM Mentorship_Sessions ms
-                      JOIN Users u ON ms.mentee_id = u.user_id
-                      WHERE ms.mentor_id = ?
-                      AND ms.status = 'scheduled'
-                      AND ms.scheduled_time > NOW()
-                      ORDER BY ms.scheduled_time ASC";
+                        u.profile_picture as profile_picture_url
+                      FROM Mentorships m
+                      JOIN undergraduate_profiles up ON m.undergraduate_id = up.student_id
+                      JOIN users u ON up.user_id = u.user_id
+                      WHERE m.alumni_id = ?
+                      AND m.status IN ('scheduled', 'awaiting_student_confirmation')
+                      AND (m.scheduled_date > NOW() OR m.status = 'awaiting_student_confirmation')
+                      ORDER BY m.scheduled_date ASC";
             
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
@@ -553,47 +559,51 @@ class Mentorship
     
     /**
      * Get impact statistics for a mentor
+     * Updated to use Users table directly
      */
     public function getMentorStats($mentorId)
     {
         try {
             // Get total unique mentees from completed sessions
-            $query = "SELECT COUNT(DISTINCT mentee_id) as total_mentees
-                      FROM Mentorship_Sessions
-                      WHERE mentor_id = ? AND status = 'completed'";
+            $query = "SELECT COUNT(DISTINCT m.undergraduate_id) as total_mentees
+                      FROM Mentorships m
+                      WHERE m.alumni_id = ? AND m.status = 'completed'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
             $menteesResult = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Get total hours (count of completed sessions, assuming 1 hour per session)
+            // Get total sessions (completed)
             $query = "SELECT COUNT(*) as total_sessions
-                      FROM Mentorship_Sessions
-                      WHERE mentor_id = ? AND status = 'completed'";
+                      FROM Mentorships m
+                      WHERE m.alumni_id = ? AND m.status = 'completed'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
             $sessionsResult = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            // Get average rating and total sessions from mentor profile
-            $query = "SELECT average_rating, total_sessions
-                      FROM Mentor_Profiles
-                      WHERE mentor_id = ?";
+            // Calculate total hours (assuming 1 hour per session based on duration field)
+            $query = "SELECT SUM(duration) / 60 as total_hours
+                      FROM Mentorships m
+                      WHERE m.alumni_id = ? AND m.status = 'completed'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
-            $profileResult = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Use profile total_sessions if available, otherwise use counted sessions
-            $totalHours = $profileResult['total_sessions'] ?? $sessionsResult['total_sessions'] ?? 0;
+            $hoursResult = $stmt->fetch(PDO::FETCH_ASSOC);
             
             return [
                 'total_mentees' => (int)($menteesResult['total_mentees'] ?? 0),
-                'total_hours' => (int)$totalHours,
-                'average_rating' => (float)($profileResult['average_rating'] ?? 0)
+                'total_sessions' => (int)($sessionsResult['total_sessions'] ?? 0),
+                'total_hours' => (int)($hoursResult['total_hours'] ?? 0),
+                'completed_sessions' => (int)($sessionsResult['total_sessions'] ?? 0),
+                'active_mentees' => (int)($menteesResult['total_mentees'] ?? 0),
+                'average_rating' => 0.0  // Will need to implement rating system
             ];
         } catch(PDOException $e) {
             error_log("Error getting mentor stats: " . $e->getMessage());
             return [
                 'total_mentees' => 0,
+                'total_sessions' => 0,
                 'total_hours' => 0,
+                'completed_sessions' => 0,
+                'active_mentees' => 0,
                 'average_rating' => 0.0
             ];
         }

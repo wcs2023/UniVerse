@@ -1,7 +1,7 @@
 <?php
-class AlumniModel
+class AlumniModel extends Model
 {
-    private $db;
+    protected $db;
     
     public function __construct()
     {
@@ -51,6 +51,32 @@ class AlumniModel
     }
     
     /**
+     * Get an alumni by user ID
+     * 
+     * @param int $user_id The user ID
+     * @return array|bool The alumni data or false on failure
+     */
+    public function getAlumniByUserId($user_id)
+    {
+        try {
+            // Get alumni basic information
+            $query = "SELECT * FROM Alumni WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$user_id]);
+            $alumni = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$alumni) {
+                return false;
+            }
+            
+            return $alumni;
+        } catch(PDOException $e) {
+            error_log("Error getting alumni by user_id: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
      * Get all alumni who are available for mentorship
      * 
      * @return array The list of available alumni
@@ -95,14 +121,9 @@ class AlumniModel
     public function getUserById($userId)
     {
         try {
-            $query = "SELECT u.*, 
-                      a.title as current_role, 
-                      a.company, 
-                      a.linkedin_url, 
-                      a.short_bio, 
-                      a.available_for_mentorship
+            $query = "SELECT u.*, mp.current_role, mp.company, mp.linkedin_url, mp.short_bio, mp.available_for_mentorship
                       FROM Users u
-                      LEFT JOIN Alumni a ON u.user_id = a.user_id
+                      LEFT JOIN Mentor_Profiles mp ON u.user_id = mp.user_id
                       WHERE u.user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
@@ -137,16 +158,16 @@ class AlumniModel
                 $userId
             ]);
             
-            // Check if Alumni record exists
-            $query = "SELECT COUNT(*) as count FROM Alumni WHERE user_id = ?";
+            // Check if Mentor_Profiles record exists
+            $query = "SELECT COUNT(*) as count FROM Mentor_Profiles WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             $result = $stmt->fetch(PDO::FETCH_OBJ);
             
             if ($result->count > 0) {
                 // Update existing record
-                $query = "UPDATE Alumni SET
-                          title = ?,
+                $query = "UPDATE Mentor_Profiles SET
+                          current_role = ?,
                           company = ?,
                           linkedin_url = ?,
                           short_bio = ?,
@@ -163,8 +184,8 @@ class AlumniModel
                 ]);
             } else {
                 // Insert new record
-                $query = "INSERT INTO Alumni 
-                          (user_id, title, company, linkedin_url, short_bio, available_for_mentorship)
+                $query = "INSERT INTO Mentor_Profiles 
+                          (user_id, current_role, company, linkedin_url, short_bio, available_for_mentorship)
                           VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([
@@ -219,8 +240,8 @@ class AlumniModel
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
-            // Also update alumni availability
-            $query = "UPDATE Alumni SET available_for_mentorship = 0 WHERE user_id = ?";
+            // Also update mentor availability
+            $query = "UPDATE Mentor_Profiles SET available_for_mentorship = 0 WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
@@ -242,19 +263,22 @@ class AlumniModel
         try {
             $this->db->beginTransaction();
             
-            // Delete related data (foreign key constraints should handle this automatically, but being explicit)
+            // Delete from Mentor_Profiles
+            $query = "DELETE FROM Mentor_Profiles WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+            
+            // Delete from Mentee_Profiles
+            $query = "DELETE FROM Mentee_Profiles WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
             
             // Delete user articles
             $query = "DELETE FROM Articles WHERE author_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
-            // Delete from Alumni (will cascade to related tables)
-            $query = "DELETE FROM Alumni WHERE user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$userId]);
-            
-            // Delete from Users table (this should cascade to other tables)
+            // Delete from Users table
             $query = "DELETE FROM Users WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
@@ -264,6 +288,41 @@ class AlumniModel
         } catch(PDOException $e) {
             $this->db->rollBack();
             error_log("Error deleting account: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Create alumni profile linked to a user
+     *
+     * @param array $data Profile data (must include user_id)
+     * @return int|bool Inserted alumni_id on success, false on failure
+     */
+    public function createProfile($data)
+    {
+        if (empty($data['user_id'])) {
+            error_log('AlumniModel::createProfile called without user_id');
+            return false;
+        }
+
+        try {
+            $query = "INSERT INTO Alumni (user_id, first_name, last_name, university, faculty, graduation_year, field_of_study, created_at)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                $data['user_id'],
+                $data['first_name'] ?? null,
+                $data['last_name'] ?? null,
+                $data['university'] ?? null,
+                $data['faculty'] ?? null,
+                $data['graduation_year'] ?? null,
+                $data['field_of_study'] ?? null
+            ]);
+
+            $alumniId = $this->db->lastInsertId();
+            return $alumniId ? (int)$alumniId : false;
+        } catch (PDOException $e) {
+            error_log('Error creating alumni profile: ' . $e->getMessage());
             return false;
         }
     }

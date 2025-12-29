@@ -3,6 +3,7 @@
 class Alumni extends Controller
 {
     private $alumniModel;
+    private $articleModel;
     
     public function __construct()
     {
@@ -12,6 +13,7 @@ class Alumni extends Controller
         }
         
         $this->alumniModel = $this->model('AlumniModel');
+        $this->articleModel = $this->model('ArticleModel');
     }
     
     /**
@@ -27,11 +29,15 @@ class Alumni extends Controller
         }
         */
         
+        // Get recent published articles (limit to 6 for homepage)
+        $recentArticles = $this->articleModel->getAllPublishedArticles(6, 0);
+        
         $data = [
-            'user' => $_SESSION ?? []
+            'user' => $_SESSION ?? [],
+            'articles' => $recentArticles
         ];
         
-        $this->view('actors/alumini/Ahome', $data);
+        $this->view('actors/alumni/Ahome', $data);
     }
     
     public function directory()
@@ -71,7 +77,7 @@ class Alumni extends Controller
             'userData' => $userData
         ];
         
-        $this->view('actors/alumini/Aprofile', $data);
+        $this->view('actors/alumni/Aprofile', $data);
     }
     
     /**

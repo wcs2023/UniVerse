@@ -4,6 +4,8 @@ class App{
     
     private $controller = 'Home';
     private $method = 'index';
+    private $params = [];
+
     private function splitURL(){
         $URL = $_GET['url'] ?? 'home';
         $URL = explode('/', $URL);
@@ -19,26 +21,27 @@ class App{
         if(file_exists($filename)){
             require $filename;
             $this->controller = ucfirst($URL[0]);
+            unset($URL[0]);
         }else{
             $filename = "../app/controllers/_404.php";
             require $filename;
             $this->controller = '_404';
         }
 
-        // Check if a method is specified in the URL
+        $controller = new $this->controller;
+
+        // Check for method
         if(isset($URL[1])){
-            if(method_exists($this->controller, $URL[1])){
+            if(method_exists($controller, $URL[1])){
                 $this->method = $URL[1];
+                unset($URL[1]);
             }
         }
-        
-        $controller = new $this->controller;
-        
-        // Get parameters from URL (everything after controller/method)
-        $params = array_slice($URL, 2);
-        
-        // Call the controller method with parameters
-        call_user_func_array([$controller, $this->method], $params);
-    }
 
+        // Get parameters
+        $this->params = $URL ? array_values($URL) : [];
+
+        // Call the controller method with parameters
+        call_user_func_array([$controller, $this->method], $this->params);
+    }
 }
