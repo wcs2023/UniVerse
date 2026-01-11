@@ -403,7 +403,7 @@ if (!defined('URLROOT')) {
 <body>
     <?php 
     // Include navigation
-    $navFile = APPROOT . '/views/actors/alumini/Anavbar.php';
+    $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
@@ -659,7 +659,7 @@ if (!defined('URLROOT')) {
 
     <?php 
     // Include footer
-    $footerFile = APPROOT . '/views/actors/alumini/Afooter.php';
+    $footerFile = APPROOT . '/views/actors/alumni/Afooter.php';
     if (file_exists($footerFile)) {
         include $footerFile;
     }

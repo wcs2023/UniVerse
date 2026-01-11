@@ -42,7 +42,7 @@ class Articles extends Controller
             'published' => $published
         ];
         
-        $this->view('actors/alumini/Aarticleview', $data);
+        $this->view('actors/alumni/Aarticleview', $data);
     }
     
     /**
@@ -52,7 +52,7 @@ class Articles extends Controller
     {
         // TODO: Add authentication check
         
-        $this->view('actors/alumini/Aarticlecreate');
+        $this->view('actors/alumni/Aarticlecreate');
     }
     
     /**
@@ -79,7 +79,7 @@ class Articles extends Controller
             'article' => $article
         ];
         
-        $this->view('actors/alumini/Aarticleedit', $data);
+        $this->view('actors/alumni/Aarticleedit', $data);
     }
     
     /**

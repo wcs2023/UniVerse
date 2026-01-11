@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thread Edit</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum_thread.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
 </head>
 <body>
     
