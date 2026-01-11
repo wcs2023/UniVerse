@@ -8,12 +8,10 @@ class CompanyProfile extends Model
     public function createProfile($data)
     {
         $query = "INSERT INTO company_profiles (
-                    user_id, company_name, company_size, industry, 
-                    website, founded_year, company_description, 
+                        user_id, company_name, company_size, company_description, 
                     contact_person, contact_email, contact_phone
                   ) VALUES (
-                    :user_id, :company_name, :company_size, :industry, 
-                    :website, :founded_year, :company_description, 
+                    :user_id, :company_name, :company_size,:company_description, 
                     :contact_person, :contact_email, :contact_phone
                   )";
         
@@ -21,9 +19,6 @@ class CompanyProfile extends Model
             'user_id' => $data['user_id'],
             'company_name' => $data['company_name'] ?? null,
             'company_size' => $data['company_size'] ?? null,
-            'industry' => $data['industry'] ?? null,
-            'website' => $data['website'] ?? null,
-            'founded_year' => $data['founded_year'] ?? null,
             'company_description' => $data['company_description'] ?? null,
             'contact_person' => $data['contact_person'] ?? null,
             'contact_email' => $data['contact_email'] ?? null,
@@ -51,9 +46,6 @@ class CompanyProfile extends Model
         $query = "UPDATE company_profiles SET 
                     company_name = :company_name,
                     company_size = :company_size,
-                    industry = :industry,
-                    website = :website,
-                    founded_year = :founded_year,
                     company_description = :company_description,
                     contact_person = :contact_person,
                     contact_email = :contact_email,
@@ -64,9 +56,6 @@ class CompanyProfile extends Model
             'user_id' => $userId,
             'company_name' => $data['company_name'] ?? null,
             'company_size' => $data['company_size'] ?? null,
-            'industry' => $data['industry'] ?? null,
-            'website' => $data['website'] ?? null,
-            'founded_year' => $data['founded_year'] ?? null,
             'company_description' => $data['company_description'] ?? null,
             'contact_person' => $data['contact_person'] ?? null,
             'contact_email' => $data['contact_email'] ?? null,

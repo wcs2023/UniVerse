@@ -17,7 +17,7 @@ require_once BASE_PATH . '/core/Controller.php';
 require_once BASE_PATH . '/core/Model.php';
 require_once BASE_PATH . '/core/Database.php';
 
-// Autoload models dynamically
+// Autoload models dynamically,like the user model loaded in registration controller
 spl_autoload_register(function($className) {
     $modelPath = BASE_PATH . '/models/' . $className . '.php';
     if (file_exists($modelPath)) {

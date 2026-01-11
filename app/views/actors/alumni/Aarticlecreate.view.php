@@ -290,16 +290,14 @@ if (!defined('BASE_URL')) {
                     <label for="category" class="form-label">Category</label>
                     <select id="category" name="category" class="form-select">
                         <option value="">Select a category (optional)</option>
-                        <option value="Career Advice">Career Advice</option>
-                        <option value="Industry Insights">Industry Insights</option>
-                        <option value="Success Stories">Success Stories</option>
-                        <option value="Technical Skills">Technical Skills</option>
-                        <option value="Interview Tips">Interview Tips</option>
-                        <option value="Networking">Networking</option>
-                        <option value="Professional Development">Professional Development</option>
-                        <option value="Work-Life Balance">Work-Life Balance</option>
-                        <option value="Entrepreneurship">Entrepreneurship</option>
-                        <option value="Other">Other</option>
+                        <option value="technology">Technology</option>
+                        <option value="career">Career</option>
+                        <option value="education">Education</option>
+                        <option value="research">Research</option>
+                        <option value="student-life">Student Life</option>
+                        <option value="industry-news">Industry News</option>
+                        <option value="announcement">Announcement</option>
+                        <option value="other">Other</option>
                     </select>
                 </div>
 
@@ -313,7 +311,7 @@ if (!defined('BASE_URL')) {
                         placeholder="e.g., career, technology, interview, tips"
                     >
                     <div class="form-hint">
-                        Separate tags with commas. Tags help students find your article.
+                        Separate tags with commas. Tags help students find article type.
                     </div>
                 </div>
 
@@ -335,10 +333,10 @@ if (!defined('BASE_URL')) {
 
                 <div class="button-group">
                     <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                        📝 Publish Article
+                        Publish Article
                     </button>
                     <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                        💾 Save as Draft
+                        Save as Draft
                     </button>
                     <a href="<?= BASE_URL ?>/aarticles" class="btn btn-outline">
                         Cancel
@@ -377,8 +375,8 @@ if (!defined('BASE_URL')) {
                 return;
             }
 
-            if (title.length < 1) {
-                showAlert('error', 'Title must be at least 10 characters long');
+            if (title.length < 4) {
+                showAlert('error', 'Title must be at least 5 characters long');
                 document.getElementById('title').focus();
                 return;
             }
@@ -389,7 +387,7 @@ if (!defined('BASE_URL')) {
                 return;
             }
 
-            if (content.length < 10) {
+            if (content.length < 9) {
                 showAlert('error', 'Article content must be at least 10 characters long');
                 document.getElementById('content').focus();
                 return;
@@ -454,11 +452,11 @@ if (!defined('BASE_URL')) {
             }
         }
 
-        // Auto-hide alerts after 5 seconds
+        // Auto-hide alerts after 4 seconds
         setTimeout(() => {
             document.getElementById('alert-success').style.display = 'none';
             document.getElementById('alert-error').style.display = 'none';
-        }, 5000);
+        }, 4000);
     </script>
 
     <?php 

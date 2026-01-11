@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
     <title>UniVerse - <?= $data['title'] ?></title>
 </head>
 <body>
@@ -15,22 +15,18 @@
         <div class="articles-hero-banner">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    University Articles & <span class="highlight">Insights</span>
+                    University Articles & Insights</span>
                 </h1>
-                <p class="hero-subtitle">
-                    Discover stories that inspire, inform, and connect our community
-                </p>
-                
                 <!-- Quick Stats -->
                 <div class="hero-stats">
                     <div class="stat-item">
                         <span class="stat-number"><?= count($data['articles'] ?? []) ?></span>
                         <span class="stat-label">Articles</span>
                     </div>
-                    <div class="stat-item">
+                    <!-- <div class="stat-item">
                         <span class="stat-number"><?= count($data['categories'] ?? []) ?></span>
                         <span class="stat-label">Categories</span>
-                    </div>
+                    </div> -->
                     <div class="stat-item">
                         <span class="stat-number">24/7</span>
                         <span class="stat-label">Access</span>
@@ -44,7 +40,7 @@
             <section class="categories-section">
                 <div class="section-header">
                     <h2> Browse by Category</h2>
-                    <p>Find articles that match your interests</p>
+                    <!-- <p>Find articles that match your interests</p> -->
                 </div>
                 
                 <div class="categories-grid">
@@ -58,18 +54,18 @@
                     
                     <?php if (!empty($data['categories'])): ?>
                         <?php 
-                        $categoryIcons = [
-                            'technology' => 'fas fa-laptop-code',
-                            'science' => 'fas fa-microscope',
-                            'business' => 'fas fa-chart-line',
-                            'health' => 'fas fa-heartbeat',
-                            'education' => 'fas fa-graduation-cap',
-                            'lifestyle' => 'fas fa-leaf',
-                            'travel' => 'fas fa-plane',
-                            'sports' => 'fas fa-football-ball',
-                            'art' => 'fas fa-palette',
-                            'music' => 'fas fa-music'
-                        ];
+                        // $categoryIcons = [
+                        //     'technology' => 'fas fa-laptop-code',
+                        //     'science' => 'fas fa-microscope',
+                        //     'business' => 'fas fa-chart-line',
+                        //     'education' => 'fas fa-graduation-cap',
+                        //     'health' => 'fas fa-heartbeat',
+                        //     'environment' => 'fas fa-leaf',
+                        //     'arts' => 'fas fa-palette',
+                        //     'sports' => 'fas fa-football-ball',
+                        //     'travel' => 'fas fa-plane',
+                        //     'lifestyle' => 'fas fa-spa',
+                        // ];                          
                         ?>
                         <?php foreach($data['categories'] as $categoryData): ?>
                             <?php
@@ -92,10 +88,10 @@
                         <!-- Fallback categories for demo -->
                         <?php 
                         $fallbackCategories = [
-                            ['name' => 'Technology', 'icon' => 'fas fa-laptop-code', 'count' => 12],
-                            ['name' => 'Science', 'icon' => 'fas fa-microscope', 'count' => 8],
-                            ['name' => 'Business', 'icon' => 'fas fa-chart-line', 'count' => 15],
-                            ['name' => 'Education', 'icon' => 'fas fa-graduation-cap', 'count' => 20]
+                            ['name' => 'Technology', 'icon' => 'fas fa-laptop-code', 'count' => 0],
+                            ['name' => 'Science', 'icon' => 'fas fa-microscope', 'count' => 0],
+                            ['name' => 'Business', 'icon' => 'fas fa-chart-line', 'count' => 0],
+                        ['name' => 'Education', 'icon' => 'fas fa-graduation-cap', 'count' => 0]
                         ];
                         ?>
                         <?php foreach($fallbackCategories as $category): ?>
@@ -112,34 +108,50 @@
 
             <!-- Enhanced Articles Section -->
             <section class="articles-section">
-                <div class="section-header">
-                    <h2>Latest Articles</h2>
-                    <div class="section-controls">
-                        <div class="search-box">
-                            <!-- <i class="fas fa-search"></i> -->
-                            <input type="text" placeholder="Search articles..." id="article-search">
-                        </div>
-                        <select class="sort-dropdown" id="sort-articles">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="popular">Most Popular</option>
-                            <option value="trending">Trending</option>
-                        </select>
-                    </div>
-                </div>
-                
                 <?php if (!empty($data['articles'])): ?>
+                    <div class="section-header">
+                        <h2>Latest Articles</h2>
+                        <div class="section-controls">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search articles..." id="article-search">
+                            </div>
+                            <select class="sort-dropdown" id="sort-articles">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <!-- <option value="popular">Most Popular</option>
+                                <option value="trending">Trending</option> -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="container-grid">
+                            <?php foreach($data['articles'] as $article): ?>
+                                <div class="article-card">
+                                    <h3 class="article-title">    
+                                            <?= htmlspecialchars(ucfirst($article['title']))?>
+                                    </h3>
+                                    <div class="article-body">
+                                        <div class="article-tag">
+                                            <?= htmlspecialchars(ucfirst($article['tags']))?> 
+                                        </div>
+                                        <p class="article-excerpt">
+                                            <?= htmlspecialchars(ucfirst($article['excerpt']))?>
+                                        </p>
+                                    </div>
+                                    <div class="article-name">
+                                        <?= htmlspecialchars(ucfirst($article['author_name']))?>
+                                    </div>
+                            </div>
+                            <?php endforeach; ?>
+                    </div>
+                
                 <?php else: ?>
-                    <div class="no-articles-enhanced">
-                        
+                    <div class="no-articles-enhanced">        
                         <h3>No Articles Available</h3>
                         <p>We're working hard to bring you amazing content. Check back soon for inspiring articles!</p>
-                        
                     </div>
                 <?php endif; ?>
             </section>
-
-            
         </div>
     </div>
 
@@ -170,13 +182,12 @@
     /* Page Wrapper */
     .articles-page-wrapper {
         min-height: 100vh;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
 
     /* Enhanced Hero Banner - Removed Animations */
     .articles-hero-banner {
         position: relative;
-        background: var(--gradient-primary);
+        background: var(--light-gray);
         padding: 4rem 2rem;
         color: white;
         margin-top: 3rem;
@@ -224,6 +235,7 @@
     }
 
     .hero-stats {
+        color: var(--text-dark);
         display: flex;
         justify-content: center;
         gap: 3rem;
@@ -646,6 +658,70 @@
         gap: 0.5rem;
         color: var(--text-light);
         font-size: 0.9rem;
+    }
+
+    /* public view of the articles */
+    .container-grid{
+        grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+        gap:1.5rem;
+        display: grid;
+    }
+
+    .article-card{
+        display: flex;
+        flex-direction: column;
+        color: var(--text-dark);
+        border-radius: var(--radius);
+        background: var(--white);
+        padding: 1.4rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: var(--transition);
+    }
+
+    .article-tag{
+        align-self: flex-start;
+        background: rgba(150, 92, 231, 0.1);
+        color: var(--dark-purple);
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        margin-top: 0.90rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+    }
+
+    .article-name{
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        border-top: 1.5px solid rgb(187, 127, 248);
+        /* text-align: right; */
+    }
+
+    .article-card:hover
+    {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+        color: var(--dark-purple);
+        border-color: var(--dark-purple);
+    }
+
+    .article-title{
+        color: var(--text-dark);
+        margin:0 0 0 0.6rem;
+        font-size: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .article-body{
+        color:var(--text-dark);
+        margin-bottom: 0.75rem;
+    }
+
+    .article-excerpt{
+        /* display: block; */
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
 
     /* Enhanced Load More Button */

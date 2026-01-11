@@ -60,31 +60,53 @@ class Ueditprofile extends Controller {
             // Otherwise, handle full profile update
             $userData = $this->validateProfileData($_POST);
             
-            // Update user table
+            // Update user table - only include non-empty fields
             $userModel = new User();
-            $userUpdateData = [
-                'first_name' => $userData['first_name'],
-                'middle_name' => $userData['middle_name'] ?? null,
-                'last_name' => $userData['last_name'],
-                'date_of_birth' => $userData['date_of_birth'],
-                'gender' => $userData['gender'],
-                'phone_number' => $userData['phone'],
-                'address' => $userData['address_line1'] ?? null,
-            ];
+            $userUpdateData = [];
             
-            $userModel->updateUser($userId, $userUpdateData);
+            if (!empty($userData['first_name'])) {
+                $userUpdateData['first_name'] = $userData['first_name'];
+            }
+            if (!empty($userData['last_name'])) {
+                $userUpdateData['last_name'] = $userData['last_name'];
+            }
+            if (!empty($userData['date_of_birth'])) {
+                $userUpdateData['date_of_birth'] = $userData['date_of_birth'];
+            }
+            if (!empty($userData['gender'])) {
+                $userUpdateData['gender'] = $userData['gender'];
+            }
+            if (!empty($userData['phone'])) {
+                $userUpdateData['phone'] = $userData['phone'];
+            }
             
-            // Update undergraduate profile table
+            if (!empty($userUpdateData)) {
+                $userModel->updateUser($userId, $userUpdateData);
+            }
+            
+            // Update undergraduate profile table - only include non-empty fields
             $undergraduateModel = new UndergraduateProfile();
-            $profileUpdateData = [
-                'university' => $userData['university'],
-                'faculty' => $userData['faculty'],
-                'degree_program' => $userData['degree_program'],
-                'academic_year' => $userData['academic_year'],
-                'expected_graduation_year' => $userData['expected_graduation_year']
-            ];
+            $profileUpdateData = [];
             
-            $undergraduateModel->updateProfile($userId, $profileUpdateData);
+            if (!empty($userData['university'])) {
+                $profileUpdateData['university'] = $userData['university'];
+            }
+            if (!empty($userData['faculty'])) {
+                $profileUpdateData['faculty'] = $userData['faculty'];
+            }
+            if (!empty($userData['degree_program'])) {
+                $profileUpdateData['degree_program'] = $userData['degree_program'];
+            }
+            if (!empty($userData['academic_year'])) {
+                $profileUpdateData['academic_year'] = $userData['academic_year'];
+            }
+            if (!empty($userData['expected_graduation_year'])) {
+                $profileUpdateData['expected_graduation_year'] = $userData['expected_graduation_year'];
+            }
+            
+            if (!empty($profileUpdateData)) {
+                $undergraduateModel->updateProfile($userId, $profileUpdateData);
+            }
             
             $_SESSION['profile_success'] = 'Profile updated successfully!';
             header('Location: ' . BASE_URL . '/umyprofile');
@@ -99,28 +121,18 @@ class Ueditprofile extends Controller {
     }
 
     private function validateProfileData($data) {
-        $required = ['first_name', 'last_name', 'date_of_birth', 'gender', 'phone', 
-                    'university', 'faculty', 'degree_program', 'academic_year', 'expected_graduation_year'];
-        
-        foreach ($required as $field) {
-            if (empty($data[$field])) {
-                $fieldName = ucwords(str_replace('_', ' ', $field));
-                throw new Exception("$fieldName is required");
-            }
-        }
-        
+        // No required fields - all fields are optional during update
         // Validate email format if provided
         if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Invalid email format");
         }
         
-        // Validate phone number (Sri Lankan format)
+        // Validate phone number format if provided (Sri Lankan format)
         if (!empty($data['phone'])) {
             if (!preg_match('/^\+94\d{9}$/', $data['phone'])) {
                 throw new Exception("Phone number must be in format +94xxxxxxxxx (e.g., +94771234567)");
             }
         }
-        
         return $data;
     }
 
@@ -158,7 +170,7 @@ class Ueditprofile extends Controller {
             // Update user profile picture in database
             $userModel = new User();
             $dbPath = '/assets/images/profiles/' . $filename;
-            // $userModel->updateProfilePicture($userId, $dbPath);
+            $userModel->updateProfilePicture($userId, $dbPath);
         } else {
             throw new Exception("Failed to upload profile picture");
         }

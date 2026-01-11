@@ -24,11 +24,11 @@ class Uachievements extends Controller {
             return;
         }
         
-        // ✅ Get user data from database
+        //  Get user data from database
         $userModel = new User();
         $user = $userModel->getUserById($userId);
         
-        // ✅ Get undergraduate profile data
+        //  Get undergraduate profile data
         $undergraduateModel = new UndergraduateProfile();
         $profile = $undergraduateModel->getProfileByUserId($userId);
         
@@ -51,8 +51,8 @@ class Uachievements extends Controller {
         
         // Prepare data for the view
         $data = [
-            'user' => $user ?? [],  // ✅ Pass user data
-            'profile' => $profile ?? [],  // ✅ Pass profile data
+            'user' => $user ?? [],  //  Pass user data
+            'profile' => $profile ?? [],  //  Pass profile data
             'achievements' => $achievements ?? [],
             'counts' => $counts,
             'types' => $achievementTypes,

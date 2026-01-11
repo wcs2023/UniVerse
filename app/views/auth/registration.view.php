@@ -161,7 +161,6 @@
                 <option value="">Select (Optional)</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">Other</option>
                 <option value="prefer_not_to_say">Prefer not to say</option>
               </select>
             </div>
@@ -184,26 +183,26 @@
             
             <div class="form-grid">
               <div class="form-group full-width">
-                <label for="universityName" class="required">University Name</label>
-                <input type="text" id="universityName" name="university_name" required>
+                <label for="universityName">University Name</label>
+                <input type="text" id="universityName" name="university_name" >
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
-                <label for="faculty" class="required">Faculty</label>
-                <input type="text" id="faculty" name="faculty" placeholder="e.g., Engineering, Arts, Science" required>
+                <label for="faculty" >Faculty</label>
+                <input type="text" id="faculty" name="faculty" placeholder="e.g., Engineering, Arts, Science" >
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
-                <label for="degreeProgram" class="required">Degree Program</label>
-                <input type="text" id="degreeProgram" name="degree_program" placeholder="e.g., Computer Science, Business" required>
+                <label for="degreeProgram" >Degree Program</label>
+                <input type="text" id="degreeProgram" name="degree_program" placeholder="e.g., Computer Science, Business" >
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
-                <label for="academicYear" class="required">Academic Year</label>
-                <select id="academicYear" name="academic_year" required>
+                <label for="academicYear" >Academic Year</label>
+                <select id="academicYear" name="academic_year" >
                   <option value="">Select Year</option>
                   <option value="1st year">1st Year</option>
                   <option value="2nd year">2nd Year</option>
@@ -214,8 +213,8 @@
               </div>
               
               <div class="form-group">
-                <label for="graduationYear" class="required">Expected Graduation</label>
-                <select id="graduationYear" name="expected_graduation_year" required>
+                <label for="graduationYear" >Expected Graduation</label>
+                <select id="graduationYear" name="expected_graduation_year" >
                   <option value="">Select Year</option>
                   <option value="2024">2024</option>
                   <option value="2025">2025</option>
@@ -228,12 +227,12 @@
                 <div class="field-error"></div>
               </div>
               
-              <div class="form-group full-width">
+              <!-- <div class="form-group full-width">
                 <label for="skillsInterests">Skills & Interests</label>
                 <textarea id="skillsInterests" name="skills_interests" rows="3" 
                           placeholder="Tell us about your skills, interests, and what you're passionate about..."></textarea>
                 <div class="field-hint">This helps us match you with relevant opportunities</div>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -245,7 +244,7 @@
             <div class="form-grid">
               <div class="form-group full-width">
                 <label for="qualification" class="required">Highest Qualification</label>
-                <select id="qualification" name="highest_qualification" required>
+                <select id="qualification" name="highest_qualification" >
                   <option value="">Select Qualification</option>
                   <option value="A/L">Advanced Level (A/L)</option>
                   <option value="O/L">Ordinary Level (O/L)</option>
@@ -285,8 +284,8 @@
               </div>
               
               <div class="form-group">
-                <label for="companySize" class="required">Company Size</label>
-                <select id="companySize" name="company_size" required>
+                <label for="companySize" >Company Size</label>
+                <select id="companySize" name="company_size" >
                   <option value="">Select Size</option>
                   <option value="startup">Startup (1-10 employees)</option>
                   <option value="small">Small (11-50 employees)</option>
@@ -294,24 +293,6 @@
                   <option value="large">Large (201-1000 employees)</option>
                   <option value="enterprise">Enterprise (1000+ employees)</option>
                 </select>
-                <div class="field-error"></div>
-              </div>
-              
-              <div class="form-group full-width">
-                <label for="industry" class="required">Industry</label>
-                <input type="text" id="industry" name="industry" placeholder="e.g., Technology, Healthcare, Finance" required>
-                <div class="field-error"></div>
-              </div>
-              
-              <div class="form-group">
-                <label for="website">Website</label>
-                <input type="url" id="website" name="website" placeholder="https://company.com">
-                <div class="field-error"></div>
-              </div>
-              
-              <div class="form-group">
-                <label for="foundedYear">Founded Year</label>
-                <input type="number" id="foundedYear" name="founded_year" min="1800" max="2025">
                 <div class="field-error"></div>
               </div>
               
@@ -351,22 +332,22 @@
             
             <div class="form-grid">
               <div class="form-group full-width">
-                <label for="alumniUniversityName" class="required">University Name</label>
-                <input type="text" id="alumniUniversityName" name="university_name" 
-                       placeholder="e.g., University of Sri Lanka" required>
+                <label for="alumniUniversityName" >University Name</label>
+                <input type="text" id="alumniUniversityName" name="alumni_university_name" 
+                       placeholder="e.g., University of Sri Lanka" >
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
-                <label for="alumniDegreeProgram" class="required">Degree Program</label>
-                <input type="text" id="alumniDegreeProgram" name="degree_program" 
-                       placeholder="e.g., Computer Science, Engineering" required>
+                <label for="alumniDegreeProgram" >Degree Program</label>
+                <input type="text" id="alumniDegreeProgram" name="alumni_degree_program" 
+                       placeholder="e.g., Computer Science, Engineering">
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
-                <label for="alumniGraduationYear" class="required">Graduation Year</label>
-                <select id="alumniGraduationYear" name="graduation_year" required>
+                <label for="alumniGraduationYear" >Graduation Year</label>
+                <select id="alumniGraduationYear" name="graduation_year" >
                   <option value="">Select Year</option>
                   <?php for($year = 2025; $year >= 1970; $year--): ?>
                     <option value="<?= $year ?>"><?= $year ?></option>
@@ -407,7 +388,7 @@
                 </select>
                 <div class="field-error"></div>
               </div>
-              
+              <br>
               <div class="form-group">
                 <label for="additionalDegree2">Third Degree Program</label>
                 <input type="text" id="additionalDegree2" name="additional_degree_2" 
@@ -432,13 +413,30 @@
                 </select>
                 <div class="field-error"></div>
               </div>
-              
+
+
+              <!-- Other additional degree fields -->
               <div class="form-group full-width">
-                <label for="alumniSkillsExperience">Skills & Experience</label>
-                <textarea id="alumniSkillsExperience" name="skills_experience" rows="3" 
-                          placeholder="Brief overview of your professional skills and experience..."></textarea>
-                <div class="field-hint">This will help other users connect with you based on your expertise</div>
+                <h4 style="margin: 1.5rem 0 1rem 0; color: var(--text-dark);">Professional Details (Optional)</h4>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">
+                  Share any other relevant information about your academic or professional background
+                </p>
               </div>
+              
+              <div class="form-group">
+                <label for="currentJobTitle">Current Job Title</label>
+                <input type="text" id="currentJobTitle" name="current_job_title" 
+                       placeholder="e.g., Software Engineer, Marketing Manager">
+                <div class="field-error"></div>
+              </div>
+              
+              <div class="form-group">
+                <label for="alumniCompany">Current Company</label>
+                <input type="text" id="alumniCompany" name="current_company" 
+                       placeholder="e.g., Google, Microsoft, Amazon">
+                <div class="field-error"></div>
+              </div>
+                          
             </div>
           </div>
         </div>

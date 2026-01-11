@@ -11,31 +11,24 @@
     <?php include 'Unavigation.view.php'; ?>
 
     <div class="profile-container">
-        <!-- Profile Header -->
+        <!-- profile header  -->
         <div class="profile-header">
             <div class="profile-image">
                 <?php 
-                // ✅ Get profile picture from database, fallback to default
-                $profilePicture = BASE_URL . '/assets/images/default-avatar.png'; // Default
-                
-                if (!empty($data['user']['profile_picture'])) {
-                    $profilePicture = BASE_URL . $data['user']['profile_picture'];
-                }
+                $profilePicture = !empty($data['user']['profile_picture']) 
+                    ? $data['user']['profile_picture'] 
+                    : '/assets/images/default-avatar.png';
                 ?>
-                <img src="<?= $profilePicture ?>" alt="Profile Photo">
+                <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                     alt="Profile Photo"
+                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
             </div>
             <div class="profile-info">
-                <?php 
-                // ✅ Get user name from database
-                $firstName = $data['user']['first_name'] ?? $_SESSION['user_name'] ?? 'User';
-                $lastName = $data['user']['last_name'] ?? $_SESSION['last_name'] ?? '';
-                
-                // ✅ Get degree info from profile
-                $degreeProgram = $data['profile']['degree_program'] ?? 'B.Sc. Computer Science';
-                $graduationYear = $data['profile']['expected_graduation_year'] ?? '2026';
-                ?>
-                <h1><?= htmlspecialchars($firstName . ' ' . $lastName) ?></h1>
-                <p class="degree-info"><?= htmlspecialchars($degreeProgram) ?> (Class of <?= htmlspecialchars($graduationYear) ?>)</p>
+                <h1><?= htmlspecialchars($data['user']['first_name'] . ' ' . $data['user']['last_name']) ?></h1>
+                <p class="degree-info">
+                    <?= htmlspecialchars($data['profile']['degree_program'] ?? 'Undergraduate Student') ?> 
+                    (Class of <?= htmlspecialchars($data['profile']['expected_graduation_year'] ?? 'N/A') ?>)
+                </p>
                 <a href="<?= BASE_URL ?>/ueditprofile" class="edit-profile-btn">
                     Edit Profile
                 </a>
@@ -50,15 +43,13 @@
             <a href="<?= BASE_URL ?>/uachievements" class="nav-item active">
             Achievements
             </a>
-            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            <!-- <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
             Bookmarked Articles
-            </a>
+            </a> -->
             <a href="<?= BASE_URL ?>/usettings" class="nav-item">
             Settings
             </a>
         </div>
-
-
 
         <!-- Success/Error Messages -->
         <?php if (isset($data['success'])): ?>

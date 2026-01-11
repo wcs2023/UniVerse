@@ -11,11 +11,11 @@ class USettings extends Controller {
 
         $userId = $_SESSION['user_id'];
         
-        // ✅ Get user data from database
+        //  Get user data from database
         $userModel = new User();
         $user = $userModel->getUserById($userId);
         
-        // ✅ Get undergraduate profile data
+        //  Get undergraduate profile data
         $undergraduateModel = new UndergraduateProfile();
         $profile = $undergraduateModel->getProfileByUserId($userId);
         
@@ -74,7 +74,7 @@ class USettings extends Controller {
             $userModel = new User();
             $user = $userModel->getUserById($userId);
 
-            if (!password_verify($currentPassword, $user['password'])) {
+            if (!password_verify($currentPassword, $user['password_hash'])) {
                 throw new Exception('Current password is incorrect');
             }
 

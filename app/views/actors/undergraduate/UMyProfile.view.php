@@ -10,6 +10,7 @@
 <body>
     <?php include 'Unavigation.view.php';?>
 
+    
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
@@ -43,9 +44,9 @@
             <a href="<?= BASE_URL ?>/uachievements" class="nav-item">
             Achievements
             </a>
-            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            <!-- <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
             Bookmarked Articles
-            </a>
+            </a> -->
             <a href="<?= BASE_URL ?>/usettings" class="nav-item">
             Settings
             </a>
@@ -74,7 +75,7 @@
                         <i class="icon-phone"></i>
                         Phone
                     </div>
-                    <div class="info-value"><?= htmlspecialchars($data['user']['phone_number'] ?? 'Not provided') ?></div>
+                    <div class="info-value"><?= htmlspecialchars($data['user']['phone'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Date of Birth -->

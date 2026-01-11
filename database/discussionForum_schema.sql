@@ -54,3 +54,4 @@ CREATE TABLE IF NOT EXISTS forum_edit_history (
   old_body MEDIUMTEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ 
