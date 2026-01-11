@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS alumni_profiles (
     profile_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     
-    -- Primary Education Details (Required at registration)
+    -- Primary iEducation Details (Required at registration)
     university_name VARCHAR(255) NOT NULL,
     degree_program VARCHAR(255) NOT NULL,
     graduation_year YEAR NOT NULL,

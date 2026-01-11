@@ -23,10 +23,10 @@
             <span>Articles</span>
         </a>
         
-        <a href="<?= BASE_URL ?>/admin/registrations" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/registrations') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">✅</i> -->
+        <!-- <a href="<?= BASE_URL ?>/admin/registrations" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/registrations') !== false ? 'active' : '' ?>">
+            <i class="icon">✅</i>
             <span>Registrations</span>
-        </a>
+        </a> -->
         
         <a href="<?= BASE_URL ?>/admin/forums" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/forums') !== false ? 'active' : '' ?>">
             <!-- <i class="icon">💬</i> -->

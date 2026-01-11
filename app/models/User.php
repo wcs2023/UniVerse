@@ -167,6 +167,24 @@ class User extends Model
     }
 
     /**
+     * Update user profile picture
+     */
+    public function updateProfilePicture($userId, $picturePath)
+    {
+        try {
+            $query = "UPDATE users SET profile_picture = :profile_picture, updated_at = NOW() WHERE user_id = :user_id";
+            $this->query($query, [
+                'profile_picture' => $picturePath,
+                'user_id' => $userId
+            ]);
+            return true;
+        } catch (Exception $e) {
+            error_log("Error in updateProfilePicture(): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Activate user account
      */
     public function activateUser($userId)
@@ -257,10 +275,10 @@ class User extends Model
     {
         try {
             $query = "INSERT INTO users (
-                        username, email, password_hash, first_name, middle_name, last_name,
+                        username, email, password_hash, first_name,last_name,
                         date_of_birth, gender, phone, user_type, account_status
                       ) VALUES (
-                        :username, :email, :password_hash, :first_name, :middle_name, :last_name,
+                        :username, :email, :password_hash, :first_name, :last_name,
                         :date_of_birth, :gender, :phone, :user_type, 'active'
                       )";
             
@@ -269,7 +287,7 @@ class User extends Model
                 'email' => $data['email'],
                 'password_hash' => $data['password_hash'],
                 'first_name' => $data['first_name'],
-                'middle_name' => $data['middle_name'] ?? null,
+                // 'middle_name' => $data['middle_name'] ?? null,
                 'last_name' => $data['last_name'],
                 'date_of_birth' => $data['date_of_birth'] ?? null,
                 'gender' => $data['gender'] ?? 'male',
@@ -328,6 +346,29 @@ class User extends Model
         } catch (Exception $e) {
             error_log("Error in searchUsers(): " . $e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Update user password
+     */
+    public function updatePassword($userId, $hashedPassword)
+    {
+        try {
+            $query = "UPDATE users SET 
+                        password_hash = :password_hash,
+                        updated_at = NOW()
+                      WHERE user_id = :user_id";
+            
+            $stmt = $this->query($query, [
+                'password_hash' => $hashedPassword,
+                'user_id' => $userId
+            ]);
+            
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log("Error in updatePassword(): " . $e->getMessage());
+            return false;
         }
     }
 }

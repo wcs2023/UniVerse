@@ -296,7 +296,7 @@ class AlumniModel extends Model
      * Create alumni profile linked to a user
      *
      * @param array $data Profile data (must include user_id)
-     * @return int|bool Inserted alumni_id on success, false on failure
+     * @return int|bool Inserted profile_id on success, false on failure
      */
     public function createProfile($data)
     {
@@ -306,21 +306,39 @@ class AlumniModel extends Model
         }
 
         try {
-            $query = "INSERT INTO Alumni (user_id, first_name, last_name, university, faculty, graduation_year, field_of_study, created_at)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            $query = "INSERT INTO alumni_profiles (
+                        user_id, 
+                        alumni_university_name, 
+                        alumni_degree_program, 
+                        graduation_year,
+                        additional_degree_1,
+                        additional_university_1,
+                        additional_grad_year_1,
+                        additional_degree_2,
+                        additional_university_2,
+                        additional_grad_year_2,
+                        current_job_title,
+                        current_company,
+                        created_at
+                      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
             $stmt = $this->db->prepare($query);
             $stmt->execute([
                 $data['user_id'],
-                $data['first_name'] ?? null,
-                $data['last_name'] ?? null,
-                $data['university'] ?? null,
-                $data['faculty'] ?? null,
+                $data['alumni_university_name'] ?? null,
+                $data['alumni_degree_program'] ?? null,
                 $data['graduation_year'] ?? null,
-                $data['field_of_study'] ?? null
+                $data['additional_degree_1'] ?? null,
+                $data['additional_university_1'] ?? null,
+                $data['additional_grad_year_1'] ?? null,
+                $data['additional_degree_2'] ?? null,
+                $data['additional_university_2'] ?? null,
+                $data['additional_grad_year_2'] ?? null,
+                $data['current_job_title'] ?? null,
+                $data['current_company'] ?? null,
             ]);
 
-            $alumniId = $this->db->lastInsertId();
-            return $alumniId ? (int)$alumniId : false;
+            $profileId = $this->db->lastInsertId();
+            return $profileId ? (int)$profileId : false;
         } catch (PDOException $e) {
             error_log('Error creating alumni profile: ' . $e->getMessage());
             return false;

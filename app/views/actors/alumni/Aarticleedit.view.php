@@ -78,16 +78,14 @@ if (!defined('BASE_URL')) {
                     <label for="category" class="form-label">Category</label>
                     <select id="category" name="category" class="form-select">
                         <option value="">Select a category (optional)</option>
-                        <option value="Career Advice" <?= $data['article']['category'] == 'Career Advice' ? 'selected' : '' ?>>Career Advice</option>
-                        <option value="Industry Insights" <?= $data['article']['category'] == 'Industry Insights' ? 'selected' : '' ?>>Industry Insights</option>
-                        <option value="Success Stories" <?= $data['article']['category'] == 'Success Stories' ? 'selected' : '' ?>>Success Stories</option>
-                        <option value="Technical Skills" <?= $data['article']['category'] == 'Technical Skills' ? 'selected' : '' ?>>Technical Skills</option>
-                        <option value="Interview Tips" <?= $data['article']['category'] == 'Interview Tips' ? 'selected' : '' ?>>Interview Tips</option>
-                        <option value="Networking" <?= $data['article']['category'] == 'Networking' ? 'selected' : '' ?>>Networking</option>
-                        <option value="Professional Development" <?= $data['article']['category'] == 'Professional Development' ? 'selected' : '' ?>>Professional Development</option>
-                        <option value="Work-Life Balance" <?= $data['article']['category'] == 'Work-Life Balance' ? 'selected' : '' ?>>Work-Life Balance</option>
-                        <option value="Entrepreneurship" <?= $data['article']['category'] == 'Entrepreneurship' ? 'selected' : '' ?>>Entrepreneurship</option>
-                        <option value="Other" <?= $data['article']['category'] == 'Other' ? 'selected' : '' ?>>Other</option>
+                        <option value="technology" <?= $data['article']['category'] == 'technology' ? 'selected' : '' ?>>Technology</option>
+                        <option value="career" <?= $data['article']['category'] == 'career' ? 'selected' : '' ?>>Career</option>
+                        <option value="education" <?= $data['article']['category'] == 'education' ? 'selected' : '' ?>>Education</option>
+                        <option value="research" <?= $data['article']['category'] == 'research' ? 'selected' : '' ?>>Research</option>
+                        <option value="student-life" <?= $data['article']['category'] == 'student-life' ? 'selected' : '' ?>>Student Life</option>
+                        <option value="industry-news" <?= $data['article']['category'] == 'industry-news' ? 'selected' : '' ?>>Industry News</option>
+                        <option value="announcement" <?= $data['article']['category'] == 'announcement' ? 'selected' : '' ?>>Announcement</option>
+                        <option value="other" <?= $data['article']['category'] == 'other' ? 'selected' : '' ?>>other</option>
                     </select>
                 </div>
 

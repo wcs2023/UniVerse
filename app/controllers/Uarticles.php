@@ -20,7 +20,7 @@ class Uarticles extends Controller
     public function index()
     {
         // Get all published articles
-        $articles = $this->articleModel->getAllPublishedArticles(100, 0);
+        $articles = $this->articleModel->getAllPublishedArticles(10, 0);
         
         // Generate excerpt for each article if not exists
         foreach ($articles as &$article) {

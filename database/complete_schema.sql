@@ -1,13 +1,9 @@
--- UniVerse Database Complete Schema
--- This file creates all necessary tables for the UniVerse application
--- Based on ER Diagram specifications
-
 -- Create database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS universe_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE universe_db;
 
 -- ============================================================================
--- USERS TABLE (Main user entity)
+-- USERS TABLE (Main user entity) DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -15,31 +11,31 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
-    middle_name VARCHAR(50) NULL,
+    -- middle_name VARCHAR(50) NULL removed
     last_name VARCHAR(50) NOT NULL,
     date_of_birth DATE NULL,
     gender ENUM('male', 'female', 'other') DEFAULT 'male',
     phone VARCHAR(20) NULL,
     profile_picture VARCHAR(255) NULL,
-    bio TEXT NULL,
+    -- bio TEXT NULL, removed 
     
     -- Address Information
-    address_line1 VARCHAR(255) NULL,
-    address_line2 VARCHAR(255) NULL,
-    city VARCHAR(100) NULL,
-    province VARCHAR(100) NULL,
-    postal_code VARCHAR(20) NULL,
-    -- country VARCHAR(100) DEFAULT 'Sri Lanka',
+    -- address_line1 VARCHAR(255) NULL,
+    -- address_line2 VARCHAR(255) NULL,
+    -- city VARCHAR(100) NULL,
+    -- province VARCHAR(100) NULL, -- removed
+    -- postal_code VARCHAR(20) NULL, removed
+    -- country VARCHAR(100) DEFAULT 'Sri Lanka', removed
     
     -- User Type and Status
     user_type ENUM('undergraduate', 'company', 'admin', 'school_leaver', 'alumni') NOT NULL,
     account_status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
-    email_verified BOOLEAN DEFAULT FALSE,
+    -- email_verified BOOLEAN DEFAULT FALSE, removed
     
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    last_login TIMESTAMP NULL,
+    last_login TIMESTAMP NULL, -- use this
     
     -- Indexes
     INDEX idx_email (email),
@@ -47,10 +43,10 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_user_type (user_type),
     INDEX idx_created_at (created_at)
 );
---#created 
+--#created n modified
 
 -- ============================================================================
--- UNDERGRADUATE_PROFILES TABLE (Specific to undergraduate users)
+-- UNDERGRADUATE_PROFILES TABLE (Specific to undergraduate users) DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS undergraduate_profiles (
     student_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,10 +68,10 @@ CREATE TABLE IF NOT EXISTS undergraduate_profiles (
     INDEX idx_user_id (user_id), 
     INDEX idx_student_id (student_id)
 );
--- #created
+-- #created n modified / remove the skills and interests text area from the form
 
 -- ============================================================================
--- COMPANY_PROFILES TABLE (Specific to company users)
+-- COMPANY_PROFILES TABLE (Specific to company users) DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS company_profiles (
     profile_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -86,7 +82,7 @@ CREATE TABLE IF NOT EXISTS company_profiles (
     website VARCHAR(255) NULL,
     founded_year YEAR NULL,
     company_description TEXT NULL,
-    logo_url VARCHAR(255) NULL,
+    logo_url VARCHAR(255) NULL, -- need to add this field to the form
     
     -- Contact Information
     contact_person VARCHAR(255) NULL,
@@ -94,8 +90,8 @@ CREATE TABLE IF NOT EXISTS company_profiles (
     contact_phone VARCHAR(20) NULL,
     
     -- Verification
-    is_verified BOOLEAN DEFAULT FALSE,
-    verification_date TIMESTAMP NULL,
+    -- is_verified BOOLEAN DEFAULT FALSE, removed
+    -- verification_date TIMESTAMP NULL, removed
     
     -- Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -110,29 +106,30 @@ CREATE TABLE IF NOT EXISTS company_profiles (
     INDEX idx_industry (industry),
     INDEX idx_verified (is_verified)
 );
+-- #created n modified
 
 -- ============================================================================
--- ARTICLES TABLE
+-- ARTICLES TABLE  DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS articles (
     article_id INT AUTO_INCREMENT PRIMARY KEY,  -- Changed from post_id
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) UNIQUE NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,  --check this/not in database
     content TEXT NOT NULL,
-    excerpt TEXT NULL,
+    excerpt TEXT NULL, -- check this/check when this has been used
     featured_image VARCHAR(255) NULL,
     category ENUM('technology', 'career', 'education', 'research', 'student-life', 'industry-news', 'announcement') DEFAULT 'education',
     status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
     views INT DEFAULT 0,
-    likes_count INT DEFAULT 0,
+    likes_count INT DEFAULT 0, --likes or likes_count
     comments_count INT DEFAULT 0,
-    reading_time_minutes INT DEFAULT 5,
+    reading_time_minutes INT DEFAULT 5, -- remove this
     
     -- SEO
-    meta_title VARCHAR(255) NULL,
-    meta_description TEXT NULL,
-    tags JSON NULL,
+    -- meta_title VARCHAR(255) NULL,
+    -- meta_description TEXT NULL,
+    -- tags JSON NULL, why using this? need to remove these
     
     -- Publishing
     published_at TIMESTAMP NULL,
@@ -152,7 +149,7 @@ CREATE TABLE IF NOT EXISTS articles (
 );
 
 -- ============================================================================
--- ACHIEVEMENTS TABLE
+-- ACHIEVEMENTS TABLE  DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS achievements (
     achievement_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -177,7 +174,7 @@ CREATE TABLE IF NOT EXISTS achievements (
     INDEX idx_date_achieved (date_achieved)
 );
 -- ============================================================================
--- JOBS TABLE
+-- JOBS TABLE  DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS jobs (
     job_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -191,7 +188,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     experience_level ENUM('entry', 'junior', 'mid', 'senior', 'executive') DEFAULT 'entry',
     salary_min DECIMAL(10,2) NULL,
     salary_max DECIMAL(10,2) NULL,
-    currency VARCHAR(10) DEFAULT 'LKR',
+    currency VARCHAR(10) DEFAULT 'LKR', --can remove this later
     application_deadline DATE NULL,
     status ENUM('active', 'closed', 'draft', 'paused') DEFAULT 'active',
     
@@ -203,7 +200,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     -- Contact Information
     contact_email VARCHAR(100) NULL,
     contact_phone VARCHAR(20) NULL,
-    application_url VARCHAR(500) NULL,
+    application_url VARCHAR(500) NULL, -- check this where used
     
     -- Statistics
     applications_count INT DEFAULT 0,
@@ -226,7 +223,7 @@ CREATE TABLE IF NOT EXISTS jobs (
 );
 
 -- ============================================================================
--- JOB_APPLICATIONS TABLE
+-- JOB_APPLICATIONS TABLE  DONE but not used
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS job_applications (
     application_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -241,7 +238,7 @@ CREATE TABLE IF NOT EXISTS job_applications (
     
     -- Application tracking
     reviewed_at TIMESTAMP NULL,
-    reviewed_by INT NULL,
+    reviewed_by INT NULL, -- check this
     notes TEXT NULL,
     
     -- Timestamps
@@ -265,41 +262,41 @@ CREATE TABLE IF NOT EXISTS job_applications (
 
 
 -- ============================================================================
--- NOTIFICATIONS TABLE
+-- notifications table  done
 -- ============================================================================
-CREATE TABLE IF NOT EXISTS notifications (
-    notification_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    message TEXT NOT NULL,
-    notification_type ENUM('info', 'success', 'warning', 'error', 'job', 'article', 'application', 'achievement', 'message') DEFAULT 'info',
-    is_read BOOLEAN DEFAULT FALSE,
-    action_url VARCHAR(255) NULL,
-    data JSON NULL,
+create table if not exists notifications (
+    notification_id int auto_increment primary key,
+    user_id int not null,
+    title varchar(255) not null,
+    message text not null,
+    notification_type enum('info', 'success', 'warning', 'error', 'job', 'article', 'application', 'achievement', 'message') default 'info',
+    is_read boolean default false,
+    action_url varchar(255) null, --for what?
+    data json null, -- for what?
     
-    -- Timestamps
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    read_at TIMESTAMP NULL,
+    -- timestamps
+    created_at timestamp default current_timestamp,
+    read_at timestamp null,
     
-    -- Foreign Keys
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    -- foreign keys
+    foreign key (user_id) references users(user_id) on delete cascade,
     
-    -- Indexes
-    INDEX idx_user_id (user_id),
-    INDEX idx_is_read (is_read),
-    INDEX idx_notification_type (notification_type),
-    INDEX idx_created_at (created_at)
+    -- indexes
+    index idx_user_id (user_id),
+    index idx_is_read (is_read),
+    index idx_notification_type (notification_type),
+    index idx_created_at (created_at)
 );
 
 -- ============================================================================
--- ARTICLE_LIKES TABLE (Many-to-many relationship)
+-- article_likes table (many-to-many relationship)  done
 -- ============================================================================
-CREATE TABLE IF NOT EXISTS article_likes (
-    like_id INT AUTO_INCREMENT PRIMARY KEY,
-    article_id INT NOT NULL,  -- Changed from post_id
-    user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+create table if not exists article_likes (
+    like_id int auto_increment primary key,
+    article_id int not null,  -- changed from post_id
+    user_id int not null,
+    created_at timestamp default current_timestamp,
+        
     -- Foreign Keys
     FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -313,7 +310,7 @@ CREATE TABLE IF NOT EXISTS article_likes (
 );
 
 -- ============================================================================
--- ARTICLE_COMMENTS TABLE
+-- ARTICLE_COMMENTS TABLE DONE 
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS article_comments (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -342,7 +339,7 @@ CREATE TABLE IF NOT EXISTS article_comments (
 );
 
 -- ============================================================================
--- USER_SESSIONS TABLE
+-- USER_SESSIONS TABLE DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS user_sessions (
     session_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -363,7 +360,7 @@ CREATE TABLE IF NOT EXISTS user_sessions (
 );
 
 -- ============================================================================
--- SYSTEM_SETTINGS TABLE
+-- SYSTEM_SETTINGS TABLE DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS system_settings (
     setting_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -376,7 +373,7 @@ CREATE TABLE IF NOT EXISTS system_settings (
 );
 
 -- ============================================================================
--- FILE_UPLOADS TABLE (For tracking uploaded files)
+-- FILE_UPLOADS TABLE (For tracking uploaded files) DONE
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS file_uploads (
     file_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -400,3 +397,6 @@ CREATE TABLE IF NOT EXISTS file_uploads (
     INDEX idx_uploaded_at (uploaded_at)
 );
 
+-- ============================================================================
+-- UNDERGRADUATE ALL TABLES        
+-- ============================================================================

@@ -91,11 +91,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="middle-name">Middle Name</label>
-                                    <input type="text" id="middle-name" name="middle_name" value="<?= htmlspecialchars($data['user']['middle_name'] ?? '') ?>">
-                                </div>
-
-                                <div class="form-group">
                                     <label for="last-name">Last Name </label>
                                     <input type="text" id="last-name" name="last_name" value="<?= htmlspecialchars($data['user']['last_name'] ?? '') ?>">
                                 </div>
@@ -139,18 +134,13 @@
                                 <div class="form-group">
                                     <label for="phone">Phone Number </label>
                                     <input type="tel" id="phone" name="phone" 
-                                           value="<?= htmlspecialchars($data['user']['phone_number'] ?? '') ?>"
+                                           value="<?= htmlspecialchars($data['user']['phone'] ?? '') ?>"
                                            placeholder="+94771234567" pattern="\+94\d{9}">
                                     <small style="color: #666;">Format: +94xxxxxxxxx (e.g., +94771234567)</small>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="address1">Address </label>
-                                <input type="text" id="address1" name="address_line1" value="<?= htmlspecialchars($data['user']['address'] ?? '') ?>">
-                            </div>
                         </div>
-
                         <!-- Academic Information Section -->
                         <div class="form-section">
                             <h2>Academic Information</h2> <br>

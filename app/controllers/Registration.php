@@ -14,6 +14,12 @@ class Registration extends Controller {
 
     private function handleRegistration() {
         try {
+            // DEBUG: Check RAW $_POST data
+            error_log("===== RAW POST DATA =====");
+            error_log("university_name in POST: '" . ($_POST['university_name'] ?? 'NOT SET') . "'");
+            error_log("degree_program in POST: '" . ($_POST['degree_program'] ?? 'NOT SET') . "'");
+            error_log("===========================");
+            
             // Validate and sanitize input data
             $userData = $this->validateUserData($_POST);
             
@@ -42,9 +48,9 @@ class Registration extends Controller {
             // Create user account
             $userId = $userModel->createUser($userData);
             
-            // Debug logging
-            error_log("User creation result - User ID: " . ($userId ? $userId : 'FAILED'));
-            error_log("User type: " . $userData['user_type']);
+            // // Debug logging
+            // error_log("User creation result - User ID: " . ($userId ? $userId : 'FAILED'));
+            // error_log("User type: " . $userData['user_type']);
             
             if ($userId) {
                 // Handle role-specific profile creation
@@ -120,28 +126,35 @@ class Registration extends Controller {
                 throw new Exception("Contact phone number must be in format +94xxxxxxxxx (e.g., +94771234567).");
             }
         }
-        
         return $data;
     }
     
     private function createRoleProfile($userId, $userData) {
         switch ($userData['user_type']) {
             case 'alumni':
-                // ✅ Use AlumniModel instead of Alumni
+                //  Use AlumniModel instead of Alumni
                 $alumniModel = $this->model('AlumniModel');
                 $profileData = [
                     'user_id' => $userId,
-                    'university' => $userData['university_name'] ?? null,
-                    'faculty' => $userData['faculty'] ?? null,
+                    'alumni_university_name' => $userData['alumni_university_name'] ?? null,
+                    'alumni_degree_program' => $userData['alumni_degree_program'] ?? null,
                     'graduation_year' => $userData['graduation_year'] ?? null,
-                    'field_of_study' => $userData['degree_program'] ?? null
+                    'additional_degree_1' => $userData['additional_degree_1'] ?? null,
+                    'additional_university_1' => $userData['additional_university_1'] ?? null,
+                    'additional_grad_year_1' => $userData['additional_grad_year_1'] ?? null,
+                    'additional_degree_2' => $userData['additional_degree_2'] ?? null,
+                    'additional_university_2' => $userData['additional_university_2'] ?? null,
+                    'additional_grad_year_2' => $userData['additional_grad_year_2'] ?? null,
+                    'current_job_title' => $userData['current_job_title'] ?? null,
+                    'current_company' => $userData['current_company'] ?? null,
+    
                 ];
                 $alumniModel->createProfile($profileData);
                 break;
                 
             case 'undergraduate':
             case 'student':
-                // ✅ Use the model() method to load the model
+                      
                 $undergraduateModel = $this->model('UndergraduateProfile');
                 $profileData = [
                     'user_id' => $userId,
@@ -150,22 +163,19 @@ class Registration extends Controller {
                     'degree_program' => $userData['degree_program'] ?? null,
                     'academic_year' => $userData['academic_year'] ?? null,
                     'expected_graduation_year' => $userData['expected_graduation_year'] ?? null,
-                    'interests' => $userData['skills_interests'] ?? null
                 ];
+                         
                 $undergraduateModel->createProfile($profileData);
                 break;
                 
             case 'company':
             case 'employer':
-                // ✅ Use the model() method to load the model
+                //  Use the model() method to load the model
                 $companyModel = $this->model('CompanyProfile');
                 $profileData = [
                     'user_id' => $userId,
                     'company_name' => $userData['company_name'] ?? null,
                     'company_size' => $userData['company_size'] ?? null,
-                    'industry' => $userData['industry'] ?? null,
-                    'website' => $userData['website'] ?? null,
-                    'founded_year' => $userData['founded_year'] ?? null,
                     'company_description' => $userData['description'] ?? null,
                     'contact_person' => $userData['contact_person_name'] ?? null,
                     'contact_email' => $userData['contact_email'] ?? null,
