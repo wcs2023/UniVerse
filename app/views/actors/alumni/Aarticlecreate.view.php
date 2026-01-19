@@ -12,14 +12,26 @@ if (!defined('BASE_URL')) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Create New Article - UniVerse</title>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Article - UniVerse</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <style>
+        body {
+            padding-top: 90px;
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
-    <?php 
+    <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
@@ -48,15 +60,8 @@ if (!defined('BASE_URL')) {
                     <label for="title" class="form-label">
                         Article Title <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="title" 
-                        name="title" 
-                        class="form-input"
-                        placeholder="Enter an engaging title for your article"
-                        required
-                        maxlength="255"
-                    >
+                    <input type="text" id="title" name="title" class="form-input"
+                        placeholder="Enter an engaging title for your article" required maxlength="255">
                     <div class="char-count">
                         <span id="title-count">0</span> / 255 characters
                     </div>
@@ -79,13 +84,8 @@ if (!defined('BASE_URL')) {
 
                 <div class="form-group">
                     <label for="tags" class="form-label">Tags</label>
-                    <input 
-                        type="text" 
-                        id="tags" 
-                        name="tags" 
-                        class="form-input"
-                        placeholder="e.g., career, technology, interview, tips"
-                    >
+                    <input type="text" id="tags" name="tags" class="form-input"
+                        placeholder="e.g., career, technology, interview, tips">
                     <div class="form-hint">
                         Separate tags with commas. Tags help students find article type.
                     </div>
@@ -95,13 +95,9 @@ if (!defined('BASE_URL')) {
                     <label for="content" class="form-label">
                         Article Content <span class="required">*</span>
                     </label>
-                    <textarea 
-                        id="content" 
-                        name="content" 
-                        class="form-textarea"
+                    <textarea id="content" name="content" class="form-textarea"
                         placeholder="Share your knowledge and experience... Write your article content here."
-                        required
-                    ></textarea>
+                        required></textarea>
                     <div class="char-count">
                         <span id="content-count">0</span> characters
                     </div>
@@ -129,11 +125,11 @@ if (!defined('BASE_URL')) {
         const titleCount = document.getElementById('title-count');
         const contentCount = document.getElementById('content-count');
 
-        titleInput.addEventListener('input', function() {
+        titleInput.addEventListener('input', function () {
             titleCount.textContent = this.value.length;
         });
 
-        contentInput.addEventListener('input', function() {
+        contentInput.addEventListener('input', function () {
             contentCount.textContent = this.value.length;
         });
 
@@ -235,9 +231,10 @@ if (!defined('BASE_URL')) {
         }, 4000);
     </script>
 
-    <?php 
+    <?php
     // Include footer
     include __DIR__ . '/../../layout/footer.php';
     ?>
 </body>
+
 </html>

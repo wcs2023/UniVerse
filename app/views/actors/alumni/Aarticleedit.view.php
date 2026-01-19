@@ -12,14 +12,26 @@ if (!defined('BASE_URL')) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Article - UniVerse</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <style>
+        body {
+            padding-top: 90px;
+        }
+
+        .alert {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
-    <?php 
+    <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
@@ -51,99 +63,88 @@ if (!defined('BASE_URL')) {
             </div>
 
             <?php if (isset($data['article'])): ?>
-            <form id="article-form">
-                <input type="hidden" id="article_id" value="<?= $data['article']['article_id'] ?>">
-                <input type="hidden" id="current_status" value="<?= $data['article']['status'] ?>">
+                <form id="article-form">
+                    <input type="hidden" id="article_id" value="<?= $data['article']['article_id'] ?>">
+                    <input type="hidden" id="current_status" value="<?= $data['article']['status'] ?>">
 
-                <div class="form-group">
-                    <label for="title" class="form-label">
-                        Article Title <span class="required">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="title" 
-                        name="title" 
-                        class="form-input"
-                        placeholder="Enter an engaging title for your article"
-                        value="<?= htmlspecialchars($data['article']['title']) ?>"
-                        required
-                        maxlength="255"
-                    >
-                    <div class="char-count">
-                        <span id="title-count">0</span> / 255 characters
+                    <div class="form-group">
+                        <label for="title" class="form-label">
+                            Article Title <span class="required">*</span>
+                        </label>
+                        <input type="text" id="title" name="title" class="form-input"
+                            placeholder="Enter an engaging title for your article"
+                            value="<?= htmlspecialchars($data['article']['title']) ?>" required maxlength="255">
+                        <div class="char-count">
+                            <span id="title-count">0</span> / 255 characters
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="category" class="form-label">Category</label>
-                    <select id="category" name="category" class="form-select">
-                        <option value="">Select a category (optional)</option>
-                        <option value="technology" <?= $data['article']['category'] == 'technology' ? 'selected' : '' ?>>Technology</option>
-                        <option value="career" <?= $data['article']['category'] == 'career' ? 'selected' : '' ?>>Career</option>
-                        <option value="education" <?= $data['article']['category'] == 'education' ? 'selected' : '' ?>>Education</option>
-                        <option value="research" <?= $data['article']['category'] == 'research' ? 'selected' : '' ?>>Research</option>
-                        <option value="student-life" <?= $data['article']['category'] == 'student-life' ? 'selected' : '' ?>>Student Life</option>
-                        <option value="industry-news" <?= $data['article']['category'] == 'industry-news' ? 'selected' : '' ?>>Industry News</option>
-                        <option value="announcement" <?= $data['article']['category'] == 'announcement' ? 'selected' : '' ?>>Announcement</option>
-                        <option value="other" <?= $data['article']['category'] == 'other' ? 'selected' : '' ?>>other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="tags" class="form-label">Tags</label>
-                    <input 
-                        type="text" 
-                        id="tags" 
-                        name="tags" 
-                        class="form-input"
-                        placeholder="e.g., career, technology, interview, tips"
-                        value="<?= htmlspecialchars($data['article']['tags'] ?? '') ?>"
-                    >
-                    <div class="form-hint">
-                        Separate tags with commas. Tags help students find your article.
+                    <div class="form-group">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" name="category" class="form-select">
+                            <option value="">Select a category (optional)</option>
+                            <option value="technology" <?= $data['article']['category'] == 'technology' ? 'selected' : '' ?>>
+                                Technology</option>
+                            <option value="career" <?= $data['article']['category'] == 'career' ? 'selected' : '' ?>>Career
+                            </option>
+                            <option value="education" <?= $data['article']['category'] == 'education' ? 'selected' : '' ?>>
+                                Education</option>
+                            <option value="research" <?= $data['article']['category'] == 'research' ? 'selected' : '' ?>>
+                                Research</option>
+                            <option value="student-life" <?= $data['article']['category'] == 'student-life' ? 'selected' : '' ?>>Student Life</option>
+                            <option value="industry-news" <?= $data['article']['category'] == 'industry-news' ? 'selected' : '' ?>>Industry News</option>
+                            <option value="announcement" <?= $data['article']['category'] == 'announcement' ? 'selected' : '' ?>>Announcement</option>
+                            <option value="other" <?= $data['article']['category'] == 'other' ? 'selected' : '' ?>>other
+                            </option>
+                        </select>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="content" class="form-label">
-                        Article Content <span class="required">*</span>
-                    </label>
-                    <textarea 
-                        id="content" 
-                        name="content" 
-                        class="form-textarea"
-                        placeholder="Share your knowledge and experience..."
-                        required
-                    ><?= htmlspecialchars($data['article']['content']) ?></textarea>
-                    <div class="char-count">
-                        <span id="content-count">0</span> characters
+                    <div class="form-group">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input type="text" id="tags" name="tags" class="form-input"
+                            placeholder="e.g., career, technology, interview, tips"
+                            value="<?= htmlspecialchars($data['article']['tags'] ?? '') ?>">
+                        <div class="form-hint">
+                            Separate tags with commas. Tags help students find your article.
+                        </div>
                     </div>
-                </div>
 
-                <div class="button-group">
-                    <?php if ($data['article']['status'] == 'draft'): ?>
-                        <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                            📝 Publish Article
+                    <div class="form-group">
+                        <label for="content" class="form-label">
+                            Article Content <span class="required">*</span>
+                        </label>
+                        <textarea id="content" name="content" class="form-textarea"
+                            placeholder="Share your knowledge and experience..."
+                            required><?= htmlspecialchars($data['article']['content']) ?></textarea>
+                        <div class="char-count">
+                            <span id="content-count">0</span> characters
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <?php if ($data['article']['status'] == 'draft'): ?>
+                            <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
+                                📝 Publish Article
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
+                                💾 Update Draft
+                            </button>
+                        <?php else: ?>
+                            <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
+                                💾 Save Changes
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
+                                ⏸️ Unpublish (Move to Drafts)
+                            </button>
+                        <?php endif; ?>
+                        <a href="<?= BASE_URL ?>/aarticles" class="btn btn-outline">
+                            Cancel
+                        </a>
+                        <button type="button" class="btn btn-danger" onclick="deleteArticle()">
+                            🗑️ Delete
                         </button>
-                        <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                            💾 Update Draft
-                        </button>
-                    <?php else: ?>
-                        <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                            💾 Save Changes
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                            ⏸️ Unpublish (Move to Drafts)
-                        </button>
-                    <?php endif; ?>
-                    <a href="<?= BASE_URL ?>/aarticles" class="btn btn-outline">
-                        Cancel
-                    </a>
-                    <button type="button" class="btn btn-danger" onclick="deleteArticle()">
-                        🗑️ Delete
-                    </button>
-                </div>
-            </form>
+                    </div>
+                </form>
             <?php else: ?>
                 <div class="alert alert-error" style="display: block;">
                     Article not found or you don't have permission to edit it.
@@ -298,10 +299,10 @@ if (!defined('BASE_URL')) {
         }
     </script>
 
-    <?php 
+    <?php
     // Include footer
     include __DIR__ . '/../../layout/footer.php';
     ?>
 </body>
-</html>
 
+</html>

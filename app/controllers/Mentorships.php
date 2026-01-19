@@ -46,4 +46,58 @@ class Mentorships extends Controller
             exit;
         }
     }
+    
+    /**
+     * View a single mentor's profile
+     * Accessible to all logged-in users
+     */
+    public function viewProfile($mentor_id = null)
+    {
+        // Check if user is logged in
+        $user_id = $_SESSION['user_id'] ?? 0;
+        if (!$user_id) {
+            header("Location: " . BASE_URL . "/login");
+            exit;
+        }
+        
+        // Validate mentor_id
+        if (!$mentor_id || !is_numeric($mentor_id)) {
+            header("Location: " . BASE_URL . "/umentorships/exploreMentors");
+            exit;
+        }
+        
+        // Load models
+        $alumniModel = $this->model('AlumniModel');
+        $mentorshipModel = $this->model('Mentorship');
+        
+        // Get mentor details from mentors table
+        $mentor = $mentorshipModel->getMentorById($mentor_id);
+        
+        if (!$mentor) {
+            header("Location: " . BASE_URL . "/umentorships/exploreMentors");
+            exit;
+        }
+        
+        // Get full alumni profile data
+        $mentorProfile = $alumniModel->getUserById($mentor['user_id']);
+        
+        // Get mentor statistics
+        $stats = $mentorshipModel->getMentorStats($mentor_id);
+        
+        // Check if current user has already sent a request to this mentor
+        $hasActiveRequest = false;
+        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'undergraduate') {
+            $hasActiveRequest = $mentorshipModel->hasActiveRequest($user_id, $mentor_id);
+        }
+        
+        // Load the profile view
+        $this->view('mentorship/mentor_profile', [
+            'mentor' => $mentor,
+            'profile' => $mentorProfile,
+            'stats' => $stats,
+            'hasActiveRequest' => $hasActiveRequest,
+            'current_user_id' => $user_id,
+            'user_type' => $_SESSION['user_type'] ?? ''
+        ]);
+    }
 }

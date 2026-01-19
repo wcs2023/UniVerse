@@ -1,33 +1,50 @@
 <?php
 // Define constants if not already defined
+if (!defined('APPROOT')) {
+    define('APPROOT', dirname(dirname(dirname(dirname(__FILE__)))));
+}
+if (!defined('URLROOT')) {
+    define('URLROOT', 'http://localhost/UniVerse/public');
+}
 if (!defined('BASE_URL')) {
     define('BASE_URL', 'http://localhost/UniVerse/public');
 }
+
+// Extract article from data
+$article = $data['article'] ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($article['title'] ?? 'Article') ?> - UniVerse</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <style>
+        body {
+            padding-top: 90px;
+        }
+    </style>
 </head>
+
 <body>
-    <?php 
+    <?php
     // Include navigation
-    $navFile = dirname(__FILE__) . '/Anavbar.php';
+    $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
     ?>
-    
+
     <div class="article-container">
         <!-- Header Actions -->
         <div class="article-header-actions">
             <a href="<?= BASE_URL ?>/aarticles" class="back-btn">
                 ← Back to My Articles
             </a>
-            
+
             <div class="action-buttons">
                 <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn btn-secondary">
                     ✏️ Edit Article
@@ -42,9 +59,9 @@ if (!defined('BASE_URL')) {
                 <span class="status-badge status-<?= $article['status'] ?>">
                     <?= ucfirst($article['status']) ?>
                 </span>
-                
+
                 <h1 class="article-title"><?= htmlspecialchars($article['title']) ?></h1>
-                
+
                 <div class="article-meta">
                     <div class="meta-item">
                         <span class="meta-icon">📅</span>
@@ -56,12 +73,12 @@ if (!defined('BASE_URL')) {
                             <?php endif; ?>
                         </span>
                     </div>
-                    
+
                     <?php if (!empty($article['category'])): ?>
-                    <div class="meta-item">
-                        <span class="meta-icon">🏷️</span>
-                        <span><?= htmlspecialchars($article['category']) ?></span>
-                    </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏷️</span>
+                            <span><?= htmlspecialchars($article['category']) ?></span>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -87,9 +104,10 @@ if (!defined('BASE_URL')) {
         </div>
     </div>
 
-    <?php 
+    <?php
     // Include footer
     include dirname(dirname(dirname(__FILE__))) . '/layout/footer.php';
     ?>
 </body>
+
 </html>

@@ -12,20 +12,29 @@ if (!defined('BASE_URL')) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Articles - UniVerse</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <style>
+        body {
+            padding-top: 90px;
+        }
+    </style>
 </head>
+
 <body>
-    <?php 
+    <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
     if (file_exists($navFile)) {
         include $navFile;
     }
     ?>
-    
+
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
@@ -39,7 +48,7 @@ if (!defined('BASE_URL')) {
         <!-- Drafts Section -->
         <div class="section">
             <h2 class="section-title">Drafts</h2>
-            
+
             <div class="articles-grid">
                 <?php if (isset($data['drafts']) && count($data['drafts']) > 0): ?>
                     <?php foreach ($data['drafts'] as $index => $article): ?>
@@ -47,18 +56,20 @@ if (!defined('BASE_URL')) {
                             <div class="article-header">
                                 <span class="status-badge status-draft">Draft</span>
                                 <div class="article-actions">
-                                    <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
+                                    <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>"
+                                        class="btn-icon-action" title="Edit">
                                         ✏️
                                     </a>
-                                    <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'draft')" class="btn-icon-action delete" title="Delete">
+                                    <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'draft')"
+                                        class="btn-icon-action delete" title="Delete">
                                         🗑️
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <h3 class="article-title"><?= htmlspecialchars($article['title']) ?></h3>
                             <p class="article-meta">Last saved: <?= date('M d, Y', strtotime($article['updated_at'])) ?></p>
-                            
+
                             <div class="article-stats">
                                 <div class="stat-item">
                                     <span class="stat-icon">👁️</span>
@@ -84,10 +95,11 @@ if (!defined('BASE_URL')) {
         <!-- Published Section -->
         <div class="section">
             <h2 class="section-title">Published</h2>
-            
+
             <!-- Debug Info (Remove this after testing) -->
             <?php if (isset($_GET['debug'])): ?>
-                <div style="background: #fff; padding: 1rem; margin-bottom: 1rem; border: 2px solid #8b5cf6; border-radius: 8px;">
+                <div
+                    style="background: #fff; padding: 1rem; margin-bottom: 1rem; border: 2px solid #8b5cf6; border-radius: 8px;">
                     <strong>Debug Info:</strong><br>
                     Published Count: <?= isset($data['published']) ? count($data['published']) : 'not set' ?><br>
                     Drafts Count: <?= isset($data['drafts']) ? count($data['drafts']) : 'not set' ?><br>
@@ -96,29 +108,33 @@ if (!defined('BASE_URL')) {
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
-            
+
             <div class="articles-grid">
                 <?php if (isset($data['published']) && count($data['published']) > 0): ?>
                     <?php foreach ($data['published'] as $index => $article): ?>
-                        <div class="article-card" style="animation-delay: <?= ($index + (count($data['drafts'] ?? []))) * 0.1 ?>s">
+                        <div class="article-card"
+                            style="animation-delay: <?= ($index + (count($data['drafts'] ?? []))) * 0.1 ?>s">
                             <div class="article-header">
                                 <span class="status-badge status-published">Published</span>
                                 <div class="article-actions">
-                                    <a href="<?= BASE_URL ?>/aarticles/preview/<?= $article['article_id'] ?>" class="btn-icon-action" title="View Article">
+                                    <a href="<?= BASE_URL ?>/aarticles/preview/<?= $article['article_id'] ?>"
+                                        class="btn-icon-action" title="View Article">
                                         view
                                     </a>
-                                    <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn-icon-action" title="Edit">
+                                    <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>"
+                                        class="btn-icon-action" title="Edit">
                                         edit
                                     </a>
-                                    <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'published')" class="btn-icon-action delete" title="Delete">
+                                    <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'published')"
+                                        class="btn-icon-action delete" title="Delete">
                                         🗑️
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <h3 class="article-title"><?= htmlspecialchars($article['title']) ?></h3>
                             <p class="article-meta">Published on: <?= date('M d, Y', strtotime($article['published_at'])) ?></p>
-                            
+
                             <div class="article-stats">
                                 <div class="stat-item">
                                     <span class="stat-icon">views</span>
@@ -144,10 +160,10 @@ if (!defined('BASE_URL')) {
 
     <script>
         function deleteArticle(articleId, status) {
-            const confirmMessage = status === 'draft' 
+            const confirmMessage = status === 'draft'
                 ? 'Are you sure you want to delete this draft? This action cannot be undone.'
                 : 'Are you sure you want to delete this published article? This will remove it from public view.';
-            
+
             if (confirm(confirmMessage)) {
                 // Send delete request
                 fetch('<?= BASE_URL ?>/aarticles/delete/' + articleId, {
@@ -157,24 +173,24 @@ if (!defined('BASE_URL')) {
                     },
                     body: JSON.stringify({ article_id: articleId })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Reload page to show updated list
-                        location.reload();
-                    } else {
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Reload page to show updated list
+                            location.reload();
+                        } else {
+                            alert('Error deleting article. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
                         alert('Error deleting article. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting article. Please try again.');
-                });
+                    });
             }
         }
 
         // Add stagger animation to cards
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.article-card');
             cards.forEach((card, index) => {
                 card.style.animationDelay = (index * 0.1) + 's';
@@ -182,10 +198,10 @@ if (!defined('BASE_URL')) {
         });
     </script>
 
-    <?php 
+    <?php
     // Include footer
     include __DIR__ . '/../../layout/footer.php';
     ?>
 </body>
-</html>
 
+</html>
