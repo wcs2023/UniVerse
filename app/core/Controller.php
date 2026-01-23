@@ -6,8 +6,13 @@ class Controller{
         if(file_exists($filename)){
             require $filename;
         }else{
-            $filename = "../app/views/404.view.php";
-            require $filename;
+            $filename = "../app/views/".$name.".view.php";
+            if(file_exists($filename)){
+                require $filename;
+            }else{
+                $filename = "../app/views/404.view.php";
+                require $filename;
+            }
         }
     }
     public function model($model){

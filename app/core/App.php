@@ -13,6 +13,8 @@ class App{
 
     public function loadController(){
         $URL = $this->splitURL();
+        
+        // Get the controller name from URL
         $filename = "../app/controllers/".ucfirst($URL[0]).".php";
 
         if(file_exists($filename)){

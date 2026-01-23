@@ -1,12 +1,11 @@
 <?php
 /**
- * AlumniModel
+ * Alumni Model
  * Updated to work with normalized database schema
- * Uses: users, alumni_profiles, mentors tables
  */
-class AlumniModel extends Model
+class Alumni
 {
-    protected $db;
+    private $db;
 
     public function __construct()
     {
@@ -26,29 +25,61 @@ class AlumniModel extends Model
                         u.user_id, u.username, u.email, u.first_name, u.last_name,
                         u.date_of_birth, u.gender, u.phone, u.profile_picture,
                         u.user_type, u.account_status, u.created_at, u.last_login,
-                        CONCAT(u.first_name, ' ', u.last_name) as full_name,
                         ap.profile_id, ap.university_name, ap.degree_program,
                         ap.graduation_year, ap.current_job_title, ap.current_company,
                         ap.linkedin_url, ap.github_url, ap.portfolio_url,
-                        ap.skills_experience, ap.profile_completed
+                        ap.skills_experience, ap.profile_completed,
+                        CONCAT(u.first_name, ' ', u.last_name) as full_name
                       FROM users u
                       LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
-                      WHERE u.user_id = ?";
+                      WHERE u.user_id = ? AND u.user_type = 'alumni'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             return $stmt->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
-            error_log("Error getting alumni by user_id: " . $e->getMessage());
+            error_log("Error getting alumni: " . $e->getMessage());
             return false;
         }
     }
 
     /**
-     * Get alumni by ID (alias for backward compatibility)
+     * Get alumni by ID (same as getAlumniByUserId for compatibility)
      */
     public function getAlumniById($alumniId)
     {
         return $this->getAlumniByUserId($alumniId);
+    }
+
+    /**
+     * Get user by ID from users table
+     * 
+     * @param int $userId The user ID
+     * @return object|bool The user data or false on failure
+     */
+    public function getUserById($userId)
+    {
+        try {
+            $query = "SELECT 
+                        u.user_id, u.username, u.email, u.first_name, u.last_name,
+                        u.date_of_birth, u.gender, u.phone, u.profile_picture,
+                        u.user_type, u.account_status, u.created_at, u.last_login,
+                        CONCAT(u.first_name, ' ', u.last_name) as full_name,
+                        ap.profile_id, ap.university_name, ap.degree_program,
+                        ap.graduation_year, ap.current_job_title as current_role,
+                        ap.current_company as company, ap.linkedin_url,
+                        ap.github_url, ap.portfolio_url, ap.skills_experience as short_bio,
+                        CASE WHEN m.is_active = 1 THEN 1 ELSE 0 END as available_for_mentorship
+                      FROM users u
+                      LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
+                      LEFT JOIN mentors m ON u.user_id = m.user_id
+                      WHERE u.user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Error getting user: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -64,9 +95,8 @@ class AlumniModel extends Model
                         CONCAT(u.first_name, ' ', u.last_name) as full_name,
                         ap.current_job_title, ap.current_company, ap.skills_experience,
                         m.mentor_id, m.expertise_areas, m.max_mentees,
-                        (SELECT COUNT(*) FROM mentor_sessions ms 
-                         INNER JOIN mentor_requests mr ON ms.request_id = mr.request_id
-                         WHERE mr.mentor_id = m.mentor_id AND ms.status = 'completed') as completed_sessions
+                        (SELECT COUNT(*) FROM mentor_requests mr 
+                         WHERE mr.mentor_id = m.mentor_id AND mr.status = 'completed') as completed_sessions
                       FROM users u
                       INNER JOIN alumni_profiles ap ON u.user_id = ap.user_id
                       INNER JOIN mentors m ON u.user_id = m.user_id
@@ -96,40 +126,7 @@ class AlumniModel extends Model
     }
 
     /**
-     * Get user by ID from users table with mentor info
-     * 
-     * @param int $userId The user ID
-     * @return object|bool The user data or false on failure
-     */
-    public function getUserById($userId)
-    {
-        try {
-            $query = "SELECT 
-                        u.user_id, u.username, u.email, u.first_name, u.last_name,
-                        u.date_of_birth, u.gender, u.phone, u.profile_picture,
-                        u.user_type, u.account_status, u.created_at, u.last_login,
-                        u.password_hash as password,
-                        CONCAT(u.first_name, ' ', u.last_name) as full_name,
-                        ap.profile_id, ap.university_name, ap.degree_program,
-                        ap.graduation_year, ap.current_job_title as current_role,
-                        ap.current_company as company, ap.linkedin_url,
-                        ap.github_url, ap.portfolio_url, ap.skills_experience as short_bio,
-                        CASE WHEN m.is_active = 1 THEN 1 ELSE 0 END as available_for_mentorship
-                      FROM users u
-                      LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
-                      LEFT JOIN mentors m ON u.user_id = m.user_id
-                      WHERE u.user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$userId]);
-            return $stmt->fetch(PDO::FETCH_OBJ);
-        } catch (PDOException $e) {
-            error_log("Error getting user: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Update user profile
+     * Update alumni profile
      * 
      * @param int $userId The user ID
      * @param array $data The profile data to update
@@ -140,29 +137,35 @@ class AlumniModel extends Model
         try {
             $this->db->beginTransaction();
 
-            // Parse full_name into first_name and last_name if provided
-            if (isset($data['full_name']) && !isset($data['first_name'])) {
-                $nameParts = explode(' ', $data['full_name'], 2);
-                $data['first_name'] = $nameParts[0];
-                $data['last_name'] = $nameParts[1] ?? '';
-            }
+            // Update users table (name, email)
+            if (isset($data['first_name']) || isset($data['last_name']) || isset($data['email'])) {
+                $updateFields = [];
+                $params = [];
 
-            // Update users table
-            $query = "UPDATE users SET 
-                      first_name = COALESCE(?, first_name),
-                      last_name = COALESCE(?, last_name),
-                      email = COALESCE(?, email),
-                      phone = COALESCE(?, phone),
-                      updated_at = NOW()
-                      WHERE user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([
-                $data['first_name'] ?? null,
-                $data['last_name'] ?? null,
-                $data['email'] ?? null,
-                $data['phone'] ?? null,
-                $userId
-            ]);
+                if (isset($data['first_name'])) {
+                    $updateFields[] = "first_name = ?";
+                    $params[] = $data['first_name'];
+                }
+                if (isset($data['last_name'])) {
+                    $updateFields[] = "last_name = ?";
+                    $params[] = $data['last_name'];
+                }
+                if (isset($data['email'])) {
+                    $updateFields[] = "email = ?";
+                    $params[] = $data['email'];
+                }
+                if (isset($data['phone'])) {
+                    $updateFields[] = "phone = ?";
+                    $params[] = $data['phone'];
+                }
+
+                if (!empty($updateFields)) {
+                    $params[] = $userId;
+                    $query = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE user_id = ?";
+                    $stmt = $this->db->prepare($query);
+                    $stmt->execute($params);
+                }
+            }
 
             // Check if alumni_profiles record exists
             $query = "SELECT COUNT(*) as count FROM alumni_profiles WHERE user_id = ?";
@@ -182,8 +185,7 @@ class AlumniModel extends Model
                           github_url = COALESCE(?, github_url),
                           portfolio_url = COALESCE(?, portfolio_url),
                           skills_experience = COALESCE(?, skills_experience),
-                          profile_completed = 1,
-                          updated_at = NOW()
+                          profile_completed = 1
                           WHERE user_id = ?";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([
@@ -208,8 +210,8 @@ class AlumniModel extends Model
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([
                     $userId,
-                    $data['university_name'] ?? 'Not specified',
-                    $data['degree_program'] ?? 'Not specified',
+                    $data['university_name'] ?? '',
+                    $data['degree_program'] ?? '',
                     $data['graduation_year'] ?? date('Y'),
                     $data['current_role'] ?? $data['current_job_title'] ?? '',
                     $data['company'] ?? $data['current_company'] ?? '',
@@ -228,7 +230,7 @@ class AlumniModel extends Model
                 $result = $stmt->fetch(PDO::FETCH_OBJ);
 
                 if ($result->count > 0) {
-                    $query = "UPDATE mentors SET is_active = ?, updated_at = NOW() WHERE user_id = ?";
+                    $query = "UPDATE mentors SET is_active = ? WHERE user_id = ?";
                     $stmt = $this->db->prepare($query);
                     $stmt->execute([$data['available_for_mentorship'] ? 1 : 0, $userId]);
                 } else if ($data['available_for_mentorship']) {
@@ -257,7 +259,7 @@ class AlumniModel extends Model
     public function updatePassword($userId, $passwordHash)
     {
         try {
-            $query = "UPDATE users SET password_hash = ?, updated_at = NOW() WHERE user_id = ?";
+            $query = "UPDATE users SET password_hash = ? WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$passwordHash, $userId]);
             return true;
@@ -276,12 +278,12 @@ class AlumniModel extends Model
     public function deactivateAccount($userId)
     {
         try {
-            $query = "UPDATE users SET account_status = 'inactive', updated_at = NOW() WHERE user_id = ?";
+            $query = "UPDATE users SET account_status = 'inactive' WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
 
             // Also deactivate mentor status
-            $query = "UPDATE mentors SET is_active = 0, updated_at = NOW() WHERE user_id = ?";
+            $query = "UPDATE mentors SET is_active = 0 WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
 
@@ -294,7 +296,6 @@ class AlumniModel extends Model
 
     /**
      * Delete user account and related data
-     * CASCADE will handle most deletions
      * 
      * @param int $userId The user ID
      * @return bool Success or failure
@@ -304,7 +305,7 @@ class AlumniModel extends Model
         try {
             $this->db->beginTransaction();
 
-            // Delete from mentors (may not cascade automatically)
+            // Delete from mentors
             $query = "DELETE FROM mentors WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
@@ -319,7 +320,7 @@ class AlumniModel extends Model
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
 
-            // Delete from users table (FK cascades will handle remaining)
+            // Delete from users table (cascades will handle the rest)
             $query = "DELETE FROM users WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
@@ -334,55 +335,6 @@ class AlumniModel extends Model
     }
 
     /**
-     * Create alumni profile linked to a user
-     *
-     * @param array $data Profile data (must include user_id)
-     * @return int|bool Inserted profile_id on success, false on failure
-     */
-    public function createProfile($data)
-    {
-        if (empty($data['user_id'])) {
-            error_log('AlumniModel::createProfile called without user_id');
-            return false;
-        }
-
-        try {
-            $query = "INSERT INTO alumni_profiles (
-                        user_id, 
-                        university_name, 
-                        degree_program, 
-                        graduation_year,
-                        current_job_title,
-                        current_company,
-                        linkedin_url,
-                        github_url,
-                        portfolio_url,
-                        skills_experience,
-                        profile_completed
-                      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([
-                $data['user_id'],
-                $data['university_name'] ?? $data['alumni_university_name'] ?? 'Not specified',
-                $data['degree_program'] ?? $data['alumni_degree_program'] ?? 'Not specified',
-                $data['graduation_year'] ?? date('Y'),
-                $data['current_job_title'] ?? null,
-                $data['current_company'] ?? null,
-                $data['linkedin_url'] ?? null,
-                $data['github_url'] ?? null,
-                $data['portfolio_url'] ?? null,
-                $data['skills_experience'] ?? null
-            ]);
-
-            $profileId = $this->db->lastInsertId();
-            return $profileId ? (int) $profileId : false;
-        } catch (PDOException $e) {
-            error_log('Error creating alumni profile: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
      * Update profile picture
      * 
      * @param int $userId The user ID
@@ -392,50 +344,12 @@ class AlumniModel extends Model
     public function updateProfilePicture($userId, $picturePath)
     {
         try {
-            $query = "UPDATE users SET profile_picture = ?, updated_at = NOW() WHERE user_id = ?";
+            $query = "UPDATE users SET profile_picture = ? WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$picturePath, $userId]);
             return true;
         } catch (PDOException $e) {
             error_log("Error updating profile picture: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Update mentorship availability status
-     * Creates a mentor record if it doesn't exist, or updates existing one
-     * 
-     * @param int $userId The user ID
-     * @param bool $isAvailable Whether the user is available for mentorship
-     * @return bool Success or failure
-     */
-    public function updateMentorshipAvailability($userId, $isAvailable)
-    {
-        try {
-            // Check if mentor record exists
-            $query = "SELECT mentor_id FROM mentors WHERE user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$userId]);
-            $mentor = $stmt->fetch(PDO::FETCH_OBJ);
-
-            if ($mentor) {
-                // Update existing mentor record
-                $query = "UPDATE mentors SET is_active = ?, updated_at = NOW() WHERE user_id = ?";
-                $stmt = $this->db->prepare($query);
-                $stmt->execute([$isAvailable ? 1 : 0, $userId]);
-            } else {
-                // Create new mentor record if user wants to be available
-                if ($isAvailable) {
-                    $query = "INSERT INTO mentors (user_id, is_active, expertise_areas, max_mentees) 
-                              VALUES (?, 1, NULL, 5)";
-                    $stmt = $this->db->prepare($query);
-                    $stmt->execute([$userId]);
-                }
-            }
-            return true;
-        } catch (PDOException $e) {
-            error_log("Error updating mentorship availability: " . $e->getMessage());
             return false;
         }
     }
