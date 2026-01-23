@@ -79,7 +79,7 @@
             <label class="checkbox-label">
               <input type="checkbox" id="agreeTerms" name="agree_terms" required>
               <span class="checkmark"></span>
-              I agree to the <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a>
+              I agree to the <a href="<?= BASE_URL ?>/termsofservice" class="link">Terms of Service</a> and <a href="<?= BASE_URL ?>/privacypolicy" class="link">Privacy Policy</a>
             </label>
           </div>
         </div>
@@ -149,9 +149,10 @@
             
             <div class="form-group">
               <label for="phone">Phone Number</label>
-              <input type="tel" id="phone" name="phone" autocomplete="tel">
+              <input type="tel" id="phone" name="phone" autocomplete="tel" 
+                     placeholder="+94771234567" pattern="\+94\d{9}">
               <div class="field-error"></div>
-              <div class="field-hint">Optional - for account recovery</div>
+              <div class="field-hint">Format: +94xxxxxxxxx (9 digits after +94)</div>
             </div>
             
             <div class="form-group">
@@ -184,25 +185,25 @@
             <div class="form-grid">
               <div class="form-group full-width">
                 <label for="universityName" class="required">University Name</label>
-                <input type="text" id="universityName" name="university_name">
+                <input type="text" id="universityName" name="university_name" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="faculty" class="required">Faculty</label>
-                <input type="text" id="faculty" name="faculty" placeholder="e.g., Engineering, Arts, Science">
+                <input type="text" id="faculty" name="faculty" placeholder="e.g., Engineering, Arts, Science" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="degreeProgram" class="required">Degree Program</label>
-                <input type="text" id="degreeProgram" name="degree_program" placeholder="e.g., Computer Science, Business">
+                <input type="text" id="degreeProgram" name="degree_program" placeholder="e.g., Computer Science, Business" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="academicYear" class="required">Academic Year</label>
-                <select id="academicYear" name="academic_year">
+                <select id="academicYear" name="academic_year" required>
                   <option value="">Select Year</option>
                   <option value="1st year">1st Year</option>
                   <option value="2nd year">2nd Year</option>
@@ -214,7 +215,7 @@
               
               <div class="form-group">
                 <label for="graduationYear" class="required">Expected Graduation</label>
-                <select id="graduationYear" name="expected_graduation_year">
+                <select id="graduationYear" name="expected_graduation_year" required>
                   <option value="">Select Year</option>
                   <option value="2024">2024</option>
                   <option value="2025">2025</option>
@@ -244,7 +245,7 @@
             <div class="form-grid">
               <div class="form-group full-width">
                 <label for="qualification" class="required">Highest Qualification</label>
-                <select id="qualification" name="highest_qualification">
+                <select id="qualification" name="highest_qualification" required>
                   <option value="">Select Qualification</option>
                   <option value="A/L">Advanced Level (A/L)</option>
                   <option value="O/L">Ordinary Level (O/L)</option>
@@ -279,13 +280,13 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="companyName" class="required">Company Name</label>
-                <input type="text" id="companyName" name="company_name">
+                <input type="text" id="companyName" name="company_name" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="companySize" class="required">Company Size</label>
-                <select id="companySize" name="company_size">
+                <select id="companySize" name="company_size" required>
                   <option value="">Select Size</option>
                   <option value="startup">Startup (1-10 employees)</option>
                   <option value="small">Small (11-50 employees)</option>
@@ -298,7 +299,7 @@
               
               <div class="form-group full-width">
                 <label for="industry" class="required">Industry</label>
-                <input type="text" id="industry" name="industry" placeholder="e.g., Technology, Healthcare, Finance">
+                <input type="text" id="industry" name="industry" placeholder="e.g., Technology, Healthcare, Finance" required>
                 <div class="field-error"></div>
               </div>
               
@@ -323,20 +324,22 @@
               
               <div class="form-group">
                 <label for="contactPersonName" class="required">Contact Person</label>
-                <input type="text" id="contactPersonName" name="contact_person_name" placeholder="Full name">
+                <input type="text" id="contactPersonName" name="contact_person_name" placeholder="Full name" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="contactEmail" class="required">Contact Email</label>
-                <input type="email" id="contactEmail" name="contact_email" placeholder="contact@company.com">
+                <input type="email" id="contactEmail" name="contact_email" placeholder="contact@company.com" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group full-width">
                 <label for="contactPhone">Contact Phone</label>
-                <input type="tel" id="contactPhone" name="contact_phone" placeholder="+1 (555) 123-4567">
+                <input type="tel" id="contactPhone" name="contact_phone" 
+                       placeholder="+94771234567" pattern="\+94\d{9}">
                 <div class="field-error"></div>
+                <div class="field-hint">Format: +94xxxxxxxxx (9 digits after +94)</div>
               </div>
             </div>
           </div>
@@ -350,20 +353,20 @@
               <div class="form-group full-width">
                 <label for="alumniUniversityName" class="required">University Name</label>
                 <input type="text" id="alumniUniversityName" name="university_name" 
-                       placeholder="e.g., University of Sri Lanka">
+                       placeholder="e.g., University of Sri Lanka" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="alumniDegreeProgram" class="required">Degree Program</label>
                 <input type="text" id="alumniDegreeProgram" name="degree_program" 
-                       placeholder="e.g., Computer Science, Engineering">
+                       placeholder="e.g., Computer Science, Engineering" required>
                 <div class="field-error"></div>
               </div>
               
               <div class="form-group">
                 <label for="alumniGraduationYear" class="required">Graduation Year</label>
-                <select id="alumniGraduationYear" name="graduation_year">
+                <select id="alumniGraduationYear" name="graduation_year" required>
                   <option value="">Select Year</option>
                   <?php for($year = 2025; $year >= 1970; $year--): ?>
                     <option value="<?= $year ?>"><?= $year ?></option>

@@ -5,68 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-    <title>UniVerse - <?= $data['article']['title'] ?></title>
+    <title>UniVerse - <?= htmlspecialchars($data['article']['title']) ?></title>
 </head>
 <body>
-    <?php include '../app/views/layout/header.php'; ?>
-
+    <?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
+    
     <div class="article-single-container">
         <!-- Breadcrumb -->
         <nav class="breadcrumb">
-            <a href="<?= BASE_URL ?>/articles">Articles</a>
+            <a href="<?= BASE_URL ?>/uarticles">Articles</a>
             <span class="breadcrumb-separator">></span>
-            <a href="<?= BASE_URL ?>/articles/category/<?= strtolower(str_replace(' ', '-', $data['article']['category'])) ?>">
-                <?= $data['article']['category'] ?>
-            </a>
-            <span class="breadcrumb-separator">></span>
-            <span class="breadcrumb-current"><?= $data['article']['title'] ?></span>
+            <span class="breadcrumb-current"><?= htmlspecialchars($data['article']['title']) ?></span>
         </nav>
 
         <!-- Article Header -->
         <article class="article-single">
             <header class="article-header">
-                <div class="article-category-badge"><?= $data['article']['category'] ?></div>
-                <h1 class="article-title"><?= $data['article']['title'] ?></h1>
+                <div class="article-category-badge"><?= ucfirst(str_replace('-', ' ', $data['article']['category'])) ?></div>
+                <h1 class="article-title"><?= htmlspecialchars($data['article']['title']) ?></h1>
                 
                 <div class="article-meta-info">
                     <div class="author-info">
-                        <span class="author-name">By <?= $data['article']['author_name'] ?? 'Unknown Author' ?></span>
+                        <span class="author-name">
+                            By <?= htmlspecialchars(($data['article']['first_name'] ?? 'Unknown') . ' ' . ($data['article']['last_name'] ?? 'Author')) ?>
+                        </span>
                         <span class="publish-date"><?= date('F j, Y', strtotime($data['article']['created_at'])) ?></span>
                     </div>
                     
                     <div class="article-stats">
                         <span class="stat-item">
                             <i class="icon-views"></i>
-                            <?= $data['article']['views'] ?> views
+                            <?= number_format($data['article']['views'] ?? 0) ?> views
                         </span>
                         <span class="stat-item">
                             <i class="icon-likes"></i>
-                            <?= $data['article']['likes'] ?> likes
+                            <?= number_format($data['article']['likes_count'] ?? 0) ?> likes
+                        </span>
+                        <span class="stat-item">
+                            <i class="icon-comments"></i>
+                            <?= number_format($data['article']['comments_count'] ?? 0) ?> comments
                         </span>
                     </div>
                 </div>
             </header>
 
             <!-- Featured Image -->
+            <?php if (!empty($data['article']['featured_image'])): ?>
             <div class="article-featured-image">
-                <img src="<?= BASE_URL ?>/assets/images/<?= $data['article']['image'] ?>" alt="<?= $data['article']['title'] ?>"
-                     onerror="this.src='<?= BASE_URL ?>/assets/images/articles/placeholder.svg'">
+                <img src="<?= BASE_URL ?><?= $data['article']['featured_image'] ?>" 
+                     alt="<?= htmlspecialchars($data['article']['title']) ?>"
+                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
             </div>
+            <?php endif; ?>
 
             <!-- Article Content -->
             <div class="article-body">
                 <div class="article-content">
-                    <p class="article-excerpt"><?= $data['article']['excerpt'] ?></p>
+                    <?php if (!empty($data['article']['excerpt'])): ?>
+                    <p class="article-excerpt"><?= htmlspecialchars($data['article']['excerpt']) ?></p>
+                    <?php endif; ?>
                     
                     <!-- Article Content from Database -->
-                    <?= $data['article']['content'] ?>
+                    <div class="article-main-content">
+                        <?= $data['article']['content'] ?>
+                    </div>
                 </div>
 
                 <!-- Article Actions -->
                 <div class="article-actions">
-                    <button class="action-btn like-btn">
+                    <button class="action-btn like-btn" data-article-id="<?= $data['article']['article_id'] ?>">
                         <i class="icon-like"></i>
-                        Like (<?= $data['article']['likes'] ?>)
+                        Like (<?= number_format($data['article']['likes']) ?>)
                     </button>
                     <button class="action-btn share-btn">
                         <i class="icon-share"></i>
@@ -77,63 +86,54 @@
                         Bookmark
                     </button>
                 </div>
-            </div>
-        </article>
 
-        <!-- Related Articles -->
-        <?php if (!empty($data['related_articles'])): ?>
-        <section class="related-articles">
-            <h2>Related Articles</h2>
-            <div class="related-articles-grid">
-                <?php foreach (array_slice($data['related_articles'], 0, 3) as $related): ?>
-                    <div class="related-article-card">
-                        <div class="related-article-image">
-                            <img src="<?= BASE_URL ?>/assets/images/<?= $related['image'] ?>" alt="<?= $related['title'] ?>"
-                                 onerror="this.src='<?= BASE_URL ?>/assets/images/articles/placeholder.svg'">
-                        </div>
-                        <div class="related-article-content">
-                            <h3>
-                                <a href="<?= BASE_URL ?>/articles/article/<?= $related['id'] ?>">
-                                    <?= $related['title'] ?>
-                                </a>
-                            </h3>
-                            <p class="related-article-excerpt"><?= substr($related['excerpt'], 0, 100) ?>...</p>
-                            <span class="related-article-date"><?= date('M j, Y', strtotime($related['created_at'])) ?></span>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                <!-- Back to Articles Navigation -->
+                <div class="article-navigation">
+                    <a href="<?= BASE_URL ?>/uarticles" class="btn-back">← Back to All Articles</a>
+                    <!-- <a href="<?= BASE_URL ?>/uarticles/category/<?= strtolower($data['article']['category']) ?>" class="btn-category">
+                        More in <?= ucfirst(str_replace('-', ' ', $data['article']['category'])) ?>
+                    </a> -->
+                </div>
             </div>
-        </section>
-        <?php endif; ?>
+        </art>
     </div>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
     
-    <script src="<?= BASE_URL ?>/js/main.js"></script>
     <script>
         // Article interaction functionality
-        document.querySelector('.like-btn').addEventListener('click', function() {
+        document.querySelector('.like-btn')?.addEventListener('click', function() {
             this.classList.toggle('liked');
             // In a real application, this would send an AJAX request
+            const articleId = this.getAttribute('data-article-id');
+            console.log('Liked article:', articleId);
         });
 
-        document.querySelector('.share-btn').addEventListener('click', function() {
+        document.querySelector('.share-btn')?.addEventListener('click', function() {
             // Simple share functionality
             if (navigator.share) {
                 navigator.share({
-                    title: '<?= $data['article']['title'] ?>',
+                    title: '<?= addslashes($data['article']['title']) ?>',
+                    text: '<?= addslashes($data['article']['excerpt'] ?? '') ?>',
                     url: window.location.href
-                });
+                }).catch(error => console.log('Error sharing:', error));
             } else {
                 // Fallback: copy URL to clipboard
-                navigator.clipboard.writeText(window.location.href);
-                alert('Article URL copied to clipboard!');
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => {
+                        alert('Article URL copied to clipboard!');
+                    })
+                    .catch(err => {
+                        console.error('Could not copy text: ', err);
+                    });
             }
         });
 
-        document.querySelector('.bookmark-btn').addEventListener('click', function() {
+        document.querySelector('.bookmark-btn')?.addEventListener('click', function() {
             this.classList.toggle('bookmarked');
             // In a real application, this would save to user's bookmarks
+            const isBookmarked = this.classList.contains('bookmarked');
+            console.log('Bookmark status:', isBookmarked);
         });
     </script>
 </body>

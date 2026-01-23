@@ -1,4 +1,5 @@
 <?php
+// filepath: c:\xampp\htdocs\UniVerse\app\models\User.php
 
 class User extends Model 
 {
@@ -12,8 +13,13 @@ class User extends Model
      */
     public function getUserById($id)
     {
-        $query = "SELECT * FROM users WHERE user_id = :id";
-        return $this->fetch($query, ['id' => $id]);
+        try {
+            $query = "SELECT * FROM users WHERE user_id = :id LIMIT 1";
+            return $this->fetch($query, ['id' => $id]);
+        } catch (Exception $e) {
+            error_log("Error in getUserById(): " . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -21,8 +27,13 @@ class User extends Model
      */
     public function getUserByEmail($email)
     {
-        $query = "SELECT * FROM users WHERE email = :email";
-        return $this->fetch($query, ['email' => $email]);
+        try {
+            $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
+            return $this->fetch($query, ['email' => $email]);
+        } catch (Exception $e) {
+            error_log("Error in getUserByEmail(): " . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -35,138 +46,173 @@ class User extends Model
     }
 
     /**
-     * Create a new user
+     * Get all users
      */
-    public function createUser($data)
+    public function getAllUsers()
     {
-        $query = "INSERT INTO users (
-                    username, email, password_hash, first_name, middle_name, last_name,
-                    date_of_birth, gender, phone, user_type
-                  ) VALUES (
-                    :username, :email, :password_hash, :first_name, :middle_name, :last_name,
-                    :date_of_birth, :gender, :phone, :user_type
-                  )";
-        
-        $result = $this->query($query, [
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password_hash' => $data['password_hash'], // Already hashed in controller
-            'first_name' => $data['first_name'],
-            'middle_name' => $data['middle_name'] ?? null,
-            'last_name' => $data['last_name'],
-            'date_of_birth' => $data['date_of_birth'] ?? null,
-            'gender' => $data['gender'] ?? 'male',
-            'phone' => $data['phone'] ?? null,
-            'user_type' => $data['user_type'] ?? 'undergraduate'
-        ]);
-        
-        if ($result) {
-            return $this->lastInsertId();
-        }
-        return false;
-    }
-
-    /**
-     * Update user profile
-     */
-    public function updateUser($id, $data)
-    {
-        $query = "UPDATE users SET 
-                    first_name = :first_name,
-                    middle_name = :middle_name,
-                    last_name = :last_name,
-                    date_of_birth = :date_of_birth,
-                    gender = :gender,
-                    phone = :phone,
-                    address_line1 = :address_line1,
-                    address_line2 = :address_line2,
-                    city = :city,
-                    province = :province,
-                    updated_at = NOW()
-                  WHERE user_id = :id";
-        
-        return $this->query($query, [
-            'id' => $id,
-            'first_name' => $data['first_name'],
-            'middle_name' => $data['middle_name'] ?? null,
-            'last_name' => $data['last_name'],
-            'date_of_birth' => $data['date_of_birth'] ?? null,
-            'gender' => $data['gender'] ?? 'male',
-            'phone' => $data['phone'] ?? null,
-            'address_line1' => $data['address_line1'] ?? null,
-            'address_line2' => $data['address_line2'] ?? null,
-            'city' => $data['city'] ?? null,
-            'province' => $data['province'] ?? null
-        ]);
-    }
-
-    /**
-     * Update profile picture
-     */
-    public function updateProfilePicture($userId, $profilePicturePath)
-    {
-        $query = "UPDATE users SET profile_picture = :profile_picture, updated_at = NOW() WHERE user_id = :id";
-        return $this->query($query, [
-            'id' => $userId,
-            'profile_picture' => $profilePicturePath
-        ]);
-    }
-
-    /**
-     * Verify user login credentials
-     */
-    public function verifyLogin($email, $password)
-    {
-        $user = $this->getUserByEmail($email);
-        
-        if ($user && password_verify($password, $user['password_hash'])) {
-            // Update last login time
-            $this->updateLastLogin($user['id']);
-            return $user;
-        }
-        
-        return false;
-    }
-
-    /**
-     * Update last login timestamp
-     */
-    public function updateLastLogin($userId)
-    {
-        $query = "UPDATE users SET last_login = NOW() WHERE user_id = :id";
-        return $this->query($query, ['id' => $userId]);
-    }
-
-    /**
-     * Get all users by type
-     */
-    public function getUsersByType($userType)
-    {
-        $query = "SELECT * FROM users WHERE user_type = :user_type ORDER BY created_at DESC";
-        return $this->fetchAll($query, ['user_type' => $userType]);
-    }
-
-    /**
-     * Search users
-     */
-    public function searchUsers($searchTerm, $userType = null)
-    {
-        if ($userType) {
-            $query = "SELECT * FROM users 
-                     WHERE (first_name LIKE :search OR last_name LIKE :search OR email LIKE :search OR username LIKE :search)
-                     AND user_type = :user_type
-                     ORDER BY first_name, last_name";
+        try {
+            $query = "SELECT 
+                        user_id,
+                        username,
+                        email,
+                        first_name,
+                        last_name,
+                        user_type,
+                        account_status,
+                        email_verified,
+                        phone,
+                        created_at,
+                        last_login
+                      FROM users 
+                      ORDER BY created_at DESC";
             
-            return $this->fetchAll($query, [
-                'search' => "%$searchTerm%",
-                'user_type' => $userType
-            ]);
-        } else {
-            $query = "SELECT * FROM users 
-                     WHERE first_name LIKE :search OR last_name LIKE :search OR email LIKE :search OR username LIKE :search
-                     ORDER BY first_name, last_name";
+            return $this->fetchAll($query);
+        } catch (Exception $e) {
+            error_log("Error in getAllUsers(): " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get users by type
+     */
+    public function getUsersByType($userType = null)
+    {
+        try {
+            // If userType is null, 'all', or empty, return all users
+            if (!$userType || $userType === 'all') {
+                return $this->getAllUsers();
+            }
             
-            return $this->fetchAll($query, ['search' => "%$searchTerm%"]);
+            $query = "SELECT 
+                        user_id,
+                        username,
+                        email,
+                        first_name,
+                        last_name,
+                        user_type,
+                        account_status,
+                        email_verified,
+                        phone,
+                        created_at,
+                        last_login
+                      FROM users 
+                      WHERE user_type = :user_type 
+                      ORDER BY created_at DESC";
+            return $this->fetchAll($query, ['user_type' => $userType]);
+        } catch (Exception $e) {
+            error_log("Error in getUsersByType(): " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get total users count
+     */
+    public function getTotalUsersCount()
+    {
+        try {
+            $query = "SELECT COUNT(*) as count FROM users";
+            $result = $this->fetch($query);
+            return $result['count'] ?? 0;
+        } catch (Exception $e) {
+            error_log("Error in getTotalUsersCount(): " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Get users count by type
+     */
+    public function getUsersCountByType($userType)
+    {
+        try {
+            $query = "SELECT COUNT(*) as count FROM users WHERE user_type = :user_type";
+            $result = $this->fetch($query, ['user_type' => $userType]);
+            return $result['count'] ?? 0;
+        } catch (Exception $e) {
+            error_log("Error in getUsersCountByType(): " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Update user
+     */
+    public function updateUser($userId, $data)
+    {
+        try {
+            $setParts = [];
+            $params = ['user_id' => $userId];
+            
+            foreach ($data as $key => $value) {
+                $setParts[] = "$key = :$key";
+                $params[$key] = $value;
+            }
+            
+            $setClause = implode(', ', $setParts);
+            $query = "UPDATE users SET $setClause, updated_at = NOW() WHERE user_id = :user_id";
+            
+            // Execute and return the statement to check rowCount
+            $stmt = $this->query($query, $params);
+            
+            // Return true if at least one row was affected
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log("Error in updateUser(): " . $e->getMessage());
+            error_log("Query: " . ($query ?? 'N/A'));
+            error_log("Params: " . print_r($params, true));
+            return false;
+        }
+    }
+
+    /**
+     * Activate user account
+     */
+    public function activateUser($userId)
+    {
+        try {
+            $query = "UPDATE users SET 
+                        account_status = 'active',
+                        updated_at = NOW()
+                      WHERE user_id = :user_id";
+            
+            return $this->query($query, ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error in activateUser(): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Deactivate user account
+     */
+    public function deactivateUser($userId)
+    {
+        try {
+            $query = "UPDATE users SET 
+                        account_status = 'inactive',
+                        updated_at = NOW()
+                      WHERE user_id = :user_id";
+            
+            return $this->query($query, ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error in deactivateUser(): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Delete user account
+     */
+    public function deleteUser($userId)
+    {
+        try {
+            $query = "DELETE FROM users WHERE user_id = :user_id";
+            return $this->query($query, ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error in deleteUser(): " . $e->getMessage());
+            return false;
         }
     }
 
@@ -175,45 +221,113 @@ class User extends Model
      */
     public function emailExists($email, $excludeUserId = null)
     {
-        if ($excludeUserId) {
-            $query = "SELECT COUNT(*) as count FROM users WHERE email = :email AND user_id != :exclude_id";
-            $result = $this->fetch($query, ['email' => $email, 'exclude_id' => $excludeUserId]);
-        } else {
-            $query = "SELECT COUNT(*) as count FROM users WHERE email = :email";
-            $result = $this->fetch($query, ['email' => $email]);
+        try {
+            if ($excludeUserId) {
+                $query = "SELECT COUNT(*) as count FROM users WHERE email = :email AND user_id != :user_id";
+                $result = $this->fetch($query, ['email' => $email, 'user_id' => $excludeUserId]);
+            } else {
+                $query = "SELECT COUNT(*) as count FROM users WHERE email = :email";
+                $result = $this->fetch($query, ['email' => $email]);
+            }
+            return ($result['count'] ?? 0) > 0;
+        } catch (Exception $e) {
+            error_log("Error in emailExists(): " . $e->getMessage());
+            return false;
         }
-        
-        return $result['count'] > 0;
     }
 
     /**
-     * Check if username exists
+     * Update last login
      */
-    public function usernameExists($username, $excludeUserId = null)
+    public function updateLastLogin($userId)
     {
-        if ($excludeUserId) {
-            $query = "SELECT COUNT(*) as count FROM users WHERE username = :username AND user_id != :exclude_id";
-            $result = $this->fetch($query, ['username' => $username, 'exclude_id' => $excludeUserId]);
-        } else {
-            $query = "SELECT COUNT(*) as count FROM users WHERE username = :username";
-            $result = $this->fetch($query, ['username' => $username]);
+        try {
+            $query = "UPDATE users SET last_login = NOW() WHERE user_id = :user_id";
+            return $this->query($query, ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error in updateLastLogin(): " . $e->getMessage());
+            return false;
         }
-        
-        return $result['count'] > 0;
     }
 
     /**
-     * Get user statistics
+     * Create user (for registration)
      */
-    public function getUserStats()
+    public function createUser($data)
     {
-        $query = "SELECT 
-                    user_type,
-                    COUNT(*) as count,
-                    COUNT(CASE WHEN account_status = 'active' THEN 1 END) as active_count
-                  FROM users 
-                  GROUP BY user_type";
+        try {
+            $query = "INSERT INTO users (
+                        username, email, password_hash, first_name, middle_name, last_name,
+                        date_of_birth, gender, phone, user_type, account_status
+                      ) VALUES (
+                        :username, :email, :password_hash, :first_name, :middle_name, :last_name,
+                        :date_of_birth, :gender, :phone, :user_type, 'active'
+                      )";
+            
+            $result = $this->query($query, [
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'password_hash' => $data['password_hash'],
+                'first_name' => $data['first_name'],
+                'middle_name' => $data['middle_name'] ?? null,
+                'last_name' => $data['last_name'],
+                'date_of_birth' => $data['date_of_birth'] ?? null,
+                'gender' => $data['gender'] ?? 'male',
+                'phone' => $data['phone'] ?? null,
+                'user_type' => $data['user_type'] ?? 'undergraduate'
+            ]);
+            
+            if ($result) {
+                return $this->db->lastInsertId();
+            }
+            return false;
+        } catch (Exception $e) {
+            error_log("Error in createUser(): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verify user login
+     */
+    public function verifyLogin($email, $password)
+    {
+        $user = $this->getUserByEmail($email);
         
-        return $this->fetchAll($query);
+        if ($user && password_verify($password, $user['password_hash'])) {
+            $this->updateLastLogin($user['user_id']);
+            return $user;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Search users
+     */
+    public function searchUsers($searchTerm, $userType = null)
+    {
+        try {
+            if ($userType && $userType !== 'all') {
+                $query = "SELECT * FROM users 
+                         WHERE (first_name LIKE :search OR last_name LIKE :search OR email LIKE :search OR username LIKE :search)
+                         AND user_type = :user_type
+                         ORDER BY first_name, last_name";
+                
+                return $this->fetchAll($query, [
+                    'search' => "%$searchTerm%",
+                    'user_type' => $userType
+                ]);
+            } else {
+                $query = "SELECT * FROM users 
+                         WHERE first_name LIKE :search OR last_name LIKE :search OR email LIKE :search OR username LIKE :search
+                         ORDER BY first_name, last_name";
+                
+                return $this->fetchAll($query, ['search' => "%$searchTerm%"]);
+            }
+        } catch (Exception $e) {
+            error_log("Error in searchUsers(): " . $e->getMessage());
+            return [];
+        }
     }
 }

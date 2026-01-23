@@ -1,115 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? 'Forum') ?></title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum_home.css">
-    <script>window.__APP_ROOT__=<?= json_encode(BASE_URL) ?>;</script>
+    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_home_styles.css">
 </head>
-<body>
+<?php
+$pageTitle = $title ?? 'Discussion Forum';
+include_once __DIR__ . '/includes/header2.view.php';
+?>
 
-<nav class="u-nav">
-  <div class="nav-container">
-    <div class="logo">✨ logo</div>
-    <ul class="nav-links">
-      <li><a href="<?= BASE_URL ?>/forum" class="active">Home</a></li>
-      <li><a href="#categories">Categories</a></li>
-     
-    <div class="nav-right">
-      <button class="icon-btn" aria-label="Notifications">🔔</button>
-      <button class="icon-btn" aria-label="Search">🔍</button>
-      <div class="avatar" title="Profile">👤</div>
-    </div>
-  </div>
-</nav>
 
-<div class="main-wrapper">
-  <aside class="sidebar" id="categories">
-    <?php foreach ($categories as $c): ?>
-      <a class="sidebar-item" href="<?= BASE_URL ?>/forum/c/<?= htmlspecialchars($c->slug) ?>">
-        <span>📚</span><span><?= htmlspecialchars($c->name) ?></span>
-      </a>
-    <?php endforeach; ?>
-  </aside>
-
-  <div class="content">
-    <div class="section-title"><span class="section-arrow">📈</span> Trending Discussions</div>
-    <div class="discussions-grid">
-      <?php foreach ($trending as $t): ?>
-        <a class="discussion-card" href="<?= BASE_URL ?>/forum/thread/<?= (int)$t->id ?>">
-          <div class="card-title"><?= htmlspecialchars($t->title) ?></div>
-          <div class="card-tags"><span class="card-tag">Trending</span></div>
-          <div class="card-footer">
-            <div class="card-avatar"><?= strtoupper(substr($t->username,0,2)) ?></div>
-            <div class="card-author">
-              <div class="author-name"><?= htmlspecialchars($t->username) ?></div>
-              <div class="author-time"><?= htmlspecialchars($t->last_post_at) ?></div>
+<body data-base-url="<?= BASE_URL ?>">
+    <main class="main-container">
+        <section class="forum-header">
+            <div class="header-content">
+                <h1>Discussion Forum</h1>
+                <div class="header-buttons">
+                    <?php if (isset($_SESSION['USER'])): ?>
+                        <a href="<?= BASE_URL ?>/Discussion_Forum/view_my_discussion" class="btn btn-secondary"><i class="fa-solid fa-user"></i>My Discussion</a>
+                        <a href="<?= BASE_URL ?> /Discussion_Forum/create_posts" class="btn btn-primary">Start a New Discussion</a>
+                    <?php endif; ?>
+                </div>
             </div>
-            <div class="card-engagement">👁 <?= (int)$t->views ?></div>
-          </div>
-        </a>
-      <?php endforeach; ?>
-    </div>
 
-    <div class="recent-section">
-      <div class="section-title"><span class="section-arrow">🕐</span> Recent Posts</div>
-      <div class="discussions-grid">
-        <?php foreach ($recent as $r): ?>
-          <a class="discussion-card" href="<?= BASE_URL ?>/forum/thread/<?= (int)$r->id ?>">
-            <div class="card-title"><?= htmlspecialchars($r->title) ?></div>
-            <div class="card-tags"><span class="card-tag">New</span></div>
-            <div class="card-footer">
-              <div class="card-avatar"><?= strtoupper(substr($r->username,0,2)) ?></div>
-              <div class="card-author">
-                <div class="author-name"><?= htmlspecialchars($r->username) ?></div>
-                <div class="author-time"><?= htmlspecialchars($r->last_post_at) ?></div>
-              </div>
-              <div class="card-engagement">💬</div>
+            <div class="search-container">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="forum_search" placeholder="Search topic or key words..." class="search-input">
             </div>
-          </a>
-        <?php endforeach; ?>
-      </div>
-    </div>
-  </div>
-</div>
+        </section>
+        
+        <?php if (isset($recent_threads) && is_array($recent_threads) && count($recent_threads) > 0): ?>
+            <section class="discussion-section">
+                <div class="discussion-table">
+                    <div class="table-header">
+                        <div class="col-topic">Topic</div>
+                        <div class="col-Replies">
+                            Replies
+                        </div>
+                        <div class="col-views">Views</div>
+                        <div class="col-last-activity">
+                            Last Activity
+                        </div>
+                        <?php if (isset($curr_user_id)): ?>
+                            <div class="col-action">Action</div>
+                        <?php endif; ?>
+                    </div>
 
-<button class="fab" id="fabNew" aria-label="Create new discussion">+</button>
 
-<!-- New Thread Modal -->
-<div id="newThreadModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="newThreadTitle">
-  <div class="modal-window">
-    <div class="modal-header">
-      <h3 id="newThreadTitle">Start a New Discussion</h3>
-      <button type="button" class="modal-close" aria-label="Close">&times;</button>
-    </div>
-    <div class="modal-body">
-      <form id="newThreadForm" action="<?= BASE_URL ?>/forum/create" method="post">
-        <label>Category</label>
-        <select name="category_id" required>
-          <option value="">Select a category</option>
-          <?php foreach ($categories as $c): ?>
-            <option value="<?= (int)$c->id ?>"><?= htmlspecialchars($c->name) ?></option>
-          <?php endforeach; ?>
-        </select>
 
-        <label>Title</label>
-        <input type="text" name="title" required>
+                    <?php foreach ($recent_threads as $thread): ?>
+                        <div class="discussion-row">
+                            <div class="col-topic">
+                                <div class="topic-title">
+                                    <a href="<?= BASE_URL ?>/Discussion_forum/thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
+                                </div>
+                                <div class="topic-details">
+                                    posted by:<span class="author-name"><?= htmlspecialchars($thread['author_name']) ?></span> in <span class="category-link"><?= htmlspecialchars($thread['category_name']) ?></span>
+                                </div>
+                            </div>
 
-        <label>Body</label>
-        <textarea name="body" rows="6" required></textarea>
+                            <div class="col-replies">
+                                <div class="stat-num">
+                                    <?= isset($thread['replies']) ? $thread['replies'] : '0' ?>
+                                </div>
+                            </div>
 
-        <div class="modal-footer">
-          <button type="submit" class="btn">Create</button>
+                            <div class="col-views">
+                                <div class="stat-num">
+                                    <?= isset($thread['views']) ? $thread['views'] : '0' ?>
+                                </div>
+                            </div>
+
+                            <div class="col-last-activity">
+                                <div class="activity-details">
+                                    <div class="activity-author">by:<?= htmlspecialchars($thread['last_author']) ?></div>
+                                    <div class="activity-time">
+                                        <?= isset($thread['last_edited']) ? date('M j, Y, g:i A', strtotime($thread['last_edited'])) : date('M j, Y, g:i A') ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php if (isset($curr_user_id) && $thread['author_id'] == $curr_user_id) : ?>
+                                <div class="col-action">
+                                    <div class="action-btn">
+                                        <a href="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <button class="btn-action btn-delete" data-tooltip="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+                                    </div>
+                                </div>
+                            <?php elseif (isset($curr_user_id)): ?>
+                                <div class="col-action">
+                                    <span class="no-action">-</span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="no-discussion">
+                        <div class="no-content">
+                            <i class="fa-solid fa-comments"></i>
+                            <h3>No Discussions Found</h3>
+                            <p>Be the first one to start a discussion!</p>
+                            <a href="<?= BASE_URL ?>/Discussion_Forum/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
+
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+
+
+
+
+                </div>
+            </section>
+    </main>
+    <!-- 
+    <div id="deleteModal" class="delete-model hidden">
+        <div class="delete-box">
+            <h3>Delete Discussion</h3>
+            <p>
+                Are you sure you want to delete this discussion?
+                <strong>This action cannot be undone.</strong>
+            </p>
+            <div class="delete-action">
+                <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+                <button id="confirmDelete" class="btn btn-confirm">Confirm</button>
+            </div>
         </div>
-      </form>
-      <div class="modal-errors" id="formErrors" style="display:none;"></div>
     </div>
-  </div>
-</div>
-
-<script src="<?= BASE_URL ?>/assets/js/forum_home.js"></script>
-
+    
+    <script src="<?= BASE_URL ?>/assets/js/discussion_forum.js"></script> -->
+<?php include __DIR__ . '/../../layout/footer.php'; ?>
 
 </body>
-</html>

@@ -1,6 +1,6 @@
 <?php
 
-class Achievement extends Model 
+class Achievement extends Model
 {
     public function __construct()
     {
@@ -10,19 +10,31 @@ class Achievement extends Model
     /**
      * Get all achievements for a specific user
      */
-    public function getAchievementsByUser($userId)
+    public function getAchievementsByUserId($userId)
     {
-        $query = "SELECT * FROM achievements WHERE user_id = :user_id ORDER BY date_achieved DESC";
-        return $this->fetchAll($query, ['user_id' => $userId]);
+        $sql = "SELECT * FROM achievements WHERE user_id = :user_id ORDER BY date_achieved DESC";
+        return $this->fetchAll($sql, ['user_id' => $userId]);
     }
 
     /**
      * Get a single achievement by ID
      */
-    public function getAchievementById($id)
+    public function getAchievementById($achievementId)
     {
-        $query = "SELECT * FROM achievements WHERE achievement_id = :id";
-        return $this->fetch($query, ['id' => $id]);
+        $sql = "SELECT * FROM achievements WHERE achievement_id = :achievement_id";
+        return $this->fetch($sql, ['achievement_id' => $achievementId]);
+    }
+
+    /**
+     * Get achievement counts grouped by type for a user
+     */
+    public function getAchievementCountsByType($userId)
+    {
+        $sql = "SELECT achievement_type, COUNT(*) as count 
+                FROM achievements 
+                WHERE user_id = :user_id 
+                GROUP BY achievement_type";
+        return $this->fetchAll($sql, ['user_id' => $userId]);
     }
 
     /**
@@ -30,73 +42,85 @@ class Achievement extends Model
      */
     public function createAchievement($data)
     {
-        $query = "INSERT INTO achievements (user_id, title, description, achievement_type, date_achieved, certificate_url, institution, created_at) 
-                  VALUES (:user_id, :title, :description, :achievement_type, :date_achieved, :certificate_url, :institution, NOW())";
+        // ✅ Map to correct database column names
+        $sql = "INSERT INTO achievements 
+                (user_id, title, description, achievement_type, date_achieved, institution, certificate_url) 
+                VALUES 
+                (:user_id, :title, :description, :achievement_type, :date_achieved, :institution, :certificate_url)";
         
-        return $this->query($query, [
+        // ✅ Map the field names to match database columns
+        $params = [
             'user_id' => $data['user_id'],
             'title' => $data['title'],
             'description' => $data['description'],
             'achievement_type' => $data['achievement_type'],
             'date_achieved' => $data['date_achieved'],
-            'certificate_url' => $data['certificate_url'] ?? null,
-            'institution' => $data['institution'] ?? null
-        ]);
+            'institution' => $data['issuing_organization'] ?? null,  // ✅ Map issuing_organization -> institution
+            'certificate_url' => $data['verification_url'] ?? null   // ✅ Map verification_url -> certificate_url
+        ];
+        
+        return $this->query($sql, $params);
     }
 
     /**
-     * Update an achievement
+     * Update an existing achievement
      */
-    public function updateAchievement($id, $data)
+    public function updateAchievement($achievementId, $data)
     {
-        $query = "UPDATE achievements 
-                  SET title = :title, description = :description, achievement_type = :achievement_type, 
-                      date_achieved = :date_achieved, certificate_url = :certificate_url, 
-                      institution = :institution, updated_at = NOW()
-                  WHERE achievement_id = :id";
+        // ✅ Map to correct database column names
+        $sql = "UPDATE achievements 
+                SET title = :title,
+                    description = :description,
+                    achievement_type = :achievement_type,
+                    date_achieved = :date_achieved,
+                    institution = :institution,
+                    certificate_url = :certificate_url
+                WHERE achievement_id = :achievement_id";
         
-        return $this->query($query, [
-            'id' => $id,
+        // ✅ Map the field names to match database columns
+        $params = [
+            'achievement_id' => $achievementId,
             'title' => $data['title'],
             'description' => $data['description'],
             'achievement_type' => $data['achievement_type'],
             'date_achieved' => $data['date_achieved'],
-            'certificate_url' => $data['certificate_url'] ?? null,
-            'institution' => $data['institution'] ?? null
-        ]);
+            'institution' => $data['issuing_organization'] ?? null,  // ✅ Map issuing_organization -> institution
+            'certificate_url' => $data['verification_url'] ?? null   // ✅ Map verification_url -> certificate_url
+        ];
+        
+        return $this->query($sql, $params);
     }
 
     /**
      * Delete an achievement
      */
-    public function deleteAchievement($id)
+    public function deleteAchievement($achievementId)
     {
-        $query = "DELETE FROM achievements WHERE achievement_id = :id";
-        return $this->query($query, ['id' => $id]);
+        $sql = "DELETE FROM achievements WHERE achievement_id = :achievement_id";
+        return $this->query($sql, ['achievement_id' => $achievementId]);
     }
 
     /**
-     * Get achievements count by type for a user
+     * Get achievements by type for a user
      */
-    public function getAchievementCountsByType($userId)
+    public function getAchievementsByType($userId, $type)
     {
-        $query = "SELECT achievement_type, COUNT(*) as count FROM achievements WHERE user_id = :user_id GROUP BY achievement_type";
-        return $this->fetchAll($query, ['user_id' => $userId]);
+        $sql = "SELECT * FROM achievements 
+                WHERE user_id = :user_id AND achievement_type = :achievement_type 
+                ORDER BY date_achieved DESC";
+        return $this->fetchAll($sql, [
+            'user_id' => $userId,
+            'achievement_type' => $type
+        ]);
     }
 
     /**
-     * Get all achievement types
+     * Count total achievements for a user
      */
-    public function getAchievementTypes()
+    public function countUserAchievements($userId)
     {
-        return [
-            'certificate' => 'Certificate',
-            'award' => 'Award',
-            'project' => 'Project',
-            'activity' => 'Activity',
-            'leadership' => 'Leadership',
-            'internship' => 'Internship',
-            'competition' => 'Competition'
-        ];
+        $sql = "SELECT COUNT(*) as total FROM achievements WHERE user_id = :user_id";
+        $result = $this->fetch($sql, ['user_id' => $userId]);
+        return $result['total'] ?? 0;
     }
 }

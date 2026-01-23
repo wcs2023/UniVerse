@@ -21,8 +21,8 @@
                 <section class="legal-section">
                     <h2>1. Acceptance of Terms</h2>
                     <div class="section-content">
-                        <p>By accessing and using UniVerse ("the Platform"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
-                        <p>These Terms of Service ("Terms") govern your use of our platform located at universe.lk (the "Service") operated by UniVerse ("us", "we", or "our").</p>
+                        <p>By accessing and using UniVerse, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+                        <p>These Terms of Service govern your use of our platform located at the Service operated by UniVerse .</p>
                     </div>
                 </section>
 
@@ -33,7 +33,7 @@
                         <ul>
                             <li>Maintain the confidentiality of your login credentials</li>
                             <li>Notify us immediately of any unauthorized access</li>
-                            <li>Use strong passwords and enable two-factor authentication when available</li>
+                            <li>Use strong passwords</li>
                             <li>Take responsibility for all activities under your account</li>
                         </ul>
 
@@ -65,8 +65,6 @@
                             <li>Provide accurate academic and professional information</li>
                             <li>Engage respectfully with mentors and potential employers</li>
                             <li>Use the platform primarily for career development purposes</li>
-                            <li>Maintain up-to-date profile information</li>
-                            <li>Follow through on commitments made to mentors or employers</li>
                         </ul>
 
                         <h3>For Mentors</h3>
@@ -75,7 +73,6 @@
                             <li>Maintain professional boundaries in all interactions</li>
                             <li>Verify your professional credentials and experience</li>
                             <li>Respond to student inquiries in a timely manner</li>
-                            <li>Report any inappropriate behavior from students</li>
                         </ul>
 
                         <h3>For Companies</h3>
@@ -85,7 +82,6 @@
                             <li>Comply with equal opportunity employment laws</li>
                             <li>Respect candidate privacy and data protection rights</li>
                             <li>Provide feedback to applicants when possible</li>
-                            <li>Honor stated compensation and benefit commitments</li>
                         </ul>
                     </div>
                 </section>
@@ -97,7 +93,6 @@
                         <ul>
                             <li>UniVerse owns all rights to the platform design, features, and proprietary content</li>
                             <li>Users may not copy, modify, or distribute platform code or design elements</li>
-                            <li>The UniVerse logo and branding are protected trademarks</li>
                         </ul>
 
                         <h3>User Content</h3>
@@ -118,8 +113,6 @@
                         <h3>Data Usage</h3>
                         <ul>
                             <li>We collect and use data as described in our Privacy Policy</li>
-                            <li>Users control the visibility of their profile information</li>
-                            <li>We implement security measures to protect user data</li>
                             <li>Users can request data deletion as outlined in our Privacy Policy</li>
                         </ul>
                     </div>
@@ -128,13 +121,6 @@
                 <section class="legal-section">
                     <h2>6. Liability Disclaimers</h2>
                     <div class="section-content">
-                        <h3>Platform Availability</h3>
-                        <ul>
-                            <li>We strive for 99.9% uptime but cannot guarantee uninterrupted service</li>
-                            <li>Scheduled maintenance may temporarily affect platform availability</li>
-                            <li>We are not liable for losses due to service interruptions</li>
-                        </ul>
-
                         <h3>User Interactions</h3>
                         <ul>
                             <li>UniVerse facilitates connections but is not responsible for user relationships</li>
@@ -142,16 +128,6 @@
                             <li>Users interact at their own risk and discretion</li>
                             <li>We are not liable for disputes between users</li>
                         </ul>
-
-                        <h3>Third-Party Content</h3>
-                        <ul>
-                            <li>Links to external websites are provided for convenience only</li>
-                            <li>We do not endorse or take responsibility for third-party content</li>
-                            <li>Users should review external sites' terms and privacy policies</li>
-                        </ul>
-
-                        <h3>Limitation of Liability</h3>
-                        <p>To the maximum extent permitted by law, UniVerse shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses.</p>
                     </div>
                 </section>
 
@@ -160,67 +136,22 @@
                     <div class="section-content">
                         <h3>User-Initiated Termination</h3>
                         <ul>
-                            <li>Users may delete their accounts at any time through platform settings</li>
                             <li>Account deletion removes access to all platform features</li>
-                            <li>Some data may be retained for legal compliance purposes</li>
                         </ul>
 
-                        <h3>Platform-Initiated Actions</h3>
-                        <p>We reserve the right to suspend or terminate accounts for:</p>
-                        <ul>
-                            <li>Violation of these Terms of Service</li>
-                            <li>Fraudulent or illegal activity</li>
-                            <li>Harassment or abuse of other users</li>
-                            <li>Creating fake profiles or misrepresenting identity</li>
-                            <li>Spamming or excessive promotional activity</li>
-                            <li>Circumventing platform security measures</li>
-                        </ul>
-
-                        <h3>Appeal Process</h3>
-                        <ul>
-                            <li>Users may appeal termination decisions by contacting support</li>
-                            <li>Appeals will be reviewed within 5 business days</li>
-                            <li>Final decisions rest with UniVerse management</li>
-                        </ul>
-                    </div>
                 </section>
 
-                <section class="legal-section">
                     <h2>8. Modifications to Terms</h2>
                     <div class="section-content">
                         <p>We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting on the platform. Significant changes will be communicated via:</p>
                         <ul>
                             <li>Email notifications to registered users</li>
                             <li>In-platform announcements</li>
-                            <li>Updates to this page with revision dates</li>
                         </ul>
                         <p>Continued use of the platform after changes constitutes acceptance of the modified terms.</p>
                     </div>
                 </section>
 
-                <section class="legal-section">
-                    <h2>9. Governing Law</h2>
-                    <div class="section-content">
-                        <p>These Terms shall be interpreted and governed by the laws of Sri Lanka. Any disputes arising from these terms or platform use shall be subject to the jurisdiction of Sri Lankan courts.</p>
-                    </div>
-                </section>
-
-                <section class="legal-section">
-                    <h2>10. Contact Information</h2>
-                    <div class="section-content">
-                        <p>For questions about these Terms of Service, please contact us:</p>
-                        <ul>
-                            <li><strong>Email:</strong> <a href="mailto:legal@universe.lk" class="legal-link">legal@universe.lk</a></li>
-                            <li><strong>Phone:</strong> +94 11 234 5678</li>
-                            <li><strong>Address:</strong> UniVerse Legal Team, 123 Innovation Street, Colombo 03, Sri Lanka</li>
-                        </ul>
-                    </div>
-                </section>
-
-                <div class="legal-footer">
-                    <p><strong>Effective Date:</strong> <?= date('F j, Y') ?></p>
-                    <p>By using UniVerse, you acknowledge that you have read and understood these Terms of Service and agree to be bound by them.</p>
-                </div>
             </div>
         </div>
     </div>

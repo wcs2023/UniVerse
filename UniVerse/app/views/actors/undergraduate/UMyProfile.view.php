@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <title>UniVerse - Profile Overview</title>
-    
 </head>
 <body>
     <?php include 'Unavigation.view.php';?>
@@ -15,11 +14,21 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-image">
-                <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Photo">
+                <?php 
+                $profilePicture = !empty($data['user']['profile_picture']) 
+                    ? $data['user']['profile_picture'] 
+                    : '/assets/images/default-avatar.png';
+                ?>
+                <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                     alt="Profile Photo"
+                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
             </div>
             <div class="profile-info">
-                <h1>John Doe</h1>
-                <p class="degree-info">B.Sc. Computer Science (Class of 2026)</p>
+                <h1><?= htmlspecialchars($data['user']['first_name'] . ' ' . $data['user']['last_name']) ?></h1>
+                <p class="degree-info">
+                    <?= htmlspecialchars($data['profile']['degree_program'] ?? 'Undergraduate Student') ?> 
+                    (Class of <?= htmlspecialchars($data['profile']['expected_graduation_year'] ?? 'N/A') ?>)
+                </p>
                 <a href="<?= BASE_URL ?>/ueditprofile" class="edit-profile-btn">
                     Edit Profile
                 </a>
@@ -28,17 +37,17 @@
 
         <!-- Profile Navigation -->
         <div class="profile-nav">
-            <a href="umyprofile" class="nav-item active">
-                <!-- <i class="icon-person"></i> -->
-                Profile Overview
+            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item active">
+            Profile Overview
             </a>
-            <a href="uachievements" class="nav-item">
-                <!-- <i class="icon-achievement"></i> -->
-                Achievements
+            <a href="<?= BASE_URL ?>/uachievements" class="nav-item">
+            Achievements
+            </a>
+            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            Bookmarked Articles
             </a>
             <a href="<?= BASE_URL ?>/usettings" class="nav-item">
-                <!-- <i class="icon-settings"></i> -->
-                Settings
+            Settings
             </a>
         </div>
 
@@ -46,7 +55,6 @@
         <div class="profile-content">
             <div class="section-header">
                 <h2>Profile Overview</h2>
-                <!-- <button class="edit-btn">Edit</button> -->
             </div>
 
             <div class="info-grid">
@@ -57,7 +65,7 @@
                         <i class="icon-email"></i>
                         Email
                     </div>
-                    <div class="info-value">john.doe@universe.edu</div>
+                    <div class="info-value"><?= htmlspecialchars($data['user']['email']) ?></div>
                 </div>
 
                 <!-- Phone -->
@@ -66,7 +74,7 @@
                         <i class="icon-phone"></i>
                         Phone
                     </div>
-                    <div class="info-value">+1 (555) 123-4567</div>
+                    <div class="info-value"><?= htmlspecialchars($data['user']['phone_number'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Date of Birth -->
@@ -75,7 +83,12 @@
                         <i class="icon-calendar"></i>
                         Date of Birth
                     </div>
-                    <div class="info-value">19/07/2004</div>
+                    <div class="info-value">
+                        <?= !empty($data['user']['date_of_birth']) 
+                            ? date('d/m/Y', strtotime($data['user']['date_of_birth'])) 
+                            : 'Not provided' 
+                        ?>
+                    </div>
                 </div>
 
                 <!-- Gender -->
@@ -84,7 +97,7 @@
                         <i class="icon-person"></i>
                         Gender
                     </div>
-                    <div class="info-value">Male</div>
+                    <div class="info-value"><?= htmlspecialchars(ucfirst($data['user']['gender'] ?? 'Not specified')) ?></div>
                 </div>
 
                 <!-- Address -->
@@ -93,7 +106,7 @@
                         <i class="icon-address"></i>
                         Address
                     </div>
-                    <div class="info-value">123 University Ave, UniCity, State</div>
+                    <div class="info-value"><?= htmlspecialchars($data['user']['address'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Academic Information -->
@@ -103,7 +116,7 @@
                         <i class="icon-academic"></i>
                         University
                     </div>
-                    <div class="info-value">University of Colombo</div>
+                    <div class="info-value"><?= htmlspecialchars($data['profile']['university'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Faculty -->
@@ -112,7 +125,7 @@
                         <i class="icon-academic"></i>
                         Faculty
                     </div>
-                    <div class="info-value">Faculty of Science</div>
+                    <div class="info-value"><?= htmlspecialchars($data['profile']['faculty'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Degree Program -->
@@ -121,7 +134,7 @@
                         <i class="icon-academic"></i>
                         Degree Program
                     </div>
-                    <div class="info-value">B.Sc. Computer Science</div>
+                    <div class="info-value"><?= htmlspecialchars($data['profile']['degree_program'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Academic Year -->
@@ -130,7 +143,7 @@
                         <i class="icon-academic"></i>
                         Academic Year
                     </div>
-                    <div class="info-value">3rd Year</div>
+                    <div class="info-value"><?= htmlspecialchars($data['profile']['academic_year'] ?? 'Not provided') ?></div>
                 </div>
 
                 <!-- Expected Graduation -->
@@ -139,7 +152,7 @@
                         <i class="icon-calendar"></i>
                         Expected Graduation
                     </div>
-                    <div class="info-value">2026</div>
+                    <div class="info-value"><?= htmlspecialchars($data['profile']['expected_graduation_year'] ?? 'Not provided') ?></div>
                 </div>
             </div>
         </div>
@@ -147,8 +160,5 @@
 
     <?php include __DIR__ . '/../../layout/footer.php'; ?>
     
-    <!-- JavaScript at the bottom for better performance -->
-    <!-- <script src="js/main.js"></script> -->
-   
 </body>
 </html>

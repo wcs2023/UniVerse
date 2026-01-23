@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniVerse - Bridge Your Future</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/png" href="assets/images/U.png">
 </head>
 <body>
@@ -33,7 +33,7 @@
             </div>
             <div class="hero-image">
                 <div class="hero-main-image">
-                    <img src="assets/images/hero.png" alt="Students connecting with industry professionals" class="main-hero-img">
+                    <img src="assets/images/heroImage.jpg" alt="Students connecting with industry professionals" class="main-hero-img">
                 </div>
             </div>
         </div>
@@ -45,32 +45,32 @@
             <h2 class="section-title fade-in">Empowering Your Journey</h2>
             <div class="features-grid">
                 <div class="feature-card fade-in stagger-1">
-                    <div class="feature-icon">📊</div>
-                    <h3>Smart Degree Recommendations</h3>
+                    <!-- <div class="feature-icon"></div> -->
+                    <h3>Degree Recommendations</h3>
                     <p>Get personalized degree suggestions based on your Z-score, stream, and career preferences.</p>
                 </div>
                 <div class="feature-card fade-in stagger-2">
-                    <div class="feature-icon">💡</div>
+                    <!-- <div class="feature-icon"></div> -->
                     <h3>Career Guidance Hub</h3>
                     <p>Access expert articles, discussion forums, and industry insights to make informed career decisions.</p>
                 </div>
                 <div class="feature-card fade-in stagger-3">
-                    <div class="feature-icon">🔗</div>
+                    <!-- <div class="feature-icon"></div> -->
                     <h3>Industry Connections</h3>
                     <p>Connect with internships, job opportunities, and companies tailored to your field of study.</p>
                 </div>
                 <div class="feature-card fade-in stagger-4">
-                    <div class="feature-icon">👥</div>
+                    <!-- <div class="feature-icon"></div> -->
                     <h3>Mentorship Network</h3>
                     <p>Get guidance from experienced alumni and industry professionals to accelerate your growth.</p>
                 </div>
                 <div class="feature-card fade-in stagger-5">
-                    <div class="feature-icon">📱</div>
+                    <!-- <div class="feature-icon"></div> -->
                     <h3>Portfolio Building</h3>
                     <p>Showcase your achievements, projects, and skills to increase industry visibility.</p>
                 </div>
                 <div class="feature-card fade-in stagger-6">
-                    <div class="feature-icon">🎯</div>
+                    <!-- <div class="feature-icon"></div> -->
                     <h3>Targeted Opportunities</h3>
                     <p>Discover internships and jobs specifically matched to your skills and career goals.</p>
                 </div>
@@ -84,7 +84,7 @@
             <h2 class="section-title fade-in">Who We Serve</h2>
             <div class="audience-grid">
                 <div class="audience-card slide-in-left stagger-1">
-                    <div class="audience-icon">🎓</div>
+                    <!-- <div class="audience-icon">🎓</div> -->
                     <h3>School Leavers</h3>
                     <p>Get degree recommendations based on your A/L results and explore career paths that align with your interests.</p>
                     <ul>
@@ -94,7 +94,7 @@
                     </ul>
                 </div>
                 <div class="audience-card slide-in-right stagger-2">
-                    <div class="audience-icon">📚</div>
+                    <!-- <div class="audience-icon">📚</div> -->
                     <h3>Undergraduates</h3>
                     <p>Build your professional network, find internships, and prepare for your dream career with expert guidance.</p>
                     <ul>
@@ -104,7 +104,7 @@
                     </ul>
                 </div>
                 <div class="audience-card slide-in-left stagger-3">
-                    <div class="audience-icon">🏢</div>
+                    <!-- <div class="audience-icon">🏢</div> -->
                     <h3>Companies</h3>
                     <p>Connect with talented students and graduates to find the perfect candidates for your organization.</p>
                     <ul>
@@ -114,7 +114,7 @@
                     </ul>
                 </div>
                 <div class="audience-card slide-in-right stagger-4">
-                    <div class="audience-icon">🌟</div>
+                    <!-- <div class="audience-icon">🌟</div> -->
                     <h3>Alumni</h3>
                     <p>Give back to the community by mentoring students and sharing your professional experiences.</p>
                     <ul>

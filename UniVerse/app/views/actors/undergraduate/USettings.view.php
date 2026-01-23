@@ -14,66 +14,96 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-image">
-                <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Photo">
+                <?php 
+                // ✅ Get profile picture from database, fallback to default
+                $profilePicture = BASE_URL . '/assets/images/default-avatar.png'; // Default
+                
+                if (!empty($data['user']['profile_picture'])) {
+                    $profilePicture = BASE_URL . $data['user']['profile_picture'];
+                }
+                ?>
+                <img src="<?= $profilePicture ?>" alt="Profile Photo">
             </div>
             <div class="profile-info">
-                <h1>John Doe</h1>
-                <p class="degree-info">B.Sc. Computer Science (Class of 2026)</p>
+                <?php 
+                // ✅ Get user name from database
+                $firstName = $data['user']['first_name'] ?? $_SESSION['user_name'] ?? 'User';
+                $lastName = $data['user']['last_name'] ?? $_SESSION['last_name'] ?? '';
+                
+                // ✅ Get degree info from profile
+                $degreeProgram = $data['profile']['degree_program'] ?? 'B.Sc. Computer Science';
+                $graduationYear = $data['profile']['expected_graduation_year'] ?? '2026';
+                ?>
+                <h1><?= htmlspecialchars($firstName . ' ' . $lastName) ?></h1>
+                <p class="degree-info"><?= htmlspecialchars($degreeProgram) ?> (Class of <?= htmlspecialchars($graduationYear) ?>)</p>
                 <a href="<?= BASE_URL ?>/ueditprofile" class="edit-profile-btn">
                     Edit Profile
                 </a>
             </div>
         </div>
 
-        <!-- Profile Navigation -->
+         <!-- Profile Navigation -->
         <div class="profile-nav">
-            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item">
-                <!-- <i class="icon-person"></i> -->
-                Profile Overview
+            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item ">
+            Profile Overview
             </a>
             <a href="<?= BASE_URL ?>/uachievements" class="nav-item">
-                <!-- <i class="icon-achievement"></i> -->
-                Achievements
+            Achievements
+            </a>
+            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            Bookmarked Articles
             </a>
             <a href="<?= BASE_URL ?>/usettings" class="nav-item active">
-                <!-- <i class="icon-settings"></i> -->
-                Settings
+            Settings
             </a>
         </div>
 
+
+
+        <!-- Success/Error Messages -->
+        <?php if (isset($data['success'])): ?>
+            <div class="alert alert-success">
+                <?= htmlspecialchars($data['success']) ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (isset($data['error'])): ?>
+            <div class="alert alert-error">
+                <?= htmlspecialchars($data['error']) ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Settings Section -->
         <div class="profile-content">
-            <!-- <div class="section-header">
-                <h2>Settings</h2>
-            </div> -->
-
             <!-- Change Password Form -->
             <div class="settings-form">
-                <!-- <h3>Account Settings</h3> -->
                 <h3>Change Password</h3>
                 
-                <div class="form-group">
-                    <label for="current-password">Current Password</label>
-                    <input type="password" id="current-password" name="current-password" 
-                           placeholder="Enter your current password" required>
-                </div>
+                <form method="POST" action="<?= BASE_URL ?>/usettings/changePassword" id="password-form">
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password" name="current_password" 
+                               placeholder="Enter your current password" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="new-password">New Password</label>
-                    <input type="password" id="new-password" name="new-password" 
-                           placeholder="Enter your new password" required>
-                </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" name="new_password" 
+                               placeholder="Enter your new password" required>
+                        <small class="form-hint">Password must be at least 8 characters long</small>
+                    </div>
 
-                <div class="form-group">
-                    <label for="confirm-password">Confirm New Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password" 
-                           placeholder="Confirm your new password" required>
-                </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <input type="password" id="confirm-password" name="confirm_password" 
+                               placeholder="Confirm your new password" required>
+                    </div>
 
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
-                    <button type="submit" class="btn btn-primary save-btn">Save Changes</button>
-                </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary save-btn">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -86,36 +116,31 @@
             window.scrollTo(0, 0);
         };
 
-        // Save button validation
-        document.querySelector('.save-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            
+        // Form validation
+        document.getElementById('password-form').addEventListener('submit', function(e) {
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
             if (!currentPassword || !newPassword || !confirmPassword) {
+                e.preventDefault();
                 alert('Please fill in all fields');
-                return;
+                return false;
             }
 
             if (newPassword !== confirmPassword) {
+                e.preventDefault();
                 alert('New passwords do not match');
-                return;
+                return false;
             }
 
             if (newPassword.length < 8) {
+                e.preventDefault();
                 alert('Password must be at least 8 characters long');
-                return;
+                return false;
             }
 
-            // If validation passes, you can submit the form
-            alert('Password updated successfully!');
-            
-            // Clear the form
-            document.getElementById('current-password').value = '';
-            document.getElementById('new-password').value = '';
-            document.getElementById('confirm-password').value = '';
+            // Form will submit if validation passes
         });
 
         // Cancel button functionality
@@ -125,5 +150,33 @@
             document.getElementById('confirm-password').value = '';
         });
     </script>
+
+    <style>
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .form-hint {
+            display: block;
+            margin-top: 5px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+    </style>
 </body>
 </html>

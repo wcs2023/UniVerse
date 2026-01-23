@@ -14,11 +14,28 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-image">
-                <img src="<?= BASE_URL ?>/assets/images/logo bw.PNG" alt="Profile Photo">
+                <?php 
+                // ✅ Get profile picture from database, fallback to default
+                $profilePicture = BASE_URL . '/assets/images/default-avatar.png'; // Default
+                
+                if (!empty($data['user']['profile_picture'])) {
+                    $profilePicture = BASE_URL . $data['user']['profile_picture'];
+                }
+                ?>
+                <img src="<?= $profilePicture ?>" alt="Profile Photo">
             </div>
             <div class="profile-info">
-                <h1>John Doe</h1>
-                <p class="degree-info">B.Sc. Computer Science (Class of 2026)</p>
+                <?php 
+                // ✅ Get user name from database
+                $firstName = $data['user']['first_name'] ?? $_SESSION['user_name'] ?? 'User';
+                $lastName = $data['user']['last_name'] ?? $_SESSION['last_name'] ?? '';
+                
+                // ✅ Get degree info from profile
+                $degreeProgram = $data['profile']['degree_program'] ?? 'B.Sc. Computer Science';
+                $graduationYear = $data['profile']['expected_graduation_year'] ?? '2026';
+                ?>
+                <h1><?= htmlspecialchars($firstName . ' ' . $lastName) ?></h1>
+                <p class="degree-info"><?= htmlspecialchars($degreeProgram) ?> (Class of <?= htmlspecialchars($graduationYear) ?>)</p>
                 <a href="<?= BASE_URL ?>/ueditprofile" class="edit-profile-btn">
                     Edit Profile
                 </a>
@@ -27,19 +44,34 @@
 
         <!-- Profile Navigation -->
         <div class="profile-nav">
-            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item">
-                <!-- <i class="icon-person"></i> -->
-                Profile Overview
+            <a href="<?= BASE_URL ?>/umyprofile" class="nav-item ">
+            Profile Overview
             </a>
             <a href="<?= BASE_URL ?>/uachievements" class="nav-item active">
-                <!-- <i class="icon-achievement"></i> -->
-                Achievements
+            Achievements
+            </a>
+            <a href="<?= BASE_URL ?>/ubookmarks" class="nav-item">
+            Bookmarked Articles
             </a>
             <a href="<?= BASE_URL ?>/usettings" class="nav-item">
-                <!-- <i class="icon-settings"></i> -->
-                Settings
+            Settings
             </a>
         </div>
+
+
+
+        <!-- Success/Error Messages -->
+        <?php if (isset($data['success'])): ?>
+            <div class="alert alert-success">
+                <?= htmlspecialchars($data['success']) ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (isset($data['error'])): ?>
+            <div class="alert alert-error">
+                <?= htmlspecialchars($data['error']) ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Achievements Section -->
         <div class="achievements-container">
@@ -54,7 +86,7 @@
                 <div class="achievement-card">
                     <div class="achievement-header">
                         <div class="achievement-title"><?= htmlspecialchars($achievement['title']) ?></div>
-                        <span class="achievement-tag <?= htmlspecialchars($achievement['achievement_type']) ?>">
+                        <span class="achievement-tag <?= strtolower(htmlspecialchars($achievement['achievement_type'])) ?>">
                             <?= ucfirst(htmlspecialchars($achievement['achievement_type'])) ?>
                         </span>
                     </div>
@@ -62,6 +94,11 @@
                     <div class="achievement-description">
                         <?= htmlspecialchars($achievement['description']) ?>
                     </div>
+                    <?php if (!empty($achievement['institution'])): ?>
+                    <div class="achievement-organization">
+                        <strong>Issued by:</strong> <?= htmlspecialchars($achievement['institution']) ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="achievement-actions">
                         <button class="edit-btn" onclick="editAchievement(<?= $achievement['achievement_id'] ?>)">✏️ Edit</button>
                         <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">🗑️ Delete</button>
@@ -107,5 +144,32 @@
             window.scrollTo(0, 0);
         };
     </script>
+
+    <style>
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .achievement-organization {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
 </body>
 </html>
