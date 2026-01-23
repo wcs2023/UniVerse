@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>UniVerse - <?= $data['title'] ?></title>
+    <title>Universe - <?= $data['title'] ?></title>
 </head>
 <body>
 
@@ -15,18 +15,17 @@
 <div class="page-container">
     <div class="articles-container">
         <!-- Breadcrumb -->
-        <nav class="breadcrumb">
+        <!-- <nav class="breadcrumb"> -->
             <!-- <a href="<?= BASE_URL ?>/uarticles">Articles</a> -->
-            <!-- <span class="breadcrumb-separator">></span> -->
+            <!-- <span class="breadcrumb-separator">/</span> -->
             <!-- <span class="breadcrumb-current"><?= ucfirst(str_replace('-', ' ', $data['category'])) ?></span> -->
-        </nav>
-
-        <!-- Category Header -->
+            <!-- Category Header -->
+        <!-- </nav> -->
         <div class="category-header">
             <h1><?= ucfirst(str_replace('-', ' ', $data['category'])) ?> Articles</h1>
             <p class="category-description">Explore articles in the <?= strtolower(str_replace('-', ' ', $data['category'])) ?> category</p>
         </div>
-
+            
         <!-- Back to Categories -->
         <div class="category-navigation">
             <a href="<?= BASE_URL ?>/uarticles" class="back-to-articles">
@@ -104,9 +103,31 @@
 
 <style>
 /* Simple, clean styling */
+ :root {
+        --primary-purple: #6b46c1;
+        --secondary-purple: #8b5cf6;
+        --light-purple: #a78bfa;
+        --dark-purple: #553c9a;
+        --background:#a78bfa45;
+        
+        --gradient-primary: linear-gradient(135deg, #6b46c1, #8b5cf6);
+        --gradient-secondary: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        --text-dark: #1f2937;
+        --text-medium: #4b5563;
+        --text-light: #6b7280;
+        --white: #ffffff;
+        --light-gray: #f9fafb;
+        --border-color: #e5e7eb;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        --radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
 .page-container {
     min-height: 100vh;
-    background-color: #f8f9fa;
+    background-color: var(--background);
     padding: 2rem 0;
 }
 
@@ -116,39 +137,11 @@
     padding: 0 1rem;
 }
 
-/* Breadcrumb */
-.breadcrumb {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.breadcrumb a {
-    color: #6b46c1;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.breadcrumb a:hover {
-    text-decoration: underline;
-}
-
-.breadcrumb-separator {
-    margin: 0 0.5rem;
-    color: #6b7280;
-}
-
-.breadcrumb-current {
-    color: #374151;
-    font-weight: 600;
-}
-
 /* Category Header */
 .category-header {
     text-align: center;
     margin-bottom: 2rem;
+    margin-top: 5rem;
     padding: 2rem;
     background: white;
     border-radius: 8px;

@@ -24,7 +24,7 @@
                         <span class="stat-label">Articles</span>
                     </div>
                     <!-- <div class="stat-item">
-                        <span class="stat-number"><?= count($data['categories'] ?? []) ?></span>
+                        <span class="stat-number"><//?= count($data['categories'] ?? []) ?></span>
                         <span class="stat-label">Categories</span>
                     </div> -->
                     <div class="stat-item">
@@ -565,6 +565,7 @@
         opacity: 1;
         transform: translateY(0);
     }
+
 
     .action-btn:hover {
         background: var(--primary-purple);
