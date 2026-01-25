@@ -202,10 +202,6 @@
                         <div class="stat-number"><?= $statuses['shortlisted'] ?></div>
                         <div class="stat-label">Shortlisted</div>
                     </div>
-                    <div class="stat-card hired">
-                        <div class="stat-number"><?= $statuses['hired'] ?></div>
-                        <div class="stat-label">Hired</div>
-                    </div>
                 </div>
             <?php endif; ?>
             
