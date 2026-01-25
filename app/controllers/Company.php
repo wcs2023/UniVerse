@@ -261,6 +261,34 @@ class Company extends Controller
         }
         exit;
     }
+
+    /**
+     * Get Application Details (AJAX)
+     */
+    public function getApplicationDetails($applicationId = null)
+    {
+        header('Content-Type: application/json');
+        
+        if (!$applicationId) {
+            echo json_encode(['success' => false, 'message' => 'Application ID not provided']);
+            exit;
+        }
+        
+        $companyId = $_SESSION['user_id'];
+        
+        // Get application details
+        $application = $this->applicationModel->getApplicationById($applicationId);
+        
+        if ($application && $application['company_id'] == $companyId) {
+            echo json_encode([
+                'success' => true,
+                'application' => $application
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Application not found or access denied']);
+        }
+        exit;
+    }
     
     /**
      * Update Job Status (AJAX)
