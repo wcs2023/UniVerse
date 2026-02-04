@@ -26,7 +26,7 @@ class Udiscussion extends Controller
 
   public function index() {
     // Get forum models
-    $categoryModel = $this->model('ForumCategory_model');
+    $categoryModel = $this->model('Forum_category_model');
     
     // Get categories using existing method
     $categories = [];
@@ -59,7 +59,7 @@ class Udiscussion extends Controller
       exit;
     }
     
-    $categoryModel = $this->model('ForumCategory_model');
+    $categoryModel = $this->model('Forum_category_model');
     
     $data = [
       'title' => 'Forum Category',
