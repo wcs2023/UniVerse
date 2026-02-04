@@ -342,7 +342,7 @@
             <!-- Requirements -->
             <?php if ($data['job']['requirements']): ?>
                 <div class="section">
-                    <h2 class="section-title">📋 Requirements</h2>
+                    <h2 class="section-title"> Requirements</h2>
                     <div class="section-content">
                         <?php
                         $requirements = explode("\n", $data['job']['requirements']);
