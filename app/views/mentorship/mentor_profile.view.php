@@ -11,6 +11,7 @@ if (!defined('APPROOT')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($data['mentor']['full_name']) ?> - Mentor Profile</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         * {
@@ -23,7 +24,7 @@ if (!defined('APPROOT')) {
             --primary-purple: #7c3aed;
             --purple-hover: #6d28d9;
             --text-dark: #1f2937;
-            --text-light: #6b7280;
+            --text-light: #4b5563;
             --bg-light: #f9fafb;
             --border-color: #e5e7eb;
             --success-green: #10b981;
@@ -32,7 +33,7 @@ if (!defined('APPROOT')) {
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f3f4f6;
+            background-color: #a78bfa45;
             color: var(--text-dark);
             line-height: 1.6;
             padding-top: 80px;
@@ -608,19 +609,20 @@ if (!defined('APPROOT')) {
 
     <!-- Request Modal -->
     <?php if ($data['user_type'] === 'undergraduate' && !$data['hasActiveRequest'] && $data['mentor']['is_active']): ?>
-        <div id="requestModal" class="modal">
+        <div id="requestModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Send Mentorship Request</h3>
-                    <button class="modal-close" onclick="closeRequestModal()">&times;</button>
+                    <h3 id="requestModalTitle">Send Mentorship Request</h3>
+                    <button class="modal-close" onclick="closeRequestModal()" aria-label="Close request dialog"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <form id="requestForm" onsubmit="sendRequest(event)">
                         <div class="form-group">
-                            <label for="message">Message to <?= htmlspecialchars($data['mentor']['first_name']) ?> *</label>
+                            <label for="message">Message to <?= htmlspecialchars($data['mentor']['first_name']) ?> <span aria-hidden="true">*</span><span class="visually-hidden">required</span></label>
                             <textarea id="message" 
                                       name="message" 
                                       required
+                                      aria-required="true"
                                       placeholder="Introduce yourself and explain why you'd like this person as your mentor..."></textarea>
                         </div>
                         <input type="hidden" name="mentor_id" value="<?= $data['mentor']['mentor_id'] ?>">
@@ -679,5 +681,6 @@ if (!defined('APPROOT')) {
             }
         }
     </script>
+    <script src="<?= ROOT ?>/js/mentorship.js"></script>
 </body>
 </html>

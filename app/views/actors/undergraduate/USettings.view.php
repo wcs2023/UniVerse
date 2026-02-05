@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <title>UniVerse - Settings</title>
+    <style>
+        body { background-color: #a78bfa45 !important; }
+    </style>
 </head>
 <body>
     <?php include 'Unavigation.view.php'; ?>
