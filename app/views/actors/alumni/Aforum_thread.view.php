@@ -6,6 +6,9 @@
     <title><?= htmlspecialchars($title ?? 'Forum Thread') ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum_thread.css">
     <script>window.__APP_ROOT__=<?= json_encode(BASE_URL) ?>;</script>
+    <style>
+        body { background-color: #a78bfa45 !important; }
+    </style>
 </head>
 <body>
 
