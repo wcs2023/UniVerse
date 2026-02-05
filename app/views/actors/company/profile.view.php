@@ -17,39 +17,46 @@
                 <p class="card-subtitle">Update your company information</p>
             </div>
             
-            <form class="profile-form" action="<?= BASE_URL ?>/company/updateprofile" method="POST">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" value="<?= $user->firstname ?? '' ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" value="<?= $user->lastname ?? '' ?>" required>
-                    </div>
-                </div>
-                
+            <form class="profile-form" action="<?= BASE_URL ?>/company/profile" method="POST" enctype="multipart/form-data">
+                <!-- Profile Picture Section -->
                 <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" value="<?= $user->email ?? '' ?>" required>
+                    <label for="profilePicture">Company Profile Picture</label>
+                    <div style="display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 1.5rem;">
+                        <div style="flex: 1;">
+                            <div style="width: 150px; height: 150px; border-radius: 12px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border: 2px solid #e0e0e0;">
+                                <?php if ($data['profile'] && $data['profile']['logo_url']): ?>
+                                    <img src="<?= BASE_URL . '/' . htmlspecialchars($data['profile']['logo_url']) ?>" alt="Company Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                                <?php else: ?>
+                                    <span style="color: #999; font-size: 3rem;">🏢</span>
+                                <?php endif; ?>
+                            </div>
+                            <input type="file" id="profilePicture" name="profilePicture" accept="image/*" style="margin-bottom: 0.5rem;">
+                            <small style="display: block; color: #666;">Max size: 5MB. Formats: JPG, PNG, GIF</small>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="companyName">Company Name</label>
-                    <input type="text" id="companyName" name="companyName" placeholder="Enter company name">
+                    <input type="text" id="companyName" name="company_name" placeholder="Enter company name" value="<?= htmlspecialchars($data['profile']['company_name'] ?? '') ?>">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Contact Email</label>
+                    <input type="email" id="email" name="contact_email" placeholder="company@example.com" value="<?= htmlspecialchars($data['profile']['contact_email'] ?? '') ?>">
                 </div>
                 
                 <div class="form-group">
                     <label for="industry">Industry</label>
                     <select id="industry" name="industry">
                         <option value="">Select Industry</option>
-                        <option value="technology">Technology</option>
-                        <option value="healthcare">Healthcare</option>
-                        <option value="finance">Finance</option>
-                        <option value="education">Education</option>
-                        <option value="retail">Retail</option>
-                        <option value="manufacturing">Manufacturing</option>
-                        <option value="other">Other</option>
+                        <option value="technology" <?= ($data['profile']['industry'] ?? '') === 'technology' ? 'selected' : '' ?>>Technology</option>
+                        <option value="healthcare" <?= ($data['profile']['industry'] ?? '') === 'healthcare' ? 'selected' : '' ?>>Healthcare</option>
+                        <option value="finance" <?= ($data['profile']['industry'] ?? '') === 'finance' ? 'selected' : '' ?>>Finance</option>
+                        <option value="education" <?= ($data['profile']['industry'] ?? '') === 'education' ? 'selected' : '' ?>>Education</option>
+                        <option value="retail" <?= ($data['profile']['industry'] ?? '') === 'retail' ? 'selected' : '' ?>>Retail</option>
+                        <option value="manufacturing" <?= ($data['profile']['industry'] ?? '') === 'manufacturing' ? 'selected' : '' ?>>Manufacturing</option>
+                        <option value="other" <?= ($data['profile']['industry'] ?? '') === 'other' ? 'selected' : '' ?>>Other</option>
                     </select>
                 </div>
                 
