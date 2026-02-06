@@ -13,7 +13,6 @@ class Discussion_Forum extends Controller
         $this->post_model = $this->model('Forum_post_model');
     }
 
-
     public function getCurrentUser()
     {
         return $_SESSION['USER'] ?? NULL;
@@ -38,6 +37,7 @@ class Discussion_Forum extends Controller
 
         return ((int)$userId === (int)$admin_id) || !empty($isAdmin);
     }
+
     public function index()
     {
         $categories = $this->category_model->getAllStats();
@@ -78,7 +78,11 @@ class Discussion_Forum extends Controller
                 'total_members' => 0
             ]
         ];
+        // if($_SESSION['user_role'] == "undergraduate")
+        // {
+        //     $this->view('actors/students/forum_home', $data);
 
+        // }
         $this->view('actors/students/forum_home', $data);
     }
 
@@ -287,12 +291,12 @@ class Discussion_Forum extends Controller
             exit;
         }
 
-        $categories = $this->category_model->getOrderedCat();
+        $categories = $this->category_model->allOrdered();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title'] ?? '');
             $content = trim($_POST['content'] ?? '');
-            $category = $_POST['cat_id'];
+            $category = $_POST['category_id'];
 
             $errors = [];
 

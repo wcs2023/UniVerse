@@ -18,7 +18,7 @@ class Forum_thread_model extends Model
                     ORDER BY fp2.created_at DESC LIMIT 1) AS last_post_author
                     FROM {$this->table} ft
                     JOIN users u on ft.user_id = u.user_id
-                    JOIN forum_categories fc ON ft.category_id = fc.category_id
+                    JOIN forum_categories fc ON ft.cat_id = fc.cat_id
                     ORDER BY ft.is_pinned DESC,ft.updated_at DESC LIMIT :limit";
 
         // $query = "SELECT 

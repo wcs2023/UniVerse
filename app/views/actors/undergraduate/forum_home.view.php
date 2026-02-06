@@ -1,10 +1,11 @@
 <head>
     <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_home_styles.css">
+    <link rel="stylesheet" href="<?= BASE_URL; ?>/css/styles.css">
 </head>
 <?php
 $pageTitle = $title ?? 'Discussion Forum';
-include_once __DIR__ . '/includes/header2.view.php';
 ?>
+<?php include 'Unavigation.view.php'; ?>
 <body data-base-url="<?= BASE_URL ?>">
     <main class="main-container">
         <section class="forum-header">
@@ -12,8 +13,8 @@ include_once __DIR__ . '/includes/header2.view.php';
                 <h1>Discussion Forum</h1>
                 <div class="header-buttons">
                     <?php if (isset($_SESSION['USER'])): ?>
-                        <a href="<?= BASE_URL ?>/Discussion_Forum/view_my_discussion" class="btn btn-secondary"><i class="fa-solid fa-user"></i>My Discussion</a>
-                        <a href="<?= BASE_URL ?> /Discussion_Forum/create_posts" class="btn btn-primary">Start a New Discussion</a>
+                        <a href="<?= BASE_URL ?>/Udiscussion/view_my_discussion" class="btn btn-secondary"><i class="fa-solid fa-user"></i>My Discussion</a>
+                        <a href="<?= BASE_URL ?>/Udiscussion/create_posts" class="btn btn-primary">Start a New Discussion</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -77,7 +78,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                             <?php if (isset($curr_user_id) && $thread['author_id'] == $curr_user_id) : ?>
                                 <div class="col-action">
                                     <div class="action-btn">
-                                        <a href="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
+                                        <a href="<?= BASE_URL ?>/Udiscussion/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         <button class="btn-action btn-delete" data-tooltip="Delete">
@@ -99,7 +100,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                             <i class="fa-solid fa-comments"></i>
                             <h3>No Discussions Found</h3>
                             <p>Be the first one to start a discussion!</p>
-                            <a href="<?= BASE_URL ?>/Discussion_Forum/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
+                            <a href="<?= BASE_URL ?>/Udiscussion/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
 
                         </div>
                     </div>
