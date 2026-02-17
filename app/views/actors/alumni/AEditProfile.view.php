@@ -16,6 +16,10 @@ if (!defined('URLROOT')) {
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
+        body {
+            background-color: #a78bfa45 !important;
+        }
+
         .edit-profile-container {
             max-width: 900px;
             margin: 2rem auto;
@@ -391,6 +395,13 @@ if (!defined('URLROOT')) {
             <div class="alert alert-success">
                 <?= htmlspecialchars($data['success']) ?>
             </div>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['mentorship_warning'])): ?>
+            <div class="alert" style="background: #fef3c7; color: #92400e; border: 1px solid #fbbf24;">
+                ⚠️ <?= htmlspecialchars($_SESSION['mentorship_warning']) ?>
+            </div>
+            <?php unset($_SESSION['mentorship_warning']); ?>
         <?php endif; ?>
 
         <!-- Profile Photo Modal -->

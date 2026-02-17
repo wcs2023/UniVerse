@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'Forum') ?></title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum_home.css">
-    <script>window.__APP_ROOT__=<?= json_encode(BASE_URL) ?>;</script>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <script>window.__APP_ROOT__ = <?= json_encode(BASE_URL) ?>;</script>
+    <style>
+        body {
+            padding-top: 80px;
+            background-color: #a78bfa45 !important;
+        }
+    </style>
 </head>
 <body>
 

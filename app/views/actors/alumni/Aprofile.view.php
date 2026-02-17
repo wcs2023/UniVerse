@@ -33,7 +33,7 @@ $userData = [
     <title>My Profile - UniVerse</title>
 </head>
 
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; background-color: #a78bfa45 !important;">
     <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
@@ -132,7 +132,7 @@ $userData = [
                         🎓 Mentorship Status
                     </div>
                     <div class="info-value">
-                        <?php if ($userData['available_for_mentorship']): ?>
+                        <?php if (isset($mentorStatus) && $mentorStatus && $mentorStatus['is_active']): ?>
                             <span class="status-badge status-accepted">Available</span>
                         <?php else: ?>
                             <span class="status-badge status-pending">Not Available</span>

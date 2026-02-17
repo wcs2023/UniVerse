@@ -73,11 +73,94 @@ class Alumni extends Controller
         // Get user profile data from database
         $userData = $this->alumniModel->getUserById($userId);
         
+        // Get mentorship status
+        $mentorshipModel = $this->model('Mentorship');
+        $mentorStatus = $mentorshipModel->getMentorStatus($userId);
+        
         $data = [
-            'userData' => $userData
+            'userData' => $userData,
+            'mentorStatus' => $mentorStatus
         ];
         
         $this->view('actors/alumni/Aprofile', $data);
+    }
+    
+    /**
+     * Alumni settings page
+     */
+    public function settings()
+    {
+        $userId = $_SESSION['user_id'] ?? 1;
+        
+        // Get user profile data from database
+        $userData = $this->alumniModel->getUserById($userId);
+        
+        $data = [
+            'userData' => $userData,
+            'error' => $_SESSION['settings_error'] ?? null,
+            'success' => $_SESSION['settings_success'] ?? null
+        ];
+        
+        // Clear session messages
+        unset($_SESSION['settings_error']);
+        unset($_SESSION['settings_success']);
+        
+        $this->view('actors/alumni/Asettings', $data);
+    }
+    
+    /**
+     * Handle password update from form submission
+     */
+    public function updatePassword()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/alumni/settings');
+            exit;
+        }
+        
+        $userId = $_SESSION['user_id'] ?? 1;
+        
+        try {
+            $currentPassword = $_POST['current_password'] ?? '';
+            $newPassword = $_POST['new_password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+            
+            // Validate inputs
+            if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+                throw new Exception('All fields are required');
+            }
+            
+            if ($newPassword !== $confirmPassword) {
+                throw new Exception('New passwords do not match');
+            }
+            
+            if (strlen($newPassword) < 8) {
+                throw new Exception('Password must be at least 8 characters long');
+            }
+            
+            // Verify current password
+            $user = $this->alumniModel->getUserById($userId);
+            if (!password_verify($currentPassword, $user->password)) {
+                throw new Exception('Current password is incorrect');
+            }
+            
+            // Update password
+            $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+            $result = $this->alumniModel->updatePassword($userId, $newPasswordHash);
+            
+            if ($result) {
+                $_SESSION['settings_success'] = 'Password updated successfully!';
+            } else {
+                throw new Exception('Failed to update password');
+            }
+            
+        } catch (Exception $e) {
+            error_log("Password update error: " . $e->getMessage());
+            $_SESSION['settings_error'] = $e->getMessage();
+        }
+        
+        header('Location: ' . BASE_URL . '/alumni/settings');
+        exit;
     }
     
     /**

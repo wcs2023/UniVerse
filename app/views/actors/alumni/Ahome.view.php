@@ -10,6 +10,7 @@
     <style>
         body {
             padding-top: 80px;
+            background-color: #a78bfa45 !important;
         }
     </style>
 </head>

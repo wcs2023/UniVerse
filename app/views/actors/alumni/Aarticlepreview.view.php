@@ -24,7 +24,8 @@ $article = $data['article'] ?? [];
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         body {
-            padding-top: 90px;
+            padding-top: 80px;
+            background-color: #a78bfa45 !important;
         }
     </style>
 </head>
