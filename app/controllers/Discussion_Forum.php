@@ -13,6 +13,7 @@ class Discussion_Forum extends Controller
         $this->post_model = $this->model('Forum_post_model');
     }
 
+
     public function getCurrentUser()
     {
         return $_SESSION['USER'] ?? NULL;
@@ -37,7 +38,6 @@ class Discussion_Forum extends Controller
 
         return ((int)$userId === (int)$admin_id) || !empty($isAdmin);
     }
-
     public function index()
     {
         $categories = $this->category_model->getAllStats();
@@ -78,11 +78,7 @@ class Discussion_Forum extends Controller
                 'total_members' => 0
             ]
         ];
-        // if($_SESSION['user_role'] == "undergraduate")
-        // {
-        //     $this->view('actors/students/forum_home', $data);
 
-        // }
         $this->view('actors/students/forum_home', $data);
     }
 
@@ -93,7 +89,7 @@ class Discussion_Forum extends Controller
             exit;
         }
 
-        $categories = $this->category_model->getOrderedCat();
+        $categories = $this->category_model->allOrdered();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -160,73 +156,69 @@ class Discussion_Forum extends Controller
         $this->view('actors/students/forum_create', $data);
     }
 
-    public function view_thread(){
-        $data = [];
-
-        $this->view("actors/students/forum_single_discussion",$data);
-    }
-
     //function to view a single post thread
-    // public function view_thread($thread_id = null)
-    // {
+    public function view_thread($thread_id = null)
+    {
 
-    //     if (!$thread_id) {
-    //         header("Location: " . BASE_URL . "/Discussion_Forum?error=Invalid thread ID");
-    //         exit;
-    //     }
+        if (!$thread_id) {
+            header("Location: " . BASE_URL . "/Discussion_Forum?error=Invalid thread ID");
+            exit;
+        }
 
-    //     $thread = $this->thread_model->getIdWithDetails($thread_id);
+        $thread = $this->thread_model->getIdWithDetails($thread_id);
 
-    //     if (!$thread) {
-    //         header("Location: " . BASE_URL . "/Discussion_Forum?error=Thread not found");
-    //         exit;
-    //     }
+        if (!$thread) {
+            header("Location: " . BASE_URL . "/Discussion_Forum?error=Thread not found");
+            exit;
+        }
 
-    //     if (!isset($_SESSION['viewed_threads'][$thread_id])) {
-    //         $this->thread_model->countViews($thread_id);
-    //         $_SESSION['viewed_threads'][$thread_id] = true;
-    //     }
+        if (!isset($_SESSION['viewed_threads'][$thread_id])) {
+            $this->thread_model->countViews($thread_id);
+            $_SESSION['viewed_threads'][$thread_id] = true;
+        }
 
-    //     $posts = $this->post_model->getByThread($thread_id);
+        $posts = $this->post_model->getByThread($thread_id);
 
-    //     $thread_data = [
-    //         'thread_id' => $thread['thread_id'],
-    //         'title' => $thread['title'],
-    //         'content' => $thread['content'],
-    //         'author_id' => $thread['author_id'],
-    //         'created_at' => $thread['created_at'],
-    //         'views' => $thread['views'],
-    //         'cat_name' => $thread['cat_name'],
-    //         'is_locked' => $thread['is_locked'],
-    //         'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname']
-    //     ];
+        $thread_data = [
+            'thread_id' => $thread['thread_id'],
+            'title' => $thread['title'],
+            'content' => $thread['content'],
+            'author_id' => $thread['author_id'],
+            'created_at' => $thread['created_at'],
+            'views' => $thread['views'],
+            'cat_name' => $thread['cat_name'],
+            'is_locked' => $thread['is_locked'] ?? false,
+            'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname']
+        ];
 
-    //     $post_data = [];
-    //     foreach ($posts as $post) {
-    //         $post_data[] = [
-    //             'post_id' => $post['post_id'],
-    //             'content' => $post['content'],
-    //             'author_id' => $post['author_id'],
-    //             'author_name' => $post['author_fname'] . ' ' . $post['author_lname'],
-    //             'created_at' => $post['created_at'],
-    //             'is_edited' => $post['is_edited'] ?? false,
-    //             'edited_at' => $post['edited_at'] ?? null
-    //         ];
-    //     }
+        $post_data = [];
+        if ($posts) {
+            foreach ($posts as $post) {
+                $post_data[] = [
+                    'post_id' => $post['post_id'],
+                    'content' => $post['content'],
+                    'author_id' => $post['author_id'],
+                    'author_name' => $post['author_fname'] . ' ' . $post['author_lname'],
+                    'created_at' => $post['created_at'],
+                    'is_edited' => $post['is_edited'] ?? false,
+                    'edited_at' => $post['edited_at'] ?? null
+                ];
+            }
+        }
 
-    //     $currentUserId = $this->getCurrentUserId();
-    //     $can_edit = $this->isAdmin($thread_data['author_id']);
+        $currentUserId = $this->getCurrentUserId();
+        $can_edit = $this->isAdmin($thread_data['author_id']);
 
-    //     $data = [
-    //         'title' => $thread['title'],
-    //         'thread' => $thread_data,
-    //         'posts' => $post_data,
-    //         'curr_user_id' => $currentUserId,
-    //         'can_edit' => $can_edit
-    //     ];
+        $data = [
+            'title' => $thread['title'],
+            'thread' => $thread_data,
+            'posts' => $post_data,
+            'curr_user_id' => $currentUserId,
+            'can_edit' => $can_edit
+        ];
 
-    //     $this->view('actors/students/forum_view_discussion', $data);
-    // }
+        $this->view('actors/students/forum_single_discussion', $data);
+    }
 
     //function to view the user's discussions
     public function view_my_discussion()
@@ -291,12 +283,12 @@ class Discussion_Forum extends Controller
             exit;
         }
 
-        $categories = $this->category_model->allOrdered();
+        $categories = $this->category_model->getOrderedCat();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title'] ?? '');
             $content = trim($_POST['content'] ?? '');
-            $category = $_POST['category_id'];
+            $category = $_POST['cat_id'];
 
             $errors = [];
 

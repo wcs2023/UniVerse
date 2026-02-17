@@ -19,7 +19,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                 error
             </div> -->
 
-            <form action="POST" action="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="create-form">
+            <form method="POST" action="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="create-form">
                 <div class="form-group">
                     <label for="cat_id">Category <span class="required">*</span></label>
                     <select name="cat_id" id="cat_id" required>

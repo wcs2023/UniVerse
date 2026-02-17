@@ -425,10 +425,38 @@
                                     </div>
                                 </div>
                                 
+                                ${app.resume_url ? `
+                                    <div class="detail-group">
+                                        <div class="detail-label">Resume/CV</div>
+                                        <div class="detail-value"><a href="${app.resume_url}" target="_blank" class="btn btn-sm btn-primary" style="text-decoration:none;">📄 Download Resume</a></div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${app.portfolio_url ? `
+                                    <div class="detail-group">
+                                        <div class="detail-label">Portfolio</div>
+                                        <div class="detail-value"><a href="${app.portfolio_url}" target="_blank">${app.portfolio_url}</a></div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${app.expected_salary ? `
+                                    <div class="detail-group">
+                                        <div class="detail-label">Expected Salary</div>
+                                        <div class="detail-value">${Number(app.expected_salary).toLocaleString()} /month</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${app.availability_date ? `
+                                    <div class="detail-group">
+                                        <div class="detail-label">Available to Start</div>
+                                        <div class="detail-value">${new Date(app.availability_date).toLocaleDateString()}</div>
+                                    </div>
+                                ` : ''}
+                                
                                 ${app.cover_letter ? `
                                     <div class="detail-group">
                                         <div class="detail-label">Cover Letter</div>
-                                        <div class="detail-value">${app.cover_letter}</div>
+                                        <div class="detail-value" style="white-space: pre-wrap; background: #f9fafb; padding: 1rem; border-radius: 8px; max-height: 200px; overflow-y: auto;">${app.cover_letter}</div>
                                     </div>
                                 ` : ''}
                                 

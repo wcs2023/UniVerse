@@ -129,6 +129,33 @@
             box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
         }
 
+        .my-apps-btn {
+            background: var(--secondary-purple);
+            color: var(--white);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            margin-right: auto;
+        }
+
+        .my-apps-btn:hover {
+            background: var(--dark-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .my-apps-btn::before {
+            content: "📋 ";
+            margin-right: 0.5rem;
+        }
+
         /* Jobs Grid */
         .jobs-grid {
             display: grid;
@@ -370,6 +397,7 @@
                 </div>
 
                 <div class="filter-buttons">
+                    <a href="<?= BASE_URL ?>/ujobs/myApplications" class="my-apps-btn">My Applications</a>
                     <a href="<?= BASE_URL ?>/ujobs" class="clear-btn">Clear Filters</a>
                     <button type="submit" class="filter-btn">Apply Filters</button>
                 </div>

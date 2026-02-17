@@ -398,7 +398,15 @@
             <div class="apply-section">
                 <h3>Interested in this opportunity?</h3>
                 <p>Submit your application and take the next step in your career journey!</p>
-                <a href="<?= BASE_URL ?>/ujobs/<?= $data['job']['job_id'] ?>" class="apply-btn">Apply Now</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php if (isset($data['hasApplied']) && $data['hasApplied']): ?>
+                        <span style="background: #d4edda; color: #155724; padding: 1rem 2rem; border-radius: 50px; font-weight: 600;">✓ You have already applied for this position</span>
+                    <?php else: ?>
+                        <a href="<?= BASE_URL ?>/ujobs/apply/<?= $data['job']['job_id'] ?>" class="apply-btn">Apply Now →</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="<?= BASE_URL ?>/login" class="apply-btn">Login to Apply</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

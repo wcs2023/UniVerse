@@ -124,15 +124,15 @@
                             </select>
                         </div>
                     </div>
-                    <div class="container-grid">
+                    <div class="container-grid" id="articles-container">
                             <?php foreach($data['articles'] as $article): ?>
-                                <div class="article-card">
+                                <a href="<?= BASE_URL ?>/uarticles/viewDetails/<?= $article['article_id'] ?>" class="article-card" data-created="<?= $article['created_at'] ?>">
                                     <h3 class="article-title">    
                                             <?= htmlspecialchars(ucfirst($article['title']))?>
                                     </h3>
                                     <div class="article-body">
                                         <div class="article-tag">
-                                            <?= htmlspecialchars(ucfirst($article['tags']))?> 
+                                            <?= htmlspecialchars(ucfirst($article['tags'] ?? $article['category'] ?? ''))?> 
                                         </div>
                                         <p class="article-excerpt">
                                             <?= htmlspecialchars(ucfirst($article['excerpt']))?>
@@ -141,7 +141,7 @@
                                     <div class="article-name">
                                         <?= htmlspecialchars(ucfirst($article['author_name']))?>
                                     </div>
-                            </div>
+                                </a>
                             <?php endforeach; ?>
                     </div>
                 
@@ -677,6 +677,8 @@
         padding: 1.4rem;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         transition: var(--transition);
+        text-decoration: none;
+        cursor: pointer;
     }
 
     .article-tag{
@@ -982,14 +984,16 @@
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     const searchTerm = this.value.toLowerCase();
-                    const articles = document.querySelectorAll('.article-card-enhanced');
+                    const articles = document.querySelectorAll('.article-card');
                     
                     articles.forEach(article => {
-                        const title = article.querySelector('.article-title-enhanced').textContent.toLowerCase();
-                        const excerpt = article.querySelector('.article-excerpt-enhanced').textContent.toLowerCase();
+                        const title = article.querySelector('.article-title')?.textContent.toLowerCase() || '';
+                        const excerpt = article.querySelector('.article-excerpt')?.textContent.toLowerCase() || '';
+                        const author = article.querySelector('.article-name')?.textContent.toLowerCase() || '';
+                        const tag = article.querySelector('.article-tag')?.textContent.toLowerCase() || '';
                         
-                        if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
-                            article.style.display = 'block';
+                        if (title.includes(searchTerm) || excerpt.includes(searchTerm) || author.includes(searchTerm) || tag.includes(searchTerm)) {
+                            article.style.display = 'flex';
                         } else {
                             article.style.display = 'none';
                         }
@@ -1001,8 +1005,22 @@
             const sortSelect = document.getElementById('sort-articles');
             if (sortSelect) {
                 sortSelect.addEventListener('change', function() {
-                    // Add sorting logic here
-                    console.log('Sorting by:', this.value);
+                    const container = document.getElementById('articles-container');
+                    const articles = Array.from(container.querySelectorAll('.article-card'));
+                    
+                    articles.sort((a, b) => {
+                        const dateA = new Date(a.getAttribute('data-created'));
+                        const dateB = new Date(b.getAttribute('data-created'));
+                        
+                        if (this.value === 'newest') {
+                            return dateB - dateA;
+                        } else {
+                            return dateA - dateB;
+                        }
+                    });
+                    
+                    // Re-append sorted articles
+                    articles.forEach(article => container.appendChild(article));
                 });
             }
             

@@ -29,83 +29,109 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
 }
 
-.article-single-container
-{
+.article-single-container {
     min-height: 80vh;
-    padding: 100px 20px 60px 20px;
-    display: block;
+    padding: 120px 20px 60px 20px;
+    display: flex;
     justify-content: center;
-    /* background: var(--light-gray); */
 }
 
-.article-header
-{
-    padding: 4rem 3rem;
-    border-radius: 25px;
-    margin-top: 10%;
+.article-header {
+    padding: 3rem;
+    border-radius: 25px 25px 0 0;
     background-color: var(--light-gray);
+}
+
+.article-header h1 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 2rem;
+    line-height: 1.3;
 }
          
-.article-card
-{
-    margin-left: 20%;
-    margin-right: 20%;
-    
+.article-card {
+    width: 100%;
+    max-width: 900px;
 }
 
-.article-body
-{
-    font-size:large;
+.article-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
     background-color: var(--light-gray);
-    border-radius: 25px;
-    padding: 4rem 3rem;
-    margin-top:1% ;
+    border-radius: 0 0 25px 25px;
+    padding: 2rem 3rem 3rem 3rem;
+    color: var(--text-medium);
 }
-    
-.footer
-{
-    /* align-items: end; */
-    /* text-align: right; */
+
+.article-body p {
+    margin: 0 0 1.5rem 0;
+}
+
+.article-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     display: flex;
-    /* flex-direction: column-reverse; */
-
+    justify-content: space-between;
+    align-items: center;
 }
 
-.author
-{
+.article-footer hr {
+    display: none;
+}
+
+.author {
+    display: flex;
     flex-direction: column;
+    gap: 0.25rem;
+}
+
+.author span:first-child {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.author span:last-child {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.counts {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: var(--text-medium);
 }
 
-.count 
-{
-    text-align: left;
+@media(max-width:768px) {
+    .article-single-container {
+        min-height: auto;
+        padding: 100px 1rem 2rem 1rem;
+    }
 
+    .article-header {
+        padding: 2rem 1.5rem;
+    }
 
+    .article-header h1 {
+        font-size: 1.5rem;
+    }
 
+    .article-card {
+        width: 100%;
+    }
+
+    .article-body {
+        padding: 1.5rem;
+        font-size: 1rem;
+    }
+
+    .article-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 }
-
- @media(max-width:768px) 
- {
-    .article-single-container
-    {
-        min-height: 40vh;
-        padding: 1rem;
-    }
-
-    .article-header
-    {
-        padding:3rem;
-        font-size: smaller;
-        border-radius: 20px;
-    }
-
-    .article-card
-    {
-        margin-left: 10%;
-        margin-right: 10%;
-    }
- }
 
 </style>
 </head>
@@ -120,22 +146,17 @@
             <div class="article-body">
                 <p>
                     <?= $data['article']['content']?>
-                     <?//=print_r($data['article'])?>
                 </p>
+                <hr>
                 <footer class="article-footer"> 
-                    <br>
-                    <hr> 
-                    <br>
                    <div class="author">
                        <span>By <?= $data['article']['author_name'] ?></span>
-                       <span> <?= date('M j,Y',strtotime($data['article']['created_at'])) ?></span>
+                       <span><?= date('M j, Y', strtotime($data['article']['created_at'])) ?></span>
                    </div>
                    <div class="counts">
-                    ❤️<span> <?= $data['article']['likes'] ?> </span>
-                    💬<span> <?= $data['article']['comments_count'] ?> </span>
+                    ❤️ <span><?= $data['article']['likes'] ?></span>
                    </div>
                 </footer>
-        
             </div>
         </div>      
     </div>

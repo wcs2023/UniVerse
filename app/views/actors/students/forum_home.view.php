@@ -13,7 +13,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                 <div class="header-buttons">
                     <?php if (isset($_SESSION['USER'])): ?>
                         <a href="<?= BASE_URL ?>/Discussion_Forum/view_my_discussion" class="btn btn-secondary"><i class="fa-solid fa-user"></i>My Discussion</a>
-                        <a href="<?= BASE_URL ?> /Discussion_Forum/create_posts" class="btn btn-primary">Start a New Discussion</a>
+                        <a href="<?= BASE_URL ?>/Discussion_Forum/create_posts" class="btn btn-primary">Start a New Discussion</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -47,7 +47,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                         <div class="discussion-row">
                             <div class="col-topic">
                                 <div class="topic-title">
-                                    <a href="<?= BASE_URL ?>/Discussion_forum/thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
+                                    <a href="<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
                                 </div>
                                 <div class="topic-details">
                                     posted by:<span class="author-name"><?= htmlspecialchars($thread['author_name']) ?></span> in <span class="category-link"><?= htmlspecialchars($thread['category_name']) ?></span>
@@ -80,9 +80,8 @@ include_once __DIR__ . '/includes/header2.view.php';
                                         <a href="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <button class="btn-action btn-delete" data-tooltip="Delete">
+                                        <button class="btn-action btn-delete" data-thread-id="<?= $thread['thread_id'] ?>" data-tooltip="Delete">
                                             <i class="fa-solid fa-trash"></i>
-
                                         </button>
                                     </div>
                                 </div>
@@ -93,27 +92,23 @@ include_once __DIR__ . '/includes/header2.view.php';
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="no-discussion">
-                        <div class="no-content">
-                            <i class="fa-solid fa-comments"></i>
-                            <h3>No Discussions Found</h3>
-                            <p>Be the first one to start a discussion!</p>
-                            <a href="<?= BASE_URL ?>/Discussion_Forum/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
-
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-
-
-
-
                 </div>
             </section>
+        <?php else: ?>
+            <section class="discussion-section">
+                <div class="no-discussion">
+                    <div class="no-content">
+                        <i class="fa-solid fa-comments"></i>
+                        <h3>No Discussions Found</h3>
+                        <p>Be the first one to start a discussion!</p>
+                        <a href="<?= BASE_URL ?>/Discussion_Forum/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
     </main>
-    <!-- 
-    <div id="deleteModal" class="delete-model hidden">
+    
+    <div id="deleteModal" class="delete-modal hidden">
         <div class="delete-box">
             <h3>Delete Discussion</h3>
             <p>
@@ -127,7 +122,94 @@ include_once __DIR__ . '/includes/header2.view.php';
         </div>
     </div>
     
-    <script src="<?= BASE_URL ?>/assets/js/discussion_forum.js"></script> -->
+    <style>
+        .delete-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .delete-modal.hidden {
+            display: none;
+        }
+        .delete-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .delete-box h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .delete-box p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        .delete-action {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .btn-confirm {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-confirm:hover {
+            background: #c82333;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteModal = document.getElementById('deleteModal');
+            const cancelBtn = document.getElementById('cancelDelete');
+            const confirmBtn = document.getElementById('confirmDelete');
+            const baseUrl = document.body.getAttribute('data-base-url');
+            let threadIdToDelete = null;
+            
+            // Add click listeners to all delete buttons
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    threadIdToDelete = this.getAttribute('data-thread-id');
+                    deleteModal.classList.remove('hidden');
+                });
+            });
+            
+            // Cancel delete
+            cancelBtn.addEventListener('click', function() {
+                deleteModal.classList.add('hidden');
+                threadIdToDelete = null;
+            });
+            
+            // Confirm delete
+            confirmBtn.addEventListener('click', function() {
+                if (threadIdToDelete) {
+                    window.location.href = baseUrl + '/Discussion_Forum/delete_post/' + threadIdToDelete;
+                }
+            });
+            
+            // Close modal on outside click
+            deleteModal.addEventListener('click', function(e) {
+                if (e.target === deleteModal) {
+                    deleteModal.classList.add('hidden');
+                    threadIdToDelete = null;
+                }
+            });
+        });
+    </script>
 <?php include __DIR__ . '/../../layout/footer.php'; ?>
 
 </body>
