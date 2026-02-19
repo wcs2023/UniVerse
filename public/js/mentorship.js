@@ -1115,6 +1115,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the system
     MentorshipSystem.init();
+
+    // Global: close any modal on outside click
+    document.querySelectorAll('.modal').forEach(function(modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+                this.classList.remove('active');
+            }
+        });
+    });
+
+    // Global: close modals on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal.show, .modal.active').forEach(function(modal) {
+                modal.classList.remove('show');
+                modal.classList.remove('active');
+            });
+        }
+    });
 });
 
 // Export for global access

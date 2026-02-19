@@ -306,6 +306,39 @@
     background: #e5e7eb;
 }
 
+.ms-btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.ms-btn-danger:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.ms-btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.ms-btn-warning:hover {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.ms-btn-book {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.ms-btn-book:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.ms-btn-book:disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
 .ms-btn-explore {
     background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
     color: white;
@@ -482,6 +515,10 @@
 
 .ms-modal-header--danger {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.ms-modal-header--warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
 .ms-modal-body {
@@ -705,6 +742,56 @@
     margin-bottom: 1rem;
 }
 
+.ms-mentor-rating .stars {
+    color: #fbbf24;
+}
+
+.ms-mentor-rating .rating-count {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   SLOT SELECTION (Booking Modal)
+   ======================================== */
+.ms-slots-container {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ms-slot-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ms-slot-option:hover {
+    border-color: #7c3aed;
+    background: #f9fafb;
+}
+
+.ms-slot-option.selected {
+    border-color: #10b981;
+    background: #d1fae5;
+}
+
+.ms-slot-radio {
+    width: 24px;
+    height: 24px;
+    accent-color: #10b981;
+}
+
+.ms-slot-info {
+    flex: 1;
+}
+
 /* ========================================
    SEARCH & FILTERS
    ======================================== */
@@ -886,5 +973,69 @@
     .ms-search-input,
     .ms-filter-select {
         width: 100%;
+    }
+
+    /* MOB-1: Fix modal overflow on mobile */
+    .ms-modal-dialog,
+    .modal-dialog {
+        width: 95%;
+        max-height: 85vh;
+        max-width: 100%;
+        margin: 0.5rem;
+        border-radius: 12px;
+    }
+
+    .ms-modal-body,
+    .modal-body {
+        padding: 1rem;
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ms-modal-header,
+    .modal-header {
+        padding: 1rem;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .ms-modal-footer,
+    .modal-footer {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+    }
+
+    .ms-modal-footer .ms-btn,
+    .modal-footer .btn {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* MOB-2: Horizontal scroll for slots grid & tables */
+    .slots-grid,
+    .ms-slots-grid {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 0.75rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .slots-grid > *,
+    .ms-slots-grid > * {
+        min-width: 180px;
+        flex-shrink: 0;
+    }
+
+    .ms-mentors-grid,
+    .mentors-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ensure booking action buttons wrap properly */
+    .booking-card .btn,
+    .ms-booking-card .ms-btn {
+        width: 100%;
+        text-align: center;
     }
 }

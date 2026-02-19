@@ -156,13 +156,13 @@ $userData = [
             <h2 class="card-title">Quick Actions</h2>
             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <a href="<?= BASE_URL ?>/aarticles/create" class="btn btn-primary">
-                    ✍️ Write an Article
+                     Write an Article
                 </a>
                 <a href="<?= BASE_URL ?>/amentorships" class="btn btn-secondary">
-                    🎓 Mentor Dashboard
+                     Mentor Dashboard
                 </a>
                 <a href="<?= BASE_URL ?>/adiscussion" class="btn btn-secondary">
-                    💬 Discussion Forums
+                     Discussion Forums
                 </a>
             </div>
         </div>
