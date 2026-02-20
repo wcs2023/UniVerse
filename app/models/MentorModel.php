@@ -179,7 +179,8 @@ class MentorModel extends MentorshipBase
     public function getAvailableMentorsWithSlots($searchTerm = '', $industry = '', $expertise = '')
     {
         try {
-            $query = "SELECT 
+            $query = "SELECT * FROM (
+                      SELECT 
                         u.user_id, 
                         CONCAT(u.first_name, ' ', u.last_name) as name, 
                         u.email, 
@@ -200,18 +201,14 @@ class MentorModel extends MentorshipBase
                       FROM mentors m
                       INNER JOIN users u ON m.user_id = u.user_id
                       LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
-                      WHERE m.is_active = 1
-                      HAVING available_slots > 0";
+                      WHERE m.is_active = 1";
 
             $params = [];
 
             if (!empty($searchTerm)) {
-                $query = str_replace("WHERE m.is_active = 1", 
-                    "WHERE m.is_active = 1 
-                     AND (u.first_name LIKE ? OR u.last_name LIKE ? OR ap.current_job_title LIKE ? OR ap.current_company LIKE ? OR ap.skills_experience LIKE ?)",
-                    $query);
+                $query .= " AND (u.first_name LIKE ? OR u.last_name LIKE ? OR ap.current_job_title LIKE ? OR ap.current_company LIKE ? OR ap.skills_experience LIKE ?)";
                 $searchParam = "%$searchTerm%";
-                $params = [$searchParam, $searchParam, $searchParam, $searchParam, $searchParam];
+                $params = array_merge($params, [$searchParam, $searchParam, $searchParam, $searchParam, $searchParam]);
             }
 
             if (!empty($expertise)) {
@@ -224,7 +221,8 @@ class MentorModel extends MentorshipBase
                 $params[] = "%$industry%";
             }
 
-            $query .= " ORDER BY available_slots DESC, rating DESC, total_sessions DESC";
+            $query .= " ) AS mentor_data WHERE available_slots > 0
+                         ORDER BY available_slots DESC, rating DESC, total_sessions DESC";
 
             $stmt = $this->db->prepare($query);
             $stmt->execute($params);
@@ -321,15 +319,27 @@ class MentorModel extends MentorshipBase
     }
 
     /**
-     * Check if student has active request with mentor
-     * In the new instant-booking system, this always returns false
+     * Check if student has an active (scheduled) booking with this mentor
      * 
      * @param int $studentId The student's user ID
      * @param int $mentorId The mentor ID
-     * @return bool Always false in new system
+     * @return bool True if student has a pending/scheduled booking
      */
     public function hasActiveRequest($studentId, $mentorId)
     {
-        return false;
+        try {
+            $query = "SELECT COUNT(*) as total 
+                      FROM mentorship_bookings 
+                      WHERE student_id = ? 
+                        AND mentor_id = ? 
+                        AND status = 'scheduled'";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$studentId, $mentorId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int)($result['total'] ?? 0) > 0;
+        } catch (PDOException $e) {
+            error_log("Error checking active request: " . $e->getMessage());
+            return false;
+        }
     }
 }

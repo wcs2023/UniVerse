@@ -79,6 +79,18 @@ class MentorAvailabilitySlot extends MentorshipBase
                 return ['success' => false, 'message' => 'Mentor profile not found'];
             }
 
+            // Check if slot has any active (scheduled) bookings
+            $checkQuery = "SELECT COUNT(*) as active_count FROM mentorship_bookings 
+                           WHERE slot_id = ? AND status = 'scheduled'";
+            $checkStmt = $this->db->prepare($checkQuery);
+            $checkStmt->execute([$slotId]);
+            $activeCount = (int)$checkStmt->fetch(PDO::FETCH_ASSOC)['active_count'];
+
+            if ($activeCount > 0) {
+                return ['success' => false, 'message' => 'Cannot remove: this slot has an active booking. Cancel the booking first.'];
+            }
+
+            // Only delete if not booked and belongs to this mentor
             $query = "DELETE FROM mentor_availability_slots 
                       WHERE slot_id = ? AND mentor_id = ? AND is_booked = 0";
             $stmt = $this->db->prepare($query);

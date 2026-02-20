@@ -28,312 +28,9 @@ if (!defined('BASE_URL')) {
     </script>
     <style>
         body { padding-top: 80px; background-color: #a78bfa45 !important; }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .page-header {
-            margin-bottom: 1.5rem;
-        }
-        
-        .breadcrumb {
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-        
-        .breadcrumb a { color: #7c3aed; text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-        
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0;
-        }
-        
-        /* Search/Filter Bar */
-        .filter-bar {
-            background: white;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .search-input {
-            flex: 1;
-            min-width: 200px;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-        
-        .search-input:focus {
-            border-color: #7c3aed;
-            outline: none;
-        }
-        
-        .filter-select {
-            padding: 0.75rem 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            min-width: 150px;
-        }
-        
-        /* Mentors Grid */
-        .mentors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .mentor-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .mentor-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-        
-        .mentor-header {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            padding: 1.5rem;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-        
-        .mentor-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid white;
-            object-fit: cover;
-            margin-bottom: 0.75rem;
-        }
-        
-        .mentor-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 0 0 0.25rem 0;
-        }
-        
-        .mentor-title {
-            font-size: 0.875rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-        
-        .mentor-body {
-            padding: 1.25rem;
-        }
-        
-        .mentor-company {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #4b5563;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-        
-        .mentor-skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .skill-tag {
-            background: #f3e8ff;
-            color: #7c3aed;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .availability-count {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            width: 100%;
-            transition: all 0.2s;
-        }
-        
-        .btn-view {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-        }
-        
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-        }
-        
-        /* Rating */
-        .mentor-rating {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .stars { color: #fbbf24; }
-        .rating-count { color: #6b7280; font-size: 0.875rem; }
-        
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #4b5563;
-            grid-column: 1 / -1;
-        }
-        
-        .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal.show { display: flex; }
-        
-        .modal-dialog {
-            background: white;
-            border-radius: 16px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            border-radius: 16px 16px 0 0;
-        }
-        
-        .modal-body { padding: 1.5rem; }
-        
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-        }
-        
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
-        }
-        
-        /* Slot Selection */
-        .slots-container {
-            display: grid;
-            gap: 0.75rem;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .slot-option {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .slot-option:hover {
-            border-color: #7c3aed;
-            background: #f9fafb;
-        }
-        
-        .slot-option.selected {
-            border-color: #10b981;
-            background: #d1fae5;
-        }
-        
-        .slot-radio {
-            width: 24px;
-            height: 24px;
-            accent-color: #10b981;
-        }
-        
-        .slot-info {
-            flex: 1;
-        }
-        
-        .slot-date {
-            font-weight: 600;
-            color: #1f2937;
-        }
-        
-        .slot-time {
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-        
-        .btn-secondary { background: #f3f4f6; color: #374151; }
-        .btn-secondary:hover { background: #e5e7eb; }
-        
-        .btn-book {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-        }
-        
-        .btn-book:hover {
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        }
-        
-        .btn-book:disabled {
-            background: #e5e7eb;
-            color: #9ca3af;
-            cursor: not-allowed;
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
     </style>
 </head>
@@ -347,7 +44,7 @@ if (!defined('BASE_URL')) {
     }
     ?>
 
-    <div class="container">
+    <div class="ms-container">
         <!-- Breadcrumb -->
         <!-- <div class="breadcrumb">
             <a href="<?= BASE_URL ?>/umentorships">My Mentorships</a> › Explore Mentors
@@ -359,9 +56,11 @@ if (!defined('BASE_URL')) {
         </div>
 
         <!-- Filter Bar -->
-        <div class="filter-bar">
-            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by name, skills, company...">
-            <select class="filter-select" id="industryFilter">
+        <div class="ms-filter-bar">
+            <label for="searchInput" class="visually-hidden">Search mentors</label>
+            <input type="text" class="ms-search-input" id="searchInput" placeholder="🔍 Search by name, skills, company..." aria-label="Search mentors by name, skills, or company">
+            <label for="industryFilter" class="visually-hidden">Filter by industry</label>
+            <select class="ms-filter-select" id="industryFilter" aria-label="Filter mentors by industry">
                 <option value="">All Industries</option>
                 <option value="tech">Technology</option>
                 <option value="finance">Finance</option>
@@ -372,56 +71,56 @@ if (!defined('BASE_URL')) {
         </div>
 
         <!-- Mentors Grid -->
-        <div class="mentors-grid" id="mentorsGrid">
+        <div class="ms-mentors-grid" id="mentorsGrid">
             <?php if (isset($data['mentors']) && count($data['mentors']) > 0): ?>
                 <?php foreach ($data['mentors'] as $mentor): ?>
-                    <div class="mentor-card" data-mentor-id="<?= $mentor['mentor_id'] ?>">
-                        <div class="mentor-header">
+                    <div class="ms-mentor-card" data-mentor-id="<?= $mentor['mentor_id'] ?>">
+                        <div class="ms-mentor-header">
                             <img src="<?= !empty($mentor['profile_picture']) ? htmlspecialchars($mentor['profile_picture']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
                                 alt="<?= htmlspecialchars($mentor['name'] ?? 'Mentor') ?>"
-                                class="mentor-avatar">
-                            <h3 class="mentor-name"><?= htmlspecialchars($mentor['name'] ?? 'Anonymous Mentor') ?></h3>
-                            <p class="mentor-title"><?= htmlspecialchars($mentor['current_job_title'] ?? 'Professional') ?></p>
+                                class="ms-mentor-avatar">
+                            <h3 class="ms-mentor-name"><?= htmlspecialchars($mentor['name'] ?? 'Anonymous Mentor') ?></h3>
+                            <p class="ms-mentor-title"><?= htmlspecialchars($mentor['current_job_title'] ?? 'Professional') ?></p>
                         </div>
                         
-                        <div class="mentor-body">
+                        <div class="ms-mentor-body">
                             <?php if (!empty($mentor['current_company'])): ?>
-                                <div class="mentor-company">
+                                <div class="ms-mentor-company">
                                     🏢 <?= htmlspecialchars($mentor['current_company']) ?>
                                 </div>
                             <?php endif; ?>
                             
                             <?php if (!empty($mentor['skills_experience'])): ?>
-                                <div class="mentor-skills">
+                                <div class="ms-mentor-skills">
                                     <?php 
                                     $skills = array_slice(explode(',', $mentor['skills_experience']), 0, 3);
                                     foreach ($skills as $skill): 
                                     ?>
-                                        <span class="skill-tag"><?= htmlspecialchars(trim($skill)) ?></span>
+                                        <span class="ms-skill-tag"><?= htmlspecialchars(trim($skill)) ?></span>
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
                             
                             <?php if (!empty($mentor['rating'])): ?>
-                                <div class="mentor-rating">
+                                <div class="ms-mentor-rating">
                                     <span class="stars"><?= str_repeat('★', round($mentor['rating'])) . str_repeat('☆', 5 - round($mentor['rating'])) ?></span>
                                     <span class="rating-count">(<?= $mentor['review_count'] ?? 0 ?> reviews)</span>
                                 </div>
                             <?php endif; ?>
                             
-                            <div class="availability-count">
+                            <div class="ms-availability-count">
                                 ✅ <?= $mentor['available_slots'] ?? 0 ?> slots available
                             </div>
                             
-                            <button class="btn btn-view" onclick="viewMentor(<?= $mentor['mentor_id'] ?>)">
+                            <button class="ms-btn ms-btn-view" onclick="viewMentor(<?= $mentor['mentor_id'] ?>)">
                                 View & Book
                             </button>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="empty-state">
-                    <div class="empty-icon">😕</div>
+                <div class="ms-empty-state">
+                    <div class="ms-empty-icon">😕</div>
                     <h3>No Mentors Available</h3>
                     <p>There are currently no mentors with available slots. Please check back later!</p>
                 </div>
@@ -430,13 +129,13 @@ if (!defined('BASE_URL')) {
     </div>
 
     <!-- Book Slot Modal -->
-    <div id="bookModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="bookModalTitle">
-        <div class="modal-dialog">
-            <div class="modal-header">
+    <div id="bookModal" class="ms-modal" role="dialog" aria-modal="true" aria-labelledby="bookModalTitle">
+        <div class="ms-modal-dialog" style="max-width: 600px;">
+            <div class="ms-modal-header">
                 <h3 id="bookModalTitle" style="margin: 0;"><span aria-hidden="true">📅</span> Book a Session</h3>
-                <button class="close-modal" onclick="closeBookModal()" aria-label="Close booking dialog"><span aria-hidden="true">&times;</span></button>
+                <button class="ms-close-modal" onclick="closeBookModal()" aria-label="Close booking dialog">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="ms-modal-body">
                 <div id="mentorInfo" style="text-align: center; margin-bottom: 1.5rem;">
                     <img id="modalMentorAvatar" src="" alt="Mentor profile picture" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 0.5rem;">
                     <h4 id="modalMentorName" style="margin: 0;"></h4>
@@ -444,15 +143,15 @@ if (!defined('BASE_URL')) {
                 </div>
                 
                 <h4 style="margin-bottom: 1rem;">Select a Time Slot:</h4>
-                <div class="slots-container" id="slotsContainer" role="radiogroup" aria-label="Available time slots">
+                <div class="ms-slots-container" id="slotsContainer" role="radiogroup" aria-label="Available time slots">
                     <p style="text-align: center; color: #4b5563;">Loading available slots...</p>
                 </div>
                 
                 <input type="hidden" id="selectedSlotId">
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeBookModal()">Cancel</button>
-                <button class="btn btn-book" id="bookBtn" onclick="confirmBooking()" disabled aria-label="Confirm and book this session">
+            <div class="ms-modal-footer">
+                <button class="ms-btn ms-btn-secondary" onclick="closeBookModal()">Cancel</button>
+                <button class="ms-btn ms-btn-book" id="bookBtn" onclick="confirmBooking()" disabled aria-label="Confirm and book this session">
                     <span aria-hidden="true">🔒</span> Book Session
                 </button>
             </div>
@@ -474,7 +173,7 @@ if (!defined('BASE_URL')) {
 
         function filterMentors() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.mentor-card');
+            const cards = document.querySelectorAll('.ms-mentor-card');
             
             cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
@@ -508,12 +207,12 @@ if (!defined('BASE_URL')) {
                         // Show modal
                         document.getElementById('bookModal').classList.add('show');
                     } else {
-                        alert('Error loading mentor details: ' + (data.message || 'Unknown error'));
+                        MentorshipSystem.showNotification('Error loading mentor details: ' + (data.message || 'Unknown error'), 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to load mentor details');
+                    MentorshipSystem.showNotification('Failed to load mentor details', 'error');
                 });
         }
 
@@ -536,23 +235,23 @@ if (!defined('BASE_URL')) {
                 const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                 
                 return `
-                    <label class="slot-option" onclick="selectSlot(${slot.slot_id})">
-                        <input type="radio" name="slot" class="slot-radio" value="${slot.slot_id}">
-                        <div class="slot-info">
-                            <div class="slot-date">📅 ${dateStr}</div>
-                            <div class="slot-time">🕐 ${timeStr}</div>
+                    <label class="ms-slot-option" onclick="selectSlot(${slot.slot_id}, event)">
+                        <input type="radio" name="slot" class="ms-slot-radio" value="${slot.slot_id}">
+                        <div class="ms-slot-info">
+                            <div class="ms-slot-date">📅 ${dateStr}</div>
+                            <div class="ms-slot-time">🕐 ${timeStr}</div>
                         </div>
                     </label>
                 `;
             }).join('');
         }
 
-        function selectSlot(slotId) {
+        function selectSlot(slotId, event) {
             selectedSlotId = slotId;
             document.getElementById('selectedSlotId').value = slotId;
             
             // Update visual selection
-            document.querySelectorAll('.slot-option').forEach(el => {
+            document.querySelectorAll('.ms-slot-option').forEach(el => {
                 el.classList.remove('selected');
             });
             event.currentTarget.classList.add('selected');
@@ -569,7 +268,7 @@ if (!defined('BASE_URL')) {
 
         function confirmBooking() {
             if (!selectedSlotId) {
-                alert('Please select a time slot.');
+                MentorshipSystem.showNotification('Please select a time slot.', 'error');
                 return;
             }
             
@@ -587,25 +286,20 @@ if (!defined('BASE_URL')) {
                 if (data.success) {
                     window.location.href = '<?= BASE_URL ?>/umentorships?success=booked';
                 } else {
-                    alert('Booking failed: ' + (data.message || 'Unknown error'));
+                    MentorshipSystem.showNotification('Booking failed: ' + (data.message || 'Unknown error'), 'error');
                     btn.disabled = false;
                     btn.textContent = '🔒 Book Session';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to book session. Please try again.');
+                MentorshipSystem.showNotification('Failed to book session. Please try again.', 'error');
                 btn.disabled = false;
                 btn.textContent = '🔒 Book Session';
             });
         }
 
-        // Close modal on outside click
-        document.getElementById('bookModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeBookModal();
-            }
-        });
+        // Close modal handled globally by mentorship.js (outside click + Escape key)
     </script>
     <script src="<?= BASE_PATH ?>/js/mentorship.js"></script>
 

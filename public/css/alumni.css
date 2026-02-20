@@ -529,11 +529,7 @@ body {
     box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
 } */
 
-.btn::before {
-    content: "✍️";
-    margin-right: 8px;
-    font-size: 1.2rem;
-}
+
 
 .btn-mentor {
     display: inline-flex;
@@ -558,11 +554,7 @@ body {
     box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
 }
 
-.btn-mentor::before {
-    content: "🎓";
-    margin-right: 8px;
-    font-size: 1.2rem;
-}
+
 
 /* ========================================
    HERO IMAGE PLACEHOLDER

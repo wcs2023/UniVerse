@@ -61,7 +61,7 @@ if (!defined('BASE_URL')) {
     <div class="container">
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
-            <div class="success-message">
+            <div class="ms-success-message">
                 <span>✅</span>
                 <span>
                     <?php 
@@ -105,37 +105,37 @@ if (!defined('BASE_URL')) {
                         $canJoin = $minutesUntil <= 15 && $minutesUntil > -120;
                         $isActive = $minutesUntil <= 0 && $minutesUntil > -120;
                     ?>
-                    <div class="booking-card" data-booking-id="<?= $booking['booking_id'] ?>">
-                        <div class="booking-header">
+                    <div class="ms-booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
+                        <div class="ms-booking-header">
                             <img src="<?= !empty($booking['mentor_picture']) ? htmlspecialchars($booking['mentor_picture']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
                                 alt="<?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?>" 
-                                class="booking-avatar">
-                            <div style="flex: 1;">
-                                <h4 style="margin: 0;"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
-                                <p style="margin: 0; color: #065f46; font-size: 0.875rem;">
+                                class="ms-booking-avatar">
+                            <div class="ms-booking-info">
+                                <h4 class="ms-booking-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
+                                <p class="ms-booking-subtitle">
                                     <?= htmlspecialchars($booking['mentor_title'] ?? '') ?>
                                     <?php if (!empty($booking['mentor_company'])): ?>
                                         at <?= htmlspecialchars($booking['mentor_company']) ?>
                                     <?php endif; ?>
                                 </p>
                             </div>
-                            <span class="session-status-badge <?= $isActive ? 'badge-active' : ($canJoin ? 'badge-soon' : 'badge-upcoming') ?>">
-                                <?= $isActive ? '🔴 LIVE' : ($canJoin ? 'Starting Soon' : '🔒 Confirmed') ?>
+                            <span class="ms-badge <?= $isActive ? 'ms-badge-active' : ($canJoin ? 'ms-badge-soon' : 'ms-badge-upcoming') ?>" role="status">
+                                <?= $isActive ? '<span aria-hidden="true">🔴</span> LIVE' : ($canJoin ? 'Starting Soon' : '<span aria-hidden="true">🔒</span> Confirmed') ?>
                             </span>
                         </div>
                         
-                        <div class="booking-datetime">
-                            📅 <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
+                        <div class="ms-booking-datetime">
+                            <span aria-hidden="true">📅</span> <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
                         </div>
                         
                         <!-- Countdown -->
-                        <div style="margin-top: 0.75rem; padding: 0.5rem; background: #f0fdf4; border-radius: 8px;">
+                        <div class="ms-countdown" aria-live="polite" role="timer">
                             <?php if ($isActive): ?>
-                                <span style="color: #10b981; font-weight: 700;">🟢 Session In Progress - Join Now!</span>
+                                <span class="ms-countdown--live">🟢 Session In Progress - Join Now!</span>
                             <?php elseif ($canJoin): ?>
-                                <span style="color: #f59e0b; font-weight: 600;">⏰ Session starting very soon!</span>
+                                <span class="ms-countdown--soon">⏰ Session starting very soon!</span>
                             <?php else: ?>
-                                <span style="color: #6b7280;">
+                                <span class="ms-countdown--waiting">
                                     Starts in: <strong>
                                     <?php
                                         if ($diff->d > 0) echo $diff->d . 'd ' . $diff->h . 'h';
@@ -150,18 +150,18 @@ if (!defined('BASE_URL')) {
                         <!-- Actions -->
                         <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
                             <?php if (!empty($booking['meeting_link'])): ?>
-                                <button class="btn <?= $canJoin ? 'btn-join-active' : 'btn-join-disabled' ?>" 
+                                <button class="ms-btn join-meeting-btn <?= $canJoin ? 'ms-btn-join-active' : 'ms-btn-join-disabled' ?>" 
                                         <?= !$canJoin ? 'disabled' : '' ?>
                                         onclick="<?= $canJoin ? "window.open('" . htmlspecialchars($booking['meeting_link']) . "', '_blank')" : '' ?>">
                                     <?= $canJoin ? '🎥 Join Meeting Now' : '⏳ Wait for Session Time' ?>
                                 </button>
                             <?php else: ?>
-                                <span class="btn btn-secondary" style="cursor: not-allowed; opacity: 0.7;">
+                                <span class="ms-btn ms-btn-secondary" style="cursor: not-allowed; opacity: 0.7;">
                                     ⚠️ Meeting link unavailable
                                 </span>
                             <?php endif; ?>
                             
-                            <button class="btn btn-secondary" onclick="openCancelModal(<?= $booking['booking_id'] ?>)">
+                            <button class="ms-btn ms-btn-secondary" onclick="openCancelModal(<?= $booking['booking_id'] ?>)">
                                 Cancel Session
                             </button>
                         </div>
@@ -187,7 +187,7 @@ if (!defined('BASE_URL')) {
 
                 <?php foreach ($data['needs_feedback'] as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
-                    <div class="feedback-card">
+                    <div class="ms-feedback-card">
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             <img src="<?= !empty($session['mentor_picture']) ? htmlspecialchars($session['mentor_picture']) : 'https://i.pravatar.cc/150' ?>"
                                 alt="<?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?>"
@@ -214,8 +214,8 @@ if (!defined('BASE_URL')) {
         });
         ?>
         <?php if (count($reviewedSessions) > 0): ?>
-            <div class="section-card">
-                <h2 class="section-title">✅ Past Sessions</h2>
+            <div class="ms-section-card">
+                <h2 class="ms-card-title">✅ Past Sessions</h2>
 
                 <?php foreach (array_slice($reviewedSessions, 0, 5) as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
@@ -235,7 +235,7 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- CTA Section -->
-        <div class="cta-section">
+        <div class="ms-cta-section">
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
@@ -245,61 +245,61 @@ if (!defined('BASE_URL')) {
     </div>
 
     <!-- Cancel Modal -->
-    <div id="cancelModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
+    <div id="cancelModal" class="ms-modal">
+        <div class="ms-modal-dialog">
+            <div class="ms-modal-header ms-modal-header--danger">
                 <h3 style="margin: 0;">Cancel Session</h3>
-                <button class="close-modal" onclick="closeCancelModal()" style="color: white;" aria-label="Close cancel session dialog"><span aria-hidden="true">&times;</span></button>
+                <button class="ms-close-modal" onclick="closeCancelModal()" aria-label="Close cancel session dialog"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body">
+            <div class="ms-modal-body">
                 <input type="hidden" id="cancelBookingId">
                 <p>Are you sure you want to cancel this session? The mentor will be notified.</p>
                 <div style="margin-top: 1rem;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Reason for cancellation (required):</label>
-                    <textarea id="cancelReason" class="cancel-reason-input" placeholder="Please provide a reason..." required></textarea>
+                    <textarea id="cancelReason" class="ms-textarea ms-textarea--danger" placeholder="Please provide a reason..." required></textarea>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeCancelModal()">Keep Session</button>
-                <button class="btn" style="background: #ef4444; color: white;" onclick="confirmCancel()">Cancel Session</button>
+            <div class="ms-modal-footer">
+                <button class="ms-btn ms-btn-secondary" onclick="closeCancelModal()">Keep Session</button>
+                <button class="ms-btn ms-btn-danger" onclick="confirmCancel()">Cancel Session</button>
             </div>
         </div>
     </div>
 
     <!-- Feedback Modal -->
-    <div id="feedbackModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;">
+    <div id="feedbackModal" class="ms-modal">
+        <div class="ms-modal-dialog">
+            <div class="ms-modal-header ms-modal-header--warning">
                 <h3 style="margin: 0;">⭐ Rate Your Session</h3>
-                <button class="close-modal" onclick="closeFeedbackModal()" style="color: white;" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
+                <button class="ms-close-modal" onclick="closeFeedbackModal()" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body">
+            <div class="ms-modal-body">
                 <input type="hidden" id="feedbackBookingId">
                 
                 <p style="text-align: center;">How was your session with <strong id="feedbackMentorName"></strong>?</p>
                 
                 <!-- Star Rating -->
-                <div class="star-rating" role="group" aria-label="Rate your session from 1 to 5 stars">
-                    <button type="button" class="star-btn" onclick="selectRating(1)" aria-label="Rate 1 star">☆</button>
-                    <button type="button" class="star-btn" onclick="selectRating(2)" aria-label="Rate 2 stars">☆</button>
-                    <button type="button" class="star-btn" onclick="selectRating(3)" aria-label="Rate 3 stars">☆</button>
-                    <button type="button" class="star-btn" onclick="selectRating(4)" aria-label="Rate 4 stars">☆</button>
-                    <button type="button" class="star-btn" onclick="selectRating(5)" aria-label="Rate 5 stars">☆</button>
+                <div class="ms-star-rating" role="group" aria-label="Rate your session from 1 to 5 stars">
+                    <button type="button" class="ms-star-btn" onclick="selectRating(1)" aria-label="Rate 1 star">☆</button>
+                    <button type="button" class="ms-star-btn" onclick="selectRating(2)" aria-label="Rate 2 stars">☆</button>
+                    <button type="button" class="ms-star-btn" onclick="selectRating(3)" aria-label="Rate 3 stars">☆</button>
+                    <button type="button" class="ms-star-btn" onclick="selectRating(4)" aria-label="Rate 4 stars">☆</button>
+                    <button type="button" class="ms-star-btn" onclick="selectRating(5)" aria-label="Rate 5 stars">☆</button>
                 </div>
                 <input type="hidden" id="feedbackRating" value="0">
                 
                 <!-- Written Review -->
                 <div style="margin-top: 1rem;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Your Review (Optional)</label>
-                    <textarea id="feedbackText" class="feedback-textarea" placeholder="Share your experience..." maxlength="500"></textarea>
+                    <textarea id="feedbackText" class="ms-textarea" placeholder="Share your experience..." maxlength="500"></textarea>
                     <p style="text-align: right; color: #9ca3af; font-size: 0.75rem; margin-top: 0.25rem;">
                         <span id="charCount">0</span>/500
                     </p>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
-                <button class="btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white;" onclick="submitFeedback()">
+            <div class="ms-modal-footer">
+                <button class="ms-btn ms-btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
+                <button class="ms-btn ms-btn-warning" onclick="submitFeedback()">
                     ⭐ Submit Feedback
                 </button>
             </div>
@@ -325,7 +325,7 @@ if (!defined('BASE_URL')) {
             const reason = document.getElementById('cancelReason').value.trim();
 
             if (!reason) {
-                alert('Please provide a reason for cancellation.');
+                MentorshipSystem.showNotification('Please provide a reason for cancellation.', 'error');
                 return;
             }
 
@@ -339,7 +339,7 @@ if (!defined('BASE_URL')) {
                 if (data.success) {
                     window.location.href = '<?= BASE_URL ?>/umentorships?success=cancelled';
                 } else {
-                    alert('Error: ' + (data.message || 'Failed to cancel session'));
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to cancel session'), 'error');
                 }
             });
         }
@@ -367,7 +367,7 @@ if (!defined('BASE_URL')) {
         }
 
         function updateStars() {
-            const stars = document.querySelectorAll('.star-btn');
+            const stars = document.querySelectorAll('.ms-star-btn');
             stars.forEach((star, index) => {
                 if (index < currentRating) {
                     star.classList.add('active');
@@ -385,7 +385,7 @@ if (!defined('BASE_URL')) {
             const reviewText = document.getElementById('feedbackText').value.trim();
 
             if (!rating || rating === '0') {
-                alert('Please select a rating.');
+                MentorshipSystem.showNotification('Please select a rating.', 'error');
                 return;
             }
 
@@ -403,7 +403,7 @@ if (!defined('BASE_URL')) {
                 if (data.success) {
                     window.location.href = '<?= BASE_URL ?>/umentorships?success=feedback';
                 } else {
-                    alert('Error: ' + (data.message || 'Failed to submit feedback'));
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to submit feedback'), 'error');
                 }
             });
         }
@@ -413,14 +413,7 @@ if (!defined('BASE_URL')) {
             document.getElementById('charCount').textContent = this.value.length;
         });
 
-        // Close modals when clicking outside
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('show');
-                }
-            });
-        });
+        // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
     <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
     </main>
