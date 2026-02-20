@@ -46,21 +46,39 @@ class CompanyProfile extends Model
         $query = "UPDATE company_profiles SET 
                     company_name = :company_name,
                     company_size = :company_size,
+                    industry = :industry,
+                    website = :website,
+                    founded_year = :founded_year,
                     company_description = :company_description,
                     contact_person = :contact_person,
                     contact_email = :contact_email,
-                    contact_phone = :contact_phone
-                  WHERE user_id = :user_id";
+                    contact_phone = :contact_phone";
         
-        return $this->query($query, [
+        // Add logo_url only if provided
+        if (isset($data['logo_url'])) {
+            $query .= ", logo_url = :logo_url";
+        }
+        
+        $query .= " WHERE user_id = :user_id";
+        
+        $params = [
             'user_id' => $userId,
             'company_name' => $data['company_name'] ?? null,
             'company_size' => $data['company_size'] ?? null,
+            'industry' => $data['industry'] ?? null,
+            'website' => $data['website'] ?? null,
+            'founded_year' => $data['founded_year'] ?? null,
             'company_description' => $data['company_description'] ?? null,
             'contact_person' => $data['contact_person'] ?? null,
             'contact_email' => $data['contact_email'] ?? null,
             'contact_phone' => $data['contact_phone'] ?? null
-        ]);
+        ];
+        
+        if (isset($data['logo_url'])) {
+            $params['logo_url'] = $data['logo_url'];
+        }
+        
+        return $this->query($query, $params);
     }
 
     /**

@@ -44,7 +44,8 @@ class Login extends Controller {
                 $_SESSION['first_name'] = $user['first_name'];
                 $_SESSION['last_name'] = $user['last_name'];
                 $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name']; // ✅ Added full name separately
-                $_SESSION['email'] = $user['email']; // ✅ Email
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['USER'] = $user; // ✅ Email
                 
                 // Log successful login
                 error_log("User logged in: " . $user['username'] . " (ID: " . $user['user_id'] . ")");

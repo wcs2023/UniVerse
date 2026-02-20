@@ -17,33 +17,48 @@ if (!defined('BASE_URL')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Mentorships - UniVerse</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/umentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <script>
         window.BASE_URL = '<?= BASE_URL ?>';
         window.USER_TYPE = 'undergraduate';
     </script>
-    <style>
-        body { padding-top: 80px; background-color: #a78bfa45 !important; }
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-        }
-    </style>
 </head>
 
 <body>
     <?php
-    // Include navigation
-    $navFile = APPROOT . '/views/actors/undergraduate/Unavigation.view.php';
+    $navFile = __DIR__ . '/../actors/undergraduate/unavigation.view.php';
+
     if (file_exists($navFile)) {
         include $navFile;
     }
     ?>
 
     <main id="main-content" role="main">
-    <div class="ms-container">
+    <!-- Hero Banner -->
+    <div class="mentorship-hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">My Mentorship Journey</h1>
+            <!-- Quick Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['upcoming_bookings'] ?? []) ?></span>
+                    <span class="stat-label">Upcoming</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['completed_sessions'] ?? []) ?></span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
             <div class="ms-success-message">
@@ -69,16 +84,16 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- Page Header -->
-        <div class="ms-page-header">
-            <h1 class="ms-page-title">My Mentorships</h1>
-            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn-explore">
-                🧭 Explore Mentors
+        <div class="page-header">
+            <h2>My Sessions</h2>
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-explore">
+                Explore Mentors
             </a>
         </div>
 
         <!-- Upcoming Bookings Section -->
-        <div class="ms-section-card">
-            <h2 class="ms-card-title">🔒 Upcoming Sessions</h2>
+        <div class="section-card">
+            <h2 class="section-title"> Upcoming Sessions</h2>
 
             <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
                 <?php foreach ($data['upcoming_bookings'] as $booking): ?>
@@ -153,21 +168,21 @@ if (!defined('BASE_URL')) {
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="ms-empty-state">
-                    <div class="ms-empty-icon">📅</div>
+                <div class="empty-state">
+                    <!-- <div class="empty-icon">📅</div> -->
                     <h3>No Upcoming Sessions</h3>
                     <p>You don't have any booked mentorship sessions yet. Explore available mentors and book a session!</p>
-                    <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn ms-btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
-                        🧭 Find a Mentor
-                    </a>
+                    <!-- <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
+                        Find a Mentor
+                    </a> -->
                 </div>
             <?php endif; ?>
         </div>
 
         <!-- Sessions Needing Feedback -->
         <?php if (isset($data['needs_feedback']) && count($data['needs_feedback']) > 0): ?>
-            <div class="ms-section-card" style="border: 2px solid #f59e0b;">
-                <h2 class="ms-card-title">⭐ Leave Feedback</h2>
+            <div class="section-card" style="border: 2px solid #f59e0b;">
+                <h2 class="section-title"> Leave Feedback</h2>
                 <p style="color: #6b7280; margin-bottom: 1rem;">Help other students by sharing your experience!</p>
 
                 <?php foreach ($data['needs_feedback'] as $session): ?>
@@ -180,11 +195,11 @@ if (!defined('BASE_URL')) {
                             <div style="flex: 1;">
                                 <h4 style="margin: 0;"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
                                 <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
-                                    📅 <?= $sessionDate->format('F j, Y') ?>
+                                     <?= $sessionDate->format('F j, Y') ?>
                                 </p>
                             </div>
-                            <button class="ms-btn ms-btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
-                                ⭐ Rate Session
+                            <button class="btn btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
+                                 Rate Session
                             </button>
                         </div>
                     </div>
@@ -223,8 +238,8 @@ if (!defined('BASE_URL')) {
         <div class="ms-cta-section">
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
-            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn" style="text-decoration: none;">
-                🧭 Explore Mentors
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
+                 Explore Mentors
             </a>
         </div>
     </div>
@@ -400,7 +415,7 @@ if (!defined('BASE_URL')) {
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
     </main>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>

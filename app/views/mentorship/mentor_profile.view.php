@@ -183,16 +183,16 @@ if (!defined('APPROOT')) {
                                 Currently Unavailable
                             </button>
                         <?php else: ?>
-                            <button class="ms-btn ms-btn-primary" onclick="openRequestModal()">
-                                📨 Send Mentorship Request
+                            <button class="btn btn-primary" onclick="openRequestModal()">
+                                Send Mentorship Request
                             </button>
                         <?php endif; ?>
                         
                         <?php if (!empty($data['mentor']['linkedin_url'])): ?>
                             <a href="<?= htmlspecialchars($data['mentor']['linkedin_url']) ?>" 
                                target="_blank" 
-                               class="ms-btn ms-btn-secondary">
-                                🔗 LinkedIn
+                               class="btn btn-secondary">
+                                LinkedIn
                             </a>
                         <?php endif; ?>
                     </div>
@@ -240,7 +240,7 @@ if (!defined('APPROOT')) {
                     <div class="info-grid">
                         <?php if (!empty($data['mentor']['email'])): ?>
                             <div class="info-item">
-                                <span class="info-label">📧 Email</span>
+                                <span class="info-label">Email</span>
                                 <span class="info-value">
                                     <a href="mailto:<?= htmlspecialchars($data['mentor']['email']) ?>">
                                         <?= htmlspecialchars($data['mentor']['email']) ?>
@@ -251,7 +251,7 @@ if (!defined('APPROOT')) {
 
                         <?php if (!empty($data['mentor']['linkedin_url'])): ?>
                             <div class="info-item">
-                                <span class="info-label">🔗 LinkedIn</span>
+                                <span class="info-label"> LinkedIn</span>
                                 <span class="info-value">
                                     <a href="<?= htmlspecialchars($data['mentor']['linkedin_url']) ?>" target="_blank">
                                         View Profile
@@ -262,7 +262,7 @@ if (!defined('APPROOT')) {
 
                         <?php if (!empty($data['mentor']['github_url'])): ?>
                             <div class="info-item">
-                                <span class="info-label">💻 GitHub</span>
+                                <span class="info-label"> GitHub</span>
                                 <span class="info-value">
                                     <a href="<?= htmlspecialchars($data['mentor']['github_url']) ?>" target="_blank">
                                         View Profile
@@ -273,7 +273,7 @@ if (!defined('APPROOT')) {
 
                         <?php if (!empty($data['mentor']['portfolio_url'])): ?>
                             <div class="info-item">
-                                <span class="info-label">🌐 Portfolio</span>
+                                <span class="info-label"> Portfolio</span>
                                 <span class="info-value">
                                     <a href="<?= htmlspecialchars($data['mentor']['portfolio_url']) ?>" target="_blank">
                                         View Website
@@ -290,21 +290,21 @@ if (!defined('APPROOT')) {
                     <div class="info-grid">
                         <?php if (!empty($data['mentor']['university_name'])): ?>
                             <div class="info-item">
-                                <span class="info-label">🎓 University</span>
+                                <span class="info-label"> University</span>
                                 <span class="info-value"><?= htmlspecialchars($data['mentor']['university_name']) ?></span>
                             </div>
                         <?php endif; ?>
 
                         <?php if (!empty($data['mentor']['degree_program'])): ?>
                             <div class="info-item">
-                                <span class="info-label">📚 Degree</span>
+                                <span class="info-label"> Degree</span>
                                 <span class="info-value"><?= htmlspecialchars($data['mentor']['degree_program']) ?></span>
                             </div>
                         <?php endif; ?>
 
                         <?php if (!empty($data['mentor']['graduation_year'])): ?>
                             <div class="info-item">
-                                <span class="info-label">📅 Graduated</span>
+                                <span class="info-label">Graduated</span>
                                 <span class="info-value"><?= htmlspecialchars($data['mentor']['graduation_year']) ?></span>
                             </div>
                         <?php endif; ?>
@@ -382,6 +382,6 @@ if (!defined('APPROOT')) {
 
         // Close modal handled globally by mentorship.js
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 </body>
 </html>

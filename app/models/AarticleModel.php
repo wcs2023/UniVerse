@@ -29,7 +29,7 @@ class AarticleModel extends Model
             'status' => $status
         ]);
     }
-    
+
     /**
      * Get article by ID
      */
