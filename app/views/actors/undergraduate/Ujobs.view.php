@@ -12,7 +12,7 @@
         }
 
         .jobs-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 2rem auto;
             padding: 0 2rem;
         }
@@ -408,7 +408,7 @@
         <?php if (!empty($data['jobs'])): ?>
             <div class="jobs-grid">
                 <?php foreach ($data['jobs'] as $job): ?>
-                    <div class="job-card" onclick="window.location.href='<?= BASE_URL ?>/ujobs/view/<?= $job['job_id'] ?>'">
+                    <div class="job-card" onclick="window.location.href='<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>'">
                         <div class="job-card-header">
                             <span class="company-name"><?= htmlspecialchars($job['company_name'] ?? 'Company Name') ?></span>
                             <h3 class="job-title"><?= htmlspecialchars($job['title']) ?></h3>
@@ -416,24 +416,30 @@
 
                         <div class="job-meta">
                             <span class="meta-item">
-                                <span class="meta-icon">📍</span>
-                                <?= htmlspecialchars($job['location'] ?? 'Remote') ?>
+                                <span class="meta-icon">Location:</span>
+                                <b>
+                                    <?= htmlspecialchars($job['location'] ?? 'Remote') ?>
+                                </b>
                             </span>
+                            <!-- <span class="meta-item">
+                                <span class="meta-icon">Type:</span>
+                                <b>
+                                    <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
+                                </b>
+                            </span> -->
                             <span class="meta-item">
-                                <span class="meta-icon">💼</span>
-                                <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
-                            </span>
-                            <span class="meta-item">
-                                <span class="meta-icon">📊</span>
-                                <?= ucfirst($job['experience_level']) ?> Level
+                                <span class="meta-icon">Experience:</span>
+                                <b>
+                                    <?= ucfirst($job['experience_level']) ?> Level
+                                </b>
                             </span>
                         </div>
 
                         <div class="job-tags">
-                            <span class="job-tag"><?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?></span>
-                            <span class="job-tag"><?= ucfirst($job['work_arrangement'] ?? 'onsite') ?></span>
+                            <!-- <span class="job-tag"><?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?></span> -->
+                            <!-- <span class="job-tag"><?= ucfirst($job['work_arrangement'] ?? 'onsite') ?></span> -->
                             <?php if ($job['application_deadline'] && strtotime($job['application_deadline']) > time()): ?>
-                                <span class="job-tag">🕒 <?= date('M d', strtotime($job['application_deadline'])) ?></span>
+                                <span class="job-tag">Application deadline: <?= date('M d', strtotime($job['application_deadline'])) ?></span>
                             <?php endif; ?>
                         </div>
 
@@ -449,7 +455,7 @@
                             <?php else: ?>
                                 <span class="salary-range">Competitive Salary</span>
                             <?php endif; ?>
-                            <a href="<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>" class="view-btn" onclick="event.stopPropagation()">View Details →</a>
+                            <a href="<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>" class="view-btn" onclick="event.stopPropagation()">View Details</a>
                         </div>
                     </div>
                 <?php endforeach; ?>

@@ -248,7 +248,7 @@
         }
     </style>
 </head>
-<body>
+<body style="margin-top: 7rem;">
     <?php include 'Unavigation.view.php'; ?>
 
     <div class="job-details-container">
@@ -262,7 +262,7 @@
 
                 <div class="job-meta-grid">
                     <div class="meta-box">
-                        <span class="meta-icon-large">📍</span>
+                        <!-- <span class="meta-icon-large">📍</span> -->
                         <div class="meta-content">
                             <h4>Location</h4>
                             <p><?= htmlspecialchars($data['job']['location'] ?? 'Remote') ?></p>
@@ -270,7 +270,7 @@
                     </div>
 
                     <div class="meta-box">
-                        <span class="meta-icon-large">💼</span>
+                        <!-- <span class="meta-icon-large">💼</span> -->
                         <div class="meta-content">
                             <h4>Job Type</h4>
                             <p><?= ucfirst(str_replace('-', ' ', $data['job']['job_type'])) ?></p>
@@ -278,7 +278,7 @@
                     </div>
 
                     <div class="meta-box">
-                        <span class="meta-icon-large">📊</span>
+                        <!-- <span class="meta-icon-large">📊</span> -->
                         <div class="meta-content">
                             <h4>Experience Level</h4>
                             <p><?= ucfirst($data['job']['experience_level']) ?> Level</p>
@@ -286,7 +286,7 @@
                     </div>
 
                     <div class="meta-box">
-                        <span class="meta-icon-large">🏢</span>
+                        <!-- <span class="meta-icon-large">🏢</span> -->
                         <div class="meta-content">
                             <h4>Work Arrangement</h4>
                             <p><?= ucfirst($data['job']['work_arrangement'] ?? 'Onsite') ?></p>
@@ -308,13 +308,13 @@
             <!-- Deadline Alert -->
             <?php if ($data['job']['application_deadline']): ?>
                 <div class="deadline-alert">
-                    ⏰ <strong>Application Deadline:</strong> <?= date('F d, Y', strtotime($data['job']['application_deadline'])) ?>
+                    <strong>Application Deadline:</strong> <?= date('F d, Y', strtotime($data['job']['application_deadline'])) ?>
                 </div>
             <?php endif; ?>
 
             <!-- Job Description -->
             <div class="section">
-                <h2 class="section-title">📄 Job Description</h2>
+                <h2 class="section-title"> Job Description</h2>
                 <div class="section-content">
                     <p><?= nl2br(htmlspecialchars($data['job']['description'])) ?></p>
                 </div>
@@ -323,7 +323,7 @@
             <!-- Responsibilities -->
             <?php if ($data['job']['responsibilities']): ?>
                 <div class="section">
-                    <h2 class="section-title">✅ Responsibilities</h2>
+                    <h2 class="section-title"> Responsibilities</h2>
                     <div class="section-content">
                         <?php
                         $responsibilities = explode("\n", $data['job']['responsibilities']);
@@ -361,7 +361,7 @@
             <!-- Skills Required -->
             <?php if ($data['job']['skills_required']): ?>
                 <div class="section">
-                    <h2 class="section-title">💡 Skills Required</h2>
+                    <h2 class="section-title">Skills Required</h2>
                     <div class="skills-grid">
                         <?php
                         $skills = explode(',', $data['job']['skills_required']);
@@ -378,7 +378,7 @@
             <!-- Benefits -->
             <?php if ($data['job']['benefits']): ?>
                 <div class="section">
-                    <h2 class="section-title">🎁 Benefits</h2>
+                    <h2 class="section-title">Benefits</h2>
                     <div class="section-content">
                         <?php
                         $benefits = explode("\n", $data['job']['benefits']);

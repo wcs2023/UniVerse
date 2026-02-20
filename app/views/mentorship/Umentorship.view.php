@@ -17,334 +17,17 @@ if (!defined('BASE_URL')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Mentorships - UniVerse</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/umentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <script>
         window.BASE_URL = '<?= BASE_URL ?>';
         window.USER_TYPE = 'undergraduate';
     </script>
-    <style>
-        body { padding-top: 80px; background-color: #a78bfa45 !important; }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0;
-        }
-        
-        .btn-explore {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .btn-explore:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-        }
-        
-        .section-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #1f2937;
-        }
-        
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Booking Card Styles */
-        .booking-card {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .booking-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .booking-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        .booking-datetime {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #065f46;
-            margin-top: 0.75rem;
-        }
-        
-        .session-status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .badge-upcoming { background: #d1fae5; color: #065f46; }
-        .badge-soon { background: #fef3c7; color: #b45309; animation: pulse 1.5s infinite; }
-        .badge-active { background: #fee2e2; color: #dc2626; animation: pulse 1s infinite; }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .btn-join-active {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-            color: white !important;
-            animation: pulseGlow 2s infinite;
-        }
-        
-        .btn-join-disabled {
-            background: #e5e7eb !important;
-            color: #9ca3af !important;
-            cursor: not-allowed !important;
-        }
-        
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        
-        .btn-secondary { background: #f3f4f6; color: #374151; }
-        .btn-secondary:hover { background: #e5e7eb; }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: #4b5563;
-        }
-        
-        .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
-        
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-        
-        .cta-section h2 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.5rem;
-        }
-        
-        .cta-section p {
-            margin: 0 0 1.5rem 0;
-            opacity: 0.9;
-        }
-        
-        .cta-section .btn {
-            background: white;
-            color: #7c3aed;
-        }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal.show { display: flex; }
-        
-        .modal-dialog {
-            background: white;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 16px 16px 0 0;
-        }
-        
-        .modal-body { padding: 1.5rem; }
-        
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-        }
-        
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6b7280;
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-        }
-
-        .close-modal:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .close-modal:focus {
-            outline: 2px solid #7c3aed;
-            outline-offset: 2px;
-        }
-        
-        /* Feedback Section */
-        .feedback-card {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        
-        .star-rating {
-            display: flex;
-            gap: 0.25rem;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 1rem 0;
-        }
-        
-        .star-btn {
-            cursor: pointer;
-            color: #d1d5db;
-            transition: all 0.2s;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            min-width: 44px;
-            min-height: 44px;
-        }
-        
-        .star-btn:hover { transform: scale(1.2); }
-        .star-btn.active { color: #fbbf24 !important; }
-
-        .star-btn:focus {
-            outline: 2px solid #fbbf24;
-            outline-offset: 2px;
-            border-radius: 4px;
-        }
-        
-        .feedback-textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        .feedback-textarea:focus {
-            border-color: #7c3aed;
-            outline: none;
-        }
-
-        /* Cancel Modal */
-        .cancel-reason-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .cancel-reason-input:focus {
-            border-color: #ef4444;
-            outline: none;
-        }
-    </style>
 </head>
 
 <body>
     <?php
-
     $navFile = __DIR__ . '/../actors/undergraduate/unavigation.view.php';
 
     if (file_exists($navFile)) {
@@ -353,6 +36,28 @@ if (!defined('BASE_URL')) {
     ?>
 
     <main id="main-content" role="main">
+    <!-- Hero Banner -->
+    <div class="mentorship-hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">My Mentorship Journey</h1>
+            <!-- Quick Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['upcoming_bookings'] ?? []) ?></span>
+                    <span class="stat-label">Upcoming</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['completed_sessions'] ?? []) ?></span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
@@ -380,15 +85,15 @@ if (!defined('BASE_URL')) {
 
         <!-- Page Header -->
         <div class="page-header">
-            <h1 class="page-title">My Mentorships</h1>
+            <h2>My Sessions</h2>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-explore">
-                🧭 Explore Mentors
+                Explore Mentors
             </a>
         </div>
 
         <!-- Upcoming Bookings Section -->
         <div class="section-card">
-            <h2 class="section-title">🔒 Upcoming Sessions</h2>
+            <h2 class="section-title"> Upcoming Sessions</h2>
 
             <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
                 <?php foreach ($data['upcoming_bookings'] as $booking): ?>
@@ -464,12 +169,12 @@ if (!defined('BASE_URL')) {
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="empty-state">
-                    <div class="empty-icon">📅</div>
+                    <!-- <div class="empty-icon">📅</div> -->
                     <h3>No Upcoming Sessions</h3>
                     <p>You don't have any booked mentorship sessions yet. Explore available mentors and book a session!</p>
-                    <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
-                        🧭 Find a Mentor
-                    </a>
+                    <!-- <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
+                        Find a Mentor
+                    </a> -->
                 </div>
             <?php endif; ?>
         </div>
@@ -477,7 +182,7 @@ if (!defined('BASE_URL')) {
         <!-- Sessions Needing Feedback -->
         <?php if (isset($data['needs_feedback']) && count($data['needs_feedback']) > 0): ?>
             <div class="section-card" style="border: 2px solid #f59e0b;">
-                <h2 class="section-title">⭐ Leave Feedback</h2>
+                <h2 class="section-title"> Leave Feedback</h2>
                 <p style="color: #6b7280; margin-bottom: 1rem;">Help other students by sharing your experience!</p>
 
                 <?php foreach ($data['needs_feedback'] as $session): ?>
@@ -490,11 +195,11 @@ if (!defined('BASE_URL')) {
                             <div style="flex: 1;">
                                 <h4 style="margin: 0;"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
                                 <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
-                                    📅 <?= $sessionDate->format('F j, Y') ?>
+                                     <?= $sessionDate->format('F j, Y') ?>
                                 </p>
                             </div>
                             <button class="btn btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
-                                ⭐ Rate Session
+                                 Rate Session
                             </button>
                         </div>
                     </div>
@@ -534,7 +239,7 @@ if (!defined('BASE_URL')) {
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
-                🧭 Explore Mentors
+                 Explore Mentors
             </a>
         </div>
     </div>
