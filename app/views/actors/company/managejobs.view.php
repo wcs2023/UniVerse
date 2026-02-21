@@ -32,9 +32,9 @@
                 <input type="text" id="searchInput" class="form-control" placeholder="Search jobs..." style="max-width: 300px;">
                 <select id="statusFilter" class="form-control" style="max-width: 200px;" onchange="filterJobs()">
                     <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="closed">Closed</option>
-                    <option value="draft">Draft</option>
+                    <option value="active" <?= (isset($_GET['status']) && $_GET['status'] === 'active') ? 'selected' : '' ?>>Active</option>
+                    <option value="closed" <?= (isset($_GET['status']) && $_GET['status'] === 'closed') ? 'selected' : '' ?>>Closed</option>
+                    <option value="draft" <?= (isset($_GET['status']) && $_GET['status'] === 'draft') ? 'selected' : '' ?>>Draft</option>
                 </select>
             </div>
             
