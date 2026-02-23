@@ -39,23 +39,12 @@
                 <div class="articles-grid">
                     <?php foreach($data['articles'] as $article): ?>
                         <article class="article-card">
-                            <div class="article-image">
-                                <?php 
-                                $imagePath = !empty($article['featured_image']) 
-                                    ? $article['featured_image'] 
-                                    : '/assets/images/articles/placeholder.svg';
-                                ?>
-                                <img src="<?= BASE_URL ?><?= $imagePath ?>" 
-                                     alt="<?= htmlspecialchars($article['title']) ?>" 
-                                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
-                                <span class="article-category"><?= ucfirst(str_replace('-', ' ', $article['category'])) ?></span>
-                            </div>
-                            
                             <div class="article-content">
+                                <span class="article-category"><?= ucfirst(str_replace('-', ' ', $article['category'])) ?></span>
                                 <h3 class="article-title">
-                                    <a href="<?= BASE_URL ?>/uarticles/viewDetails/<?= $article['article_id'] ?>">
-                                        <?= htmlspecialchars($article['title']) ?>
-                                    </a>
+                                <a href="<?= BASE_URL ?>/uarticles/viewDetails/<?= $article['article_id'] ?>">
+                                    <?= htmlspecialchars($article['title']) ?>
+                                </a>
                                 </h3>
                                 
                                 <p class="article-excerpt"><?= htmlspecialchars(substr($article['excerpt'], 0, 150)) ?><?= strlen($article['excerpt']) > 150 ? '...' : '' ?></p>
@@ -68,31 +57,27 @@
                                     
                                     <div class="article-stats">
                                         <span class="stat-item">
-                                            <i class="fas fa-eye"></i>
-                                            <?= number_format($article['views'] ?? rand(50, 500)) ?>
+                                            <span>views</span>
+                                            <?= number_format((int)($article['views'] ?? 0)) ?>
                                         </span>
                                         <span class="stat-item">
-                                            <i class="fas fa-heart"></i>
-                                            <?= number_format($article['likes_count'] ?? rand(5, 50)) ?>
-                                        </span>
-                                        <span class="stat-item">
-                                            <i class="fas fa-comments"></i>
-                                            <?= number_format($article['comments_count'] ?? rand(2, 25)) ?>
+                                            <span>likes</span>
+                                            <?= number_format((int)($article['likes'] ?? 0)) ?>
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </article>
                     <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="no-articles">
-                    <div class="no-articles-icon">
-                        <i class="fas fa-folder-open"></i>
-                    </div>
-                    <h3>No articles found in this category</h3>
-                    <p>Check back later for new content, or explore other categories.</p>
-                    <a href="<?= BASE_URL ?>/uarticles" class="btn btn-primary">Browse All Articles</a>
+                        </div>
+                        <?php else: ?>
+                            <div class="no-articles">
+                                <div class="no-articles-icon">
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+                                <h3>No articles found in this category</h3>
+                                <p>Check back later for new content, or explore other categories.</p>
+                                <a href="<?= BASE_URL ?>/uarticles" class="btn btn-primary">Browse All Articles</a>
                 </div>
             <?php endif; ?>
         </div>
@@ -211,32 +196,19 @@
     box-shadow: 0 8px 15px rgba(0,0,0,0.15);
 }
 
-.article-image {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-}
-
-.article-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.article-content {
+    padding: 1.5rem;
 }
 
 .article-category {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
+    display: inline-block;
     background: #6b46c1;
     color: white;
-    padding: 0.25rem 0.75rem;
+    padding: 0.2rem 0.7rem;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 500;
-}
-
-.article-content {
-    padding: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .article-title {
