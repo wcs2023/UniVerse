@@ -25,8 +25,14 @@ if (!defined('BASE_URL')) {
             background-color: #a78bfa45 !important;
         }
 
-        .alert {
-            display: none;
+        #alert-success,
+        #alert-error {
+            display: none !important;
+        }
+
+        #alert-success.show,
+        #alert-error.show {
+            display: flex !important;
         }
     </style>
 </head>
@@ -147,7 +153,7 @@ if (!defined('BASE_URL')) {
                     </div>
                 </form>
             <?php else: ?>
-                <div class="alert alert-error" style="display: block;">
+                <div class="alert alert-error" style="display: flex !important;">
                     Article not found or you don't have permission to edit it.
                 </div>
             <?php endif; ?>
@@ -285,16 +291,16 @@ if (!defined('BASE_URL')) {
             const errorAlert = document.getElementById('alert-error');
 
             // Hide both alerts first
-            successAlert.style.display = 'none';
-            errorAlert.style.display = 'none';
+            successAlert.classList.remove('show');
+            errorAlert.classList.remove('show');
 
             if (type === 'success') {
                 successAlert.textContent = message;
-                successAlert.style.display = 'block';
+                successAlert.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 errorAlert.textContent = message;
-                errorAlert.style.display = 'block';
+                errorAlert.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }

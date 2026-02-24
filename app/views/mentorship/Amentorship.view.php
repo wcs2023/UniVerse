@@ -44,6 +44,15 @@ if (!defined('BASE_URL')) {
 
     <main id="main-content" role="main">
     <div class="ms-container">
+        <!-- Mentor Inactive Warning -->
+        <?php if (!empty($data['mentor_inactive'])): ?>
+            <div style="background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
+                <h2 style="margin: 0 0 0.75rem 0; font-size: 1.3rem;">Mentorship Not Enabled</h2>
+                <p style="margin: 0 0 1rem 0;">You need to enable mentorship availability in your profile settings to manage slots and receive bookings.</p>
+                <a href="<?= BASE_URL ?>/aeditprofile#mentorship-settings" style="display: inline-block; background: #6c63ff; color: white; padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Enable in Profile Settings</a>
+            </div>
+        <?php endif; ?>
+
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
             <div class="ms-success-message">

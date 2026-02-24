@@ -16,8 +16,9 @@ class Aeditprofile extends Controller {
     }
     
     public function index() {
-        // Check if user is logged in as alumni
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'alumni') {
+        // Check if user is logged in as alumni (check both user_type and user_role for compatibility)
+        $userType = $_SESSION['user_type'] ?? $_SESSION['user_role'] ?? '';
+        if (!isset($_SESSION['user_id']) || $userType !== 'alumni') {
             header('Location: ' . BASE_URL . '/login');
             exit();
         }
@@ -39,6 +40,32 @@ class Aeditprofile extends Controller {
         
         // Get user data from database using AlumniModel
         $userData = $this->alumniModel->getUserById($userId);
+        
+        // If user data not found, show form with error instead of redirecting away
+        if (!$userData) {
+            error_log("Alumni edit profile: getUserById returned false for user_id: " . $userId);
+            // Create a minimal user object so the view doesn't crash
+            $userData = (object)[
+                'user_id' => $userId,
+                'first_name' => $_SESSION['first_name'] ?? '',
+                'last_name' => $_SESSION['last_name'] ?? '',
+                'email' => $_SESSION['email'] ?? '',
+                'phone' => '',
+                'date_of_birth' => '',
+                'gender' => '',
+                'profile_picture' => null,
+                'current_role' => '',
+                'company' => '',
+                'university_name' => '',
+                'degree_program' => '',
+                'graduation_year' => '',
+                'linkedin_url' => '',
+                'github_url' => '',
+                'portfolio_url' => '',
+                'short_bio' => '',
+                'available_for_mentorship' => false
+            ];
+        }
         
         // Prepare data for view
         $data = [
@@ -66,8 +93,7 @@ class Aeditprofile extends Controller {
                     error_log("Profile picture only upload detected for alumni user: " . $userId);
                     $this->handleProfilePictureUpload($userId);
                     $_SESSION['profile_success'] = 'Profile picture updated successfully!';
-                    // Redirect to profile page so user sees the updated picture
-                    header('Location: ' . BASE_URL . '/alumni/profile?updated=' . time());
+                    header('Location: ' . BASE_URL . '/aeditprofile');
                     exit();
                 }
             }
@@ -80,6 +106,8 @@ class Aeditprofile extends Controller {
                 'first_name' => $validatedData['first_name'] ?? null,
                 'last_name' => $validatedData['last_name'] ?? null,
                 'phone' => $validatedData['phone'] ?? null,
+                'date_of_birth' => $validatedData['date_of_birth'] ?? null,
+                'gender' => $validatedData['gender'] ?? null,
                 'current_role' => $validatedData['current_role'] ?? null,
                 'company' => $validatedData['company'] ?? null,
                 'university_name' => $validatedData['university_name'] ?? null,
@@ -156,38 +184,29 @@ class Aeditprofile extends Controller {
 
     private function handleProfilePictureUpload($userId) {
         $file = $_FILES['profile_picture'];
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
 
-        // BUG-003 FIX: Use finfo for server-side MIME check (cannot be spoofed by browser)
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $detectedMime = $finfo->file($file['tmp_name']);
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-
-        if (!in_array($detectedMime, $allowedMimes)) {
+        // Validate file type
+        if (!in_array($file['type'], $allowedTypes)) {
             throw new Exception("Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.");
         }
 
-        // BUG-004 FIX: Derive extension from detected MIME, not from user-supplied filename
-        $mimeToExt = [
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-            'image/gif'  => 'gif',
-            'image/webp' => 'webp',
-        ];
-        $extension = $mimeToExt[$detectedMime];
-
-        $maxSize = 5 * 1024 * 1024; // 5MB
+        // Validate file size
         if ($file['size'] > $maxSize) {
             throw new Exception("File size must be less than 5MB");
         }
 
+        // Get the absolute path to public directory
         $publicDir = dirname(dirname(__DIR__)) . '/public/';
         $uploadDir = $publicDir . 'assets/images/profiles/';
-
+        
+        // Create upload directory if it doesn't exist
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            mkdir($uploadDir, 0777, true);
         }
 
-        // BUG-002 FIX: Delete the old profile picture file before saving the new one
+        // Delete old profile picture if exists
         $currentUser = $this->alumniModel->getUserById($userId);
         if ($currentUser && !empty($currentUser->profile_picture)) {
             $oldFile = $publicDir . ltrim($currentUser->profile_picture, '/');
@@ -196,10 +215,14 @@ class Aeditprofile extends Controller {
             }
         }
 
+        // Generate unique filename
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'profile_' . $userId . '_' . time() . '.' . $extension;
         $uploadPath = $uploadDir . $filename;
 
+        // Move uploaded file
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            // Update user profile picture in database
             $dbPath = '/assets/images/profiles/' . $filename;
             $this->alumniModel->updateProfilePicture($userId, $dbPath);
         } else {

@@ -414,8 +414,6 @@ if (!defined('URLROOT')) {
                     </div>
                     <div class="photo-modal-body">
                         <p>Upload a new profile picture. Click save when you're done.</p>
-                        <!-- BUG-005 FIX: inline error div instead of alert() -->
-                        <div id="upload-error" role="alert" style="display:none; background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; padding:0.6rem 1rem; margin-bottom:0.75rem; font-size:0.875rem;"></div>
                         <div class="photo-preview-container">
                             <?php 
                             $profilePic = !empty($data['user']->profile_picture) 
@@ -430,46 +428,44 @@ if (!defined('URLROOT')) {
                         <button type="button" class="upload-photo-btn" onclick="document.getElementById('modal-profile-picture').click()">
                             Choose Photo
                         </button>
-                        <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewModalImage(this)" style="display: none;">
+                        <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
                     </div>
                     <div class="photo-modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="closePhotoModal()">Cancel</button>
-                        <!-- BUG-006 FIX: disable button on submit to prevent double-submit -->
-                        <button type="submit" class="btn btn-primary" id="save-photo-btn" onclick="this.disabled=true; this.textContent='Saving...'; this.form.submit();">Save Photo</button>
+                        <button type="submit" class="btn btn-primary">Save Photo</button>
                     </div>
                 </div>
             </form>
         </div>
 
-        <form class="edit-profile-form" method="POST" action="<?= BASE_URL ?>/aeditprofile" enctype="multipart/form-data">
-            
-            <!-- Profile Picture Section -->
-            <div class="form-section">
-                <h2>Profile Picture</h2>
-                <div class="profile-picture-section">
-                    <div class="current-picture" onclick="openPhotoModal()">
-                        <?php 
-                        $profilePicture = !empty($data['user']->profile_picture) 
-                            ? $data['user']->profile_picture 
-                            : '/assets/images/default-avatar.svg';
-                        // Add cache-busting parameter
-                        $cacheBuster = !empty($data['user']->profile_picture) ? '?v=' . time() : '';
-                        ?>
-                        <img src="<?= BASE_URL ?><?= $profilePicture ?><?= $cacheBuster ?>" 
-                             alt="Profile Picture" 
-                             id="profile-preview"
-                             onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
-                        <p class="picture-note">Click to change photo</p>
-                    </div>
-                    <!-- BUG-001 FIX: Delete profile picture form -->
-                    <?php if (!empty($data['user']->profile_picture)): ?>
-                    <form method="POST" action="<?= BASE_URL ?>/aeditprofile" style="margin-top: 0.75rem; text-align: center;" onsubmit="return confirm('Remove your profile picture?');">
-                        <input type="hidden" name="action" value="delete_picture">
-                        <button type="submit" class="btn btn-secondary" style="font-size:0.8rem; padding:0.4rem 0.9rem; color:#dc2626; border-color:#dc2626;">Remove Photo</button>
-                    </form>
-                    <?php endif; ?>
+        <!-- Profile Picture Section (OUTSIDE main form to avoid nested form issue) -->
+        <div class="form-section">
+            <h2>Profile Picture</h2>
+            <div class="profile-picture-section">
+                <div class="current-picture" onclick="openPhotoModal()">
+                    <?php 
+                    $profilePicture = !empty($data['user']->profile_picture) 
+                        ? $data['user']->profile_picture 
+                        : '/assets/images/default-avatar.svg';
+                    ?>
+                    <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                         alt="Profile Picture" 
+                         id="profile-preview"
+                         onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'"
+                         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+                    <p class="picture-note">Click to change photo</p>
                 </div>
+                <!-- Delete profile picture (separate form, not nested) -->
+                <?php if (!empty($data['user']->profile_picture)): ?>
+                <form method="POST" action="<?= BASE_URL ?>/aeditprofile" style="margin-top: 0.75rem; text-align: center;" onsubmit="return confirm('Remove your profile picture?');">
+                    <input type="hidden" name="action" value="delete_picture">
+                    <button type="submit" class="btn btn-secondary" style="font-size:0.8rem; padding:0.4rem 0.9rem; color:#dc2626; border-color:#dc2626;">Remove Photo</button>
+                </form>
+                <?php endif; ?>
             </div>
+        </div>
+
+        <form class="edit-profile-form" method="POST" action="<?= BASE_URL ?>/aeditprofile" enctype="multipart/form-data">
 
             <!-- Personal Information Section -->
             <div class="form-section">
@@ -644,7 +640,7 @@ if (!defined('URLROOT')) {
             </div>
 
             <!-- Mentorship Availability Section -->
-            <div class="form-section">
+            <div class="form-section" id="mentorship-settings">
                 <h2>Mentorship Settings</h2>
                 
                 <div class="form-group">
@@ -689,41 +685,26 @@ if (!defined('URLROOT')) {
 
         function closePhotoModal() {
             document.getElementById('photoModal').style.display = 'none';
-            // Reset error message and save button when closing
-            var err = document.getElementById('upload-error');
-            err.style.display = 'none';
-            err.textContent = '';
-            document.getElementById('save-photo-btn').disabled = false;
-            document.getElementById('save-photo-btn').textContent = 'Save Photo';
-        }
-
-        // BUG-005 FIX: show inline error instead of alert()
-        function showUploadError(message) {
-            var err = document.getElementById('upload-error');
-            err.textContent = message;
-            err.style.display = 'block';
         }
 
         function previewModalImage(input) {
-            var err = document.getElementById('upload-error');
-            err.style.display = 'none';
-
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-
+                
+                // Check file size (5MB limit)
                 if (file.size > 5 * 1024 * 1024) {
-                    showUploadError('File size must be less than 5 MB. Please choose a smaller image.');
+                    alert('File size must be less than 5MB');
                     input.value = '';
                     return;
                 }
-
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                if (!allowedTypes.includes(file.type)) {
-                    showUploadError('Invalid file type. Please select a JPG, PNG, GIF, or WebP image.');
+                
+                // Check file type
+                if (!file.type.match('image.*')) {
+                    alert('Please select a valid image file');
                     input.value = '';
                     return;
                 }
-
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('modal-profile-preview').src = e.target.result;

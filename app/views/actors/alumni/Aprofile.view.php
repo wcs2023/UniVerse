@@ -57,9 +57,8 @@ $userData = [
                 $profilePicture = !empty($userData['profile_picture'])
                     ? $userData['profile_picture']
                     : '/assets/images/default-avatar.svg';
-                $cacheBuster = !empty($userData['profile_picture']) ? '?v=' . time() : '';
                 ?>
-                <img src="<?= BASE_URL ?><?= $profilePicture ?><?= $cacheBuster ?>" alt="Profile Photo"
+                <img src="<?= BASE_URL ?><?= $profilePicture ?>" alt="Profile Photo"
                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
             </div>
             <div class="profile-info">

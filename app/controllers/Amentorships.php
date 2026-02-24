@@ -50,10 +50,22 @@ class Amentorships extends Controller
         $mentorStatus = $this->mentorshipModel->getMentorStatus($mentorUserId);
         
         if (!$mentorStatus || !$mentorStatus['is_active']) {
-            // Redirect to edit profile with message
-            $_SESSION['mentorship_warning'] = 'Please enable mentorship availability in your profile settings to access this section.';
-            header('Location: ' . BASE_URL . '/aeditprofile');
-            exit;
+            // Show the mentorship page with a warning instead of redirecting away
+            $data = [
+                'mentor_inactive' => true,
+                'availability_slots' => [],
+                'upcoming_bookings' => [],
+                'completed_sessions' => [],
+                'stats' => [
+                    'total_sessions' => 0,
+                    'completed_sessions' => 0,
+                    'active_mentees' => 0,
+                    'average_rating' => 0
+                ],
+                'unread_notifications' => 0
+            ];
+            $this->view('mentorship/Amentorship', $data);
+            return;
         }
 
         // Get mentor's availability slots (next 2 weeks)
