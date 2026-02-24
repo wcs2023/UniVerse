@@ -107,12 +107,16 @@ if (!defined('BASE_URL')) {
                                 </div>
                             <?php endif; ?>
                             
-                            <div class="ms-availability-count">
-                                <?= $mentor['available_slots'] ?? 0 ?> slots available
+                            <div class="ms-availability-count" style="<?= ($mentor['available_slots'] ?? 0) == 0 ? 'color: #999;' : '' ?>">
+                                <?php if (($mentor['available_slots'] ?? 0) > 0): ?>
+                                    <?= $mentor['available_slots'] ?> slots available
+                                <?php else: ?>
+                                    No slots available currently
+                                <?php endif; ?>
                             </div>
                             
                             <button class="ms-btn ms-btn-view" onclick="viewMentor(<?= $mentor['mentor_id'] ?>)">
-                                View & Book
+                                <?= ($mentor['available_slots'] ?? 0) > 0 ? 'View & Book' : 'View Profile' ?>
                             </button>
                         </div>
                     </div>
@@ -121,7 +125,7 @@ if (!defined('BASE_URL')) {
                 <div class="ms-empty-state">
                     <div class="ms-empty-icon ms-empty-icon--css">?</div>
                     <h3>No Mentors Available</h3>
-                    <p>There are currently no mentors with available slots. Please check back later!</p>
+                    <p>There are currently no active mentors. Please check back later!</p>
                 </div>
             <?php endif; ?>
         </div>

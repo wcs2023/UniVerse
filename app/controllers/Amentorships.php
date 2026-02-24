@@ -158,7 +158,8 @@ class Amentorships extends Controller
             echo json_encode([
                 'success' => true,
                 'message' => 'Availability slots added successfully',
-                'added_count' => $result['added_count'] ?? count($validSlots)
+                'added' => $result['added'] ?? count($validSlots),
+                'duplicates' => $result['duplicates'] ?? 0
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => $result['message'] ?? 'Error adding slots']);

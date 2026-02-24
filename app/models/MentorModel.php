@@ -221,7 +221,7 @@ class MentorModel extends MentorshipBase
                 $params[] = "%$industry%";
             }
 
-            $query .= " ) AS mentor_data WHERE available_slots > 0
+            $query .= " ) AS mentor_data
                          ORDER BY available_slots DESC, rating DESC, total_sessions DESC";
 
             $stmt = $this->db->prepare($query);

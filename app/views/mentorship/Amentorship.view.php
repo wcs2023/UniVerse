@@ -454,7 +454,7 @@ if (!defined('BASE_URL')) {
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
     </main>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
