@@ -59,11 +59,11 @@ if (!defined('BASE_URL')) {
                                 <div class="article-actions">
                                     <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>"
                                         class="btn-icon-action" title="Edit">
-                                        ✏️
+                                        Edit
                                     </a>
                                     <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'draft')"
                                         class="btn-icon-action delete" title="Delete">
-                                        🗑️
+                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -73,11 +73,11 @@ if (!defined('BASE_URL')) {
 
                             <div class="article-stats">
                                 <div class="stat-item">
-                                    <span class="stat-icon">👁️</span>
+                                    <span class="stat-icon">Views:</span>
                                     <span><?= $article['views'] ?? 0 ?></span>
                                 </div>
                                 <div class="stat-item">
-                                    <span class="stat-icon">👍</span>
+                                    <span class="stat-icon">Likes:</span>
                                     <span><?= $article['likes'] ?? 0 ?></span>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@ if (!defined('BASE_URL')) {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="empty-state">
-                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-icon">--</div>
                         <h3>No Drafts</h3>
                         <p>You don't have any saved drafts. Start a new article!</p>
                     </div>
@@ -128,7 +128,7 @@ if (!defined('BASE_URL')) {
                                     </a>
                                     <button onclick="deleteArticle(<?= $article['article_id'] ?>, 'published')"
                                         class="btn-icon-action delete" title="Delete">
-                                        🗑️
+                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -150,7 +150,7 @@ if (!defined('BASE_URL')) {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="empty-state">
-                        <div class="empty-icon">📝</div>
+                        <div class="empty-icon">--</div>
                         <h3>No Published Articles</h3>
                         <p>You haven't published any articles yet. Create your first article!</p>
                     </div>

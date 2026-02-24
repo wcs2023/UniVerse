@@ -47,7 +47,7 @@ if (!defined('BASE_URL')) {
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
             <div class="ms-success-message">
-                <span>✅</span>
+                <span class="ms-status-dot ms-status-dot--active"></span>
                 <span>
                     <?php 
                     switch($_GET['success']) {
@@ -72,13 +72,13 @@ if (!defined('BASE_URL')) {
         <div class="ms-page-header">
             <h1 class="ms-page-title">My Mentorships</h1>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn-explore">
-                🧭 Explore Mentors
+                Explore Mentors
             </a>
         </div>
 
         <!-- Upcoming Bookings Section -->
         <div class="ms-section-card">
-            <h2 class="ms-card-title">🔒 Upcoming Sessions</h2>
+            <h2 class="ms-card-title">Upcoming Sessions</h2>
 
             <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
                 <?php foreach ($data['upcoming_bookings'] as $booking): ?>
@@ -92,9 +92,10 @@ if (!defined('BASE_URL')) {
                     ?>
                     <div class="ms-booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
                         <div class="ms-booking-header">
-                            <img src="<?= !empty($booking['mentor_picture']) ? htmlspecialchars($booking['mentor_picture']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
+                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                 alt="<?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?>" 
-                                class="ms-booking-avatar">
+                                class="ms-booking-avatar"
+                                onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                             <div class="ms-booking-info">
                                 <h4 class="ms-booking-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
                                 <p class="ms-booking-subtitle">
@@ -105,20 +106,20 @@ if (!defined('BASE_URL')) {
                                 </p>
                             </div>
                             <span class="ms-badge <?= $isActive ? 'ms-badge-active' : ($canJoin ? 'ms-badge-soon' : 'ms-badge-upcoming') ?>" role="status">
-                                <?= $isActive ? '<span aria-hidden="true">🔴</span> LIVE' : ($canJoin ? 'Starting Soon' : '<span aria-hidden="true">🔒</span> Confirmed') ?>
+                                <?= $isActive ? '<span class="ms-status-dot ms-status-dot--live" aria-hidden="true"></span> LIVE' : ($canJoin ? 'Starting Soon' : 'Confirmed') ?>
                             </span>
                         </div>
                         
                         <div class="ms-booking-datetime">
-                            <span aria-hidden="true">📅</span> <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
+                            <span aria-hidden="true"></span> <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
                         </div>
                         
                         <!-- Countdown -->
                         <div class="ms-countdown" aria-live="polite" role="timer">
                             <?php if ($isActive): ?>
-                                <span class="ms-countdown--live">🟢 Session In Progress - Join Now!</span>
+                                <span class="ms-countdown--live"><span class="ms-status-dot ms-status-dot--active"></span> Session In Progress - Join Now!</span>
                             <?php elseif ($canJoin): ?>
-                                <span class="ms-countdown--soon">⏰ Session starting very soon!</span>
+                                <span class="ms-countdown--soon">Session starting very soon!</span>
                             <?php else: ?>
                                 <span class="ms-countdown--waiting">
                                     Starts in: <strong>
@@ -133,16 +134,16 @@ if (!defined('BASE_URL')) {
                         </div>
 
                         <!-- Actions -->
-                        <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <div class="ms-booking-actions">
                             <?php if (!empty($booking['meeting_link'])): ?>
                                 <button class="ms-btn join-meeting-btn <?= $canJoin ? 'ms-btn-join-active' : 'ms-btn-join-disabled' ?>" 
                                         <?= !$canJoin ? 'disabled' : '' ?>
                                         onclick="<?= $canJoin ? "window.open('" . htmlspecialchars($booking['meeting_link']) . "', '_blank')" : '' ?>">
-                                    <?= $canJoin ? '🎥 Join Meeting Now' : '⏳ Wait for Session Time' ?>
+                                    <?= $canJoin ? 'Join Meeting Now' : 'Wait for Session Time' ?>
                                 </button>
                             <?php else: ?>
-                                <span class="ms-btn ms-btn-secondary" style="cursor: not-allowed; opacity: 0.7;">
-                                    ⚠️ Meeting link unavailable
+                                <span class="ms-btn ms-btn-secondary ms-info-strip--muted">
+                                    Meeting link unavailable
                                 </span>
                             <?php endif; ?>
                             
@@ -154,11 +155,11 @@ if (!defined('BASE_URL')) {
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="ms-empty-state">
-                    <div class="ms-empty-icon">📅</div>
+                    <div class="ms-empty-icon ms-empty-icon--css">--</div>
                     <h3>No Upcoming Sessions</h3>
                     <p>You don't have any booked mentorship sessions yet. Explore available mentors and book a session!</p>
                     <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn ms-btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
-                        🧭 Find a Mentor
+                        Find a Mentor
                     </a>
                 </div>
             <?php endif; ?>
@@ -167,24 +168,25 @@ if (!defined('BASE_URL')) {
         <!-- Sessions Needing Feedback -->
         <?php if (isset($data['needs_feedback']) && count($data['needs_feedback']) > 0): ?>
             <div class="ms-section-card" style="border: 2px solid #f59e0b;">
-                <h2 class="ms-card-title">⭐ Leave Feedback</h2>
+                <h2 class="ms-card-title">Leave Feedback</h2>
                 <p style="color: #6b7280; margin-bottom: 1rem;">Help other students by sharing your experience!</p>
 
                 <?php foreach ($data['needs_feedback'] as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
                     <div class="ms-feedback-card">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <img src="<?= !empty($session['mentor_picture']) ? htmlspecialchars($session['mentor_picture']) : 'https://i.pravatar.cc/150' ?>"
+                            <div class="ms-feedback-layout">
+                            <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                 alt="<?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?>"
-                                style="width: 50px; height: 50px; border-radius: 50%;">
-                            <div style="flex: 1;">
-                                <h4 style="margin: 0;"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
-                                <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
-                                    📅 <?= $sessionDate->format('F j, Y') ?>
+                                class="ms-feedback-avatar"
+                                onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                            <div class="ms-feedback-info">
+                                <h4><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
+                                <p>
+                                    <?= $sessionDate->format('F j, Y') ?>
                                 </p>
                             </div>
                             <button class="ms-btn ms-btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
-                                ⭐ Rate Session
+                                Rate Session
                             </button>
                         </div>
                     </div>
@@ -200,19 +202,20 @@ if (!defined('BASE_URL')) {
         ?>
         <?php if (count($reviewedSessions) > 0): ?>
             <div class="ms-section-card">
-                <h2 class="ms-card-title">✅ Past Sessions</h2>
+                <h2 class="ms-card-title">Past Sessions</h2>
 
                 <?php foreach (array_slice($reviewedSessions, 0, 5) as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
-                    <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb;">
-                        <img src="<?= !empty($session['mentor_picture']) ? htmlspecialchars($session['mentor_picture']) : 'https://i.pravatar.cc/150' ?>"
-                            alt="Mentor" style="width: 45px; height: 45px; border-radius: 50%;">
-                        <div style="flex: 1;">
-                            <div style="font-weight: 500;"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></div>
-                            <div style="color: #6b7280; font-size: 0.875rem;"><?= $sessionDate->format('M j, Y') ?></div>
+                    <div class="ms-completed-item">
+                        <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                            alt="Mentor" class="ms-completed-avatar ms-completed-avatar--lg"
+                            onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                        <div class="ms-completed-info">
+                            <div class="ms-completed-name"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></div>
+                            <div class="ms-completed-date"><?= $sessionDate->format('M j, Y') ?></div>
                         </div>
-                        <div style="color: #fbbf24;">
-                            <?= str_repeat('★', $session['rating']) . str_repeat('☆', 5 - $session['rating']) ?>
+                        <div class="ms-rating-stars">
+                            <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -224,7 +227,7 @@ if (!defined('BASE_URL')) {
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn" style="text-decoration: none;">
-                🧭 Explore Mentors
+                Explore Mentors
             </a>
         </div>
     </div>
@@ -255,7 +258,7 @@ if (!defined('BASE_URL')) {
     <div id="feedbackModal" class="ms-modal">
         <div class="ms-modal-dialog">
             <div class="ms-modal-header ms-modal-header--warning">
-                <h3 style="margin: 0;">⭐ Rate Your Session</h3>
+                <h3 style="margin: 0;">Rate Your Session</h3>
                 <button class="ms-close-modal" onclick="closeFeedbackModal()" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="ms-modal-body">
@@ -285,7 +288,7 @@ if (!defined('BASE_URL')) {
             <div class="ms-modal-footer">
                 <button class="ms-btn ms-btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
                 <button class="ms-btn ms-btn-warning" onclick="submitFeedback()">
-                    ⭐ Submit Feedback
+                    Submit Feedback
                 </button>
             </div>
         </div>

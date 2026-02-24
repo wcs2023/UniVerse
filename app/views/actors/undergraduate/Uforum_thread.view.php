@@ -12,12 +12,12 @@
 
 <nav class="u-nav">
   <div class="nav-container">
-    <div class="logo">✨ logo</div>
+    <div class="logo">UniVerse</div>
     <ul class="nav-links">
       <li><a href="<?= BASE_URL ?>/forum">Home</a></li>
       <li><a href="<?= BASE_URL ?>/forum#categories">Categories</a></li>
     </ul>
-    <div class="nav-right"><div class="avatar">👤</div></div>
+    <div class="nav-right"><div class="avatar">U</div></div>
   </div>
 </nav>
 
@@ -44,12 +44,12 @@
     ?>
     <div class="post-actions">
       <?php if ($isOwner || $isMod): ?>
-        <a class="action-item" href="<?= BASE_URL ?>/forum/edit_thread/<?= (int)$thread->id ?>">✏️ Edit</a>
+        <a class="action-item" href="<?= BASE_URL ?>/forum/edit_thread/<?= (int)$thread->id ?>">Edit</a>
         <form action="<?= BASE_URL ?>/forum/delete_thread/<?= (int)$thread->id ?>" method="post" style="display:inline;">
-          <button class="action-item" onclick="return confirm('Delete this thread?')">🗑 Delete</button>
+          <button class="action-item" onclick="return confirm('Delete this thread?')">Delete</button>
         </form>
       <?php endif; ?>
-      <a class="action-item" href="#replyBox"><span>💬</span><span>Reply</span></a>
+      <a class="action-item" href="#replyBox"><span>Reply</span></a>
     </div>
   </div>
 
@@ -68,12 +68,12 @@
         </div>
         <div class="reply-content"><?= nl2br(htmlspecialchars($p->body)) ?></div>
         <div class="reply-actions">
-          <button class="reply-action js-post-like" data-id="<?= (int)$p->id ?>">❤️ Like</button>
+          <button class="reply-action js-post-like" data-id="<?= (int)$p->id ?>">Like</button>
           <span class="reply-action">Score: <span id="score-<?= (int)$p->id ?>"><?= (int)($p->upvotes ?? 0) ?></span></span>
           <?php if ($isReplyOwner || $isMod): ?>
-            <a class="reply-action" href="<?= BASE_URL ?>/forum/edit_post/<?= (int)$p->id ?>">✏️ Edit</a>
+            <a class="reply-action" href="<?= BASE_URL ?>/forum/edit_post/<?= (int)$p->id ?>">Edit</a>
             <form action="<?= BASE_URL ?>/forum/delete_post/<?= (int)$p->id ?>" method="post" style="display:inline;">
-              <button class="reply-action" onclick="return confirm('Delete this reply?')">🗑 Delete</button>
+              <button class="reply-action" onclick="return confirm('Delete this reply?')">Delete</button>
             </form>
           <?php endif; ?>
         </div>

@@ -399,7 +399,7 @@ if (!defined('URLROOT')) {
         
         <?php if (isset($_SESSION['mentorship_warning'])): ?>
             <div class="alert" style="background: #fef3c7; color: #92400e; border: 1px solid #fbbf24;">
-                ⚠️ <?= htmlspecialchars($_SESSION['mentorship_warning']) ?>
+                <?= htmlspecialchars($_SESSION['mentorship_warning']) ?>
             </div>
             <?php unset($_SESSION['mentorship_warning']); ?>
         <?php endif; ?>
@@ -414,11 +414,13 @@ if (!defined('URLROOT')) {
                     </div>
                     <div class="photo-modal-body">
                         <p>Upload a new profile picture. Click save when you're done.</p>
+                        <!-- BUG-005 FIX: inline error div instead of alert() -->
+                        <div id="upload-error" role="alert" style="display:none; background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; padding:0.6rem 1rem; margin-bottom:0.75rem; font-size:0.875rem;"></div>
                         <div class="photo-preview-container">
                             <?php 
                             $profilePic = !empty($data['user']->profile_picture) 
                                 ? $data['user']->profile_picture 
-                                : '/assets/images/default-avatar.png';
+                                : '/assets/images/default-avatar.svg';
                             ?>
                             <img src="<?= BASE_URL ?><?= $profilePic ?>" 
                                  alt="Profile Preview" 
@@ -426,13 +428,14 @@ if (!defined('URLROOT')) {
                                  onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                         </div>
                         <button type="button" class="upload-photo-btn" onclick="document.getElementById('modal-profile-picture').click()">
-                            📷 Choose Photo
+                            Choose Photo
                         </button>
-                        <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
+                        <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewModalImage(this)" style="display: none;">
                     </div>
                     <div class="photo-modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="closePhotoModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Photo</button>
+                        <!-- BUG-006 FIX: disable button on submit to prevent double-submit -->
+                        <button type="submit" class="btn btn-primary" id="save-photo-btn" onclick="this.disabled=true; this.textContent='Saving...'; this.form.submit();">Save Photo</button>
                     </div>
                 </div>
             </form>
@@ -442,26 +445,35 @@ if (!defined('URLROOT')) {
             
             <!-- Profile Picture Section -->
             <div class="form-section">
-                <h2>📷 Profile Picture</h2>
+                <h2>Profile Picture</h2>
                 <div class="profile-picture-section">
                     <div class="current-picture" onclick="openPhotoModal()">
                         <?php 
                         $profilePicture = !empty($data['user']->profile_picture) 
                             ? $data['user']->profile_picture 
-                            : '/assets/images/default-avatar.png';
+                            : '/assets/images/default-avatar.svg';
+                        // Add cache-busting parameter
+                        $cacheBuster = !empty($data['user']->profile_picture) ? '?v=' . time() : '';
                         ?>
-                        <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                        <img src="<?= BASE_URL ?><?= $profilePicture ?><?= $cacheBuster ?>" 
                              alt="Profile Picture" 
                              id="profile-preview"
                              onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                         <p class="picture-note">Click to change photo</p>
                     </div>
+                    <!-- BUG-001 FIX: Delete profile picture form -->
+                    <?php if (!empty($data['user']->profile_picture)): ?>
+                    <form method="POST" action="<?= BASE_URL ?>/aeditprofile" style="margin-top: 0.75rem; text-align: center;" onsubmit="return confirm('Remove your profile picture?');">
+                        <input type="hidden" name="action" value="delete_picture">
+                        <button type="submit" class="btn btn-secondary" style="font-size:0.8rem; padding:0.4rem 0.9rem; color:#dc2626; border-color:#dc2626;">Remove Photo</button>
+                    </form>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <!-- Personal Information Section -->
             <div class="form-section">
-                <h2>👤 Personal Information</h2>
+                <h2>Personal Information</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -530,7 +542,7 @@ if (!defined('URLROOT')) {
 
             <!-- Professional Information Section -->
             <div class="form-section">
-                <h2>💼 Professional Information</h2>
+                <h2>Professional Information</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -551,7 +563,7 @@ if (!defined('URLROOT')) {
 
             <!-- Education Section -->
             <div class="form-section">
-                <h2>🎓 Education Background</h2>
+                <h2>Education Background</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -590,7 +602,7 @@ if (!defined('URLROOT')) {
 
             <!-- Social Links Section -->
             <div class="form-section">
-                <h2>🔗 Social & Professional Links</h2>
+                <h2>Social &amp; Professional Links</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -620,7 +632,7 @@ if (!defined('URLROOT')) {
 
             <!-- About Section -->
             <div class="form-section">
-                <h2>📝 About Me</h2>
+                <h2>About Me</h2>
                 
                 <div class="form-group">
                     <label for="short_bio">Short Bio / Skills & Experience</label>
@@ -633,7 +645,7 @@ if (!defined('URLROOT')) {
 
             <!-- Mentorship Availability Section -->
             <div class="form-section">
-                <h2>🎓 Mentorship Settings</h2>
+                <h2>Mentorship Settings</h2>
                 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
@@ -657,7 +669,7 @@ if (!defined('URLROOT')) {
             <!-- Form Actions -->
             <div class="form-actions">
                 <a href="<?= BASE_URL ?>/alumni/profile" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
     </div>
@@ -677,26 +689,41 @@ if (!defined('URLROOT')) {
 
         function closePhotoModal() {
             document.getElementById('photoModal').style.display = 'none';
+            // Reset error message and save button when closing
+            var err = document.getElementById('upload-error');
+            err.style.display = 'none';
+            err.textContent = '';
+            document.getElementById('save-photo-btn').disabled = false;
+            document.getElementById('save-photo-btn').textContent = 'Save Photo';
+        }
+
+        // BUG-005 FIX: show inline error instead of alert()
+        function showUploadError(message) {
+            var err = document.getElementById('upload-error');
+            err.textContent = message;
+            err.style.display = 'block';
         }
 
         function previewModalImage(input) {
+            var err = document.getElementById('upload-error');
+            err.style.display = 'none';
+
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                
-                // Check file size (5MB limit)
+
                 if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB');
+                    showUploadError('File size must be less than 5 MB. Please choose a smaller image.');
                     input.value = '';
                     return;
                 }
-                
-                // Check file type
-                if (!file.type.match('image.*')) {
-                    alert('Please select a valid image file');
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    showUploadError('Invalid file type. Please select a JPG, PNG, GIF, or WebP image.');
                     input.value = '';
                     return;
                 }
-                
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('modal-profile-preview').src = e.target.result;

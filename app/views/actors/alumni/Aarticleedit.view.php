@@ -44,7 +44,7 @@ if (!defined('BASE_URL')) {
         <div class="form-card">
             <div class="form-header">
                 <div>
-                    <h1 class="form-title">✏️ Edit Article</h1>
+                    <h1 class="form-title">Edit Article</h1>
                     <?php if (isset($data['article'])): ?>
                         <span class="status-badge status-<?= $data['article']['status'] ?>">
                             <?= ucfirst($data['article']['status']) ?>
@@ -125,24 +125,24 @@ if (!defined('BASE_URL')) {
                     <div class="button-group">
                         <?php if ($data['article']['status'] == 'draft'): ?>
                             <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                                📝 Publish Article
+                                Publish Article
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                                💾 Update Draft
+                                Update Draft
                             </button>
                         <?php else: ?>
                             <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                                💾 Save Changes
+                                Save Changes
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                                ⏸️ Unpublish (Move to Drafts)
+                                Unpublish (Move to Drafts)
                             </button>
                         <?php endif; ?>
                         <a href="<?= BASE_URL ?>/aarticles" class="btn btn-outline">
                             Cancel
                         </a>
                         <button type="button" class="btn btn-danger" onclick="deleteArticle()">
-                            🗑️ Delete
+                            Delete
                         </button>
                     </div>
                 </form>

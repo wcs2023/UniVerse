@@ -1039,3 +1039,130 @@
         text-align: center;
     }
 }
+
+/* ========================================
+   CSS-ONLY ICON REPLACEMENTS
+   Replaces emoji characters with styled elements
+   ======================================== */
+
+/* Status dot indicators (replace colored circle emojis) */
+.ms-status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+.ms-status-dot--live     { background-color: #dc2626; }
+.ms-status-dot--active   { background-color: #16a34a; }
+.ms-status-dot--upcoming { background-color: #6b46c1; }
+
+/* Star ratings (pure CSS, no emoji) */
+.ms-rating-stars {
+    display: inline-flex;
+    gap: 1px;
+    color: #fbbf24;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+.ms-rating-stars--lg { font-size: 1.25rem; }
+
+/* Empty state icon (CSS circle with text symbol) */
+.ms-empty-icon--css {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    font-weight: 700;
+}
+
+/* Inline label icon (small colored text before labels) */
+.ms-icon-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.ms-icon-label::before {
+    font-weight: 700;
+    font-size: 0.75rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+/* Variants for info-labels on mentor_profile */
+.ms-icon-label--email::before    { content: "@"; background: #dbeafe; color: #2563eb; }
+.ms-icon-label--link::before     { content: "↗"; background: #ede9fe; color: #7c3aed; }
+.ms-icon-label--github::before   { content: "<>"; background: #f3f4f6; color: #374151; font-size: 0.6rem; }
+.ms-icon-label--web::before      { content: "●"; background: #d1fae5; color: #059669; }
+.ms-icon-label--edu::before      { content: "▪"; background: #fef3c7; color: #d97706; }
+.ms-icon-label--degree::before   { content: "≡"; background: #ede9fe; color: #7c3aed; }
+.ms-icon-label--date::before     { content: "—"; background: #f3f4f6; color: #6b7280; }
+.ms-icon-label--role::before     { content: "→"; background: #ede9fe; color: #7c3aed; }
+.ms-icon-label--company::before  { content: "■"; background: #f3f4f6; color: #6b7280; }
+
+/* Completed sessions list item (replaces inline styles) */
+.ms-completed-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+.ms-completed-item:last-child { border-bottom: none; }
+.ms-completed-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.ms-completed-avatar--lg { width: 45px; height: 45px; }
+.ms-completed-info { flex: 1; }
+.ms-completed-name { font-weight: 500; }
+.ms-completed-date { color: #6b7280; font-size: 0.875rem; }
+
+/* Feedback card layout (replaces inline flex styles in Umentorship) */
+.ms-feedback-layout {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.ms-feedback-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.ms-feedback-info { flex: 1; }
+.ms-feedback-info h4 { margin: 0; }
+.ms-feedback-info p { margin: 0; color: #6b7280; font-size: 0.875rem; }
+
+/* Info/warning text strip */
+.ms-info-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.ms-info-strip--warning { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+.ms-info-strip--muted   { cursor: not-allowed; opacity: 0.7; }
+
+/* Booking action buttons row */
+.ms-booking-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}

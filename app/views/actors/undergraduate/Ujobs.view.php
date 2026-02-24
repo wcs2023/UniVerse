@@ -388,15 +388,15 @@
 
                         <div class="job-meta">
                             <span class="meta-item">
-                                <span class="meta-icon">📍</span>
+                                <span class="meta-icon">Location:</span>
                                 <?= htmlspecialchars($job['location'] ?? 'Remote') ?>
                             </span>
                             <span class="meta-item">
-                                <span class="meta-icon">💼</span>
+                                <span class="meta-icon">Type:</span>
                                 <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
                             </span>
                             <span class="meta-item">
-                                <span class="meta-icon">📊</span>
+                                <span class="meta-icon">Level:</span>
                                 <?= ucfirst($job['experience_level']) ?> Level
                             </span>
                         </div>
@@ -405,7 +405,7 @@
                             <span class="job-tag"><?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?></span>
                             <span class="job-tag"><?= ucfirst($job['work_arrangement'] ?? 'onsite') ?></span>
                             <?php if ($job['application_deadline'] && strtotime($job['application_deadline']) > time()): ?>
-                                <span class="job-tag">🕒 <?= date('M d', strtotime($job['application_deadline'])) ?></span>
+                                <span class="job-tag">Deadline: <?= date('M d', strtotime($job['application_deadline'])) ?></span>
                             <?php endif; ?>
                         </div>
 
@@ -428,7 +428,7 @@
             </div>
         <?php else: ?>
             <div class="empty-state">
-                <div class="empty-state-icon">💼</div>
+                <div class="empty-state-icon">--</div>
                 <h3>No Jobs Found</h3>
                 <p>Try adjusting your filters to see more opportunities.</p>
             </div>

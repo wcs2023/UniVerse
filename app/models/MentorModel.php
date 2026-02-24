@@ -67,7 +67,7 @@ class MentorModel extends MentorshipBase
     {
         try {
             $query = "SELECT 
-                        u.user_id, u.first_name, u.last_name, u.email, u.profile_picture as profile_picture_url,
+                        u.user_id, u.first_name, u.last_name, u.email, u.profile_picture,
                         m.mentor_id, m.expertise_areas, m.is_active,
                         ap.current_job_title as title, ap.current_company as company, ap.skills_experience as bio,
                         ap.linkedin_url, ap.github_url,
@@ -122,7 +122,7 @@ class MentorModel extends MentorshipBase
     {
         try {
             $query = "SELECT 
-                        u.user_id, u.first_name, u.last_name, u.email, u.profile_picture as profile_picture_url,
+                        u.user_id, u.first_name, u.last_name, u.email, u.profile_picture,
                         m.mentor_id, m.expertise_areas, m.is_active,
                         ap.current_job_title as title, ap.current_company as company, ap.skills_experience as bio,
                         ap.linkedin_url, ap.github_url

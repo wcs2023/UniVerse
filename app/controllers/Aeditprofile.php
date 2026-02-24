@@ -23,7 +23,12 @@ class Aeditprofile extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleProfileUpdate();
+            // Route to delete action if the hidden field is set
+            if (isset($_POST['action']) && $_POST['action'] === 'delete_picture') {
+                $this->handleDeleteProfilePicture();
+            } else {
+                $this->handleProfileUpdate();
+            }
         } else {
             $this->showEditForm();
         }
@@ -61,7 +66,8 @@ class Aeditprofile extends Controller {
                     error_log("Profile picture only upload detected for alumni user: " . $userId);
                     $this->handleProfilePictureUpload($userId);
                     $_SESSION['profile_success'] = 'Profile picture updated successfully!';
-                    header('Location: ' . BASE_URL . '/aeditprofile');
+                    // Redirect to profile page so user sees the updated picture
+                    header('Location: ' . BASE_URL . '/alumni/profile?updated=' . time());
                     exit();
                 }
             }
@@ -150,40 +156,79 @@ class Aeditprofile extends Controller {
 
     private function handleProfilePictureUpload($userId) {
         $file = $_FILES['profile_picture'];
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
 
-        // Validate file type
-        if (!in_array($file['type'], $allowedTypes)) {
+        // BUG-003 FIX: Use finfo for server-side MIME check (cannot be spoofed by browser)
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $detectedMime = $finfo->file($file['tmp_name']);
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+        if (!in_array($detectedMime, $allowedMimes)) {
             throw new Exception("Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.");
         }
 
-        // Validate file size
+        // BUG-004 FIX: Derive extension from detected MIME, not from user-supplied filename
+        $mimeToExt = [
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/gif'  => 'gif',
+            'image/webp' => 'webp',
+        ];
+        $extension = $mimeToExt[$detectedMime];
+
+        $maxSize = 5 * 1024 * 1024; // 5MB
         if ($file['size'] > $maxSize) {
             throw new Exception("File size must be less than 5MB");
         }
 
-        // Get the absolute path to public directory
         $publicDir = dirname(dirname(__DIR__)) . '/public/';
         $uploadDir = $publicDir . 'assets/images/profiles/';
-        
-        // Create upload directory if it doesn't exist
+
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
 
-        // Generate unique filename
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'alumni_profile_' . $userId . '_' . time() . '.' . $extension;
+        // BUG-002 FIX: Delete the old profile picture file before saving the new one
+        $currentUser = $this->alumniModel->getUserById($userId);
+        if ($currentUser && !empty($currentUser->profile_picture)) {
+            $oldFile = $publicDir . ltrim($currentUser->profile_picture, '/');
+            if (file_exists($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+
+        $filename = 'profile_' . $userId . '_' . time() . '.' . $extension;
         $uploadPath = $uploadDir . $filename;
 
-        // Move uploaded file
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            // Update user profile picture in database
             $dbPath = '/assets/images/profiles/' . $filename;
             $this->alumniModel->updateProfilePicture($userId, $dbPath);
         } else {
             throw new Exception("Failed to upload profile picture");
         }
+    }
+
+    // BUG-001 FIX: Handle profile picture deletion
+    private function handleDeleteProfilePicture() {
+        try {
+            $userId = $_SESSION['user_id'];
+            $publicDir = dirname(dirname(__DIR__)) . '/public/';
+
+            $currentUser = $this->alumniModel->getUserById($userId);
+            if ($currentUser && !empty($currentUser->profile_picture)) {
+                $oldFile = $publicDir . ltrim($currentUser->profile_picture, '/');
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
+
+            $this->alumniModel->updateProfilePicture($userId, null);
+            $_SESSION['profile_success'] = 'Profile picture removed.';
+        } catch (Exception $e) {
+            error_log('Delete profile picture error: ' . $e->getMessage());
+            $_SESSION['profile_error'] = 'Failed to remove profile picture.';
+        }
+
+        header('Location: ' . BASE_URL . '/aeditprofile');
+        exit();
     }
 }

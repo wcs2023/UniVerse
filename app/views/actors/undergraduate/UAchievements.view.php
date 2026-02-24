@@ -17,7 +17,7 @@
                 <?php 
                 $profilePicture = !empty($data['user']['profile_picture']) 
                     ? $data['user']['profile_picture'] 
-                    : '/assets/images/default-avatar.png';
+                    : '/assets/images/default-avatar.svg';
                 ?>
                 <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
                      alt="Profile Photo"
@@ -91,10 +91,10 @@
                     </div>
                     <?php endif; ?>
                     <div class="achievement-actions">
-                        <button class="edit-btn" onclick="editAchievement(<?= $achievement['achievement_id'] ?>)">✏️ Edit</button>
-                        <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">🗑️ Delete</button>
+                        <button class="edit-btn" onclick="editAchievement(<?= $achievement['achievement_id'] ?>)">Edit</button>
+                        <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">Delete</button>
                         <?php if (!empty($achievement['certificate_url'])): ?>
-                        <a href="<?= htmlspecialchars($achievement['certificate_url']) ?>" target="_blank" class="view-link">🔗 View Certificate</a>
+                        <a href="<?= htmlspecialchars($achievement['certificate_url']) ?>" target="_blank" class="view-link">View Certificate</a>
                         <?php endif; ?>
                     </div>
                 </div>

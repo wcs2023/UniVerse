@@ -50,7 +50,7 @@ if (!defined('BASE_URL')) {
     <div class="container">
         <div class="form-card">
             <div class="form-header">
-                <h1 class="form-title">✍️ Create New Article</h1>
+                <h1 class="form-title">Create New Article</h1>
                 <a href="<?= BASE_URL ?>/aarticles" class="btn-back">
                     ← Back to Articles
                 </a>
