@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_style.css">
+</head>
 <?php
     $title = "School Leavers' Home";
     include_once __DIR__ . '/includes/header2.view.php';

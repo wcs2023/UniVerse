@@ -248,7 +248,7 @@
         }
     </style>
 </head>
-<body>
+<body style="margin-top: 7rem;">
     <?php include 'Unavigation.view.php'; ?>
 
     <div class="job-details-container">
@@ -262,7 +262,7 @@
 
                 <div class="job-meta-grid">
                     <div class="meta-box">
-                        <span class="meta-icon-large">Location</span>
+                        <!-- <span class="meta-icon-large">📍</span> -->
                         <div class="meta-content">
                             <h4>Location</h4>
                             <p><?= htmlspecialchars($data['job']['location'] ?? 'Remote') ?></p>
@@ -270,7 +270,7 @@
                     </div>
 
                     <div class="meta-box">
-                        <span class="meta-icon-large">Type</span>
+                        <!-- <span class="meta-icon-large">💼</span> -->
                         <div class="meta-content">
                             <h4>Job Type</h4>
                             <p><?= ucfirst(str_replace('-', ' ', $data['job']['job_type'])) ?></p>
@@ -278,7 +278,7 @@
                     </div>
 
                     <div class="meta-box">
-                        <span class="meta-icon-large">Level</span>
+                        <!-- <span class="meta-icon-large">📊</span> -->
                         <div class="meta-content">
                             <h4>Experience Level</h4>
                             <p><?= ucfirst($data['job']['experience_level']) ?> Level</p>
@@ -286,7 +286,7 @@
                     </div>
 
                     <div class="meta-box">
-                        <span class="meta-icon-large">Work</span>
+                        <!-- <span class="meta-icon-large">🏢</span> -->
                         <div class="meta-content">
                             <h4>Work Arrangement</h4>
                             <p><?= ucfirst($data['job']['work_arrangement'] ?? 'Onsite') ?></p>
@@ -314,7 +314,7 @@
 
             <!-- Job Description -->
             <div class="section">
-                <h2 class="section-title">Job Description</h2>
+                <h2 class="section-title"> Job Description</h2>
                 <div class="section-content">
                     <p><?= nl2br(htmlspecialchars($data['job']['description'])) ?></p>
                 </div>
@@ -323,7 +323,7 @@
             <!-- Responsibilities -->
             <?php if ($data['job']['responsibilities']): ?>
                 <div class="section">
-                    <h2 class="section-title">Responsibilities</h2>
+                    <h2 class="section-title"> Responsibilities</h2>
                     <div class="section-content">
                         <?php
                         $responsibilities = explode("\n", $data['job']['responsibilities']);
@@ -342,7 +342,7 @@
             <!-- Requirements -->
             <?php if ($data['job']['requirements']): ?>
                 <div class="section">
-                    <h2 class="section-title">Requirements</h2>
+                    <h2 class="section-title"> Requirements</h2>
                     <div class="section-content">
                         <?php
                         $requirements = explode("\n", $data['job']['requirements']);
@@ -398,7 +398,15 @@
             <div class="apply-section">
                 <h3>Interested in this opportunity?</h3>
                 <p>Submit your application and take the next step in your career journey!</p>
-                <a href="<?= BASE_URL ?>/ujobs/<?= $data['job']['job_id'] ?>" class="apply-btn">Apply Now</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php if (isset($data['hasApplied']) && $data['hasApplied']): ?>
+                        <span style="background: #d4edda; color: #155724; padding: 1rem 2rem; border-radius: 50px; font-weight: 600;">✓ You have already applied for this position</span>
+                    <?php else: ?>
+                        <a href="<?= BASE_URL ?>/ujobs/apply/<?= $data['job']['job_id'] ?>" class="apply-btn">Apply Now →</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="<?= BASE_URL ?>/login" class="apply-btn">Login to Apply</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

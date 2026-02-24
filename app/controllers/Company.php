@@ -261,6 +261,34 @@ class Company extends Controller
         }
         exit;
     }
+
+    /**
+     * Get Application Details (AJAX)
+     */
+    public function getApplicationDetails($applicationId = null)
+    {
+        header('Content-Type: application/json');
+        
+        if (!$applicationId) {
+            echo json_encode(['success' => false, 'message' => 'Application ID not provided']);
+            exit;
+        }
+        
+        $companyId = $_SESSION['user_id'];
+        
+        // Get application details
+        $application = $this->applicationModel->getApplicationById($applicationId);
+        
+        if ($application && $application['company_id'] == $companyId) {
+            echo json_encode([
+                'success' => true,
+                'application' => $application
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Application not found or access denied']);
+        }
+        exit;
+    }
     
     /**
      * Update Job Status (AJAX)
@@ -417,6 +445,53 @@ class Company extends Controller
                 'contact_phone' => trim($_POST['contact_phone'] ?? '')
             ];
             
+            // Handle profile picture upload
+            if (isset($_FILES['profilePicture']) && $_FILES['profilePicture']['size'] > 0) {
+                $file = $_FILES['profilePicture'];
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+                $max_size = 5 * 1024 * 1024; // 5MB
+                
+                if (!in_array($file['type'], $allowed_types)) {
+                    $_SESSION['error'] = 'Only JPG, PNG, and GIF images are allowed';
+                    $this->view('actors/company/profile', ['user' => $user, 'profile' => $profile]);
+                    return;
+                }
+                
+                if ($file['size'] > $max_size) {
+                    $_SESSION['error'] = 'File size cannot exceed 5MB';
+                    $this->view('actors/company/profile', ['user' => $user, 'profile' => $profile]);
+                    return;
+                }
+                
+                // Create upload directory if it doesn't exist
+                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/company_profiles/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                
+                // Generate unique filename
+                $file_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $filename = 'company_' . $companyId . '_' . time() . '.' . $file_extension;
+                $upload_path = $upload_dir . $filename;
+                
+                // Delete old profile picture if exists
+                if ($profile && $profile['logo_url']) {
+                    $old_file = $_SERVER['DOCUMENT_ROOT'] . '/' . $profile['logo_url'];
+                    if (file_exists($old_file)) {
+                        unlink($old_file);
+                    }
+                }
+                
+                // Move uploaded file
+                if (move_uploaded_file($file['tmp_name'], $upload_path)) {
+                    $data['logo_url'] = 'public/uploads/company_profiles/' . $filename;
+                } else {
+                    $_SESSION['error'] = 'Failed to upload image';
+                    $this->view('actors/company/profile', ['user' => $user, 'profile' => $profile]);
+                    return;
+                }
+            }
+            
             // Validate phone number if provided (Sri Lankan format)
             if (!empty($data['contact_phone']) && !preg_match('/^\+94\d{9}$/', $data['contact_phone'])) {
                 $_SESSION['error'] = 'Contact phone must be in format +94xxxxxxxxx (e.g., +94771234567)';
@@ -447,4 +522,3 @@ class Company extends Controller
         ]);
     }
 }
-

@@ -382,6 +382,6 @@ if (!defined('APPROOT')) {
 
         // Close modal handled globally by mentorship.js
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 </body>
 </html>

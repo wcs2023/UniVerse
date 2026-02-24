@@ -17,33 +17,48 @@ if (!defined('BASE_URL')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Mentorships - UniVerse</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/umentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <script>
         window.BASE_URL = '<?= BASE_URL ?>';
         window.USER_TYPE = 'undergraduate';
     </script>
-    <style>
-        body { padding-top: 80px; background-color: #a78bfa45 !important; }
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-        }
-    </style>
 </head>
 
 <body>
     <?php
-    // Include navigation
-    $navFile = APPROOT . '/views/actors/undergraduate/Unavigation.view.php';
+    $navFile = __DIR__ . '/../actors/undergraduate/unavigation.view.php';
+
     if (file_exists($navFile)) {
         include $navFile;
     }
     ?>
 
     <main id="main-content" role="main">
-    <div class="ms-container">
+    <!-- Hero Banner -->
+    <div class="mentorship-hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">My Mentorship Journey</h1>
+            <!-- Quick Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['upcoming_bookings'] ?? []) ?></span>
+                    <span class="stat-label">Upcoming</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['completed_sessions'] ?? []) ?></span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
             <div class="ms-success-message">
@@ -403,7 +418,7 @@ if (!defined('BASE_URL')) {
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
     </main>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>

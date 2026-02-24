@@ -17,8 +17,10 @@ if (!defined('BASE_URL')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Mentors - UniVerse</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <!-- <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css"> -->
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
+    
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <script>
         window.BASE_URL = '<?= BASE_URL ?>';
@@ -33,7 +35,7 @@ if (!defined('BASE_URL')) {
     </style>
 </head>
 
-<body>
+<body style="margin-top: 2rem;">
     <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/undergraduate/Unavigation.view.php';
@@ -44,7 +46,7 @@ if (!defined('BASE_URL')) {
 
     <div class="ms-container">
         <!-- Breadcrumb -->
-        <nav class="ms-breadcrumb" aria-label="Breadcrumb">
+        <!-- <div class="breadcrumb">
             <a href="<?= BASE_URL ?>/umentorships">My Mentorships</a> › Explore Mentors
         </nav>
         
@@ -304,7 +306,7 @@ if (!defined('BASE_URL')) {
 
         // Close modal handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_PATH ?>/js/mentorship.js"></script>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>

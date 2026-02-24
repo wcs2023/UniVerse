@@ -12,7 +12,7 @@
         }
 
         .jobs-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 2rem auto;
             padding: 0 2rem;
         }
@@ -127,6 +127,33 @@
             color: var(--white);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
+        }
+
+        .my-apps-btn {
+            background: var(--secondary-purple);
+            color: var(--white);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            margin-right: auto;
+        }
+
+        .my-apps-btn:hover {
+            background: var(--dark-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .my-apps-btn::before {
+            content: "📋 ";
+            margin-right: 0.5rem;
         }
 
         /* Jobs Grid */
@@ -370,6 +397,7 @@
                 </div>
 
                 <div class="filter-buttons">
+                    <a href="<?= BASE_URL ?>/ujobs/myApplications" class="my-apps-btn">My Applications</a>
                     <a href="<?= BASE_URL ?>/ujobs" class="clear-btn">Clear Filters</a>
                     <button type="submit" class="filter-btn">Apply Filters</button>
                 </div>
@@ -380,7 +408,7 @@
         <?php if (!empty($data['jobs'])): ?>
             <div class="jobs-grid">
                 <?php foreach ($data['jobs'] as $job): ?>
-                    <div class="job-card" onclick="window.location.href='<?= BASE_URL ?>/ujobs/view/<?= $job['job_id'] ?>'">
+                    <div class="job-card" onclick="window.location.href='<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>'">
                         <div class="job-card-header">
                             <span class="company-name"><?= htmlspecialchars($job['company_name'] ?? 'Company Name') ?></span>
                             <h3 class="job-title"><?= htmlspecialchars($job['title']) ?></h3>
@@ -389,23 +417,29 @@
                         <div class="job-meta">
                             <span class="meta-item">
                                 <span class="meta-icon">Location:</span>
-                                <?= htmlspecialchars($job['location'] ?? 'Remote') ?>
+                                <b>
+                                    <?= htmlspecialchars($job['location'] ?? 'Remote') ?>
+                                </b>
                             </span>
-                            <span class="meta-item">
+                            <!-- <span class="meta-item">
                                 <span class="meta-icon">Type:</span>
-                                <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
-                            </span>
+                                <b>
+                                    <?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?>
+                                </b>
+                            </span> -->
                             <span class="meta-item">
-                                <span class="meta-icon">Level:</span>
-                                <?= ucfirst($job['experience_level']) ?> Level
+                                <span class="meta-icon">Experience:</span>
+                                <b>
+                                    <?= ucfirst($job['experience_level']) ?> Level
+                                </b>
                             </span>
                         </div>
 
                         <div class="job-tags">
-                            <span class="job-tag"><?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?></span>
-                            <span class="job-tag"><?= ucfirst($job['work_arrangement'] ?? 'onsite') ?></span>
+                            <!-- <span class="job-tag"><?= ucfirst(str_replace('-', ' ', $job['job_type'])) ?></span> -->
+                            <!-- <span class="job-tag"><?= ucfirst($job['work_arrangement'] ?? 'onsite') ?></span> -->
                             <?php if ($job['application_deadline'] && strtotime($job['application_deadline']) > time()): ?>
-                                <span class="job-tag">Deadline: <?= date('M d', strtotime($job['application_deadline'])) ?></span>
+                                <span class="job-tag">Application deadline: <?= date('M d', strtotime($job['application_deadline'])) ?></span>
                             <?php endif; ?>
                         </div>
 
@@ -421,7 +455,7 @@
                             <?php else: ?>
                                 <span class="salary-range">Competitive Salary</span>
                             <?php endif; ?>
-                            <a href="<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>" class="view-btn" onclick="event.stopPropagation()">View Details →</a>
+                            <a href="<?= BASE_URL ?>/ujobs/viewDetails/<?= $job['job_id'] ?>" class="view-btn" onclick="event.stopPropagation()">View Details</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
