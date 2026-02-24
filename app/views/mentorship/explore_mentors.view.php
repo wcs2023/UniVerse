@@ -45,11 +45,7 @@ if (!defined('BASE_URL')) {
     ?>
 
     <div class="ms-container">
-        <!-- Breadcrumb -->
-        <!-- <div class="breadcrumb">
-            <a href="<?= BASE_URL ?>/umentorships">My Mentorships</a> › Explore Mentors
-        </nav>
-        
+        <!-- Page Header -->
         <div class="ms-page-header" style="display: block;">
             <h1 class="ms-page-title">Explore Mentors</h1>
             <p style="color: #4b5563; margin-top: 0.5rem;">Find and book sessions with experienced alumni mentors</p>
@@ -79,7 +75,7 @@ if (!defined('BASE_URL')) {
                             <img src="<?= !empty($mentor['profile_picture']) ? BASE_URL . htmlspecialchars($mentor['profile_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                 alt="<?= htmlspecialchars($mentor['name'] ?? 'Mentor') ?>"
                                 class="ms-mentor-avatar"
-                                onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
                             <h3 class="ms-mentor-name"><?= htmlspecialchars($mentor['name'] ?? 'Anonymous Mentor') ?></h3>
                             <p class="ms-mentor-title"><?= htmlspecialchars($mentor['current_job_title'] ?? 'Professional') ?></p>
                         </div>
@@ -142,7 +138,7 @@ if (!defined('BASE_URL')) {
             </div>
             <div class="ms-modal-body">
                 <div id="mentorInfo" style="text-align: center; margin-bottom: 1.5rem;">
-                    <img id="modalMentorAvatar" src="" alt="Mentor profile picture" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 0.5rem;" onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                    <img id="modalMentorAvatar" src="" alt="Mentor profile picture" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 0.5rem;" onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
                     <h4 id="modalMentorName" style="margin: 0;"></h4>
                     <p id="modalMentorTitle" style="color: #4b5563; margin: 0.25rem 0;"></p>
                 </div>
@@ -306,7 +302,7 @@ if (!defined('BASE_URL')) {
 
         // Close modal handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= BASE_PATH ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>

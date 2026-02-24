@@ -883,6 +883,196 @@ body {
     border-radius: 4px;
 }
 
+/* ========================================
+   STATUS DOTS
+   ======================================== */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success-color);
+}
+
+.status-dot--active {
+    background: var(--success-color);
+    animation: pulse 1.5s infinite;
+}
+
+.status-dot--live {
+    background: #dc2626;
+    animation: pulse 1s infinite;
+}
+
+/* ========================================
+   BOOKING INFO & DETAILS
+   ======================================== */
+.booking-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.booking-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 0.25rem 0;
+}
+
+.booking-subtitle {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   COUNTDOWN
+   ======================================== */
+.countdown {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.countdown--live {
+    color: #dc2626;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.countdown--soon {
+    color: #b45309;
+    font-weight: 600;
+}
+
+.countdown--waiting {
+    color: var(--text-medium);
+}
+
+/* ========================================
+   FEEDBACK LAYOUT
+   ======================================== */
+.feedback-layout {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.feedback-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.feedback-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.feedback-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.feedback-info p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   COMPLETED SESSIONS
+   ======================================== */
+.completed-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.completed-item:last-child {
+    border-bottom: none;
+}
+
+.completed-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.completed-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.completed-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1rem;
+}
+
+.completed-date {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+.rating-stars {
+    color: #f59e0b;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   MODAL VARIANTS
+   ======================================== */
+.modal-header--danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+}
+
+.modal-header--warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.btn-danger {
+    background: var(--error-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+}
+
+.info-strip--muted {
+    opacity: 0.7;
+    cursor: default !important;
+}
+
 /* Text Areas */
 .feedback-textarea,
 .cancel-reason-input {

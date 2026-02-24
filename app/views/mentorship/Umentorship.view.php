@@ -61,8 +61,8 @@ if (!defined('BASE_URL')) {
     <div class="container">
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
-            <div class="ms-success-message">
-                <span class="ms-status-dot ms-status-dot--active"></span>
+            <div class="success-message">
+                <span class="status-dot status-dot--active"></span>
                 <span>
                     <?php 
                     switch($_GET['success']) {
@@ -84,16 +84,16 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- Page Header -->
-        <div class="ms-page-header">
-            <h1 class="ms-page-title">My Mentorships</h1>
-            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn-explore">
+        <div class="page-header">
+            <h1 class="page-title">My Mentorships</h1>
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-explore">
                 Explore Mentors
             </a>
         </div>
 
         <!-- Upcoming Bookings Section -->
-        <div class="ms-section-card">
-            <h2 class="ms-card-title">Upcoming Sessions</h2>
+        <div class="section-card">
+            <h2 class="section-title">Upcoming Sessions</h2>
 
             <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
                 <?php foreach ($data['upcoming_bookings'] as $booking): ?>
@@ -105,38 +105,38 @@ if (!defined('BASE_URL')) {
                         $canJoin = $minutesUntil <= 15 && $minutesUntil > -120;
                         $isActive = $minutesUntil <= 0 && $minutesUntil > -120;
                     ?>
-                    <div class="ms-booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
-                        <div class="ms-booking-header">
+                    <div class="booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
+                        <div class="booking-header">
                             <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                 alt="<?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?>" 
-                                class="ms-booking-avatar"
-                                onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
-                            <div class="ms-booking-info">
-                                <h4 class="ms-booking-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
-                                <p class="ms-booking-subtitle">
+                                class="booking-avatar"
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                            <div class="booking-info">
+                                <h4 class="booking-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
+                                <p class="booking-subtitle">
                                     <?= htmlspecialchars($booking['mentor_title'] ?? '') ?>
                                     <?php if (!empty($booking['mentor_company'])): ?>
                                         at <?= htmlspecialchars($booking['mentor_company']) ?>
                                     <?php endif; ?>
                                 </p>
                             </div>
-                            <span class="ms-badge <?= $isActive ? 'ms-badge-active' : ($canJoin ? 'ms-badge-soon' : 'ms-badge-upcoming') ?>" role="status">
-                                <?= $isActive ? '<span class="ms-status-dot ms-status-dot--live" aria-hidden="true"></span> LIVE' : ($canJoin ? 'Starting Soon' : 'Confirmed') ?>
+                            <span class="session-status-badge <?= $isActive ? 'badge-active' : ($canJoin ? 'badge-soon' : 'badge-upcoming') ?>" role="status">
+                                <?= $isActive ? '<span class="status-dot status-dot--live" aria-hidden="true"></span> LIVE' : ($canJoin ? 'Starting Soon' : 'Confirmed') ?>
                             </span>
                         </div>
                         
-                        <div class="ms-booking-datetime">
+                        <div class="booking-datetime">
                             <span aria-hidden="true"></span> <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
                         </div>
                         
                         <!-- Countdown -->
-                        <div class="ms-countdown" aria-live="polite" role="timer">
+                        <div class="countdown" aria-live="polite" role="timer">
                             <?php if ($isActive): ?>
-                                <span class="ms-countdown--live"><span class="ms-status-dot ms-status-dot--active"></span> Session In Progress - Join Now!</span>
+                                <span class="countdown--live"><span class="status-dot status-dot--active"></span> Session In Progress - Join Now!</span>
                             <?php elseif ($canJoin): ?>
-                                <span class="ms-countdown--soon">Session starting very soon!</span>
+                                <span class="countdown--soon">Session starting very soon!</span>
                             <?php else: ?>
-                                <span class="ms-countdown--waiting">
+                                <span class="countdown--waiting">
                                     Starts in: <strong>
                                     <?php
                                         if ($diff->d > 0) echo $diff->d . 'd ' . $diff->h . 'h';
@@ -149,31 +149,31 @@ if (!defined('BASE_URL')) {
                         </div>
 
                         <!-- Actions -->
-                        <div class="ms-booking-actions">
+                        <div class="booking-actions">
                             <?php if (!empty($booking['meeting_link'])): ?>
-                                <button class="ms-btn join-meeting-btn <?= $canJoin ? 'ms-btn-join-active' : 'ms-btn-join-disabled' ?>" 
+                                <button class="btn join-meeting-btn <?= $canJoin ? 'btn-join-active' : 'btn-join-disabled' ?>" 
                                         <?= !$canJoin ? 'disabled' : '' ?>
                                         onclick="<?= $canJoin ? "window.open('" . htmlspecialchars($booking['meeting_link']) . "', '_blank')" : '' ?>">
                                     <?= $canJoin ? 'Join Meeting Now' : 'Wait for Session Time' ?>
                                 </button>
                             <?php else: ?>
-                                <span class="ms-btn ms-btn-secondary ms-info-strip--muted">
+                                <span class="btn btn-secondary info-strip--muted">
                                     Meeting link unavailable
                                 </span>
                             <?php endif; ?>
                             
-                            <button class="ms-btn ms-btn-secondary" onclick="openCancelModal(<?= $booking['booking_id'] ?>)">
+                            <button class="btn btn-secondary" onclick="openCancelModal(<?= $booking['booking_id'] ?>)">
                                 Cancel Session
                             </button>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="ms-empty-state">
-                    <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                <div class="empty-state">
+                    <div class="empty-icon">--</div>
                     <h3>No Upcoming Sessions</h3>
                     <p>You don't have any booked mentorship sessions yet. Explore available mentors and book a session!</p>
-                    <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn ms-btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
+                    <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
                         Find a Mentor
                     </a>
                 </div>
@@ -182,25 +182,25 @@ if (!defined('BASE_URL')) {
 
         <!-- Sessions Needing Feedback -->
         <?php if (isset($data['needs_feedback']) && count($data['needs_feedback']) > 0): ?>
-            <div class="ms-section-card" style="border: 2px solid #f59e0b;">
-                <h2 class="ms-card-title">Leave Feedback</h2>
+            <div class="section-card" style="border: 2px solid #f59e0b;">
+                <h2 class="section-title">Leave Feedback</h2>
                 <p style="color: #6b7280; margin-bottom: 1rem;">Help other students by sharing your experience!</p>
 
                 <?php foreach ($data['needs_feedback'] as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
-                    <div class="ms-feedback-card">
-                            <div class="ms-feedback-layout">
+                    <div class="feedback-card">
+                            <div class="feedback-layout">
                             <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                 alt="<?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?>"
-                                class="ms-feedback-avatar"
-                                onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
-                            <div class="ms-feedback-info">
+                                class="feedback-avatar"
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                            <div class="feedback-info">
                                 <h4><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
                                 <p>
                                     <?= $sessionDate->format('F j, Y') ?>
                                 </p>
                             </div>
-                            <button class="ms-btn ms-btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
+                            <button class="btn btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
                                 Rate Session
                             </button>
                         </div>
@@ -216,20 +216,20 @@ if (!defined('BASE_URL')) {
         });
         ?>
         <?php if (count($reviewedSessions) > 0): ?>
-            <div class="ms-section-card">
-                <h2 class="ms-card-title">Past Sessions</h2>
+            <div class="section-card">
+                <h2 class="section-title">Past Sessions</h2>
 
                 <?php foreach (array_slice($reviewedSessions, 0, 5) as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
-                    <div class="ms-completed-item">
+                    <div class="completed-item">
                         <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
-                            alt="Mentor" class="ms-completed-avatar ms-completed-avatar--lg"
-                            onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
-                        <div class="ms-completed-info">
-                            <div class="ms-completed-name"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></div>
-                            <div class="ms-completed-date"><?= $sessionDate->format('M j, Y') ?></div>
+                            alt="Mentor" class="completed-avatar"
+                            onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                        <div class="completed-info">
+                            <div class="completed-name"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></div>
+                            <div class="completed-date"><?= $sessionDate->format('M j, Y') ?></div>
                         </div>
-                        <div class="ms-rating-stars">
+                        <div class="rating-stars">
                             <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
                         </div>
                     </div>
@@ -238,71 +238,72 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- CTA Section -->
-        <div class="ms-cta-section">
+        <div class="cta-section">
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
-            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="ms-btn" style="text-decoration: none;">
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
                 Explore Mentors
             </a>
         </div>
     </div>
+    </main>
 
     <!-- Cancel Modal -->
-    <div id="cancelModal" class="ms-modal">
-        <div class="ms-modal-dialog">
-            <div class="ms-modal-header ms-modal-header--danger">
+    <div id="cancelModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-header modal-header--danger">
                 <h3 style="margin: 0;">Cancel Session</h3>
-                <button class="ms-close-modal" onclick="closeCancelModal()" aria-label="Close cancel session dialog"><span aria-hidden="true">&times;</span></button>
+                <button class="close-modal" onclick="closeCancelModal()" aria-label="Close cancel session dialog"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="ms-modal-body">
+            <div class="modal-body">
                 <input type="hidden" id="cancelBookingId">
                 <p>Are you sure you want to cancel this session? The mentor will be notified.</p>
                 <div style="margin-top: 1rem;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Reason for cancellation (required):</label>
-                    <textarea id="cancelReason" class="ms-textarea ms-textarea--danger" placeholder="Please provide a reason..." required></textarea>
+                    <textarea id="cancelReason" class="cancel-reason-input" placeholder="Please provide a reason..." required></textarea>
                 </div>
             </div>
-            <div class="ms-modal-footer">
-                <button class="ms-btn ms-btn-secondary" onclick="closeCancelModal()">Keep Session</button>
-                <button class="ms-btn ms-btn-danger" onclick="confirmCancel()">Cancel Session</button>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCancelModal()">Keep Session</button>
+                <button class="btn btn-danger" onclick="confirmCancel()">Cancel Session</button>
             </div>
         </div>
     </div>
 
     <!-- Feedback Modal -->
-    <div id="feedbackModal" class="ms-modal">
-        <div class="ms-modal-dialog">
-            <div class="ms-modal-header ms-modal-header--warning">
+    <div id="feedbackModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-header modal-header--warning">
                 <h3 style="margin: 0;">Rate Your Session</h3>
-                <button class="ms-close-modal" onclick="closeFeedbackModal()" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
+                <button class="close-modal" onclick="closeFeedbackModal()" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="ms-modal-body">
+            <div class="modal-body">
                 <input type="hidden" id="feedbackBookingId">
                 
                 <p style="text-align: center;">How was your session with <strong id="feedbackMentorName"></strong>?</p>
                 
                 <!-- Star Rating -->
-                <div class="ms-star-rating" role="group" aria-label="Rate your session from 1 to 5 stars">
-                    <button type="button" class="ms-star-btn" onclick="selectRating(1)" aria-label="Rate 1 star">☆</button>
-                    <button type="button" class="ms-star-btn" onclick="selectRating(2)" aria-label="Rate 2 stars">☆</button>
-                    <button type="button" class="ms-star-btn" onclick="selectRating(3)" aria-label="Rate 3 stars">☆</button>
-                    <button type="button" class="ms-star-btn" onclick="selectRating(4)" aria-label="Rate 4 stars">☆</button>
-                    <button type="button" class="ms-star-btn" onclick="selectRating(5)" aria-label="Rate 5 stars">☆</button>
+                <div class="star-rating" role="group" aria-label="Rate your session from 1 to 5 stars">
+                    <button type="button" class="star-btn" onclick="selectRating(1)" aria-label="Rate 1 star">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(2)" aria-label="Rate 2 stars">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(3)" aria-label="Rate 3 stars">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(4)" aria-label="Rate 4 stars">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(5)" aria-label="Rate 5 stars">☆</button>
                 </div>
                 <input type="hidden" id="feedbackRating" value="0">
                 
                 <!-- Written Review -->
                 <div style="margin-top: 1rem;">
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Your Review (Optional)</label>
-                    <textarea id="feedbackText" class="ms-textarea" placeholder="Share your experience..." maxlength="500"></textarea>
+                    <textarea id="feedbackText" class="feedback-textarea" placeholder="Share your experience..." maxlength="500"></textarea>
                     <p style="text-align: right; color: #9ca3af; font-size: 0.75rem; margin-top: 0.25rem;">
                         <span id="charCount">0</span>/500
                     </p>
                 </div>
             </div>
-            <div class="ms-modal-footer">
-                <button class="ms-btn ms-btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
-                <button class="ms-btn ms-btn-warning" onclick="submitFeedback()">
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
+                <button class="btn btn-warning" onclick="submitFeedback()">
                     Submit Feedback
                 </button>
             </div>
@@ -370,7 +371,7 @@ if (!defined('BASE_URL')) {
         }
 
         function updateStars() {
-            const stars = document.querySelectorAll('.ms-star-btn');
+            const stars = document.querySelectorAll('.star-btn');
             stars.forEach((star, index) => {
                 if (index < currentRating) {
                     star.classList.add('active');
@@ -419,7 +420,6 @@ if (!defined('BASE_URL')) {
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
     <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
-    </main>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
