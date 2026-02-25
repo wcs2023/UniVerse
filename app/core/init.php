@@ -2,6 +2,9 @@
 // Load configuration FIRST (before session, before anything else)
 require_once __DIR__ . '/config.php';
 
+// Set timezone to Sri Lanka Standard Time (UTC+5:30)
+date_default_timezone_set('Asia/Colombo');
+
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
