@@ -32,6 +32,26 @@ if (!defined('BASE_URL')) {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
+        .ms-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            padding: 0.45rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 999px;
+            background: white;
+            color: #4b5563;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .ms-back-btn:hover {
+            border-color: #6b46c1;
+            color: #6b46c1;
+            background: #f5f3ff;
+        }
     </style>
 </head>
 
@@ -45,20 +65,17 @@ if (!defined('BASE_URL')) {
     ?>
 
     <div class="ms-container">
-        <!-- Breadcrumb -->
-        <!-- <div class="breadcrumb">
-            <a href="<?= BASE_URL ?>/umentorships">My Mentorships</a> › Explore Mentors
-        </div> -->
+        <a href="<?= BASE_URL ?>/umentorships" class="ms-back-btn">&#8592; Back</a>
 
-        <div class="page-header">
-            <h1 class="page-title">🧭 Explore Mentors</h1>
+        <div class="ms-page-header" style="display: block;">
+            <h1 class="ms-page-title"> Explore Mentors</h1>
             <p style="color: #4b5563; margin-top: 0.5rem;">Find and book sessions with experienced alumni mentors</p>
         </div>
 
         <!-- Filter Bar -->
         <div class="ms-filter-bar">
             <label for="searchInput" class="visually-hidden">Search mentors</label>
-            <input type="text" class="ms-search-input" id="searchInput" placeholder="🔍 Search by name, skills, company..." aria-label="Search mentors by name, skills, or company">
+            <input type="text" class="ms-search-input" id="searchInput" placeholder=" Search by name, skills, company..." aria-label="Search mentors by name, skills, or company">
             <label for="industryFilter" class="visually-hidden">Filter by industry</label>
             <select class="ms-filter-select" id="industryFilter" aria-label="Filter mentors by industry">
                 <option value="">All Industries</option>
@@ -109,7 +126,7 @@ if (!defined('BASE_URL')) {
                             <?php endif; ?>
                             
                             <div class="ms-availability-count">
-                                ✅ <?= $mentor['available_slots'] ?? 0 ?> slots available
+                                 <?= $mentor['available_slots'] ?? 0 ?> slots available
                             </div>
                             
                             <button class="ms-btn ms-btn-view" onclick="viewMentor(<?= $mentor['mentor_id'] ?>)">
@@ -119,8 +136,8 @@ if (!defined('BASE_URL')) {
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="ms-empty-state">
-                    <div class="ms-empty-icon">😕</div>
+                <div class="empty-state">
+                    <div class="empty-icon"></div>
                     <h3>No Mentors Available</h3>
                     <p>There are currently no mentors with available slots. Please check back later!</p>
                 </div>
@@ -301,7 +318,7 @@ if (!defined('BASE_URL')) {
 
         // Close modal handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= BASE_PATH ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>

@@ -455,6 +455,7 @@
     color: #6b7280;
     background-color: #f9fafb;
     border-radius: 10px;
+    grid-column: 1 / -1;
 }
 
 .empty-icon {
@@ -474,7 +475,8 @@
 /* ========================================
    MODALS
    ======================================== */
-.modal {
+.modal,
+.ms-modal {
     display: none;
     position: fixed;
     top: 0;

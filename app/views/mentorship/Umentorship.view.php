@@ -131,9 +131,9 @@ if (!defined('BASE_URL')) {
                         <!-- Countdown -->
                         <div class="ms-countdown" aria-live="polite" role="timer">
                             <?php if ($isActive): ?>
-                                <span class="ms-countdown--live">🟢 Session In Progress - Join Now!</span>
+                                <span class="ms-countdown--live"> Session In Progress - Join Now!</span>
                             <?php elseif ($canJoin): ?>
-                                <span class="ms-countdown--soon">⏰ Session starting very soon!</span>
+                                <span class="ms-countdown--soon"> Session starting very soon!</span>
                             <?php else: ?>
                                 <span class="ms-countdown--waiting">
                                     Starts in: <strong>
@@ -157,7 +157,7 @@ if (!defined('BASE_URL')) {
                                 </button>
                             <?php else: ?>
                                 <span class="ms-btn ms-btn-secondary" style="cursor: not-allowed; opacity: 0.7;">
-                                    ⚠️ Meeting link unavailable
+                                    Meeting link unavailable
                                 </span>
                             <?php endif; ?>
                             
@@ -215,7 +215,7 @@ if (!defined('BASE_URL')) {
         ?>
         <?php if (count($reviewedSessions) > 0): ?>
             <div class="ms-section-card">
-                <h2 class="ms-card-title">✅ Past Sessions</h2>
+                <h2 class="ms-card-title"> Past Sessions</h2>
 
                 <?php foreach (array_slice($reviewedSessions, 0, 5) as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
@@ -235,7 +235,7 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- CTA Section -->
-        <div class="ms-cta-section">
+        <div class="cta-section">
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
@@ -270,7 +270,7 @@ if (!defined('BASE_URL')) {
     <div id="feedbackModal" class="ms-modal">
         <div class="ms-modal-dialog">
             <div class="ms-modal-header ms-modal-header--warning">
-                <h3 style="margin: 0;">⭐ Rate Your Session</h3>
+                <h3 style="margin: 0;"> Rate Your Session</h3>
                 <button class="ms-close-modal" onclick="closeFeedbackModal()" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="ms-modal-body">
@@ -300,7 +300,7 @@ if (!defined('BASE_URL')) {
             <div class="ms-modal-footer">
                 <button class="ms-btn ms-btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
                 <button class="ms-btn ms-btn-warning" onclick="submitFeedback()">
-                    ⭐ Submit Feedback
+                     Submit Feedback
                 </button>
             </div>
         </div>
