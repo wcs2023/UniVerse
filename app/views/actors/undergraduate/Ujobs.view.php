@@ -462,7 +462,7 @@
             </div>
         <?php else: ?>
             <div class="empty-state">
-                <div class="empty-state-icon">💼</div>
+                <div class="empty-state-icon">--</div>
                 <h3>No Jobs Found</h3>
                 <p>Try adjusting your filters to see more opportunities.</p>
             </div>

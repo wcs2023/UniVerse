@@ -108,11 +108,11 @@ class AlumniModel extends Model
                         u.user_id, u.username, u.email, u.first_name, u.last_name,
                         u.date_of_birth, u.gender, u.phone, u.profile_picture,
                         u.user_type, u.account_status, u.created_at, u.last_login,
-                        u.password_hash as password,
+                        u.password_hash as `password`,
                         CONCAT(u.first_name, ' ', u.last_name) as full_name,
                         ap.profile_id, ap.university_name, ap.degree_program,
-                        ap.graduation_year, ap.current_job_title as current_role,
-                        ap.current_company as company, ap.linkedin_url,
+                        ap.graduation_year, ap.current_job_title as `current_role`,
+                        ap.current_company as `company`, ap.linkedin_url,
                         ap.github_url, ap.portfolio_url, ap.skills_experience as short_bio,
                         CASE WHEN m.is_active = 1 THEN 1 ELSE 0 END as available_for_mentorship
                       FROM users u
@@ -153,6 +153,8 @@ class AlumniModel extends Model
                       last_name = COALESCE(?, last_name),
                       email = COALESCE(?, email),
                       phone = COALESCE(?, phone),
+                      date_of_birth = COALESCE(?, date_of_birth),
+                      gender = COALESCE(?, gender),
                       updated_at = NOW()
                       WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
@@ -161,6 +163,8 @@ class AlumniModel extends Model
                 $data['last_name'] ?? null,
                 $data['email'] ?? null,
                 $data['phone'] ?? null,
+                $data['date_of_birth'] ?? null,
+                $data['gender'] ?? null,
                 $userId
             ]);
 

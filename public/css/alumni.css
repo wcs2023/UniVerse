@@ -3638,3 +3638,45 @@ html {
         gap: 0.25rem;
     }
 }
+
+/* ========================================
+   PROFILE PAGE UTILITY CLASSES
+   Replaces inline styles on Aprofile.view.php
+   ======================================== */
+.profile-bio-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+.profile-bio-section h3 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+.profile-bio-section p {
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+.quick-actions-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.profile-success-banner {
+    max-width: 900px;
+    margin: 1.5rem auto;
+    padding: 1rem 1.5rem;
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+}
+
+.profile-link {
+    color: var(--primary-purple);
+    text-decoration: none;
+}
+.profile-link:hover {
+    text-decoration: underline;
+}

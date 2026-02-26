@@ -18,7 +18,7 @@ $userData = [
     'company' => $user->company ?? '',
     'linkedin_url' => $user->linkedin_url ?? '',
     'short_bio' => $user->short_bio ?? '',
-    'profile_picture' => $user->profile_picture ?? '/assets/images/default-avatar.png',
+    'profile_picture' => $user->profile_picture ?? '/assets/images/default-avatar.svg',
     'available_for_mentorship' => $user->available_for_mentorship ?? false
 ];
 ?>
@@ -49,7 +49,7 @@ $userData = [
                 <?php
                 $profilePicture = !empty($userData['profile_picture'])
                     ? $userData['profile_picture']
-                    : '/assets/images/default-avatar.png';
+                    : '/assets/images/default-avatar.svg';
                 ?>
                 <img src="<?= BASE_URL ?><?= $profilePicture ?>" alt="Profile Photo"
                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">

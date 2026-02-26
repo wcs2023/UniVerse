@@ -16,14 +16,20 @@ class Aeditprofile extends Controller {
     }
     
     public function index() {
-        // Check if user is logged in as alumni
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'alumni') {
+        // Check if user is logged in as alumni (check both user_type and user_role for compatibility)
+        $userType = $_SESSION['user_type'] ?? $_SESSION['user_role'] ?? '';
+        if (!isset($_SESSION['user_id']) || $userType !== 'alumni') {
             header('Location: ' . BASE_URL . '/login');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleProfileUpdate();
+            // Route to delete action if the hidden field is set
+            if (isset($_POST['action']) && $_POST['action'] === 'delete_picture') {
+                $this->handleDeleteProfilePicture();
+            } else {
+                $this->handleProfileUpdate();
+            }
         } else {
             $this->showEditForm();
         }
@@ -34,6 +40,32 @@ class Aeditprofile extends Controller {
         
         // Get user data from database using AlumniModel
         $userData = $this->alumniModel->getUserById($userId);
+        
+        // If user data not found, show form with error instead of redirecting away
+        if (!$userData) {
+            error_log("Alumni edit profile: getUserById returned false for user_id: " . $userId);
+            // Create a minimal user object so the view doesn't crash
+            $userData = (object)[
+                'user_id' => $userId,
+                'first_name' => $_SESSION['first_name'] ?? '',
+                'last_name' => $_SESSION['last_name'] ?? '',
+                'email' => $_SESSION['email'] ?? '',
+                'phone' => '',
+                'date_of_birth' => '',
+                'gender' => '',
+                'profile_picture' => null,
+                'current_role' => '',
+                'company' => '',
+                'university_name' => '',
+                'degree_program' => '',
+                'graduation_year' => '',
+                'linkedin_url' => '',
+                'github_url' => '',
+                'portfolio_url' => '',
+                'short_bio' => '',
+                'available_for_mentorship' => false
+            ];
+        }
         
         // Prepare data for view
         $data = [
@@ -74,6 +106,8 @@ class Aeditprofile extends Controller {
                 'first_name' => $validatedData['first_name'] ?? null,
                 'last_name' => $validatedData['last_name'] ?? null,
                 'phone' => $validatedData['phone'] ?? null,
+                'date_of_birth' => $validatedData['date_of_birth'] ?? null,
+                'gender' => $validatedData['gender'] ?? null,
                 'current_role' => $validatedData['current_role'] ?? null,
                 'company' => $validatedData['company'] ?? null,
                 'university_name' => $validatedData['university_name'] ?? null,
@@ -172,9 +206,18 @@ class Aeditprofile extends Controller {
             mkdir($uploadDir, 0777, true);
         }
 
+        // Delete old profile picture if exists
+        $currentUser = $this->alumniModel->getUserById($userId);
+        if ($currentUser && !empty($currentUser->profile_picture)) {
+            $oldFile = $publicDir . ltrim($currentUser->profile_picture, '/');
+            if (file_exists($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+
         // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'alumni_profile_' . $userId . '_' . time() . '.' . $extension;
+        $filename = 'profile_' . $userId . '_' . time() . '.' . $extension;
         $uploadPath = $uploadDir . $filename;
 
         // Move uploaded file
@@ -185,5 +228,30 @@ class Aeditprofile extends Controller {
         } else {
             throw new Exception("Failed to upload profile picture");
         }
+    }
+
+    // BUG-001 FIX: Handle profile picture deletion
+    private function handleDeleteProfilePicture() {
+        try {
+            $userId = $_SESSION['user_id'];
+            $publicDir = dirname(dirname(__DIR__)) . '/public/';
+
+            $currentUser = $this->alumniModel->getUserById($userId);
+            if ($currentUser && !empty($currentUser->profile_picture)) {
+                $oldFile = $publicDir . ltrim($currentUser->profile_picture, '/');
+                if (file_exists($oldFile)) {
+                    unlink($oldFile);
+                }
+            }
+
+            $this->alumniModel->updateProfilePicture($userId, null);
+            $_SESSION['profile_success'] = 'Profile picture removed.';
+        } catch (Exception $e) {
+            error_log('Delete profile picture error: ' . $e->getMessage());
+            $_SESSION['profile_error'] = 'Failed to remove profile picture.';
+        }
+
+        header('Location: ' . BASE_URL . '/aeditprofile');
+        exit();
     }
 }

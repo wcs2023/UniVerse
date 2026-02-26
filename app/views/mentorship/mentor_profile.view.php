@@ -131,7 +131,7 @@ if (!defined('APPROOT')) {
             <?php 
             $profilePic = !empty($data['mentor']['profile_picture']) 
                 ? BASE_URL . $data['mentor']['profile_picture']
-                : BASE_URL . '/assets/images/default-avatar.png';
+                : BASE_URL . '/assets/images/default-avatar.svg';
             ?>
             <img src="<?= $profilePic ?>" 
                  alt="<?= htmlspecialchars($data['mentor']['full_name']) ?>"
@@ -183,7 +183,7 @@ if (!defined('APPROOT')) {
                                 Currently Unavailable
                             </button>
                         <?php else: ?>
-                            <button class="btn btn-primary" onclick="openRequestModal()">
+                            <button class="ms-btn ms-btn-primary" onclick="openRequestModal()">
                                 Send Mentorship Request
                             </button>
                         <?php endif; ?>
@@ -191,7 +191,7 @@ if (!defined('APPROOT')) {
                         <?php if (!empty($data['mentor']['linkedin_url'])): ?>
                             <a href="<?= htmlspecialchars($data['mentor']['linkedin_url']) ?>" 
                                target="_blank" 
-                               class="btn btn-secondary">
+                               class="ms-btn ms-btn-secondary">
                                 LinkedIn
                             </a>
                         <?php endif; ?>
@@ -240,7 +240,7 @@ if (!defined('APPROOT')) {
                     <div class="info-grid">
                         <?php if (!empty($data['mentor']['email'])): ?>
                             <div class="info-item">
-                                <span class="info-label">Email</span>
+                                <span class="info-label ms-icon-label ms-icon-label--email">Email</span>
                                 <span class="info-value">
                                     <a href="mailto:<?= htmlspecialchars($data['mentor']['email']) ?>">
                                         <?= htmlspecialchars($data['mentor']['email']) ?>
@@ -251,7 +251,7 @@ if (!defined('APPROOT')) {
 
                         <?php if (!empty($data['mentor']['linkedin_url'])): ?>
                             <div class="info-item">
-                                <span class="info-label"> LinkedIn</span>
+                                <span class="info-label ms-icon-label ms-icon-label--link">LinkedIn</span>
                                 <span class="info-value">
                                     <a href="<?= htmlspecialchars($data['mentor']['linkedin_url']) ?>" target="_blank">
                                         View Profile
@@ -262,7 +262,7 @@ if (!defined('APPROOT')) {
 
                         <?php if (!empty($data['mentor']['github_url'])): ?>
                             <div class="info-item">
-                                <span class="info-label"> GitHub</span>
+                                <span class="info-label ms-icon-label ms-icon-label--github">GitHub</span>
                                 <span class="info-value">
                                     <a href="<?= htmlspecialchars($data['mentor']['github_url']) ?>" target="_blank">
                                         View Profile
@@ -273,7 +273,7 @@ if (!defined('APPROOT')) {
 
                         <?php if (!empty($data['mentor']['portfolio_url'])): ?>
                             <div class="info-item">
-                                <span class="info-label"> Portfolio</span>
+                                <span class="info-label ms-icon-label ms-icon-label--web">Portfolio</span>
                                 <span class="info-value">
                                     <a href="<?= htmlspecialchars($data['mentor']['portfolio_url']) ?>" target="_blank">
                                         View Website
@@ -290,21 +290,21 @@ if (!defined('APPROOT')) {
                     <div class="info-grid">
                         <?php if (!empty($data['mentor']['university_name'])): ?>
                             <div class="info-item">
-                                <span class="info-label"> University</span>
+                                <span class="info-label ms-icon-label ms-icon-label--edu">University</span>
                                 <span class="info-value"><?= htmlspecialchars($data['mentor']['university_name']) ?></span>
                             </div>
                         <?php endif; ?>
 
                         <?php if (!empty($data['mentor']['degree_program'])): ?>
                             <div class="info-item">
-                                <span class="info-label"> Degree</span>
+                                <span class="info-label ms-icon-label ms-icon-label--degree">Degree</span>
                                 <span class="info-value"><?= htmlspecialchars($data['mentor']['degree_program']) ?></span>
                             </div>
                         <?php endif; ?>
 
                         <?php if (!empty($data['mentor']['graduation_year'])): ?>
                             <div class="info-item">
-                                <span class="info-label">Graduated</span>
+                                <span class="info-label ms-icon-label ms-icon-label--date">Graduated</span>
                                 <span class="info-value"><?= htmlspecialchars($data['mentor']['graduation_year']) ?></span>
                             </div>
                         <?php endif; ?>

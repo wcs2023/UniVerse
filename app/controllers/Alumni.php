@@ -60,15 +60,13 @@ class Alumni extends Controller
      */
     public function profile()
     {
-        // TODO: Add authentication check
-        /*
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'alumni') {
-            header('Location: ' . URLROOT . '/users/login');
+        // Require authentication
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . BASE_URL . '/login');
             exit;
         }
-        */
         
-        $userId = $_SESSION['user_id'] ?? 1; // Hardcoded for now
+        $userId = $_SESSION['user_id'];
         
         // Get user profile data from database
         $userData = $this->alumniModel->getUserById($userId);
@@ -90,7 +88,7 @@ class Alumni extends Controller
      */
     public function settings()
     {
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['user_id'];
         
         // Get user profile data from database
         $userData = $this->alumniModel->getUserById($userId);
@@ -118,7 +116,7 @@ class Alumni extends Controller
             exit;
         }
         
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['user_id'];
         
         try {
             $currentPassword = $_POST['current_password'] ?? '';
@@ -173,7 +171,7 @@ class Alumni extends Controller
             exit;
         }
         
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['user_id'];
         
         // Get JSON data
         $json = file_get_contents('php://input');
@@ -214,7 +212,7 @@ class Alumni extends Controller
             exit;
         }
         
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['user_id'];
         
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
@@ -254,7 +252,7 @@ class Alumni extends Controller
             exit;
         }
         
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['user_id'];
         
         $result = $this->alumniModel->deactivateAccount($userId);
         
@@ -276,7 +274,7 @@ class Alumni extends Controller
             exit;
         }
         
-        $userId = $_SESSION['user_id'] ?? 1;
+        $userId = $_SESSION['user_id'];
         
         $result = $this->alumniModel->deleteAccount($userId);
         

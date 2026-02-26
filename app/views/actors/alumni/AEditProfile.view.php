@@ -399,7 +399,7 @@ if (!defined('URLROOT')) {
         
         <?php if (isset($_SESSION['mentorship_warning'])): ?>
             <div class="alert" style="background: #fef3c7; color: #92400e; border: 1px solid #fbbf24;">
-                ⚠️ <?= htmlspecialchars($_SESSION['mentorship_warning']) ?>
+                <?= htmlspecialchars($_SESSION['mentorship_warning']) ?>
             </div>
             <?php unset($_SESSION['mentorship_warning']); ?>
         <?php endif; ?>
@@ -418,7 +418,7 @@ if (!defined('URLROOT')) {
                             <?php 
                             $profilePic = !empty($data['user']->profile_picture) 
                                 ? $data['user']->profile_picture 
-                                : '/assets/images/default-avatar.png';
+                                : '/assets/images/default-avatar.svg';
                             ?>
                             <img src="<?= BASE_URL ?><?= $profilePic ?>" 
                                  alt="Profile Preview" 
@@ -426,7 +426,7 @@ if (!defined('URLROOT')) {
                                  onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                         </div>
                         <button type="button" class="upload-photo-btn" onclick="document.getElementById('modal-profile-picture').click()">
-                            📷 Choose Photo
+                            Choose Photo
                         </button>
                         <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
                     </div>
@@ -438,30 +438,38 @@ if (!defined('URLROOT')) {
             </form>
         </div>
 
-        <form class="edit-profile-form" method="POST" action="<?= BASE_URL ?>/aeditprofile" enctype="multipart/form-data">
-            
-            <!-- Profile Picture Section -->
-            <div class="form-section">
-                <h2>📷 Profile Picture</h2>
-                <div class="profile-picture-section">
-                    <div class="current-picture" onclick="openPhotoModal()">
-                        <?php 
-                        $profilePicture = !empty($data['user']->profile_picture) 
-                            ? $data['user']->profile_picture 
-                            : '/assets/images/default-avatar.png';
-                        ?>
-                        <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
-                             alt="Profile Picture" 
-                             id="profile-preview"
-                             onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
-                        <p class="picture-note">Click to change photo</p>
-                    </div>
+        <!-- Profile Picture Section (OUTSIDE main form to avoid nested form issue) -->
+        <div class="form-section">
+            <h2>Profile Picture</h2>
+            <div class="profile-picture-section">
+                <div class="current-picture" onclick="openPhotoModal()">
+                    <?php 
+                    $profilePicture = !empty($data['user']->profile_picture) 
+                        ? $data['user']->profile_picture 
+                        : '/assets/images/default-avatar.svg';
+                    ?>
+                    <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
+                         alt="Profile Picture" 
+                         id="profile-preview"
+                         onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'"
+                         style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+                    <p class="picture-note">Click to change photo</p>
                 </div>
+                <!-- Delete profile picture (separate form, not nested) -->
+                <?php if (!empty($data['user']->profile_picture)): ?>
+                <form method="POST" action="<?= BASE_URL ?>/aeditprofile" style="margin-top: 0.75rem; text-align: center;" onsubmit="return confirm('Remove your profile picture?');">
+                    <input type="hidden" name="action" value="delete_picture">
+                    <button type="submit" class="btn btn-secondary" style="font-size:0.8rem; padding:0.4rem 0.9rem; color:#dc2626; border-color:#dc2626;">Remove Photo</button>
+                </form>
+                <?php endif; ?>
             </div>
+        </div>
+
+        <form class="edit-profile-form" method="POST" action="<?= BASE_URL ?>/aeditprofile" enctype="multipart/form-data">
 
             <!-- Personal Information Section -->
             <div class="form-section">
-                <h2>👤 Personal Information</h2>
+                <h2>Personal Information</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -530,7 +538,7 @@ if (!defined('URLROOT')) {
 
             <!-- Professional Information Section -->
             <div class="form-section">
-                <h2>💼 Professional Information</h2>
+                <h2>Professional Information</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -551,7 +559,7 @@ if (!defined('URLROOT')) {
 
             <!-- Education Section -->
             <div class="form-section">
-                <h2>🎓 Education Background</h2>
+                <h2>Education Background</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -590,7 +598,7 @@ if (!defined('URLROOT')) {
 
             <!-- Social Links Section -->
             <div class="form-section">
-                <h2>🔗 Social & Professional Links</h2>
+                <h2>Social &amp; Professional Links</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -620,7 +628,7 @@ if (!defined('URLROOT')) {
 
             <!-- About Section -->
             <div class="form-section">
-                <h2>📝 About Me</h2>
+                <h2>About Me</h2>
                 
                 <div class="form-group">
                     <label for="short_bio">Short Bio / Skills & Experience</label>
@@ -632,8 +640,8 @@ if (!defined('URLROOT')) {
             </div>
 
             <!-- Mentorship Availability Section -->
-            <div class="form-section">
-                <h2>🎓 Mentorship Settings</h2>
+            <div class="form-section" id="mentorship-settings">
+                <h2>Mentorship Settings</h2>
                 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
@@ -657,7 +665,7 @@ if (!defined('URLROOT')) {
             <!-- Form Actions -->
             <div class="form-actions">
                 <a href="<?= BASE_URL ?>/alumni/profile" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
     </div>

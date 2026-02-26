@@ -20,7 +20,7 @@
                 <?php 
                 $profilePicture = !empty($data['user']['profile_picture']) 
                     ? $data['user']['profile_picture'] 
-                    : '/assets/images/default-avatar.png';
+                    : '/assets/images/default-avatar.svg';
                 ?>
                 <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
                      alt="Profile Photo"

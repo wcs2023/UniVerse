@@ -44,10 +44,19 @@ if (!defined('BASE_URL')) {
 
     <main id="main-content" role="main">
     <div class="ms-container">
+        <!-- Mentor Inactive Warning -->
+        <?php if (!empty($data['mentor_inactive'])): ?>
+            <div style="background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
+                <h2 style="margin: 0 0 0.75rem 0; font-size: 1.3rem;">Mentorship Not Enabled</h2>
+                <p style="margin: 0 0 1rem 0;">You need to enable mentorship availability in your profile settings to manage slots and receive bookings.</p>
+                <a href="<?= BASE_URL ?>/aeditprofile#mentorship-settings" style="display: inline-block; background: #6c63ff; color: white; padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Enable in Profile Settings</a>
+            </div>
+        <?php endif; ?>
+
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
             <div class="ms-success-message">
-                <span>✅</span>
+                <span class="ms-status-dot ms-status-dot--active"></span>
                 <span>
                     <?php 
                     switch($_GET['success']) {
@@ -84,7 +93,7 @@ if (!defined('BASE_URL')) {
                 <!-- Availability Management -->
                 <div class="ms-card">
                     <div class="ms-availability-header">
-                        <h2 class="ms-card-title"><span aria-hidden="true">📅</span> My Availability (Next 2 Weeks)</h2>
+                        <h2 class="ms-card-title">My Availability (Next 2 Weeks)</h2>
                         <button class="ms-btn-add-availability" onclick="openAddSlotsModal()" aria-label="Add new availability slots">
                             + Add Slots
                         </button>
@@ -98,8 +107,8 @@ if (!defined('BASE_URL')) {
                                     $isBooked = !empty($slot['is_booked']) || $slot['is_booked'] == 1;
                                 ?>
                                 <div class="ms-slot-card <?= $isBooked ? 'booked' : '' ?>" data-slot-id="<?= $slot['slot_id'] ?>">
-                                    <div class="ms-slot-date">📅 <?= $slotDate->format('D, M j') ?></div>
-                                    <div class="ms-slot-time">🕐 <?= $slotDate->format('g:i A') ?></div>
+                                    <div class="ms-slot-date"><?= $slotDate->format('D, M j') ?></div>
+                                    <div class="ms-slot-time"><?= $slotDate->format('g:i A') ?></div>
                                     <span class="ms-slot-status <?= $isBooked ? 'booked' : 'available' ?>">
                                         <?= $isBooked ? '✓ Booked' : 'Available' ?>
                                     </span>
@@ -110,7 +119,7 @@ if (!defined('BASE_URL')) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="ms-empty-state" style="grid-column: 1 / -1;">
-                                <div class="ms-empty-icon">📭</div>
+                                <div class="ms-empty-icon ms-empty-icon--css">--</div>
                                 <h3>No Availability Set</h3>
                                 <p>Add your available time slots so students can book sessions with you.</p>
                             </div>
@@ -120,7 +129,7 @@ if (!defined('BASE_URL')) {
 
                 <!-- Upcoming Bookings -->
                 <div class="ms-card">
-                    <h2 class="ms-card-title">🔒 Upcoming Bookings</h2>
+                    <h2 class="ms-card-title">Upcoming Bookings</h2>
 
                     <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
                         <?php foreach ($data['upcoming_bookings'] as $booking): ?>
@@ -134,9 +143,10 @@ if (!defined('BASE_URL')) {
                             ?>
                             <div class="ms-booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
                                 <div class="ms-booking-header">
-                                    <img src="<?= !empty($booking['student_picture']) ? htmlspecialchars($booking['student_picture']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
+                                    <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                         alt="<?= htmlspecialchars($booking['student_name'] ?? 'Student') ?>" 
-                                        class="ms-booking-avatar">
+                                        class="ms-booking-avatar"
+                                        onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                                     <div class="ms-booking-info">
                                         <h4 class="ms-booking-name"><?= htmlspecialchars($booking['student_name'] ?? 'Student') ?></h4>
                                         <p class="ms-booking-subtitle">
@@ -144,20 +154,20 @@ if (!defined('BASE_URL')) {
                                         </p>
                                     </div>
                                     <span class="ms-badge <?= $isActive ? 'ms-badge-active' : ($canJoin ? 'ms-badge-soon' : 'ms-badge-upcoming') ?>" role="status">
-                                        <?= $isActive ? '<span aria-hidden="true">🔴</span> LIVE' : ($canJoin ? 'Starting Soon' : '<span aria-hidden="true">🔒</span> Confirmed') ?>
+                                        <?= $isActive ? '<span class="ms-status-dot ms-status-dot--live" aria-hidden="true"></span> LIVE' : ($canJoin ? 'Starting Soon' : 'Confirmed') ?>
                                     </span>
                                 </div>
                                 
                                 <div class="ms-booking-datetime">
-                                    <span aria-hidden="true">📅</span> <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
+                                    <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
                                 </div>
                                 
                                 <!-- Countdown -->
                                 <div class="ms-countdown" aria-live="polite" role="timer">
                                     <?php if ($isActive): ?>
-                                        <span class="ms-countdown--live">🟢 Session In Progress</span>
+                                        <span class="ms-countdown--live"><span class="ms-status-dot ms-status-dot--active"></span> Session In Progress</span>
                                     <?php elseif ($canJoin): ?>
-                                        <span class="ms-countdown--soon">⏰ Starting very soon!</span>
+                                        <span class="ms-countdown--soon">Starting very soon!</span>
                                     <?php else: ?>
                                         <span class="ms-countdown--waiting">
                                             Starts in: <strong>
@@ -172,16 +182,16 @@ if (!defined('BASE_URL')) {
                                 </div>
 
                                 <!-- Actions -->
-                                <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                                <div class="ms-booking-actions">
                                     <?php if (!empty($booking['meeting_link'])): ?>
                                         <button class="ms-btn join-meeting-btn <?= $canJoin ? 'ms-btn-join-active' : 'ms-btn-join-disabled' ?>" 
                                                 <?= !$canJoin ? 'disabled' : '' ?>
                                                 onclick="<?= $canJoin ? "window.open('" . htmlspecialchars($booking['meeting_link']) . "', '_blank')" : '' ?>">
-                                            <?= $canJoin ? '🎥 Join Meeting' : '⏳ Wait for Session' ?>
+                                            <?= $canJoin ? 'Join Meeting' : 'Wait for Session' ?>
                                         </button>
                                     <?php else: ?>
-                                        <span class="ms-btn ms-btn-secondary" style="cursor: not-allowed; opacity: 0.7;">
-                                            ⚠️ Meeting link unavailable
+                                        <span class="ms-btn ms-btn-secondary ms-info-strip--muted">
+                                            Meeting link unavailable
                                         </span>
                                     <?php endif; ?>
                                     
@@ -193,7 +203,7 @@ if (!defined('BASE_URL')) {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="ms-empty-state">
-                            <div class="ms-empty-icon">📅</div>
+                            <div class="ms-empty-icon ms-empty-icon--css">--</div>
                             <h3>No Upcoming Bookings</h3>
                             <p>When students book your available slots, they'll appear here.</p>
                         </div>
@@ -203,19 +213,20 @@ if (!defined('BASE_URL')) {
                 <!-- Completed Sessions -->
                 <?php if (isset($data['completed_sessions']) && count($data['completed_sessions']) > 0): ?>
                     <div class="ms-card">
-                        <h2 class="ms-card-title">✅ Recent Completed Sessions</h2>
+                        <h2 class="ms-card-title">Recent Completed Sessions</h2>
                         <?php foreach (array_slice($data['completed_sessions'], 0, 5) as $session): ?>
                             <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
-                            <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb;">
-                                <img src="<?= !empty($session['student_picture']) ? htmlspecialchars($session['student_picture']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
-                                    alt="Student" style="width: 40px; height: 40px; border-radius: 50%;">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 500;"><?= htmlspecialchars($session['student_name'] ?? 'Student') ?></div>
-                                    <div style="color: #6b7280; font-size: 0.875rem;"><?= $sessionDate->format('M j, Y') ?></div>
+                            <div class="ms-completed-item">
+                                <img src="<?= !empty($session['student_picture']) ? BASE_URL . htmlspecialchars($session['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                    alt="Student" class="ms-completed-avatar"
+                                    onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                                <div class="ms-completed-info">
+                                    <div class="ms-completed-name"><?= htmlspecialchars($session['student_name'] ?? 'Student') ?></div>
+                                    <div class="ms-completed-date"><?= $sessionDate->format('M j, Y') ?></div>
                                 </div>
                                 <?php if (!empty($session['rating'])): ?>
-                                    <div style="color: #fbbf24;">
-                                        <?= str_repeat('★', $session['rating']) . str_repeat('☆', 5 - $session['rating']) ?>
+                                    <div class="ms-rating-stars">
+                                        <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -227,7 +238,7 @@ if (!defined('BASE_URL')) {
             <!-- Right Column - Stats -->
             <div>
                 <div class="ms-stats-card">
-                    <h2 class="ms-card-title">📊 Impact Stats</h2>
+                    <h2 class="ms-card-title">Impact Stats</h2>
 
                     <div class="ms-stat-item">
                         <div class="ms-stat-label">Total Sessions</div>
@@ -242,7 +253,7 @@ if (!defined('BASE_URL')) {
                     <div class="ms-stat-item">
                         <div class="ms-stat-label">Average Rating</div>
                         <div class="ms-stat-value">
-                            <?= isset($data['stats']['average_rating']) ? number_format($data['stats']['average_rating'], 1) : '0.0' ?> ⭐
+                            <?= isset($data['stats']['average_rating']) ? number_format($data['stats']['average_rating'], 1) : '0.0' ?> / 5
                         </div>
                     </div>
                 </div>
@@ -254,12 +265,12 @@ if (!defined('BASE_URL')) {
     <div id="addSlotsModal" class="ms-modal">
         <div class="ms-modal-dialog">
             <div class="ms-modal-header">
-                <h3>📅 Add Availability Slots</h3>
+                <h3>Add Availability Slots</h3>
                 <button class="ms-close-modal" onclick="closeAddSlotsModal()" aria-label="Close add slots dialog"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="ms-modal-body">
                 <div class="ms-info-text">
-                    ℹ️ Add 1-hour time slots when you're available. Students can instantly book any slot (first-come-first-served).
+                    Add 1-hour time slots when you're available. Students can instantly book any slot (first-come-first-served).
                 </div>
 
                 <div id="slotsContainer">
@@ -443,7 +454,7 @@ if (!defined('BASE_URL')) {
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= ROOT ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
     </main>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>

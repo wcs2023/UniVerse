@@ -25,8 +25,14 @@ if (!defined('BASE_URL')) {
             background-color: #a78bfa45 !important;
         }
 
-        .alert {
-            display: none;
+        #alert-success,
+        #alert-error {
+            display: none !important;
+        }
+
+        #alert-success.show,
+        #alert-error.show {
+            display: flex !important;
         }
     </style>
 </head>
@@ -44,7 +50,7 @@ if (!defined('BASE_URL')) {
         <div class="form-card">
             <div class="form-header">
                 <div>
-                    <h1 class="form-title"> Edit Article</h1>
+                    <h1 class="form-title">Edit Article</h1>
                     <?php if (isset($data['article'])): ?>
                         <span class="status-badge status-<?= $data['article']['status'] ?>">
                             <?= ucfirst($data['article']['status']) ?>
@@ -128,26 +134,26 @@ if (!defined('BASE_URL')) {
                                 Publish Article
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                                 Update Draft
+                                Update Draft
                             </button>
                         <?php else: ?>
                             <button type="button" class="btn btn-primary" onclick="saveArticle('published')">
-                                 Save Changes
+                                Save Changes
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="saveArticle('draft')">
-                                 Unpublish (Move to Drafts)
+                                Unpublish (Move to Drafts)
                             </button>
                         <?php endif; ?>
                         <a href="<?= BASE_URL ?>/aarticles" class="btn btn-outline">
                             Cancel
                         </a>
                         <button type="button" class="btn btn-danger" onclick="deleteArticle()">
-                             Delete
+                            Delete
                         </button>
                     </div>
                 </form>
             <?php else: ?>
-                <div class="alert alert-error" style="display: block;">
+                <div class="alert alert-error" style="display: flex !important;">
                     Article not found or you don't have permission to edit it.
                 </div>
             <?php endif; ?>
@@ -285,16 +291,16 @@ if (!defined('BASE_URL')) {
             const errorAlert = document.getElementById('alert-error');
 
             // Hide both alerts first
-            successAlert.style.display = 'none';
-            errorAlert.style.display = 'none';
+            successAlert.classList.remove('show');
+            errorAlert.classList.remove('show');
 
             if (type === 'success') {
                 successAlert.textContent = message;
-                successAlert.style.display = 'block';
+                successAlert.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 errorAlert.textContent = message;
-                errorAlert.style.display = 'block';
+                errorAlert.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
