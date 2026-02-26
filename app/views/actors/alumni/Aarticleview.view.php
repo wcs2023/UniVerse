@@ -95,21 +95,7 @@ if (!defined('BASE_URL')) {
 
         <!-- Published Section -->
         <div class="section">
-            <h2 class="section-title">Published</h2>
-
-            <!-- Debug Info (Remove this after testing) -->
-            <?php if (isset($_GET['debug'])): ?>
-                <div
-                    style="background: #fff; padding: 1rem; margin-bottom: 1rem; border: 2px solid #8b5cf6; border-radius: 8px;">
-                    <strong>Debug Info:</strong><br>
-                    Published Count: <?= isset($data['published']) ? count($data['published']) : 'not set' ?><br>
-                    Drafts Count: <?= isset($data['drafts']) ? count($data['drafts']) : 'not set' ?><br>
-                    <?php if (isset($data['published'])): ?>
-                        <pre><?= print_r($data['published'], true) ?></pre>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-
+            <h2 class="section-title">Published</h2>     
             <div class="articles-grid">
                 <?php if (isset($data['published']) && count($data['published']) > 0): ?>
                     <?php foreach ($data['published'] as $index => $article): ?>

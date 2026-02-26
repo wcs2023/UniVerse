@@ -32,6 +32,26 @@ if (!defined('BASE_URL')) {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
+        .ms-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            padding: 0.45rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 999px;
+            background: white;
+            color: #4b5563;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .ms-back-btn:hover {
+            border-color: #6b46c1;
+            color: #6b46c1;
+            background: #f5f3ff;
+        }
     </style>
 </head>
 
