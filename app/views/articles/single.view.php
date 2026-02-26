@@ -29,83 +29,164 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
 }
 
-.article-single-container
-{
+.article-single-container {
     min-height: 80vh;
-    padding: 100px 20px 60px 20px;
-    display: block;
+    padding: 120px 20px 60px 20px;
+    display: flex;
     justify-content: center;
-    /* background: var(--light-gray); */
 }
 
-.article-header
-{
-    padding: 4rem 3rem;
-    border-radius: 25px;
-    margin-top: 10%;
+.article-header {
+    padding: 3rem;
+    border-radius: 25px 25px 0 0;
     background-color: var(--light-gray);
+}
+
+.article-header h1 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 2rem;
+    line-height: 1.3;
 }
          
-.article-card
-{
-    margin-left: 20%;
-    margin-right: 20%;
-    
+.article-card {
+    width: 100%;
+    max-width: 900px;
 }
 
-.article-body
-{
-    font-size:large;
+.article-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
     background-color: var(--light-gray);
-    border-radius: 25px;
-    padding: 4rem 3rem;
-    margin-top:1% ;
+    border-radius: 0 0 25px 25px;
+    padding: 2rem 3rem 3rem 3rem;
+    color: var(--text-medium);
 }
-    
-.footer
-{
-    /* align-items: end; */
-    /* text-align: right; */
+
+.article-body p {
+    margin: 0 0 1.5rem 0;
+}
+
+.article-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     display: flex;
-    /* flex-direction: column-reverse; */
-
+    justify-content: space-between;
+    align-items: center;
 }
 
-.author
-{
+.article-footer hr {
+    display: none;
+}
+
+.author {
+    display: flex;
     flex-direction: column;
+    gap: 0.25rem;
+}
+
+.author span:first-child {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.author span:last-child {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.counts {
     display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    color: var(--text-medium);
 }
 
-.count 
-{
-    text-align: left;
-
-
-
+.view-count {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 999px;
+    background: white;
+    color: var(--text-medium);
+    font-size: 0.95rem;
+    white-space: nowrap;
 }
 
- @media(max-width:768px) 
- {
-    .article-single-container
-    {
-        min-height: 40vh;
-        padding: 1rem;
+.like-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 999px;
+    background: white;
+    color: var(--text-medium);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.like-btn:hover {
+    border-color: #e11d48;
+    color: #e11d48;
+    background: #fff1f2;
+}
+
+.like-btn.liked {
+    border-color: #e11d48;
+    background: #fff1f2;
+    color: #e11d48;
+}
+
+.like-btn .heart-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.like-btn.pop .heart-icon {
+    transform: scale(1.4);
+}
+
+.like-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media(max-width:768px) {
+    .article-single-container {
+        min-height: auto;
+        padding: 100px 1rem 2rem 1rem;
     }
 
-    .article-header
-    {
-        padding:3rem;
-        font-size: smaller;
-        border-radius: 20px;
+    .article-header {
+        padding: 2rem 1.5rem;
     }
 
-    .article-card
-    {
-        margin-left: 10%;
-        margin-right: 10%;
+    .article-header h1 {
+        font-size: 1.5rem;
     }
- }
+
+    .article-card {
+        width: 100%;
+    }
+
+    .article-body {
+        padding: 1.5rem;
+        font-size: 1rem;
+    }
+
+    .article-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
 
 </style>
 </head>
@@ -120,63 +201,86 @@
             <div class="article-body">
                 <p>
                     <?= $data['article']['content']?>
-                     <?//=print_r($data['article'])?>
                 </p>
+                <hr>
                 <footer class="article-footer"> 
-                    <br>
-                    <hr> 
-                    <br>
                    <div class="author">
                        <span>By <?= $data['article']['author_name'] ?></span>
-                       <span> <?= date('M j,Y',strtotime($data['article']['created_at'])) ?></span>
+                       <span><?= date('M j, Y', strtotime($data['article']['created_at'])) ?></span>
                    </div>
                    <div class="counts">
-                    ❤️<span> <?= $data['article']['likes'] ?> </span>
-                    💬<span> <?= $data['article']['comments_count'] ?> </span>
+                       <span class="view-count" title="Views">
+                           <span>view</span>
+                           <span id="view-count"><?= (int)$data['article']['views'] ?></span>
+                       </span>
+                       <button
+                           class="like-btn <?= $data['has_liked'] ? 'liked' : '' ?>"
+                           id="like-btn"
+                           data-article-id="<?= $data['article']['article_id'] ?>"
+                           data-liked="<?= $data['has_liked'] ? 'true' : 'false' ?>"
+                           <?= !isset($_SESSION['user_id']) ? 'title="Log in to like this article"' : '' ?>
+                       >
+                           <span class="heart-icon"><?= $data['has_liked'] ? '❤️' : '🤍' ?></span>
+                           <span id="like-count"><?= (int)$data['article']['likes'] ?></span>
+                       </button>
                    </div>
                 </footer>
-        
             </div>
         </div>      
     </div>
     <?php include __DIR__ . '/../layout/footer.php'; ?>
-</body>
+<script>
+(function () {
+    const btn      = document.getElementById('like-btn');
+    const countEl  = document.getElementById('like-count');
 
-<!-- <script> 
-    // Article interaction functionality
-    document.querySelector('.like-btn')?.addEventListener('click', function() {
-        this.classList.toggle('liked');
-        // In a real application, this would send an AJAX request
-        const articleId = this.getAttribute('data-article-id');
-        console.log('Liked article:', articleId);
+    if (!btn) return;
+
+    <?php if (!isset($_SESSION['user_id'])): ?>
+    // Guest – redirect to login on click
+    btn.addEventListener('click', function () {
+        window.location.href = '<?= BASE_URL ?>/login';
     });
+    <?php else: ?>
+    btn.addEventListener('click', async function () {
+        if (btn.disabled) return;
+        btn.disabled = true;
 
-    document.querySelector('.share-btn')?.addEventListener('click', function() {
-        // Simple share functionality
-        if (navigator.share) {
-            navigator.share({
-                title: '<//?= addslashes($data['article']['title']) ?>',
-                text: '<//?= addslashes($data['article']['excerpt'] ?? '') ?>',
-                url: window.location.href
-            }).catch(error => console.log('Error sharing:', error));
-        } else {
-            // Fallback: copy URL to clipboard
-            navigator.clipboard.writeText(window.location.href)
-                .then(() => {
-                    alert('Article URL copied to clipboard!');
-                })
-                .catch(err => {
-                    console.error('Could not copy text: ', err);
-                });
+        const articleId = btn.dataset.articleId;
+
+        try {
+            const response = await fetch('<?= BASE_URL ?>/uarticles/like/' + articleId, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const heartIcon = btn.querySelector('.heart-icon');
+
+                if (data.liked) {
+                    btn.classList.add('liked');
+                    heartIcon.textContent = '❤️';
+                } else {
+                    btn.classList.remove('liked');
+                    heartIcon.textContent = '🤍';
+                }
+
+                countEl.textContent = data.likes;
+
+                // Pop animation
+                btn.classList.add('pop');
+                setTimeout(() => btn.classList.remove('pop'), 200);
+            }
+        } catch (err) {
+            console.error('Like request failed:', err);
+        } finally {
+            btn.disabled = false;
         }
     });
-
-    document.querySelector('.bookmark-btn')?.addEventListener('click', function() {
-        this.classList.toggle('bookmarked');
-        // In a real application, this would save to user's bookmarks
-        const isBookmarked = this.classList.contains('bookmarked');
-        console.log('Bookmark status:', isBookmarked);
-    });
-</script> -->
-
+    <?php endif; ?>
+}());
+</script>
+</body>
 </html>

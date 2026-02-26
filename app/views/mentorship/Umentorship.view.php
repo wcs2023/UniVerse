@@ -17,309 +17,69 @@ if (!defined('BASE_URL')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Mentorships - UniVerse</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/umentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-    <style>
-        body {
-            padding-top: 90px;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .alert-banner {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: pulse-glow 2s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 5px rgba(124, 58, 237, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.8); }
-        }
-
-        .alert-banner .alert-icon {
-            font-size: 1.5rem;
-        }
-
-        .alert-banner .alert-content {
-            flex: 1;
-        }
-
-        .alert-banner .alert-title {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .alert-banner .alert-message {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .alert-banner .btn-view {
-            background: white;
-            color: #7c3aed;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .alert-banner .btn-view:hover {
-            transform: scale(1.05);
-        }
-
-        .awaiting-selection-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .awaiting-selection-card .card-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .awaiting-selection-card .priority-badge {
-            background: #dc2626;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .time-slot-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .time-slot-option {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .time-slot-option:hover {
-            border-color: #7c3aed;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-        }
-
-        .time-slot-option.selected {
-            border-color: #7c3aed;
-            background: #f5f3ff;
-        }
-
-        .time-slot-option .slot-date {
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 1rem;
-        }
-
-        .time-slot-option .slot-time {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-
-        .time-slot-option .confirm-btn {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 0.75rem;
-            width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .time-slot-option .confirm-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-        }
-
-        .time-slot-option .confirm-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .finalized-session {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .finalized-session .session-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .finalized-session .locked-badge {
-            background: #10b981;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .finalized-session .session-datetime {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #065f46;
-            margin-top: 0.5rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-dialog {
-            background: white;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6b7280;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-        }
-
-        .btn-primary:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-    </style>
+    <script>
+        window.BASE_URL = '<?= BASE_URL ?>';
+        window.USER_TYPE = 'undergraduate';
+    </script>
 </head>
 
 <body>
     <?php
-    // Include navigation - use undergraduate navigation for students
-    $navFile = APPROOT . '/views/actors/undergraduate/Unavigation.view.php';
+    $navFile = __DIR__ . '/../actors/undergraduate/unavigation.view.php';
+
     if (file_exists($navFile)) {
         include $navFile;
     }
     ?>
 
+    <main id="main-content" role="main">
+    <!-- Hero Banner -->
+    <div class="mentorship-hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">My Mentorship Journey</h1>
+            <!-- Quick Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['upcoming_bookings'] ?? []) ?></span>
+                    <span class="stat-label">Upcoming</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?= count($data['completed_sessions'] ?? []) ?></span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Success Message -->
-        <?php if (isset($_GET['success']) && $_GET['success'] === 'scheduled'): ?>
+        <?php if (isset($_GET['success'])): ?>
             <div class="success-message">
-                <span>✅</span>
-                <span>Your mentorship session has been successfully scheduled! Check your upcoming sessions below.</span>
+                <span class="status-dot status-dot--active"></span>
+                <span>
+                    <?php 
+                    switch($_GET['success']) {
+                        case 'booked':
+                            echo 'Session booked successfully! Check your upcoming sessions below.';
+                            break;
+                        case 'cancelled':
+                            echo 'Booking has been cancelled.';
+                            break;
+                        case 'feedback':
+                            echo 'Thank you for your feedback!';
+                            break;
+                        default:
+                            echo 'Action completed successfully.';
+                    }
+                    ?>
+                </span>
             </div>
         <?php endif; ?>
 
@@ -327,413 +87,340 @@ if (!defined('BASE_URL')) {
         <div class="page-header">
             <h1 class="page-title">My Mentorships</h1>
             <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-explore">
-                <span>Explore Mentors</span>
+                Explore Mentors
             </a>
         </div>
 
-        <!-- High Priority Alert Banner for Pending Time Selections -->
-        <?php if (isset($data['mentorships']['awaiting_selection']) && count($data['mentorships']['awaiting_selection']) > 0): ?>
-            <div class="alert-banner">
-                <span class="alert-icon">🎉</span>
-                <div class="alert-content">
-                    <div class="alert-title">Action Required!</div>
-                    <div class="alert-message">You have <?= count($data['mentorships']['awaiting_selection']) ?> mentorship request(s) with time slots waiting for your selection.</div>
-                </div>
-                <a href="#awaiting-section" class="btn-view">View Now</a>
-            </div>
-        <?php endif; ?>
+        <!-- Upcoming Bookings Section -->
+        <div class="section-card">
+            <h2 class="section-title">Upcoming Sessions</h2>
 
-        <!-- Awaiting Time Slot Selection Section -->
-        <?php if (isset($data['mentorships']['awaiting_selection']) && count($data['mentorships']['awaiting_selection']) > 0): ?>
-            <div class="section-card" id="awaiting-section">
-                <h2 class="section-title">⏰ Select Your Session Time</h2>
-                <p style="color: var(--text-light); margin-bottom: 1.5rem;">Your mentorship request has been accepted! Please select your preferred time slot below.</p>
-
-                <?php foreach ($data['mentorships']['awaiting_selection'] as $request): ?>
-                    <div class="awaiting-selection-card">
-                        <div class="card-header">
-                            <img src="<?= $request['profile_picture_url'] ?? 'https://i.pravatar.cc/150' ?>"
-                                alt="<?= htmlspecialchars($request['first_name'] . ' ' . $request['last_name']) ?>"
-                                class="mentor-avatar" style="width: 60px; height: 60px; border-radius: 50%;">
-                            <div>
-                                <h3 style="margin: 0;"><?= htmlspecialchars($request['first_name'] . ' ' . $request['last_name']) ?></h3>
-                                <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">
-                                    <?= htmlspecialchars($request['title'] ?? '') ?>
-                                    <?php if (!empty($request['company'])): ?>
-                                        at <?= htmlspecialchars($request['company']) ?>
+            <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
+                <?php foreach ($data['upcoming_bookings'] as $booking): ?>
+                    <?php 
+                        $sessionDate = new DateTime($booking['slot_datetime']); 
+                        $now = new DateTime();
+                        $diff = $now->diff($sessionDate);
+                        $minutesUntil = ($sessionDate->getTimestamp() - $now->getTimestamp()) / 60;
+                        $canJoin = $minutesUntil <= 15 && $minutesUntil > -120;
+                        $isActive = $minutesUntil <= 0 && $minutesUntil > -120;
+                    ?>
+                    <div class="booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
+                        <div class="booking-header">
+                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                alt="<?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?>" 
+                                class="booking-avatar"
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                            <div class="booking-info">
+                                <h4 class="booking-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
+                                <p class="booking-subtitle">
+                                    <?= htmlspecialchars($booking['mentor_title'] ?? '') ?>
+                                    <?php if (!empty($booking['mentor_company'])): ?>
+                                        at <?= htmlspecialchars($booking['mentor_company']) ?>
                                     <?php endif; ?>
                                 </p>
                             </div>
-                            <span class="priority-badge">Action Required</span>
+                            <span class="session-status-badge <?= $isActive ? 'badge-active' : ($canJoin ? 'badge-soon' : 'badge-upcoming') ?>" role="status">
+                                <?= $isActive ? '<span class="status-dot status-dot--live" aria-hidden="true"></span> LIVE' : ($canJoin ? 'Starting Soon' : 'Confirmed') ?>
+                            </span>
                         </div>
-
-                        <p style="font-weight: 500; color: #92400e;">Choose one of the time slots offered by your mentor:</p>
-
-                        <div class="time-slot-options">
-                            <?php if (isset($request['time_slots']) && count($request['time_slots']) > 0): ?>
-                                <?php foreach ($request['time_slots'] as $slot): ?>
-                                    <?php 
-                                        $slotDate = new DateTime($slot['proposed_datetime']);
-                                        $now = new DateTime();
-                                        $isExpired = $slotDate < $now;
-                                    ?>
-                                    <div class="time-slot-option <?= $isExpired ? 'disabled' : '' ?>" 
-                                         data-slot-id="<?= $slot['slot_id'] ?>"
-                                         data-request-id="<?= $request['request_id'] ?>">
-                                        <div class="slot-date">
-                                            📅 <?= $slotDate->format('l, F j, Y') ?>
-                                        </div>
-                                        <div class="slot-time">
-                                            🕐 <?= $slotDate->format('g:i A') ?> (<?= $slot['duration_minutes'] ?> min)
-                                        </div>
-                                        <?php if (!$isExpired): ?>
-                                            <button class="confirm-btn" 
-                                                    onclick="confirmSlot(<?= $request['request_id'] ?>, <?= $slot['slot_id'] ?>, this)">
-                                                ✓ Confirm This Time
-                                            </button>
-                                        <?php else: ?>
-                                            <button class="confirm-btn" disabled>Expired</button>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endforeach; ?>
+                        
+                        <div class="booking-datetime">
+                            <span aria-hidden="true"></span> <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
+                        </div>
+                        
+                        <!-- Countdown -->
+                        <div class="countdown" aria-live="polite" role="timer">
+                            <?php if ($isActive): ?>
+                                <span class="countdown--live"><span class="status-dot status-dot--active"></span> Session In Progress - Join Now!</span>
+                            <?php elseif ($canJoin): ?>
+                                <span class="countdown--soon">Session starting very soon!</span>
                             <?php else: ?>
-                                <p>No time slots available. Please contact your mentor.</p>
+                                <span class="countdown--waiting">
+                                    Starts in: <strong>
+                                    <?php
+                                        if ($diff->d > 0) echo $diff->d . 'd ' . $diff->h . 'h';
+                                        elseif ($diff->h > 0) echo $diff->h . 'h ' . $diff->i . 'm';
+                                        else echo $diff->i . ' minutes';
+                                    ?>
+                                    </strong>
+                                </span>
                             <?php endif; ?>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
 
-        <!-- Finalized/Upcoming Sessions Section -->
-        <?php if (isset($data['mentorships']['finalized_sessions']) && count($data['mentorships']['finalized_sessions']) > 0): ?>
-            <div class="section-card">
-                <h2 class="section-title">🔒 Confirmed Sessions</h2>
-
-                <?php foreach ($data['mentorships']['finalized_sessions'] as $session): ?>
-                    <?php $sessionDate = new DateTime($session['session_datetime']); ?>
-                    <div class="finalized-session">
-                        <div class="session-header">
-                            <img src="<?= $session['mentor_picture'] ?? 'https://i.pravatar.cc/150' ?>"
-                                alt="<?= htmlspecialchars($session['mentor_name']) ?>"
-                                class="mentor-avatar" style="width: 60px; height: 60px; border-radius: 50%;">
-                            <div style="flex: 1;">
-                                <h3 style="margin: 0;"><?= htmlspecialchars($session['mentor_name']) ?></h3>
-                                <p style="margin: 0; color: #065f46; font-size: 0.875rem;">
-                                    <?= htmlspecialchars($session['mentor_title'] ?? '') ?>
-                                    <?php if (!empty($session['mentor_company'])): ?>
-                                        at <?= htmlspecialchars($session['mentor_company']) ?>
-                                    <?php endif; ?>
-                                </p>
-                            </div>
-                            <span class="locked-badge">🔒 Confirmed</span>
-                        </div>
-                        <div class="session-datetime">
-                            📅 <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
-                        </div>
-                        <?php if (!empty($session['meeting_link'])): ?>
-                            <a href="<?= htmlspecialchars($session['meeting_link']) ?>" target="_blank" 
-                               class="btn-view-times" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
-                                🎥 Join Meeting
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Pending Requests Section -->
-        <div class="section-card">
-            <h2 class="section-title">Mentorship Requests</h2>
-
-            <?php 
-            // Filter out requests that are awaiting selection (shown above)
-            $pendingRequests = array_filter($data['mentorships']['pending'] ?? [], function($req) {
-                return $req['status'] === 'pending';
-            });
-            ?>
-
-            <?php if (count($pendingRequests) > 0): ?>
-                <?php foreach ($pendingRequests as $request): ?>
-                    <div class="mentorship-item">
-                        <div class="mentor-info">
-                            <img src="<?= $request['profile_picture_url'] ?? 'https://i.pravatar.cc/150' ?>"
-                                alt="<?= htmlspecialchars($request['first_name'] . ' ' . $request['last_name']) ?>"
-                                class="mentor-avatar">
-                            <div class="mentor-details">
-                                <h3><?= htmlspecialchars($request['first_name'] . ' ' . $request['last_name']) ?></h3>
-                                <span class="status-badge status-<?= strtolower($request['status']) ?>">
-                                    <?= ucfirst(str_replace('_', ' ', $request['status'])) ?>
+                        <!-- Actions -->
+                        <div class="booking-actions">
+                            <?php if (!empty($booking['meeting_link'])): ?>
+                                <button class="btn join-meeting-btn <?= $canJoin ? 'btn-join-active' : 'btn-join-disabled' ?>" 
+                                        <?= !$canJoin ? 'disabled' : '' ?>
+                                        onclick="<?= $canJoin ? "window.open('" . htmlspecialchars($booking['meeting_link']) . "', '_blank')" : '' ?>">
+                                    <?= $canJoin ? 'Join Meeting Now' : 'Wait for Session Time' ?>
+                                </button>
+                            <?php else: ?>
+                                <span class="btn btn-secondary info-strip--muted">
+                                    Meeting link unavailable
                                 </span>
-                            </div>
+                            <?php endif; ?>
+                            
+                            <button class="btn btn-secondary" onclick="openCancelModal(<?= $booking['booking_id'] ?>)">
+                                Cancel Session
+                            </button>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="empty-state">
-                    <div class="empty-icon">📥</div>
-                    <h3>No Pending Requests</h3>
-                    <p>You don't have any pending mentorship requests at the moment.</p>
+                    <div class="empty-icon">--</div>
+                    <h3>No Upcoming Sessions</h3>
+                    <p>You don't have any booked mentorship sessions yet. Explore available mentors and book a session!</p>
+                    <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
+                        Find a Mentor
+                    </a>
                 </div>
             <?php endif; ?>
         </div>
 
-        <!-- Upcoming Sessions Section (Legacy - from old system) -->
-        <?php if (isset($data['mentorships']['upcoming']) && count($data['mentorships']['upcoming']) > 0): ?>
-            <div class="section-card">
-                <h2 class="section-title">Upcoming Sessions</h2>
+        <!-- Sessions Needing Feedback -->
+        <?php if (isset($data['needs_feedback']) && count($data['needs_feedback']) > 0): ?>
+            <div class="section-card" style="border: 2px solid #f59e0b;">
+                <h2 class="section-title">Leave Feedback</h2>
+                <p style="color: #6b7280; margin-bottom: 1rem;">Help other students by sharing your experience!</p>
 
-                <?php foreach ($data['mentorships']['upcoming'] as $session): ?>
-                    <div class="session-item">
-                        <div class="mentor-info">
-                            <img src="<?= $session['profile_picture_url'] ?? 'https://i.pravatar.cc/150' ?>"
-                                alt="<?= htmlspecialchars($session['first_name'] . ' ' . $session['last_name']) ?>"
-                                class="mentor-avatar">
-                            <div class="session-info">
-                                <h3><?= htmlspecialchars($session['first_name'] . ' ' . $session['last_name']) ?></h3>
-                                <div class="session-date">
-                                    <?php if (isset($session['scheduled_date'])): ?>
-                                        <span>📅</span>
-                                        <?= date('l, F j, Y \a\t g:i A', strtotime($session['scheduled_date'])) ?>
-                                    <?php endif; ?>
-                                </div>
+                <?php foreach ($data['needs_feedback'] as $session): ?>
+                    <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
+                    <div class="feedback-card">
+                            <div class="feedback-layout">
+                            <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                alt="<?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?>"
+                                class="feedback-avatar"
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                            <div class="feedback-info">
+                                <h4><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
+                                <p>
+                                    <?= $sessionDate->format('F j, Y') ?>
+                                </p>
                             </div>
+                            <button class="btn btn-primary" onclick="openFeedbackModal(<?= $session['booking_id'] ?>, '<?= htmlspecialchars(addslashes($session['mentor_name'] ?? 'Mentor')) ?>')">
+                                Rate Session
+                            </button>
                         </div>
-
-                        <?php if (isset($session['meeting_link'])): ?>
-                            <a href="<?= htmlspecialchars($session['meeting_link']) ?>" target="_blank" class="btn-view-times">
-                                <span>🎥 Join Meeting</span>
-                            </a>
-                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
 
-        <!-- Call to Action Section -->
+        <!-- Completed Sessions -->
+        <?php 
+        $reviewedSessions = array_filter($data['completed_sessions'] ?? [], function($s) {
+            return !empty($s['rating']);
+        });
+        ?>
+        <?php if (count($reviewedSessions) > 0): ?>
+            <div class="section-card">
+                <h2 class="section-title">Past Sessions</h2>
+
+                <?php foreach (array_slice($reviewedSessions, 0, 5) as $session): ?>
+                    <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
+                    <div class="completed-item">
+                        <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                            alt="Mentor" class="completed-avatar"
+                            onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                        <div class="completed-info">
+                            <div class="completed-name"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></div>
+                            <div class="completed-date"><?= $sessionDate->format('M j, Y') ?></div>
+                        </div>
+                        <div class="rating-stars">
+                            <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- CTA Section -->
         <div class="cta-section">
             <h2>Ready to Find Your Guide?</h2>
             <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
-            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn-view-times" style="text-decoration: none;">
-                <span>🧭 Explore Mentors</span>
+            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
+                Explore Mentors
             </a>
         </div>
     </div>
+    </main>
 
-    <!-- Confirmation Modal -->
-    <div class="modal" id="confirmModal">
+    <!-- Cancel Modal -->
+    <div id="cancelModal" class="modal">
         <div class="modal-dialog">
-            <div class="modal-header" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; border-radius: 12px 12px 0 0;">
-                <h5 class="modal-title">Confirm Session Time</h5>
-                <button type="button" class="close-modal" onclick="closeConfirmModal()" style="color: white;">×</button>
+            <div class="modal-header modal-header--danger">
+                <h3 style="margin: 0;">Cancel Session</h3>
+                <button class="close-modal" onclick="closeCancelModal()" aria-label="Close cancel session dialog"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to confirm this time slot?</p>
-                <div id="selectedSlotInfo" style="background: #f5f3ff; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                    <!-- Slot info will be inserted here -->
+                <input type="hidden" id="cancelBookingId">
+                <p>Are you sure you want to cancel this session? The mentor will be notified.</p>
+                <div style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Reason for cancellation (required):</label>
+                    <textarea id="cancelReason" class="cancel-reason-input" placeholder="Please provide a reason..." required></textarea>
                 </div>
-                <p style="color: #6b7280; font-size: 0.875rem;">
-                    ⚠️ Once confirmed, this session will be locked and both you and your mentor will receive a confirmation notification.
-                </p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
-                <button type="button" class="btn btn-primary" id="finalConfirmBtn" onclick="finalizeConfirmation()">
-                    ✓ Confirm Session
+                <button class="btn btn-secondary" onclick="closeCancelModal()">Keep Session</button>
+                <button class="btn btn-danger" onclick="confirmCancel()">Cancel Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-header modal-header--warning">
+                <h3 style="margin: 0;">Rate Your Session</h3>
+                <button class="close-modal" onclick="closeFeedbackModal()" aria-label="Close feedback dialog"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="feedbackBookingId">
+                
+                <p style="text-align: center;">How was your session with <strong id="feedbackMentorName"></strong>?</p>
+                
+                <!-- Star Rating -->
+                <div class="star-rating" role="group" aria-label="Rate your session from 1 to 5 stars">
+                    <button type="button" class="star-btn" onclick="selectRating(1)" aria-label="Rate 1 star">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(2)" aria-label="Rate 2 stars">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(3)" aria-label="Rate 3 stars">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(4)" aria-label="Rate 4 stars">☆</button>
+                    <button type="button" class="star-btn" onclick="selectRating(5)" aria-label="Rate 5 stars">☆</button>
+                </div>
+                <input type="hidden" id="feedbackRating" value="0">
+                
+                <!-- Written Review -->
+                <div style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Your Review (Optional)</label>
+                    <textarea id="feedbackText" class="feedback-textarea" placeholder="Share your experience..." maxlength="500"></textarea>
+                    <p style="text-align: right; color: #9ca3af; font-size: 0.75rem; margin-top: 0.25rem;">
+                        <span id="charCount">0</span>/500
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFeedbackModal()">Cancel</button>
+                <button class="btn btn-warning" onclick="submitFeedback()">
+                    Submit Feedback
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        let pendingRequestId = null;
-        let pendingSlotId = null;
-        let pendingButton = null;
+        let currentRating = 0;
 
-        // Function to confirm a time slot
-        function confirmSlot(requestId, slotId, button) {
-            pendingRequestId = requestId;
-            pendingSlotId = slotId;
-            pendingButton = button;
-
-            // Get slot info from the clicked card
-            const card = button.closest('.time-slot-option');
-            const dateText = card.querySelector('.slot-date').textContent;
-            const timeText = card.querySelector('.slot-time').textContent;
-
-            // Update modal with slot info
-            document.getElementById('selectedSlotInfo').innerHTML = `
-                <strong>${dateText}</strong><br>
-                <span style="color: #6b7280;">${timeText}</span>
-            `;
-
-            // Show confirmation modal
-            document.getElementById('confirmModal').classList.add('show');
+        // Cancel Modal Functions
+        function openCancelModal(bookingId) {
+            document.getElementById('cancelBookingId').value = bookingId;
+            document.getElementById('cancelReason').value = '';
+            document.getElementById('cancelModal').classList.add('show');
         }
 
-        // Close confirmation modal
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.remove('show');
-            pendingRequestId = null;
-            pendingSlotId = null;
-            pendingButton = null;
+        function closeCancelModal() {
+            document.getElementById('cancelModal').classList.remove('show');
         }
 
-        // Finalize the confirmation
-        function finalizeConfirmation() {
-            if (!pendingRequestId || !pendingSlotId) {
-                alert('Error: Missing information. Please try again.');
+        function confirmCancel() {
+            const bookingId = document.getElementById('cancelBookingId').value;
+            const reason = document.getElementById('cancelReason').value.trim();
+
+            if (!reason) {
+                MentorshipSystem.showNotification('Please provide a reason for cancellation.', 'error');
                 return;
             }
 
-            const confirmBtn = document.getElementById('finalConfirmBtn');
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'Confirming...';
+            fetch('<?= BASE_URL ?>/umentorships/cancelBooking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ booking_id: bookingId, reason: reason })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '<?= BASE_URL ?>/umentorships?success=cancelled';
+                } else {
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to cancel session'), 'error');
+                }
+            });
+        }
 
-            // Disable the original button too
-            if (pendingButton) {
-                pendingButton.disabled = true;
-                pendingButton.textContent = 'Confirming...';
+        // Feedback Modal Functions
+        function openFeedbackModal(bookingId, mentorName) {
+            document.getElementById('feedbackBookingId').value = bookingId;
+            document.getElementById('feedbackMentorName').textContent = mentorName;
+            document.getElementById('feedbackRating').value = '0';
+            document.getElementById('feedbackText').value = '';
+            document.getElementById('charCount').textContent = '0';
+            currentRating = 0;
+            updateStars();
+            document.getElementById('feedbackModal').classList.add('show');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.remove('show');
+        }
+
+        function selectRating(rating) {
+            currentRating = rating;
+            document.getElementById('feedbackRating').value = rating;
+            updateStars();
+        }
+
+        function updateStars() {
+            const stars = document.querySelectorAll('.star-btn');
+            stars.forEach((star, index) => {
+                if (index < currentRating) {
+                    star.classList.add('active');
+                    star.textContent = '★';
+                } else {
+                    star.classList.remove('active');
+                    star.textContent = '☆';
+                }
+            });
+        }
+
+        function submitFeedback() {
+            const bookingId = document.getElementById('feedbackBookingId').value;
+            const rating = document.getElementById('feedbackRating').value;
+            const reviewText = document.getElementById('feedbackText').value.trim();
+
+            if (!rating || rating === '0') {
+                MentorshipSystem.showNotification('Please select a rating.', 'error');
+                return;
             }
 
-            // Send request to confirm the slot
-            fetch('<?= BASE_URL ?>/umentorships/confirmTimeSlot', {
+            fetch('<?= BASE_URL ?>/umentorships/submitFeedback', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    request_id: pendingRequestId,
-                    slot_id: pendingSlotId
+                    booking_id: bookingId,
+                    rating: parseInt(rating),
+                    review_text: reviewText
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Success! Redirect with success message
-                    window.location.href = '<?= BASE_URL ?>/umentorships?success=scheduled';
+                    window.location.href = '<?= BASE_URL ?>/umentorships?success=feedback';
                 } else {
-                    // Check if it's a double-booking error
-                    const isDoubleBooking = data.message && (
-                        data.message.includes('just booked') || 
-                        data.message.includes('another student') ||
-                        data.message.includes('no longer available')
-                    );
-                    
-                    if (isDoubleBooking) {
-                        // Show a more user-friendly double-booking message
-                        showDoubleBookingError(data.message);
-                    } else {
-                        alert('Error: ' + (data.message || 'Failed to confirm session. Please try again.'));
-                    }
-                    
-                    confirmBtn.disabled = false;
-                    confirmBtn.textContent = '✓ Confirm Session';
-                    if (pendingButton) {
-                        pendingButton.disabled = false;
-                        pendingButton.textContent = '✓ Confirm This Time';
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = '✓ Confirm Session';
-                if (pendingButton) {
-                    pendingButton.disabled = false;
-                    pendingButton.textContent = '✓ Confirm This Time';
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to submit feedback'), 'error');
                 }
             });
         }
 
-        // Show double-booking error with option to refresh
-        function showDoubleBookingError(message) {
-            closeConfirmModal();
-            
-            // Create error modal
-            const errorModal = document.createElement('div');
-            errorModal.className = 'modal show';
-            errorModal.id = 'doubleBookingModal';
-            errorModal.innerHTML = `
-                <div class="modal-dialog">
-                    <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border-radius: 12px 12px 0 0;">
-                        <h5 class="modal-title">⚠️ Time Slot No Longer Available</h5>
-                        <button type="button" class="close-modal" onclick="closeDoubleBookingModal()" style="color: white;">×</button>
-                    </div>
-                    <div class="modal-body" style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
-                        <p style="font-size: 1.1rem; color: #374151; margin-bottom: 1rem;">
-                            ${message}
-                        </p>
-                        <p style="color: #6b7280; font-size: 0.875rem;">
-                            Another student confirmed this time slot just before you did. 
-                            Please select a different available time or contact your mentor for new options.
-                        </p>
-                    </div>
-                    <div class="modal-footer" style="justify-content: center;">
-                        <button type="button" class="btn btn-primary" onclick="refreshPage()">
-                            🔄 Refresh & See Available Slots
-                        </button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(errorModal);
-            
-            // Mark the conflicting slot as unavailable visually
-            if (pendingButton) {
-                const card = pendingButton.closest('.time-slot-option');
-                if (card) {
-                    card.style.opacity = '0.5';
-                    card.style.pointerEvents = 'none';
-                    pendingButton.textContent = 'Already Booked';
-                    pendingButton.disabled = true;
-                    pendingButton.style.background = '#9ca3af';
-                }
-            }
-        }
-
-        function closeDoubleBookingModal() {
-            const modal = document.getElementById('doubleBookingModal');
-            if (modal) {
-                modal.remove();
-            }
-        }
-
-        function refreshPage() {
-            window.location.reload();
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('confirmModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeConfirmModal();
-            }
+        // Character counter for feedback
+        document.getElementById('feedbackText').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length;
         });
 
-        // Smooth scroll to awaiting section if hash is present
-        if (window.location.hash === '#awaiting-section') {
-            setTimeout(() => {
-                document.getElementById('awaiting-section')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        }
-
-        // Add fade-in animation on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('.section-card, .cta-section, .alert-banner');
-            sections.forEach((section, index) => {
-                section.style.opacity = '0';
-                section.style.transform = 'translateY(20px)';
-                section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-
-                setTimeout(() => {
-                    section.style.opacity = '1';
-                    section.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-        });
+        // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
+
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
-
 </html>

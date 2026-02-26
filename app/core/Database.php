@@ -37,6 +37,9 @@ class Database
                     PDO::ATTR_EMULATE_PREPARES => false,
                 ]
             );
+            
+            // Set MySQL session timezone to Sri Lanka Standard Time (UTC+5:30)
+            $this->pdo->exec("SET time_zone = '+05:30'");
         } catch (PDOException $e) {
             die("Database connection failed: " . $e->getMessage());
         }

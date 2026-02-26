@@ -110,19 +110,19 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
                     </button>
                     <div class="user-dropdown" id="user-dropdown">
                         <a href="<?= BASE_URL ?>/profile" class="dropdown-item">
-                            <span class="item-icon">👤</span> Profile
+                            <span class="item-icon">Profile</span>
                         </a>
                         <a href="<?= BASE_URL ?>/settings" class="dropdown-item">
-                            <span class="item-icon">⚙️</span> Settings
+                            <span class="item-icon">Settings</span>
                         </a>
                         <?php if ($userRole === 'admin'): ?>
                         <a href="<?= BASE_URL ?>/admin" class="dropdown-item">
-                            <span class="item-icon">🔧</span> Admin Panel
+                            <span class="item-icon">Admin Panel</span>
                         </a>
                         <?php endif; ?>
                         <div class="dropdown-divider"></div>
                         <a href="<?= BASE_URL ?>/logout" class="dropdown-item logout-item">
-                            <span class="item-icon">🚪</span> Logout
+                            <span class="item-icon">Logout</span>
                         </a>
                     </div>
                 </div>

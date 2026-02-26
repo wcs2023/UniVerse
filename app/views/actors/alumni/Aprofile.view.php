@@ -18,7 +18,7 @@ $userData = [
     'company' => $user->company ?? '',
     'linkedin_url' => $user->linkedin_url ?? '',
     'short_bio' => $user->short_bio ?? '',
-    'profile_picture' => $user->profile_picture ?? '/assets/images/default-avatar.png',
+    'profile_picture' => $user->profile_picture ?? '/assets/images/default-avatar.svg',
     'available_for_mentorship' => $user->available_for_mentorship ?? false
 ];
 ?>
@@ -33,7 +33,7 @@ $userData = [
     <title>My Profile - UniVerse</title>
 </head>
 
-<body style="padding-top: 80px;">
+<body style="padding-top: 80px; background-color: #a78bfa45 !important;">
     <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
@@ -42,6 +42,13 @@ $userData = [
     }
     ?>
 
+<?php if (isset($_SESSION['profile_success'])): ?>
+        <div class="alert alert-success profile-success-banner">
+            <?= htmlspecialchars($_SESSION['profile_success']) ?>
+        </div>
+        <?php unset($_SESSION['profile_success']); ?>
+    <?php endif; ?>
+
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
@@ -49,7 +56,7 @@ $userData = [
                 <?php
                 $profilePicture = !empty($userData['profile_picture'])
                     ? $userData['profile_picture']
-                    : '/assets/images/default-avatar.png';
+                    : '/assets/images/default-avatar.svg';
                 ?>
                 <img src="<?= BASE_URL ?><?= $profilePicture ?>" alt="Profile Photo"
                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
@@ -88,7 +95,7 @@ $userData = [
                 <!-- Email -->
                 <div class="info-item">
                     <div class="info-label">
-                        📧 Email
+                        Email
                     </div>
                     <div class="info-value"><?= htmlspecialchars($userData['email']) ?></div>
                 </div>
@@ -96,7 +103,7 @@ $userData = [
                 <!-- Current Role -->
                 <div class="info-item">
                     <div class="info-label">
-                        💼 Current Role
+                        Current Role
                     </div>
                     <div class="info-value"><?= htmlspecialchars($userData['current_role'] ?: 'Not provided') ?></div>
                 </div>
@@ -104,7 +111,7 @@ $userData = [
                 <!-- Company -->
                 <div class="info-item">
                     <div class="info-label">
-                        🏢 Company/University
+                        Company/University
                     </div>
                     <div class="info-value"><?= htmlspecialchars($userData['company'] ?: 'Not provided') ?></div>
                 </div>
@@ -112,12 +119,12 @@ $userData = [
                 <!-- LinkedIn -->
                 <div class="info-item">
                     <div class="info-label">
-                        🔗 LinkedIn
+                        LinkedIn
                     </div>
                     <div class="info-value">
                         <?php if ($userData['linkedin_url']): ?>
                             <a href="<?= htmlspecialchars($userData['linkedin_url']) ?>" target="_blank"
-                                style="color: var(--primary-purple);">
+                                class="profile-link">
                                 View Profile
                             </a>
                         <?php else: ?>
@@ -129,10 +136,10 @@ $userData = [
                 <!-- Mentorship Status -->
                 <div class="info-item">
                     <div class="info-label">
-                        🎓 Mentorship Status
+                        Mentorship Status
                     </div>
                     <div class="info-value">
-                        <?php if ($userData['available_for_mentorship']): ?>
+                        <?php if (isset($mentorStatus) && $mentorStatus && $mentorStatus['is_active']): ?>
                             <span class="status-badge status-accepted">Available</span>
                         <?php else: ?>
                             <span class="status-badge status-pending">Not Available</span>
@@ -143,9 +150,9 @@ $userData = [
 
             <!-- Bio Section -->
             <?php if ($userData['short_bio']): ?>
-                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
-                    <h3 style="color: var(--text-dark); margin-bottom: 1rem;">About Me</h3>
-                    <p style="color: var(--text-light); line-height: 1.7;">
+                <div class="profile-bio-section">
+                    <h3>About Me</h3>
+                    <p>
                         <?= nl2br(htmlspecialchars($userData['short_bio'])) ?></p>
                 </div>
             <?php endif; ?>
@@ -154,15 +161,15 @@ $userData = [
         <!-- Quick Actions -->
         <div class="section-card" style="margin-top: 2rem;">
             <h2 class="card-title">Quick Actions</h2>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div class="quick-actions-row">
                 <a href="<?= BASE_URL ?>/aarticles/create" class="btn btn-primary">
-                    ✍️ Write an Article
+                     Write an Article
                 </a>
                 <a href="<?= BASE_URL ?>/amentorships" class="btn btn-secondary">
-                    🎓 Mentor Dashboard
+                     Mentor Dashboard
                 </a>
                 <a href="<?= BASE_URL ?>/adiscussion" class="btn btn-secondary">
-                    💬 Discussion Forums
+                     Discussion Forums
                 </a>
             </div>
         </div>

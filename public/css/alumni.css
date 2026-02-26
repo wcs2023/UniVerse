@@ -15,16 +15,18 @@
     --purple-gradient: linear-gradient(135deg, #6b46c1, #8b5cf6);
     --purple-hover: #6d28d9;
 
-    /* Text Colors */
+    /* Text Colors - WCAG AA Compliant */
     --text-dark: #1f2937;
-    --text-light: #6b7280;
-    --text-muted: #9ca3af;
+    --text-light: #4b5563;  /* Improved from #6b7280 for better contrast (4.5:1 ratio) */
+    --text-muted: #6b7280;  /* For decorative/less important text only */
+    --text-secondary: #52525b; /* Alternative readable secondary text */
 
     /* Background Colors */
     --white: #ffffff;
     --light-gray: #f9fafb;
     --bg-light: #f3f4f6;
     --bg-white: #ffffff;
+    --bg-purple-light: #a78bfa45;
     --dark-bg: #1a1d2e;
     --dark-bg-secondary: #252a41;
 
@@ -44,6 +46,9 @@
     --draft-yellow-text: #92400e;
     --published-green: #d1fae5;
     --published-green-text: #065f46;
+
+    /* Spacing */
+    --navbar-height: 80px;
 }
 
 /* Global Reset */
@@ -53,17 +58,402 @@
     box-sizing: border-box;
 }
 
+/* ========================================
+   ACCESSIBILITY - Focus & Touch Targets
+   ======================================== */
+/* Focus indicators for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid var(--primary-purple);
+    outline-offset: 2px;
+}
+
+/* Remove focus outline for mouse users, keep for keyboard */
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Minimum touch target size (44x44px) */
+button,
+.btn,
+.nav-link,
+input[type="submit"],
+input[type="button"],
+a.btn,
+.btn-primary,
+.btn-secondary {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Skip to main content link - hidden until focused for accessibility */
+.skip-link {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    background: var(--primary-purple);
+    color: white;
+    padding: 1rem;
+    z-index: 9999;
+    text-decoration: none;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.skip-link:focus {
+    top: 0;
+    left: 0;
+    opacity: 1;
+    pointer-events: auto;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
-    background: var(--light-gray);
+    background-color: #a78bfa45 !important;
     color: var(--text-dark);
+    min-height: 100vh;
+    padding-top: var(--navbar-height);
+}
+
+/* Body padding utility for pages that need it */
+.body-with-navbar {
+    padding-top: var(--navbar-height);
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
+}
+
+/* ========================================
+   UNIFIED CARD SYSTEM
+   ======================================== */
+.u-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.u-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.u-card--flat {
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+}
+
+.u-card--flat:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--primary-purple);
+}
+
+.u-card--elevated {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.u-card--elevated:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+}
+
+.u-card--interactive {
+    cursor: pointer;
+}
+
+.u-card--no-hover:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.u-card__header {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.u-card__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.u-card__subtitle {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.u-card__body {
+    color: var(--text-light);
+}
+
+.u-card__footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Card size variants */
+.u-card--sm {
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.u-card--lg {
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+/* ========================================
+   SKELETON LOADERS
+   ======================================== */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+.skeleton-text--sm {
+    height: 0.75rem;
+    width: 60%;
+}
+
+.skeleton-text--lg {
+    height: 1.5rem;
+}
+
+.skeleton-title {
+    height: 1.5rem;
+    width: 70%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.skeleton-avatar--sm {
+    width: 32px;
+    height: 32px;
+}
+
+.skeleton-avatar--lg {
+    width: 80px;
+    height: 80px;
+}
+
+.skeleton-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: var(--white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.skeleton-button {
+    height: 44px;
+    width: 120px;
+    border-radius: 8px;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+}
+
+/* Skeleton card layout */
+.skeleton-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.skeleton-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    border-top-color: var(--primary-purple);
+    animation: spin 1s ease-in-out infinite;
+}
+
+.loading-spinner--sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+.loading-spinner--lg {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: inherit;
+}
+
+/* Loading state for containers */
+.is-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.is-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 5;
+}
+
+/* ========================================
+   UNIFIED BADGE SYSTEM
+   ======================================== */
+.u-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.u-badge--success {
+    background: var(--published-green);
+    color: var(--published-green-text);
+}
+
+.u-badge--warning {
+    background: var(--draft-yellow);
+    color: var(--draft-yellow-text);
+}
+
+.u-badge--danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.u-badge--info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.u-badge--purple {
+    background: #f3e8ff;
+    color: var(--primary-purple);
+}
+
+.u-badge--neutral {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
+/* ========================================
+   ACCESSIBILITY UTILITIES
+   ======================================== */
+/* Visually hidden but accessible to screen readers */
+.visually-hidden,
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Show on focus for skip links etc */
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+    .btn,
+    .u-badge,
+    .nav-link.active {
+        border: 2px solid currentColor;
+    }
 }
 
 /* ========================================
@@ -139,11 +529,7 @@ body {
     box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
 } */
 
-.btn::before {
-    content: "✍️";
-    margin-right: 8px;
-    font-size: 1.2rem;
-}
+
 
 .btn-mentor {
     display: inline-flex;
@@ -168,11 +554,7 @@ body {
     box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
 }
 
-.btn-mentor::before {
-    content: "🎓";
-    margin-right: 8px;
-    font-size: 1.2rem;
-}
+
 
 /* ========================================
    HERO IMAGE PLACEHOLDER
@@ -690,6 +1072,11 @@ html {
 .nav-link:hover {
     color: var(--primary-purple);
     background: rgba(107, 70, 193, 0.08);
+}
+
+.nav-link:focus {
+    outline: 2px solid var(--primary-purple);
+    outline-offset: 2px;
 }
 
 .nav-link.active {
@@ -3250,4 +3637,46 @@ html {
         align-items: flex-start;
         gap: 0.25rem;
     }
+}
+
+/* ========================================
+   PROFILE PAGE UTILITY CLASSES
+   Replaces inline styles on Aprofile.view.php
+   ======================================== */
+.profile-bio-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+.profile-bio-section h3 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+.profile-bio-section p {
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+.quick-actions-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.profile-success-banner {
+    max-width: 900px;
+    margin: 1.5rem auto;
+    padding: 1rem 1.5rem;
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+}
+
+.profile-link {
+    color: var(--primary-purple);
+    text-decoration: none;
+}
+.profile-link:hover {
+    text-decoration: underline;
 }

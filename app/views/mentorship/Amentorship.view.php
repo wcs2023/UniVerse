@@ -18,327 +18,17 @@ if (!defined('BASE_URL')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mentor Dashboard - UniVerse</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <script>
+        window.BASE_URL = '<?= BASE_URL ?>';
+        window.USER_TYPE = 'alumni';
+    </script>
     <style>
-        body {
-            padding-top: 90px;
-        }
-
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            min-width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-        }
-
-        .finalized-session-card {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .finalized-session-card .session-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .finalized-session-card .locked-badge {
-            background: #10b981;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .finalized-session-card .session-datetime {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #065f46;
-            margin-top: 0.5rem;
-        }
-
-        .time-slot-input-group {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            position: relative;
-        }
-
-        .time-slot-input-group label {
-            display: block;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .time-slot-input-group input[type="datetime-local"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        .time-slot-input-group input[type="datetime-local"]:focus {
-            border-color: #7c3aed;
-            outline: none;
-        }
-
-        .time-slot-input-group .remove-slot-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .time-slot-input-group .remove-slot-btn:hover {
-            background: #dc2626;
-        }
-
-        .add-slot-btn {
-            background: transparent;
-            border: 2px dashed #7c3aed;
-            color: #7c3aed;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.2s;
-            margin-top: 0.5rem;
-        }
-
-        .add-slot-btn:hover {
-            background: #f5f3ff;
-        }
-
-        .add-slot-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .info-text {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 0.75rem;
-            color: #1e40af;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-dialog {
-            background: white;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .btn-secondary:hover {
-            background: #e5e7eb;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
-        }
-
-        .btn-primary:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .request-item {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: box-shadow 0.2s;
-        }
-
-        .request-item:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .request-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .request-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .request-details h3 {
-            margin: 0;
-            font-size: 1rem;
-            color: #1f2937;
-        }
-
-        .request-details p {
-            margin: 0.25rem 0 0;
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-
-        .request-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-accept {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn-accept:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-decline {
-            background: #f3f4f6;
-            color: #6b7280;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-decline:hover {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid #10b981;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        body { padding-top: 80px; background-color: #a78bfa45 !important; }
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
     </style>
 </head>
@@ -352,19 +42,40 @@ if (!defined('BASE_URL')) {
     }
     ?>
 
-    <div class="container">
+    <main id="main-content" role="main">
+    <div class="ms-container">
+        <!-- Mentor Inactive Warning -->
+        <?php if (!empty($data['mentor_inactive'])): ?>
+            <div style="background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
+                <h2 style="margin: 0 0 0.75rem 0; font-size: 1.3rem;">Mentorship Not Enabled</h2>
+                <p style="margin: 0 0 1rem 0;">You need to enable mentorship availability in your profile settings to manage slots and receive bookings.</p>
+                <a href="<?= BASE_URL ?>/aeditprofile#mentorship-settings" style="display: inline-block; background: #6c63ff; color: white; padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Enable in Profile Settings</a>
+            </div>
+        <?php endif; ?>
+
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
-            <div class="success-message">
-                <span>✅</span>
+            <div class="ms-success-message">
+                <span class="ms-status-dot ms-status-dot--active"></span>
                 <span>
                     <?php 
                     switch($_GET['success']) {
-                        case 'time_slots_sent':
-                            echo 'Time slots have been sent to the student. They will select their preferred time.';
+                        case 'slots_added':
+                            $count = isset($_GET['count']) ? (int)$_GET['count'] : 0;
+                            $skipped = isset($_GET['skipped']) ? (int)$_GET['skipped'] : 0;
+                            $msg = $count > 0 
+                                ? "Added {$count} availability slot" . ($count > 1 ? 's' : '') . " successfully!"
+                                : 'Availability slots added successfully!';
+                            if ($skipped > 0) {
+                                $msg .= " ({$skipped} duplicate" . ($skipped > 1 ? 's' : '') . " skipped)";
+                            }
+                            echo $msg . ' Students can now book these times.';
                             break;
-                        case 'declined':
-                            echo 'Mentorship request has been declined.';
+                        case 'booking_cancelled':
+                            echo 'Booking has been cancelled successfully.';
+                            break;
+                        case 'completed':
+                            echo 'Session marked as completed.';
                             break;
                         default:
                             echo 'Action completed successfully.';
@@ -374,354 +85,378 @@ if (!defined('BASE_URL')) {
             </div>
         <?php endif; ?>
 
-        <h1 class="page-title">Mentor Dashboard</h1>
+        <h1 class="ms-page-title">Mentor Dashboard</h1>
 
-        <div class="dashboard-grid">
+        <div class="ms-dashboard-grid">
             <!-- Left Column -->
             <div>
-                <!-- Pending Requests -->
-                <div class="dashboard-card">
-                    <h2 class="card-title">📥 Pending Requests</h2>
+                <!-- Availability Management -->
+                <div class="ms-card">
+                    <div class="ms-availability-header">
+                        <h2 class="ms-card-title">My Availability (Next 2 Weeks)</h2>
+                        <button class="ms-btn-add-availability" onclick="openAddSlotsModal()" aria-label="Add new availability slots">
+                            + Add Slots
+                        </button>
+                    </div>
 
-                    <?php if (isset($data['pending_requests']) && count($data['pending_requests']) > 0): ?>
-                        <?php foreach ($data['pending_requests'] as $request): ?>
-                            <div class="request-item">
-                                <div class="request-info">
-                                    <img src="<?= !empty($request['profile_picture_url']) ? htmlspecialchars($request['profile_picture_url']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
-                                        alt="<?= htmlspecialchars($request['mentee_name']) ?>" class="request-avatar">
-                                    <div class="request-details">
-                                        <h3><?= htmlspecialchars($request['mentee_name']) ?></h3>
-                                        <p><?= htmlspecialchars($request['major'] ?? 'Student') ?></p>
-                                        <?php if (!empty($request['message'])): ?>
-                                            <p style="font-style: italic; color: #9ca3af; margin-top: 0.5rem;">
-                                                "<?= htmlspecialchars(substr($request['message'], 0, 100)) ?>..."
-                                            </p>
-                                        <?php endif; ?>
-                                    </div>
+                    <div class="ms-slots-grid">
+                        <?php if (isset($data['availability_slots']) && count($data['availability_slots']) > 0): ?>
+                            <?php foreach ($data['availability_slots'] as $slot): ?>
+                                <?php 
+                                    $slotDate = new DateTime($slot['slot_datetime']);
+                                    $isBooked = !empty($slot['is_booked']) || $slot['is_booked'] == 1;
+                                ?>
+                                <div class="ms-slot-card <?= $isBooked ? 'booked' : '' ?>" data-slot-id="<?= $slot['slot_id'] ?>">
+                                    <div class="ms-slot-date"><?= $slotDate->format('D, M j') ?></div>
+                                    <div class="ms-slot-time"><?= $slotDate->format('g:i A') ?></div>
+                                    <span class="ms-slot-status <?= $isBooked ? 'booked' : 'available' ?>">
+                                        <?= $isBooked ? '✓ Booked' : 'Available' ?>
+                                    </span>
+                                    <?php if (!$isBooked): ?>
+                                        <button class="ms-remove-slot-btn" onclick="removeSlot(<?= $slot['slot_id'] ?>)" aria-label="Remove this time slot"><span aria-hidden="true">&times;</span></button>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="request-actions">
-                                    <button class="btn-accept"
-                                        onclick="acceptRequest(<?= $request['request_id'] ?>, '<?= htmlspecialchars(addslashes($request['mentee_name'])) ?>')">
-                                        ✓ Accept
-                                    </button>
-                                    <button class="btn-decline" onclick="declineRequest(<?= $request['request_id'] ?>)">
-                                        ✗ Decline
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="ms-empty-state" style="grid-column: 1 / -1;">
+                                <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                                <h3>No Availability Set</h3>
+                                <p>Add your available time slots so students can book sessions with you.</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Upcoming Bookings -->
+                <div class="ms-card">
+                    <h2 class="ms-card-title">Upcoming Bookings</h2>
+
+                    <?php if (isset($data['upcoming_bookings']) && count($data['upcoming_bookings']) > 0): ?>
+                        <?php foreach ($data['upcoming_bookings'] as $booking): ?>
+                            <?php 
+                                $sessionDate = new DateTime($booking['slot_datetime']); 
+                                $now = new DateTime();
+                                $diff = $now->diff($sessionDate);
+                                $minutesUntil = ($sessionDate->getTimestamp() - $now->getTimestamp()) / 60;
+                                $canJoin = $minutesUntil <= 15 && $minutesUntil > -120;
+                                $isActive = $minutesUntil <= 0 && $minutesUntil > -120;
+                            ?>
+                            <div class="ms-booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
+                                <div class="ms-booking-header">
+                                    <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                        alt="<?= htmlspecialchars($booking['student_name'] ?? 'Student') ?>" 
+                                        class="ms-booking-avatar"
+                                        onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                                    <div class="ms-booking-info">
+                                        <h4 class="ms-booking-name"><?= htmlspecialchars($booking['student_name'] ?? 'Student') ?></h4>
+                                        <p class="ms-booking-subtitle">
+                                            <?= htmlspecialchars($booking['degree_program'] ?? 'Student') ?>
+                                        </p>
+                                    </div>
+                                    <span class="ms-badge <?= $isActive ? 'ms-badge-active' : ($canJoin ? 'ms-badge-soon' : 'ms-badge-upcoming') ?>" role="status">
+                                        <?= $isActive ? '<span class="ms-status-dot ms-status-dot--live" aria-hidden="true"></span> LIVE' : ($canJoin ? 'Starting Soon' : 'Confirmed') ?>
+                                    </span>
+                                </div>
+                                
+                                <div class="ms-booking-datetime">
+                                    <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
+                                </div>
+                                
+                                <!-- Countdown -->
+                                <div class="ms-countdown" aria-live="polite" role="timer">
+                                    <?php if ($isActive): ?>
+                                        <span class="ms-countdown--live"><span class="ms-status-dot ms-status-dot--active"></span> Session In Progress</span>
+                                    <?php elseif ($canJoin): ?>
+                                        <span class="ms-countdown--soon">Starting very soon!</span>
+                                    <?php else: ?>
+                                        <span class="ms-countdown--waiting">
+                                            Starts in: <strong>
+                                            <?php
+                                                if ($diff->d > 0) echo $diff->d . 'd ' . $diff->h . 'h';
+                                                elseif ($diff->h > 0) echo $diff->h . 'h ' . $diff->i . 'm';
+                                                else echo $diff->i . ' minutes';
+                                            ?>
+                                            </strong>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="ms-booking-actions">
+                                    <?php if (!empty($booking['meeting_link'])): ?>
+                                        <button class="ms-btn join-meeting-btn <?= $canJoin ? 'ms-btn-join-active' : 'ms-btn-join-disabled' ?>" 
+                                                <?= !$canJoin ? 'disabled' : '' ?>
+                                                onclick="<?= $canJoin ? "window.open('" . htmlspecialchars($booking['meeting_link']) . "', '_blank')" : '' ?>">
+                                            <?= $canJoin ? 'Join Meeting' : 'Wait for Session' ?>
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="ms-btn ms-btn-secondary ms-info-strip--muted">
+                                            Meeting link unavailable
+                                        </span>
+                                    <?php endif; ?>
+                                    
+                                    <button class="ms-btn ms-btn-secondary" onclick="openCancelModal(<?= $booking['booking_id'] ?>)">
+                                        Cancel Booking
                                     </button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <div class="empty-state">
-                            <div class="empty-icon">📭</div>
-                            <h3>No Pending Requests</h3>
-                            <p>No pending requests at the moment</p>
+                        <div class="ms-empty-state">
+                            <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                            <h3>No Upcoming Bookings</h3>
+                            <p>When students book your available slots, they'll appear here.</p>
                         </div>
                     <?php endif; ?>
                 </div>
 
-                <!-- Confirmed/Finalized Sessions -->
-                <?php if (isset($data['finalized_sessions']) && count($data['finalized_sessions']) > 0): ?>
-                    <div class="dashboard-card" style="margin-top: 2rem;">
-                        <h2 class="card-title">🔒 Confirmed Sessions</h2>
-
-                        <?php foreach ($data['finalized_sessions'] as $session): ?>
-                            <?php $sessionDate = new DateTime($session['session_datetime']); ?>
-                            <div class="finalized-session-card">
-                                <div class="session-header">
-                                    <img src="<?= !empty($session['student_picture']) ? htmlspecialchars($session['student_picture']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
-                                        alt="<?= htmlspecialchars($session['student_name']) ?>" 
-                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                                    <div style="flex: 1;">
-                                        <h4 style="margin: 0;"><?= htmlspecialchars($session['student_name']) ?></h4>
-                                        <p style="margin: 0; color: #065f46; font-size: 0.875rem;">
-                                            <?= htmlspecialchars($session['degree_program'] ?? 'Student') ?>
-                                        </p>
+                <!-- Completed Sessions -->
+                <?php if (isset($data['completed_sessions']) && count($data['completed_sessions']) > 0): ?>
+                    <div class="ms-card">
+                        <h2 class="ms-card-title">Recent Completed Sessions</h2>
+                        <?php foreach (array_slice($data['completed_sessions'], 0, 5) as $session): ?>
+                            <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
+                            <div class="ms-completed-item">
+                                <img src="<?= !empty($session['student_picture']) ? BASE_URL . htmlspecialchars($session['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                    alt="Student" class="ms-completed-avatar"
+                                    onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                                <div class="ms-completed-info">
+                                    <div class="ms-completed-name"><?= htmlspecialchars($session['student_name'] ?? 'Student') ?></div>
+                                    <div class="ms-completed-date"><?= $sessionDate->format('M j, Y') ?></div>
+                                </div>
+                                <?php if (!empty($session['rating'])): ?>
+                                    <div class="ms-rating-stars">
+                                        <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
                                     </div>
-                                    <span class="locked-badge">🔒 Confirmed</span>
-                                </div>
-                                <div class="session-datetime">
-                                    📅 <?= $sessionDate->format('l, F j, Y') ?> at <?= $sessionDate->format('g:i A') ?>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Upcoming Sessions (Legacy) -->
-                <?php if (isset($data['upcoming_sessions']) && count($data['upcoming_sessions']) > 0): ?>
-                    <div class="dashboard-card" style="margin-top: 2rem;">
-                        <h2 class="card-title">📅 Upcoming Sessions</h2>
-
-                        <?php foreach ($data['upcoming_sessions'] as $session): ?>
-                            <div class="session-item">
-                                <img src="<?= !empty($session['profile_picture_url']) ? htmlspecialchars($session['profile_picture_url']) : 'https://i.pravatar.cc/150?img=' . rand(1, 70) ?>"
-                                    alt="<?= htmlspecialchars($session['mentee_name']) ?>" class="session-avatar">
-                                <div class="session-details">
-                                    <h4><?= htmlspecialchars($session['mentee_name']) ?></h4>
-                                    <p><?= date('F j, Y · g:i A', strtotime($session['scheduled_time'])) ?></p>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
 
-            <!-- Right Column - Impact Stats -->
-            <div class="stats-card">
-                <h2 class="card-title">📊 Impact Stats</h2>
+            <!-- Right Column - Stats -->
+            <div>
+                <div class="ms-stats-card">
+                    <h2 class="ms-card-title">Impact Stats</h2>
 
-                <div class="stat-item">
-                    <div class="stat-label">Mentees Helped</div>
-                    <div class="stat-value">
-                        <?= isset($data['stats']['total_mentees']) ? $data['stats']['total_mentees'] : 0 ?></div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-label">Hours Mentored</div>
-                    <div class="stat-value">
-                        <?= isset($data['stats']['total_hours']) ? $data['stats']['total_hours'] : 0 ?></div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-label">Average Rating</div>
-                    <div class="stat-value">
-                        <?= isset($data['stats']['average_rating']) ? number_format($data['stats']['average_rating'], 1) : '0.0' ?>
+                    <div class="ms-stat-item">
+                        <div class="ms-stat-label">Total Sessions</div>
+                        <div class="ms-stat-value"><?= $data['stats']['total_sessions'] ?? 0 ?></div>
                     </div>
-                </div>
 
-                <?php if (isset($data['unread_notifications']) && $data['unread_notifications'] > 0): ?>
-                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
-                        <div class="stat-item">
-                            <div class="stat-label">🔔 Unread Notifications</div>
-                            <div class="stat-value" style="color: #7c3aed;">
-                                <?= $data['unread_notifications'] ?>
-                            </div>
+                    <div class="ms-stat-item">
+                        <div class="ms-stat-label">Completed Sessions</div>
+                        <div class="ms-stat-value"><?= $data['stats']['completed_sessions'] ?? 0 ?></div>
+                    </div>
+
+                    <div class="ms-stat-item">
+                        <div class="ms-stat-label">Average Rating</div>
+                        <div class="ms-stat-value">
+                            <?= isset($data['stats']['average_rating']) ? number_format($data['stats']['average_rating'], 1) : '0.0' ?> / 5
                         </div>
                     </div>
-                <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Time Slots Modal -->
-    <div id="timeSlotsModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <h3 class="modal-title">📅 Propose Time Slots</h3>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
+    <!-- Add Slots Modal -->
+    <div id="addSlotsModal" class="ms-modal">
+        <div class="ms-modal-dialog">
+            <div class="ms-modal-header">
+                <h3>Add Availability Slots</h3>
+                <button class="ms-close-modal" onclick="closeAddSlotsModal()" aria-label="Close add slots dialog"><span aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body">
-                <div class="info-text">
-                    ℹ️ Please provide <strong>2 time slots</strong> for <strong id="menteeName"></strong> to choose from.
-                    The student will receive a notification and select their preferred time.
+            <div class="ms-modal-body">
+                <div class="ms-info-text">
+                    Add 1-hour time slots when you're available. Students can instantly book any slot (first-come-first-served).
                 </div>
 
-                <form id="timeSlotsForm">
-                    <input type="hidden" id="requestId" name="request_id">
-                    
-                    <div id="timeSlotsContainer">
-                        <div class="time-slot-input-group" data-slot="1">
-                            <label>Option 1 (Required)</label>
-                            <input type="datetime-local" name="time_slots[]" required 
-                                   min="<?= date('Y-m-d\TH:i', strtotime('+1 day')) ?>">
-                        </div>
-                        <div class="time-slot-input-group" data-slot="2">
-                            <label>Option 2 (Required)</label>
-                            <input type="datetime-local" name="time_slots[]" required
-                                   min="<?= date('Y-m-d\TH:i', strtotime('+1 day')) ?>">
-                        </div>
+                <div id="slotsContainer">
+                    <div class="ms-time-slot-input-group">
+                        <label>Slot 1</label>
+                        <input type="datetime-local" class="slot-input" 
+                               min="<?= date('Y-m-d\TH:i') ?>" 
+                               max="<?= date('Y-m-d\TH:i', strtotime('+14 days')) ?>">
                     </div>
+                </div>
 
-                    <button type="button" class="add-slot-btn" id="addSlotBtn" onclick="addTimeSlot()">
-                        + Add Another Option (Optional)
-                    </button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" id="submitSlotsBtn" onclick="submitTimeSlots()">
-                    📤 Send to Student
+                <button type="button" class="ms-btn-add-slot" onclick="addSlotInput()">
+                    + Add Another Slot
                 </button>
+            </div>
+            <div class="ms-modal-footer">
+                <button class="ms-btn ms-btn-secondary" onclick="closeAddSlotsModal()">Cancel</button>
+                <button class="ms-btn ms-btn-primary" onclick="submitSlots()">Save Availability</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div id="cancelModal" class="ms-modal">
+        <div class="ms-modal-dialog">
+            <div class="ms-modal-header ms-modal-header--danger">
+                <h3>Cancel Booking</h3>
+                <button class="ms-close-modal" onclick="closeCancelModal()" aria-label="Close cancel booking dialog"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="ms-modal-body">
+                <input type="hidden" id="cancelBookingId">
+                <p>Are you sure you want to cancel this booking? The student will be notified.</p>
+                <div style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Reason for cancellation (required):</label>
+                    <textarea id="cancelReason" class="ms-textarea ms-textarea--danger" placeholder="Please provide a reason..." required></textarea>
+                </div>
+            </div>
+            <div class="ms-modal-footer">
+                <button class="ms-btn ms-btn-secondary" onclick="closeCancelModal()">Keep Booking</button>
+                <button class="ms-btn ms-btn-danger" onclick="confirmCancel()">Cancel Booking</button>
             </div>
         </div>
     </div>
 
     <script>
-        let slotCount = 2;
-        const maxSlots = 4;
+        let slotCount = 1;
 
-        function acceptRequest(requestId, menteeName) {
-            document.getElementById('requestId').value = requestId;
-            document.getElementById('menteeName').textContent = menteeName;
-            document.getElementById('timeSlotsModal').classList.add('show');
+        function openAddSlotsModal() {
+            document.getElementById('addSlotsModal').classList.add('show');
         }
 
-        function declineRequest(requestId) {
-            if (confirm('Are you sure you want to decline this mentorship request?')) {
-                fetch('<?= BASE_URL ?>/amentorships/declineRequest', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ request_id: requestId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = '<?= BASE_URL ?>/amentorships?success=declined';
-                    } else {
-                        alert('Error declining request. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error declining request. Please try again.');
-                });
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('timeSlotsModal').classList.remove('show');
-            // Reset form
-            document.getElementById('timeSlotsForm').reset();
-            // Reset to 2 slots
-            const container = document.getElementById('timeSlotsContainer');
-            container.innerHTML = `
-                <div class="time-slot-input-group" data-slot="1">
-                    <label>Option 1 (Required)</label>
-                    <input type="datetime-local" name="time_slots[]" required 
-                           min="${new Date(Date.now() + 86400000).toISOString().slice(0, 16)}">
-                </div>
-                <div class="time-slot-input-group" data-slot="2">
-                    <label>Option 2 (Required)</label>
-                    <input type="datetime-local" name="time_slots[]" required
-                           min="${new Date(Date.now() + 86400000).toISOString().slice(0, 16)}">
+        function closeAddSlotsModal() {
+            document.getElementById('addSlotsModal').classList.remove('show');
+            // Reset
+            document.getElementById('slotsContainer').innerHTML = `
+                <div class="ms-time-slot-input-group">
+                    <label>Slot 1</label>
+                    <input type="datetime-local" class="slot-input" 
+                           min="${new Date().toISOString().slice(0, 16)}" 
+                           max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
                 </div>
             `;
-            slotCount = 2;
-            document.getElementById('addSlotBtn').disabled = false;
+            slotCount = 1;
         }
 
-        function addTimeSlot() {
-            if (slotCount >= maxSlots) {
-                document.getElementById('addSlotBtn').disabled = true;
-                return;
-            }
-
+        function addSlotInput() {
             slotCount++;
-            const container = document.getElementById('timeSlotsContainer');
-            const minDate = new Date(Date.now() + 86400000).toISOString().slice(0, 16);
-            
-            const slotHtml = `
-                <div class="time-slot-input-group" data-slot="${slotCount}">
-                    <label>Option ${slotCount} (Optional)</label>
-                    <input type="datetime-local" name="time_slots[]" 
-                           min="${minDate}">
-                    <button type="button" class="remove-slot-btn" onclick="removeTimeSlot(this)">&times;</button>
+            const container = document.getElementById('slotsContainer');
+            const html = `
+                <div class="ms-time-slot-input-group">
+                    <label>Slot ${slotCount}</label>
+                    <input type="datetime-local" class="slot-input" 
+                           min="${new Date().toISOString().slice(0, 16)}" 
+                           max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
                 </div>
             `;
-            container.insertAdjacentHTML('beforeend', slotHtml);
-
-            if (slotCount >= maxSlots) {
-                document.getElementById('addSlotBtn').disabled = true;
-            }
+            container.insertAdjacentHTML('beforeend', html);
         }
 
-        function removeTimeSlot(button) {
-            button.closest('.time-slot-input-group').remove();
-            slotCount--;
-            document.getElementById('addSlotBtn').disabled = false;
+        async function submitSlots() {
+            const inputs = document.querySelectorAll('.slot-input');
+            const slots = [];
             
-            // Re-number remaining slots
-            const slots = document.querySelectorAll('.time-slot-input-group');
-            slots.forEach((slot, index) => {
-                const label = slot.querySelector('label');
-                const isRequired = index < 2;
-                label.textContent = `Option ${index + 1} (${isRequired ? 'Required' : 'Optional'})`;
-                slot.setAttribute('data-slot', index + 1);
-            });
-        }
-
-        function submitTimeSlots() {
-            const form = document.getElementById('timeSlotsForm');
-            const inputs = form.querySelectorAll('input[type="datetime-local"]');
-            const timeSlots = [];
-            const now = new Date();
-
-            // Collect and validate time slots
-            let hasError = false;
-            inputs.forEach((input, index) => {
+            inputs.forEach(input => {
                 if (input.value) {
-                    const slotDate = new Date(input.value);
-                    if (slotDate <= now) {
-                        alert(`Time slot ${index + 1} must be in the future.`);
-                        hasError = true;
-                        return;
-                    }
-                    timeSlots.push(input.value);
-                } else if (index < 2) {
-                    // First two are required
-                    alert(`Please fill in time slot ${index + 1}. At least 2 options are required.`);
-                    hasError = true;
-                    return;
+                    slots.push(input.value);
                 }
             });
 
-            if (hasError) return;
-
-            if (timeSlots.length < 2) {
-                alert('Please provide at least 2 time slots for the student to choose from.');
+            if (slots.length === 0) {
+                MentorshipSystem.showNotification('Please add at least one time slot.', 'error');
                 return;
             }
 
-            const requestId = document.getElementById('requestId').value;
-            const submitBtn = document.getElementById('submitSlotsBtn');
-            
-            // Disable button and show loading
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
+            // Show confirmation with count
+            const confirmed = await MentorshipSystem.showConfirmationModal(
+                'Add Availability',
+                `Add ${slots.length} availability slot${slots.length > 1 ? 's' : ''}?`
+            );
+            if (!confirmed) return;
 
-            fetch('<?= BASE_URL ?>/amentorships/proposeTimeSlots', {
+            fetch('<?= BASE_URL ?>/amentorships/addAvailability', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    request_id: requestId,
-                    time_slots: timeSlots
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slots: slots })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    closeModal();
-                    window.location.href = '<?= BASE_URL ?>/amentorships?success=time_slots_sent';
+                    const added = data.added || slots.length;
+                    const skipped = data.duplicates || 0;
+                    let msg = 'slots_added&count=' + added;
+                    if (skipped > 0) msg += '&skipped=' + skipped;
+                    window.location.href = '<?= BASE_URL ?>/amentorships?success=' + msg;
                 } else {
-                    alert('Error: ' + (data.message || 'Failed to send time slots. Please try again.'));
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '📤 Send to Student';
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to add slots'), 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error sending time slots. Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '📤 Send to Student';
+                MentorshipSystem.showNotification('An error occurred. Please try again.', 'error');
             });
         }
 
-        // Close modal when clicking outside
-        document.getElementById('timeSlotsModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
+        async function removeSlot(slotId) {
+            const confirmed = await MentorshipSystem.showConfirmationModal(
+                'Remove Slot',
+                'Remove this availability slot?',
+                true
+            );
+            if (!confirmed) return;
+
+            fetch('<?= BASE_URL ?>/amentorships/removeAvailability', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slot_id: slotId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to remove slot'), 'error');
+                }
+            });
+        }
+
+        function openCancelModal(bookingId) {
+            document.getElementById('cancelBookingId').value = bookingId;
+            document.getElementById('cancelReason').value = '';
+            document.getElementById('cancelModal').classList.add('show');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').classList.remove('show');
+        }
+
+        function confirmCancel() {
+            const bookingId = document.getElementById('cancelBookingId').value;
+            const reason = document.getElementById('cancelReason').value.trim();
+
+            if (!reason) {
+                MentorshipSystem.showNotification('Please provide a reason for cancellation.', 'error');
+                return;
             }
-        });
+
+            fetch('<?= BASE_URL ?>/amentorships/cancelBooking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ booking_id: bookingId, reason: reason })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '<?= BASE_URL ?>/amentorships?success=booking_cancelled';
+                } else {
+                    MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to cancel booking'), 'error');
+                }
+            });
+        }
+
+        // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
+    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
+    </main>
 
-    <?php
-    // Include footer
-    include __DIR__ . '/../layout/footer.php';
-    ?>
+    <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
-
 </html>

@@ -24,7 +24,8 @@ $article = $data['article'] ?? [];
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         body {
-            padding-top: 90px;
+            padding-top: 80px;
+            background-color: #a78bfa45 !important;
         }
     </style>
 </head>
@@ -47,7 +48,7 @@ $article = $data['article'] ?? [];
 
             <div class="action-buttons">
                 <a href="<?= BASE_URL ?>/aarticles/edit/<?= $article['article_id'] ?>" class="btn btn-secondary">
-                    ✏️ Edit Article
+                    Edit Article
                 </a>
             </div>
         </div>
@@ -64,7 +65,7 @@ $article = $data['article'] ?? [];
 
                 <div class="article-meta">
                     <div class="meta-item">
-                        <span class="meta-icon">📅</span>
+                        <span class="meta-icon">Date:</span>
                         <span>
                             <?php if ($article['status'] === 'published' && !empty($article['published_at'])): ?>
                                 Published on <?= date('F j, Y', strtotime($article['published_at'])) ?>
@@ -76,7 +77,7 @@ $article = $data['article'] ?? [];
 
                     <?php if (!empty($article['category'])): ?>
                         <div class="meta-item">
-                            <span class="meta-icon">🏷️</span>
+                            <span class="meta-icon">Category:</span>
                             <span><?= htmlspecialchars($article['category']) ?></span>
                         </div>
                     <?php endif; ?>
@@ -93,11 +94,11 @@ $article = $data['article'] ?? [];
             <!-- Article Stats -->
             <div class="article-stats">
                 <div class="stat-item">
-                    <span class="stat-icon">👁️</span>
+                    <span class="stat-icon">Views:</span>
                     <span><?= number_format($article['views'] ?? 0) ?> views</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-icon">👍</span>
+                    <span class="stat-icon">Likes:</span>
                     <span><?= number_format($article['likes'] ?? 0) ?> likes</span>
                 </div>
             </div>

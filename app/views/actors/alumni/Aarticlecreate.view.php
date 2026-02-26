@@ -21,11 +21,19 @@ if (!defined('BASE_URL')) {
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         body {
-            padding-top: 90px;
+            padding-top: 80px;
+            background-color: #a78bfa45 !important;
         }
 
-        .alert {
-            display: none;
+        /* Override alumni.css - hide alerts by default */
+        #alert-success,
+        #alert-error {
+            display: none !important;
+        }
+        
+        #alert-success.show,
+        #alert-error.show {
+            display: flex !important;
         }
     </style>
 </head>
@@ -42,7 +50,7 @@ if (!defined('BASE_URL')) {
     <div class="container">
         <div class="form-card">
             <div class="form-header">
-                <h1 class="form-title">✍️ Create New Article</h1>
+                <h1 class="form-title">Create New Article</h1>
                 <a href="<?= BASE_URL ?>/aarticles" class="btn-back">
                     ← Back to Articles
                 </a>
@@ -210,24 +218,24 @@ if (!defined('BASE_URL')) {
             const errorAlert = document.getElementById('alert-error');
 
             // Hide both alerts first
-            successAlert.style.display = 'none';
-            errorAlert.style.display = 'none';
+            successAlert.classList.remove('show');
+            errorAlert.classList.remove('show');
 
             if (type === 'success') {
                 successAlert.textContent = message;
-                successAlert.style.display = 'block';
+                successAlert.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 errorAlert.textContent = message;
-                errorAlert.style.display = 'block';
+                errorAlert.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         // Auto-hide alerts after 4 seconds
         setTimeout(() => {
-            document.getElementById('alert-success').style.display = 'none';
-            document.getElementById('alert-error').style.display = 'none';
+            document.getElementById('alert-success').classList.remove('show');
+            document.getElementById('alert-error').classList.remove('show');
         }, 4000);
     </script>
 

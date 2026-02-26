@@ -1,0 +1,1171 @@
+/* ========================================
+   MENTORSHIP PAGES STYLES
+   Extracted from inline styles for better maintainability
+   Last Updated: February 2026
+   ======================================== */
+
+/* ========================================
+   LAYOUT
+   ======================================== */
+.ms-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.ms-dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 900px) {
+    .ms-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ms-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.ms-page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* ========================================
+   CARDS
+   ======================================== */
+.ms-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.ms-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1f2937;
+}
+
+.ms-section-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   AVAILABILITY SLOTS
+   ======================================== */
+.ms-availability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.ms-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.ms-slot-card {
+    background: #f5f3ff;
+    border: 2px solid #e9d5ff;
+    border-radius: 12px;
+    padding: 1rem;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.ms-slot-card:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
+}
+
+.ms-slot-card.booked {
+    background: #d1fae5;
+    border-color: #10b981;
+}
+
+.ms-slot-date {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.95rem;
+}
+
+.ms-slot-time {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.ms-slot-status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+.ms-slot-status.available {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.ms-slot-status.booked {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Remove slot button - increased touch target */
+.ms-remove-slot-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.ms-remove-slot-btn:focus {
+    opacity: 1;
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+}
+
+.ms-slot-card:hover .ms-remove-slot-btn {
+    opacity: 1;
+}
+
+.ms-slot-card.booked .ms-remove-slot-btn {
+    display: none;
+}
+
+/* ========================================
+   BOOKING CARDS
+   ======================================== */
+.ms-booking-card {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border: 2px solid #10b981;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ms-booking-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ms-booking-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.ms-booking-info {
+    flex: 1;
+}
+
+.ms-booking-name {
+    margin: 0;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.ms-booking-subtitle {
+    margin: 0;
+    color: #065f46;
+    font-size: 0.875rem;
+}
+
+.ms-booking-datetime {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #065f46;
+    margin-top: 0.75rem;
+}
+
+/* ========================================
+   STATUS BADGES
+   ======================================== */
+.ms-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.ms-badge-upcoming {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.ms-badge-soon {
+    background: #fef3c7;
+    color: #b45309;
+    animation: ms-pulse 1.5s infinite;
+}
+
+.ms-badge-active {
+    background: #fee2e2;
+    color: #dc2626;
+    animation: ms-pulse 1s infinite;
+}
+
+.ms-badge-available {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.ms-badge-booked {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+@keyframes ms-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.ms-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.ms-btn:focus {
+    outline: 2px solid #7c3aed;
+    outline-offset: 2px;
+}
+
+.ms-btn-primary {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+}
+
+.ms-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.ms-btn-primary:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.ms-btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.ms-btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.ms-btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.ms-btn-danger:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.ms-btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.ms-btn-warning:hover {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.ms-btn-book {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.ms-btn-book:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.ms-btn-book:disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.ms-btn-explore {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ms-btn-explore:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.ms-btn-add-availability {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 44px;
+}
+
+.ms-btn-add-availability:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.ms-btn-add-slot {
+    background: transparent;
+    border: 2px dashed #7c3aed;
+    color: #7c3aed;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 0.5rem;
+    min-height: 44px;
+}
+
+.ms-btn-add-slot:hover {
+    background: #f5f3ff;
+}
+
+.ms-btn-join-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    animation: ms-pulseGlow 2s infinite;
+}
+
+.ms-btn-join-disabled {
+    background: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+}
+
+@keyframes ms-pulseGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+}
+
+.ms-btn-view {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+    width: 100%;
+}
+
+.ms-btn-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+/* ========================================
+   STATS CARD
+   ======================================== */
+.ms-stats-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ms-stat-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ms-stat-item:last-child {
+    border-bottom: none;
+}
+
+.ms-stat-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.ms-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* ========================================
+   EMPTY STATES
+   ======================================== */
+.ms-empty-state, .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6b7280;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    grid-column: 1 / -1;
+}
+
+.ms-empty-icon, .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.ms-empty-state h3, .empty-state h3 {
+    margin-bottom: 0.5rem;
+    color: #374151;
+}
+
+.ms-empty-state p, .empty-state p {
+    margin: 0;
+}
+
+/* ========================================
+   MODALS
+   ======================================== */
+.ms-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.ms-modal.show {
+    display: flex;
+}
+
+.ms-modal-dialog {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.ms-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+}
+
+.ms-modal-header h3 {
+    margin: 0;
+}
+
+.ms-modal-header--danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.ms-modal-header--warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.ms-modal-body {
+    padding: 1.5rem;
+}
+
+.ms-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+/* Close button with proper touch target */
+.ms-close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.ms-close-modal:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ms-close-modal:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* ========================================
+   FORM INPUTS
+   ======================================== */
+.ms-time-slot-input-group {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.ms-time-slot-input-group label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.ms-time-slot-input-group input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    min-height: 44px;
+}
+
+.ms-time-slot-input-group input:focus {
+    border-color: #7c3aed;
+    outline: none;
+}
+
+.ms-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.ms-textarea:focus {
+    border-color: #7c3aed;
+    outline: none;
+}
+
+.ms-textarea--danger:focus {
+    border-color: #ef4444;
+}
+
+/* ========================================
+   INFO & MESSAGES
+   ======================================== */
+.ms-info-text {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: #1e40af;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.ms-success-message {
+    background: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ms-error-message {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========================================
+   MENTOR CARDS (Browse)
+   ======================================== */
+.ms-mentors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.ms-mentor-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ms-mentor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.ms-mentor-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    padding: 1.5rem;
+    text-align: center;
+    color: white;
+}
+
+.ms-mentor-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    margin-bottom: 0.75rem;
+}
+
+.ms-mentor-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.ms-mentor-title {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.ms-mentor-body {
+    padding: 1.25rem;
+}
+
+.ms-mentor-company {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.ms-mentor-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.ms-skill-tag {
+    background: #f3e8ff;
+    color: #7c3aed;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.ms-availability-count {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.ms-mentor-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.ms-mentor-rating .stars {
+    color: #fbbf24;
+}
+
+.ms-mentor-rating .rating-count {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   SLOT SELECTION (Booking Modal)
+   ======================================== */
+.ms-slots-container {
+    display: grid;
+    gap: 0.75rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ms-slot-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ms-slot-option:hover {
+    border-color: #7c3aed;
+    background: #f9fafb;
+}
+
+.ms-slot-option.selected {
+    border-color: #10b981;
+    background: #d1fae5;
+}
+
+.ms-slot-radio {
+    width: 24px;
+    height: 24px;
+    accent-color: #10b981;
+}
+
+.ms-slot-info {
+    flex: 1;
+}
+
+/* ========================================
+   SEARCH & FILTERS
+   ======================================== */
+.ms-filter-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.ms-search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    min-height: 44px;
+}
+
+.ms-search-input:focus {
+    border-color: #7c3aed;
+    outline: none;
+}
+
+.ms-filter-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    min-width: 150px;
+    min-height: 44px;
+}
+
+.ms-filter-select:focus {
+    border-color: #7c3aed;
+    outline: none;
+}
+
+/* ========================================
+   FEEDBACK
+   ======================================== */
+.ms-feedback-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.ms-star-rating {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 1rem 0;
+}
+
+.ms-star-btn {
+    cursor: pointer;
+    color: #d1d5db;
+    transition: all 0.2s;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.ms-star-btn:hover {
+    transform: scale(1.2);
+}
+
+.ms-star-btn.active {
+    color: #fbbf24 !important;
+}
+
+.ms-star-btn:focus {
+    outline: 2px solid #fbbf24;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ========================================
+   CTA SECTION
+   ======================================== */
+.ms-cta-section {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.ms-cta-section h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.ms-cta-section p {
+    margin: 0 0 1.5rem 0;
+    opacity: 0.9;
+}
+
+.ms-cta-section .ms-btn {
+    background: white;
+    color: #7c3aed;
+}
+
+/* ========================================
+   COUNTDOWN
+   ======================================== */
+.ms-countdown {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+}
+
+.ms-countdown--live {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.ms-countdown--soon {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.ms-countdown--waiting {
+    color: #6b7280;
+}
+
+/* ========================================
+   BREADCRUMB
+   ======================================== */
+.ms-breadcrumb {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.ms-breadcrumb a {
+    color: #7c3aed;
+    text-decoration: none;
+}
+
+.ms-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .ms-page-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .ms-btn-explore {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .ms-booking-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .ms-filter-bar {
+        flex-direction: column;
+    }
+    
+    .ms-search-input,
+    .ms-filter-select {
+        width: 100%;
+    }
+
+    /* MOB-1: Fix modal overflow on mobile */
+    .ms-modal-dialog,
+    .modal-dialog {
+        width: 95%;
+        max-height: 85vh;
+        max-width: 100%;
+        margin: 0.5rem;
+        border-radius: 12px;
+    }
+
+    .ms-modal-body,
+    .modal-body {
+        padding: 1rem;
+        max-height: 60vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ms-modal-header,
+    .modal-header {
+        padding: 1rem;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .ms-modal-footer,
+    .modal-footer {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+    }
+
+    .ms-modal-footer .ms-btn,
+    .modal-footer .btn {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* MOB-2: Horizontal scroll for slots grid & tables */
+    .slots-grid,
+    .ms-slots-grid {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 0.75rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .slots-grid > *,
+    .ms-slots-grid > * {
+        min-width: 180px;
+        flex-shrink: 0;
+    }
+
+    .ms-mentors-grid,
+    .mentors-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ensure booking action buttons wrap properly */
+    .booking-card .btn,
+    .ms-booking-card .ms-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ========================================
+   CSS-ONLY ICON REPLACEMENTS
+   Replaces emoji characters with styled elements
+   ======================================== */
+
+/* Status dot indicators (replace colored circle emojis) */
+.ms-status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+}
+.ms-status-dot--live     { background-color: #dc2626; }
+.ms-status-dot--active   { background-color: #16a34a; }
+.ms-status-dot--upcoming { background-color: #6b46c1; }
+
+/* Star ratings (pure CSS, no emoji) */
+.ms-rating-stars {
+    display: inline-flex;
+    gap: 1px;
+    color: #fbbf24;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+.ms-rating-stars--lg { font-size: 1.25rem; }
+
+/* Empty state icon (CSS circle with text symbol) */
+.ms-empty-icon--css {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    font-weight: 700;
+}
+
+/* Inline label icon (small colored text before labels) */
+.ms-icon-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.ms-icon-label::before {
+    font-weight: 700;
+    font-size: 0.75rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+/* Variants for info-labels on mentor_profile */
+.ms-icon-label--email::before    { content: "@"; background: #dbeafe; color: #2563eb; }
+.ms-icon-label--link::before     { content: "↗"; background: #ede9fe; color: #7c3aed; }
+.ms-icon-label--github::before   { content: "<>"; background: #f3f4f6; color: #374151; font-size: 0.6rem; }
+.ms-icon-label--web::before      { content: "●"; background: #d1fae5; color: #059669; }
+.ms-icon-label--edu::before      { content: "▪"; background: #fef3c7; color: #d97706; }
+.ms-icon-label--degree::before   { content: "≡"; background: #ede9fe; color: #7c3aed; }
+.ms-icon-label--date::before     { content: "—"; background: #f3f4f6; color: #6b7280; }
+.ms-icon-label--role::before     { content: "→"; background: #ede9fe; color: #7c3aed; }
+.ms-icon-label--company::before  { content: "■"; background: #f3f4f6; color: #6b7280; }
+
+/* Completed sessions list item (replaces inline styles) */
+.ms-completed-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+.ms-completed-item:last-child { border-bottom: none; }
+.ms-completed-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.ms-completed-avatar--lg { width: 45px; height: 45px; }
+.ms-completed-info { flex: 1; }
+.ms-completed-name { font-weight: 500; }
+.ms-completed-date { color: #6b7280; font-size: 0.875rem; }
+
+/* Feedback card layout (replaces inline flex styles in Umentorship) */
+.ms-feedback-layout {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.ms-feedback-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.ms-feedback-info { flex: 1; }
+.ms-feedback-info h4 { margin: 0; }
+.ms-feedback-info p { margin: 0; color: #6b7280; font-size: 0.875rem; }
+
+/* Info/warning text strip */
+.ms-info-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.ms-info-strip--warning { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+.ms-info-strip--muted   { cursor: not-allowed; opacity: 0.7; }
+
+/* Booking action buttons row */
+.ms-booking-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
