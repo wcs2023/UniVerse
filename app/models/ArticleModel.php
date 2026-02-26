@@ -139,17 +139,37 @@ class ArticleModel extends Model
         }
     }
     
-    /**
-     * Increment article view count
+    /*    
+     * - Logged-in users: inserts into article_views (IGNORE duplicate).
+     *   Only increments articles.views when a new row is actually inserted.
+     *   The caller is responsible for ensuring the guest hasn't viewed before     
+     * Returns true if the view count was incremented, false if already counted.
      */
-    public function incrementViews($articleId)
+    public function recordUniqueView($articleId, $userId = null)
     {
         try {
-            $query = "UPDATE articles SET views = views + 1 WHERE article_id = ?";
-            $stmt = $this->db->prepare($query);
-            return $stmt->execute([$articleId]);
+            if ($userId !== null) {
+                // Logged-in user: deduplicate via article_views table
+                $insertStmt = $this->db->prepare(
+                    "INSERT IGNORE INTO article_views (article_id, user_id) VALUES (?, ?)"
+                );
+                $insertStmt->execute([$articleId, $userId]);
+
+                if ($insertStmt->rowCount() === 0) {
+                    // Already viewed – do not increment
+                    return false;
+                }
+            }
+
+            // New view (or guest first visit) – increment counter
+            $updateStmt = $this->db->prepare(
+                "UPDATE articles SET views = views + 1 WHERE article_id = ?"
+            );
+            $updateStmt->execute([$articleId]);
+            return true;
+
         } catch(PDOException $e) {
-            error_log("Error incrementing views: " . $e->getMessage());
+            error_log("Error recording unique view: " . $e->getMessage());
             return false;
         }
     }
@@ -196,6 +216,53 @@ class ArticleModel extends Model
         }
     }
     
+    /**
+     * Check if a user has already liked an article
+     */
+    public function hasLiked($articleId, $userId)
+    {
+        try {
+            $query = "SELECT like_id FROM article_likes WHERE article_id = ? AND user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$articleId, $userId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+        } catch(PDOException $e) {
+            error_log("Error checking like status: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Toggle like on an article (insert or delete from article_likes)
+     * Returns ['liked' => bool, 'likes' => int] or false on error
+     */
+    public function toggleLike($articleId, $userId)
+    {
+        try {
+            if ($this->hasLiked($articleId, $userId)) {
+                // Unlike
+                $stmt = $this->db->prepare("DELETE FROM article_likes WHERE article_id = ? AND user_id = ?");
+                $stmt->execute([$articleId, $userId]);
+                $liked = false;
+            } else {
+                // Like
+                $stmt = $this->db->prepare("INSERT INTO article_likes (article_id, user_id) VALUES (?, ?)");
+                $stmt->execute([$articleId, $userId]);
+                $liked = true;
+            }
+
+            // Fetch updated likes count
+            $stmt = $this->db->prepare("SELECT likes FROM articles WHERE article_id = ?");
+            $stmt->execute([$articleId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return ['liked' => $liked, 'likes' => (int)($row['likes'] ?? 0)];
+        } catch(PDOException $e) {
+            error_log("Error toggling like: " . $e->getMessage());
+            return false;
+        }
+    }
+
     /**
      * Search articles by keyword
      */
