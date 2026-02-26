@@ -75,7 +75,7 @@ if (!defined('BASE_URL')) {
         <div class="ms-filter-bar">
             <label for="searchInput" class="visually-hidden">Search mentors</label>
             <input type="text" class="ms-search-input" id="searchInput" placeholder="Search by name, skills, company..." aria-label="Search mentors by name, skills, or company">
-            <label for="industryFilter" class="visually-hidden">Filter by industry</label>
+            <!-- <label for="industryFilter" class="visually-hidden">Filter by industry</label>
             <select class="ms-filter-select" id="industryFilter" aria-label="Filter mentors by industry">
                 <option value="">All Industries</option>
                 <option value="tech">Technology</option>
@@ -83,7 +83,7 @@ if (!defined('BASE_URL')) {
                 <option value="healthcare">Healthcare</option>
                 <option value="education">Education</option>
                 <option value="other">Other</option>
-            </select>
+            </select> -->
         </div>
 
         <!-- Mentors Grid -->
@@ -195,15 +195,39 @@ if (!defined('BASE_URL')) {
         function filterMentors() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.ms-mentor-card');
+            let visibleCount = 0;
             
             cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
                 if (text.includes(searchTerm)) {
                     card.style.display = '';
+                    visibleCount++;
                 } else {
                     card.style.display = 'none';
                 }
             });
+
+            // Handle no results state
+            const existingEmpty = document.getElementById('searchEmptyState');
+            if (visibleCount === 0) {
+                if (!existingEmpty) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.id = 'searchEmptyState';
+                    emptyDiv.className = 'ms-empty-state';
+                    emptyDiv.style.gridColumn = '1 / -1';
+                    emptyDiv.innerHTML = `
+                        <div class="ms-empty-icon ">
+                        </div>
+                        <h3>No Results Found</h3>
+                        <p>Try a different name, skill, or company.</p>
+                    `;
+                    document.getElementById('mentorsGrid').appendChild(emptyDiv);
+                }
+            } else {
+                if (existingEmpty) {
+                    existingEmpty.remove();
+                }
+            }
         }
 
         // View mentor and show booking modal

@@ -70,7 +70,7 @@ class Umentorships extends Controller
      */
     public function exploreMentors()
     {
-        // Verify user is an undergraduate (additional check)
+        // Verify user is an undergraduate
         $userRole = $_SESSION['user_type'] ?? $_SESSION['user_role'] ?? '';
         if ($userRole !== 'undergraduate' && $userRole !== 'student') {
             header('Location: ' . BASE_URL . '/login');
