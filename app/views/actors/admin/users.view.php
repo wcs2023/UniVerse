@@ -129,7 +129,7 @@ if (!defined('URLROOT')) {
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <!-- <th>Status</th> -->
+                                    <th>Status</th>
                                     <th>Registered</th>
                                     <th>Actions</th>
                                 </tr>
@@ -258,7 +258,7 @@ if (!defined('URLROOT')) {
                                 </div>
                                 <div class="user-detail-row">
                                     <span class="detail-label">Name:</span>
-                                    <span class="detail-value">${user.first_name} ${user.middle_name || ''} ${user.last_name}</span>
+                                    <span class="detail-value">${user.first_name} ${user.last_name}</span>
                                 </div>
                                 <div class="user-detail-row">
                                     <span class="detail-label">Email:</span>
@@ -329,12 +329,6 @@ if (!defined('URLROOT')) {
                                         <label for="first_name" class="form-label">First Name <span class="required">*</span></label>
                                         <input type="text" id="first_name" name="first_name" class="form-input" 
                                                value="${user.first_name}" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="middle_name" class="form-label">Middle Name</label>
-                                        <input type="text" id="middle_name" name="middle_name" class="form-input" 
-                                               value="${user.middle_name || ''}">
                                     </div>
                                     
                                     <div class="form-group">

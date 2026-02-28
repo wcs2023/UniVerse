@@ -238,7 +238,6 @@ class Admin extends Controller
         
         // Validate input
         $first_name = trim($_POST['first_name'] ?? '');
-        $middle_name = trim($_POST['middle_name'] ?? '');
         $last_name = trim($_POST['last_name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $username = trim($_POST['username'] ?? '');
@@ -284,10 +283,6 @@ class Admin extends Controller
             ];
             
             // Only add optional fields if they're not empty
-            if (!empty($middle_name)) {
-                $updateData['middle_name'] = $middle_name;
-            }
-            
             if (!empty($username)) {
                 $updateData['username'] = $username;
             }
