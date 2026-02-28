@@ -83,30 +83,35 @@ if (!defined('URLROOT')) {
             
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
-                <div class="content-card-body">
-                    <form method="GET" action="<?= URLROOT ?>/admin/articles" class="search-bar">
-                        <input 
-                            type="text" 
-                            name="search" 
-                            class="search-input" 
-                            placeholder="Search articles by title, content..." 
-                            value="<?= htmlspecialchars($searchQuery ?? '') ?>"
-                        >
+                <div class="content-card-body" style="padding: 1rem;">
+                    <form method="GET" action="<?= URLROOT ?>/admin/articles" class="search-filter-form">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                class="search-input-modern" 
+                                placeholder="Search articles by title, content..." 
+                                value="<?= htmlspecialchars($searchQuery ?? '') ?>"
+                            >
+                        </div>
                         
-                        <select name="status" class="form-select">
+                        <select name="status" class="filter-select">
                             <option value="all" <?= (!isset($statusFilter) || $statusFilter === 'all') ? 'selected' : '' ?>>All Status</option>
                             <option value="published" <?= (isset($statusFilter) && $statusFilter === 'published') ? 'selected' : '' ?>>Published</option>
                             <option value="draft" <?= (isset($statusFilter) && $statusFilter === 'draft') ? 'selected' : '' ?>>Draft</option>
                             <option value="archived" <?= (isset($statusFilter) && $statusFilter === 'archived') ? 'selected' : '' ?>>Archived</option>
                         </select>
                         
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                        
-                        <a href="<?= URLROOT ?>/admin/articles" class="btn btn-outline">
-                            <i class="fas fa-redo"></i> Reset
-                        </a>
+                        <div class="search-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            
+                            <a href="<?= URLROOT ?>/admin/articles" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> Reset
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -392,6 +397,93 @@ if (!defined('URLROOT')) {
         .status-archived {
             background: #e5e7eb;
             color: #6b7280;
+        }
+        
+        /* Modern Search Bar Styles */
+        .search-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        
+        .search-input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+        
+        .search-input-modern:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 150px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-wrapper {
+                min-width: 100%;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .search-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </body>
