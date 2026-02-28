@@ -226,8 +226,41 @@ class User extends Model
     public function deleteUser($userId)
     {
         try {
+            error_log("Deleting user and all related content for user_id: " . $userId);
+            
+            // Delete all articles by this user
+            try {
+                $articleModel = new ArticleModel();
+                $articleModel->deleteByUserId($userId);
+                error_log("Deleted articles for user: " . $userId);
+            } catch (Exception $e) {
+                error_log("Error deleting articles: " . $e->getMessage());
+            }
+            
+            // Delete all forum threads by this user (this will cascade delete posts in those threads)
+            try {
+                $forumThreadModel = new ForumThreadModel();
+                $forumThreadModel->deleteByUserId($userId);
+                error_log("Deleted forum threads for user: " . $userId);
+            } catch (Exception $e) {
+                error_log("Error deleting forum threads: " . $e->getMessage());
+            }
+            
+            // Delete all forum posts by this user
+            try {
+                $forumPostModel = new ForumPostModel();
+                $forumPostModel->deleteByUserId($userId);
+                error_log("Deleted forum posts for user: " . $userId);
+            } catch (Exception $e) {
+                error_log("Error deleting forum posts: " . $e->getMessage());
+            }
+            
+            // Finally, delete the user account (cascade will handle profile tables)
             $query = "DELETE FROM users WHERE user_id = :user_id";
-            return $this->query($query, ['user_id' => $userId]);
+            $result = $this->query($query, ['user_id' => $userId]);
+            
+            error_log("User deletion completed for user_id: " . $userId);
+            return $result;
         } catch (Exception $e) {
             error_log("Error in deleteUser(): " . $e->getMessage());
             return false;

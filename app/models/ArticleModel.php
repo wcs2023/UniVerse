@@ -224,4 +224,19 @@ class ArticleModel extends Model
             return [];
         }
     }
+    
+    /**
+     * Delete all articles by a specific user
+     */
+    public function deleteByUserId($userId)
+    {
+        try {
+            $query = "DELETE FROM articles WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$userId]);
+        } catch(PDOException $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
+        }
+    }
 }

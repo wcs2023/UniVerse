@@ -44,4 +44,17 @@ class ForumPostModel extends Model {
     $this->query("UPDATE {$this->table} SET upvotes = :s WHERE id=:p", ['s'=>$score,'p'=>$post_id]);
     return $score;
   }
+
+  /**
+   * Delete all posts by a specific user
+   */
+  public function deleteByUserId($userId) {
+    try {
+      $this->query("DELETE FROM {$this->table} WHERE user_id = :user_id", ['user_id' => $userId]);
+      return true;
+    } catch (Exception $e) {
+      error_log("Error deleting forum posts by user: " . $e->getMessage());
+      return false;
+    }
+  }
 }

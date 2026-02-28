@@ -8,12 +8,7 @@
     </div>
     
     <nav class="sidebar-nav">
-        <a href="<?= BASE_URL ?>/admin/dashboard" class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], '/admin/dashboard') !== false || $_SERVER['REQUEST_URI'] === BASE_URL . '/admin') ? 'active' : '' ?>">
-            <!-- <i class="icon"></i> -->
-            <span>Dashboard</span>
-        </a>
-        
-        <a href="<?= BASE_URL ?>/admin/users" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false ? 'active' : '' ?>">
+        <a href="<?= BASE_URL ?>/admin/users" class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false || preg_match('#/admin/?$#', $_SERVER['REQUEST_URI'])) ? 'active' : '' ?>">
             <!-- <i class="icon">👥</i> -->
             <span>Users</span>
         </a>
