@@ -19,14 +19,14 @@ include_once __DIR__ . '/includes/header2.view.php';
                 error
             </div> -->
 
-            <form action="POST" action="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="create-form">
+            <form method="POST" action="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="create-form">
                 <div class="form-group">
                     <label for="cat_id">Category <span class="required">*</span></label>
                     <select name="cat_id" id="cat_id" required>
                         <option value="" disabled selected>Select a Category</option>
                         <?php if (isset($categories)): ?>
                             <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat['cat_id'] ?>" <?= (isset($old['$cat_id']) ? $old['cat_id'] : $thread['cat_id']) == $cat['cat_id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
+                                <option value="<?= $cat['cat_id'] ?>" <?= (isset($old['cat_id']) ? $old['cat_id'] : $thread['cat_id']) == $cat['cat_id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>

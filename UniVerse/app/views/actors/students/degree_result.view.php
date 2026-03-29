@@ -4,83 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Degree Result</title>
-    <link rel="stylesheet" href="assets/css/degree-result.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_degree_result.css">
     <script src="https://kit.fontawesome.com/317f05ac77.js" crossorigin="anonymous"></script>
+    <?php include_once __DIR__ . '/includes/header2.view.php'; ?>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-        <h1>Recommendation</h1>
-        <?php
-            $zscore = (string)($zscore ?? '');
-            $stream = (string)($stream ?? '');
-            $district = (string)($district ?? '');
-        ?>
-        <div class="input-grid">
-    <div class="input-card">
-       <div class="input-label"> Z-score</div> 
-       <div class="input-value"><strong><?= htmlspecialchars($zscore) ?></strong> </div>
-    </div>
-    <div class="input-card">
-       <div class="input-label"> Stream</div> 
-       <div class="input-value"><strong><?= htmlspecialchars(ucfirst($stream)) ?></strong> </div>
-    </div>
-    <div class="input-card">
-       <div class="input-label"> District</div> 
-       <div class="input-value"><strong><?= htmlspecialchars(ucfirst($district)) ?></strong> </div>
-    </div>
-  </div>
-</div>
-  <?php if (!empty($rows)): ?>
-    <div class="alert">
-        No mathches found for the given criteria. Please try different filters.
-    </div>
-    <?php else: ?>
-        <div class="recommendation-section">
-            <div class="section-header">
-                <h2>Recommended Universities and Courses</h2>
+        <h1 class="page-title">Recommendation</h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <label class="stat-label">Z-Score</label>
+                <div class="stat-value">6646431</div>
             </div>
-        <div class="table-wrapper">
+            <div class="stat-card">
+                <label class="stat-label">Stream</label>
+                <div class="stat-value">finklknl</div>
+            </div>
+            <div class="stat-card">
+                <label class="stat-label">District</label>
+                <div class="stat-value">oihoilf</div>
+            </div>
+        </div>
+
+        <!-- Recommended Universities Section -->
+        <h2 class="section-title">Recommended Universities and Courses</h2>
+
+        <!-- Table -->
+        <div class="table-section">
             <table>
-            <thead>
-                <tr>
-                    <th>Uni code</th>
-                    <th>University</th>
-                    <th>Degree Name</th>
-                    <th>Cutoff Mark</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($rows as $row): ?>
+                <thead>
                     <tr>
-                        <td>
-                            <span class="placeholder"><?= htmlspecialchars($row->unicode ?? '') ?></span>
-                        </td>
-                        <td><span class="university-badge"><?= htmlspecialchars($row->university ?? '') ?></span></td>
-                        <td><span class="placeholder"><?= htmlspecialchars($row->course_name ?? '') ?></span></td>
-                        <td><span class="placeholder"><?= htmlspecialchars(ucfirst($row->cutoff_marks ?? '')) ?></span></td>
-                        <td>
-                            <button type="button" class="btn btn-sm view-details-btn" data-id="<?=htmlspecialchars($row->id)?>" aria-haspopup="dialog"
-                            aria-control="degreeDetailModal">View Details</button>
-                        </td>
+                        <th>Uni Code</th>
+                        <th>University</th>
+                        <th>Degree Name</th>
+                        <th>Cutoff Mark</th>
+                        <th>Details</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="uni-code">1234</td>
+                        <td><span class="uni-badge">University of colombo</span></td>
+                        <td class="degree-name">Bachelor of Science in Computer Science</td>
+                        <td class="cutoff-mark">75.5</td>
+                        <td><button class="view-btn">View Details</button></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
-        </div>
 
-        <?php endif; ?>
+        <!-- Back Button -->
+        <a href="#" class="back-btn">← Back</a>
 
-        <p class="back-link">
-            <a href="<?=BASE_URL?>/degree_suggestion.view.php">Back</a>
-        </p>
-    </div>
-
-    <!-- reusable modal -->
-
-    <div class="modal-backdrop" id="degreeDetailModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-backdrop" id="degreeDetailModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-window" role ="document">
             <div class="modal-header">
                 <h3 id="modalTitle">Degree Details</h3>

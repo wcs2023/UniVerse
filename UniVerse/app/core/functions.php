@@ -10,3 +10,4 @@ function redirect($url) {
     header('Location: ' . BASE_URL . '/' . ltrim($url, '/'));
     exit();
 }
+

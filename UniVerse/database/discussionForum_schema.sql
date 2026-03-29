@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS forum_threads (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL,
   FOREIGN KEY (category_id) REFERENCES forum_categories(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+
 );
 
 CREATE TABLE IF NOT EXISTS forum_posts (
@@ -32,7 +34,8 @@ CREATE TABLE IF NOT EXISTS forum_posts (
   is_deleted TINYINT(1) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL,
-  FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
+  FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS forum_post_votes (
@@ -42,7 +45,8 @@ CREATE TABLE IF NOT EXISTS forum_post_votes (
   value TINYINT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_vote (post_id, user_id),
-  FOREIGN KEY (post_id) REFERENCES forum_posts(id) ON DELETE CASCADE
+  FOREIGN KEY (post_id) REFERENCES forum_posts(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS forum_edit_history (

@@ -1,41 +1,54 @@
 <?php
 
-trait Database
+class Database
 {
-    private $host;
-    private $dbname;
-    private $username;
-    private $password;
+    private static $instance = null;
     private $pdo;
+
+    /**
+     * Get the singleton instance of the Database class
+     * @return Database - The instance of the Database class
+     */
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     /**
      * Constructor - Initialize database connection
      * Sets up database credentials from config constants and establishes connection
      */
-    public function __construct()
-    {
-        $this->host = DBHOST;
-        $this->dbname = DBNAME;
-        $this->username = DBUSER;
-        $this->password = DBPASS;
-        
-        $this->connect();
-    }
-
-    /**
-     * Establish PDO database connection
-     * Creates a new PDO connection with error handling and sets default attributes
-     */
-    private function connect()
+    private function __construct()
     {
         try {
-            $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset=utf8mb4";
-            $this->pdo = new PDO($dsn, $this->username, $this->password);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            // Use constants from config.php instead of requiring a separate file
+            $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+            
+            $this->pdo = new PDO(
+                $dsn,
+                DBUSER,
+                DBPASS,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]
+            );
         } catch (PDOException $e) {
             die("Database connection failed: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Get the PDO connection instance
+     * @return PDO - The PDO database connection
+     */
+    public function getConnection()
+    {
+        return $this->pdo;
     }
 
     /**
@@ -46,13 +59,9 @@ trait Database
      */
     public function query($sql, $params = [])
     {
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            die("Query failed: " . $e->getMessage());
-        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
     }
 
     /**
