@@ -20,3 +20,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost') {
     define('DBDRIVER', '');
     define('BASE_URL', 'https://yourdomain.com/public');
 }
+
+define('APPROOT',dirname(dirname(__FILE__))); 
+define('URLROOT','http://localhost/UniVerse'); 
+define('SITENAME','UniVerse');
