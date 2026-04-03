@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Degree Result</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_styles.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_degree_result.css">
     <script src="https://kit.fontawesome.com/317f05ac77.js" crossorigin="anonymous"></script>
     <?php include_once __DIR__ . '/includes/header2.view.php'; ?>
+    
 </head>
 <body>
     <div class="container">
-        <h1 class="page-title">Recommendation</h1>
+        <h1 class="page-title">Suggestion</h1>
 
         <!-- Stats Cards -->
         <div class="stats-section">
@@ -29,7 +31,7 @@
         </div>
 
         <!-- Recommended Universities Section -->
-        <h2 class="section-title">Recommended Universities and Courses</h2>
+        <h2 class="section-title">Suggested Universities and Courses</h2>
 
         <!-- Table -->
         <div class="table-section">

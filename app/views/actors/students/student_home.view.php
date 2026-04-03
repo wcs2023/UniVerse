@@ -39,7 +39,7 @@
                 <div class="feature-card">
                     <h3>Discussion Forums</h3>
                     <p>Engage in discussion, ask questions and share insights with fellow students</p>
-                    <a href="<?= BASE_URL ?>/schoolleaver/forums" class="btn btn-outline">Join Forums</a> 
+                    <a href="<?= BASE_URL ?>/Discussion_forum" class="btn btn-outline">Join Forums</a> 
                 </div>
             </div>
         </div>

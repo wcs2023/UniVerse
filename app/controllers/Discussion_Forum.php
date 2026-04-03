@@ -13,7 +13,7 @@ class Discussion_Forum extends Controller
         $this->post_model = $this->model('Forum_post_model');
     }
 
-
+ 
     public function getCurrentUser()
     {
         return $_SESSION['USER'] ?? NULL;
@@ -155,8 +155,6 @@ class Discussion_Forum extends Controller
         ];
         $this->view('actors/students/forum_create', $data);
     }
-
-
 
     public function view_thread($thread_id = null)
     {

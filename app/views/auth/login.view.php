@@ -63,7 +63,7 @@
           <input type="password" id="password" name="password" required />
         </div>
         <div class="login-links">
-          <a href="#" style="color: var(--primary-purple);">Forgot Password?</a>
+          <a href="<?= BASE_URL ?>/reset" style="color: var(--primary-purple);">Forgot Password?</a>
         </div>
         <button type="submit" class="login-btn btn btn-primary">Log In</button>
       </form>

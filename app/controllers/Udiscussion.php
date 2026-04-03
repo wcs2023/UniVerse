@@ -2,7 +2,6 @@
 
 class Udiscussion extends Controller
 {
-
     protected $thread_model;
     protected $category_model;
     protected $post_model;
@@ -156,73 +155,72 @@ class Udiscussion extends Controller
         $this->view('actors/undergraduate/forum_create', $data);
     }
 
-    public function view_thread(){
-        $data = [];
+    public function view_thread($thread_id = null)
+    {
+        if (!$thread_id) {
+            header("Location: " . BASE_URL . "/Discussion_Forum?error=Invalid thread ID");
+            exit;
+        }
 
-        $this->view("actors/undergraduate/forum_single_discussion",$data);
+        $thread = $this->thread_model->getIdWithDetails($thread_id);
+        $thread_votes = $this->thread_model->getThreadVotes($thread_id);
+
+        if (!$thread) {
+            header("Location: " . BASE_URL . "/Discussion_Forum?error=Thread not found");
+            exit;
+        }
+
+        if (!isset($_SESSION['viewed_threads'][$thread_id])) {
+            $this->thread_model->countViews($thread_id);
+            $_SESSION['viewed_threads'][$thread_id] = true;
+        }
+
+        $posts = $this->post_model->getByThread($thread_id);
+
+        $thread_data = [
+            'thread_id' => $thread['thread_id'],
+            'title' => $thread['title'],
+            'content' => $thread['content'],
+            'author_id' => $thread['author_id'],
+            'created_at' => $thread['created_at'],
+            'views' => $thread['views'],
+            'replies' => $thread['reply_count'] ?? 0,
+            'cat_name' => $thread['cat_name'],
+            'is_locked' => $thread['is_locked'],
+            'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname'],
+            'likes' =>$thread_votes['likes'] ?? 0,
+            'dislikes' => $thread_votes['dislikes'] ?? 0
+        ];
+
+        $post_data = [];
+        foreach ($posts as $post) {
+            $post_votes = $this->post_model->getReplyVotes((int)$post['post_id']);
+            $post_data[] = [
+                'post_id' => $post['post_id'],
+                'content' => $post['content'],
+                'author_id' => $post['author_id'],
+                'author_name' => $post['author_fname'] . ' ' . $post['author_lname'],
+                'created_at' => $post['created_at'],
+                'is_edited' => $post['is_edited'] ?? false,
+                'edited_at' => $post['edited_at'] ?? null,
+                'likes' => $post_votes['likes'] ?? 0,
+                'dislikes' => $post_votes['dislikes'] ?? 0
+            ];
+        }
+
+        $currentUserId = $this->getCurrentUserId();
+        $can_edit = $this->isAdmin($thread_data['author_id']);
+
+        $data = [
+            'title' => $thread['title'],
+            'thread' => $thread_data,
+            'posts' => $post_data,
+            'curr_user_id' => $currentUserId,
+            'can_edit' => $can_edit
+        ];
+
+        $this->view('actors/undergraduate/forum_single_discussion', $data);
     }
-
-    //function to view a single post thread
-    // public function view_thread($thread_id = null)
-    // {
-
-    //     if (!$thread_id) {
-    //         header("Location: " . BASE_URL . "/Discussion_Forum?error=Invalid thread ID");
-    //         exit;
-    //     }
-
-    //     $thread = $this->thread_model->getIdWithDetails($thread_id);
-
-    //     if (!$thread) {
-    //         header("Location: " . BASE_URL . "/Discussion_Forum?error=Thread not found");
-    //         exit;
-    //     }
-
-    //     if (!isset($_SESSION['viewed_threads'][$thread_id])) {
-    //         $this->thread_model->countViews($thread_id);
-    //         $_SESSION['viewed_threads'][$thread_id] = true;
-    //     }
-
-    //     $posts = $this->post_model->getByThread($thread_id);
-
-    //     $thread_data = [
-    //         'thread_id' => $thread['thread_id'],
-    //         'title' => $thread['title'],
-    //         'content' => $thread['content'],
-    //         'author_id' => $thread['author_id'],
-    //         'created_at' => $thread['created_at'],
-    //         'views' => $thread['views'],
-    //         'cat_name' => $thread['cat_name'],
-    //         'is_locked' => $thread['is_locked'],
-    //         'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname']
-    //     ];
-
-    //     $post_data = [];
-    //     foreach ($posts as $post) {
-    //         $post_data[] = [
-    //             'post_id' => $post['post_id'],
-    //             'content' => $post['content'],
-    //             'author_id' => $post['author_id'],
-    //             'author_name' => $post['author_fname'] . ' ' . $post['author_lname'],
-    //             'created_at' => $post['created_at'],
-    //             'is_edited' => $post['is_edited'] ?? false,
-    //             'edited_at' => $post['edited_at'] ?? null
-    //         ];
-    //     }
-
-    //     $currentUserId = $this->getCurrentUserId();
-    //     $can_edit = $this->isAdmin($thread_data['author_id']);
-
-    //     $data = [
-    //         'title' => $thread['title'],
-    //         'thread' => $thread_data,
-    //         'posts' => $post_data,
-    //         'curr_user_id' => $currentUserId,
-    //         'can_edit' => $can_edit
-    //     ];
-
-    //     $this->view('actors/undergraduate/forum_view_discussion', $data);
-    // }
 
     //function to view the user's discussions
     public function view_my_discussion()
@@ -330,7 +328,7 @@ class Udiscussion extends Controller
             $result = $this->thread_model->update_post($thread_id, $updatedData);
 
             if ($result) {
-                header("Location: " . BASE_URL . "/Udiscussion/view_thread?success=Thread updated successfully!");
+                header("Location: " . BASE_URL . "/Udiscussion/view_thread/$thread_id?success=Thread updated successfully");
                 exit;
             } else {
                 $data = [
@@ -382,7 +380,7 @@ class Udiscussion extends Controller
         $delete_reply = $this->post_model->delete_all_reply($thread_id);
 
         if ($result && $delete_reply) {
-            header("Location: " . BASE_URL . "/Udiscussion/view_thread?success=Thread deleted successfully!");
+            header("Location: " . BASE_URL . "/Udiscussion/Successfully Deleted");
             exit;
         } else {
             header("Location: " . BASE_URL . "/Udiscussion/view_thread?error=Delete Failed!");
@@ -517,5 +515,98 @@ class Udiscussion extends Controller
         else{
             redirect("Udiscussion/view_my_discussion/{$post['thread_id']}?error=delete_failed");
         }
+    }
+
+    public function search()
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $q = trim($_GET['q'] ?? '');
+        if ($q === '') {
+            echo json_encode(['data' => []]);
+            exit;
+        }
+
+        $threads = $this->thread_model->searchByTitle($q, 50);
+
+        $recent_threads = [];
+        foreach ($threads as $thread) {
+            $recent_threads[] = [
+                'thread_id' => $thread['thread_id'],
+                'title' => $thread['title'],
+                'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname'],
+                'author_id' => $thread['user_id'],
+                'category_name' => $thread['cat_name'],
+                'replies' => $thread['reply_count'] ?? 0,
+                'views' => $thread['views'] ?? 0,
+                'last_author' => $thread['last_posted_author'] ?? ($thread['author_fname'] . ' ' . $thread['author_lname']),
+                'last_edited' => $thread['updated_at'] ?? $thread['created_at']
+            ];
+        }
+        echo json_encode(['data' => $recent_threads]);
+        exit;
+    }
+
+    private function jsonResponse(array $payload,int $status = 200){
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($payload);
+        // exit;
+    }
+
+    public function like_thread($thread_id = null){
+        if(!isset($_SESSION['USER'])){
+            $this->jsonResponse(['ok' => false,'error' => 'unauthorized'],401);
+        }
+        if(!$thread_id){
+            $this->jsonResponse(['ok'=>false,'error'=>'invalid thread id'],401);
+        }
+
+        $user_id = (int)$this->getCurrentUserId();
+        $thread_like = $this->thread_model->setThreadVote($thread_id,$user_id,1);
+        
+        $this->jsonResponse(['ok'=>true,'thread_id'=>$thread_id] + $thread_like);
+    }
+
+    public function dislike_thread($thread_id = null){
+        if(!isset($_SESSION['USER'])){
+            $this->jsonResponse(['ok' => false,'error' => 'unauthorized'],401);
+        }
+        if(!$thread_id){
+            $this->jsonResponse(['ok'=>false,'error'=>'invalid thread id'],401);
+        }
+
+        $user_id = (int)$this->getCurrentUserId();
+        $thread_dislike = $this->thread_model->setThreadVote($thread_id,$user_id,-1);
+        
+        $this->jsonResponse(['ok'=>true,'thread_id'=>$thread_id] + $thread_dislike);
+    }
+
+        public function like_reply($post_id = null){
+        if(!isset($_SESSION['USER'])){
+            $this->jsonResponse(['ok' => false,'error' => 'unauthorized'],401);
+        }
+        if(!$post_id){
+            $this->jsonResponse(['ok'=>false,'error'=>'invalid post id'],401);
+        }
+
+        $user_id = (int)$this->getCurrentUserId();
+        $post_like = $this->thread_model->setThreadVote($post_id,$user_id,1);
+        
+        $this->jsonResponse(['ok'=>true,'post_id'=>$post_id] + $post_like);
+    }
+
+        public function dislike_reply($post_id = null){
+        if(!isset($_SESSION['USER'])){
+            $this->jsonResponse(['ok' => false,'error' => 'unauthorized'],401);
+        }
+        if(!$post_id){
+            $this->jsonResponse(['ok'=>false,'error'=>'invalid post id'],401);
+        }
+
+        $user_id = (int)$this->getCurrentUserId();
+        $post_dislike = $this->thread_model->setThreadVote($post_id,$user_id,-1);
+        
+        $this->jsonResponse(['ok'=>true,'post_id'=>$post_id] + $post_dislike);
     }
 }

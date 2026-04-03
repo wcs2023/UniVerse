@@ -1,3 +1,21 @@
+/* CSS Variables */
+:root {
+  --primary-purple: #6b46c1;
+  --secondary-purple: #8b5cf6;
+  --light-purple: #a78bfa;
+  --dark-purple: #553c9a;
+  --purple-gradient: linear-gradient(135deg, #6b46c1, #8b5cf6);
+  --pastel-purple-gradient: linear-gradient(135deg, #C4B5FD, #DDD6FE, #EDE9FE);
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --light-gray: #f9fafb;
+  --border-color: #e5e7eb;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --warning-color: #f59e0b;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,10 +23,84 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-    background: linear-gradient(135deg, #5b5fc7 0%, #a78bfa 100%);
-    min-height: 100vh;
-    padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background: var(--pastel-purple-gradient);
+  min-height: 100vh;
+}
+
+/* ===== HEADER STYLES ===== */
+.header {
+  background: var(--light-gray);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+.logo {
+  font-size: 1.7rem;
+  color: var(--primary-purple);
+  font-weight: bold;
+  letter-spacing: 0;
+  position: relative;
+  cursor: pointer;
+  padding-bottom: 0;
+  text-decoration: none;
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--primary-purple);
+  transition: width 0.3s ease;
+}
+
+.logo:hover::after {
+  width: 100%;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: color 0.3s ease, background 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--dark-purple);
+  background: hsl(0, 10%, 94%);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 20px;
 }
 
 /* Main Container */

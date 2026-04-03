@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/header2_styles.css">
     
+    
     <!-- <style>
         /* CSS Variables */
         :root {
@@ -112,6 +113,7 @@
 
       
     </style> -->
+    <!-- <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_styles.css"> -->
 </head>
 
 <header class="header">

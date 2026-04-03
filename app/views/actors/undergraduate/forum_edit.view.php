@@ -1,6 +1,12 @@
 <head>
     <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_create_styles.css">
     <link rel="stylesheet" href="<?= BASE_URL; ?>/css/styles.css">
+    <style>
+        .main-container
+        {
+            margin-top: 8rem;
+        }
+    </style>
 </head>
 <?php
 $pageTitle = $title ?? 'Start a Discussion';
