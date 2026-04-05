@@ -61,7 +61,7 @@ if (!defined('BASE_URL')) {
     <div class="container">
         <!-- Success Message -->
         <?php if (isset($_GET['success'])): ?>
-            <div class="success-message">
+            <div class="success-message" id="successMessage">
                 <span class="status-dot status-dot--active"></span>
                 <span>
                     <?php 
@@ -345,6 +345,10 @@ if (!defined('BASE_URL')) {
                 } else {
                     MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to cancel session'), 'error');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                MentorshipSystem.showNotification('An error occurred. Please try again.', 'error');
             });
         }
 
@@ -409,6 +413,10 @@ if (!defined('BASE_URL')) {
                 } else {
                     MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to submit feedback'), 'error');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                MentorshipSystem.showNotification('An error occurred. Please try again.', 'error');
             });
         }
 
@@ -416,6 +424,24 @@ if (!defined('BASE_URL')) {
         document.getElementById('feedbackText').addEventListener('input', function() {
             document.getElementById('charCount').textContent = this.value.length;
         });
+
+        // Auto-hide the success banner after a few seconds
+        const successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                successMessage.style.opacity = '0';
+                successMessage.style.transform = 'translateY(-8px)';
+
+                setTimeout(() => {
+                    successMessage.remove();
+
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('success');
+                    window.history.replaceState({}, document.title, url.pathname + url.search);
+                }, 350);
+            }, 3000);
+        }
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>

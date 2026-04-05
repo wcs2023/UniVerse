@@ -449,6 +449,10 @@ if (!defined('BASE_URL')) {
                 } else {
                     MentorshipSystem.showNotification('Error: ' + (data.message || 'Failed to cancel booking'), 'error');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                MentorshipSystem.showNotification('An error occurred. Please try again.', 'error');
             });
         }
 

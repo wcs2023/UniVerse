@@ -703,6 +703,50 @@
     padding: 1.25rem;
 }
 
+.ms-mentor-details {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: #f9fafb;
+    margin-bottom: 1rem;
+}
+
+.ms-mentor-detail-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.5rem;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+
+.ms-mentor-detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.ms-mentor-detail-label {
+    color: #6b7280;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ms-mentor-detail-value {
+    color: #1f2937;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.ms-mentor-email-link {
+    color: #7c3aed;
+    text-decoration: none;
+}
+
+.ms-mentor-email-link:hover {
+    text-decoration: underline;
+}
+
 .ms-mentor-company {
     display: flex;
     align-items: center;
@@ -949,6 +993,46 @@
 }
 
 /* ========================================
+   MINIMAL CONTACT SECTION
+   ======================================== */
+.contact-minimal {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.contact-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.contact-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+}
+
+.contact-value {
+    font-size: 1rem;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.contact-value a {
+    color: #7c3aed;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.contact-value a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 @media (max-width: 768px) {
@@ -1032,6 +1116,10 @@
     .ms-mentors-grid,
     .mentors-grid {
         grid-template-columns: 1fr;
+    }
+
+    .ms-mentor-detail-row {
+        grid-template-columns: 80px 1fr;
     }
 
     /* Ensure booking action buttons wrap properly */
