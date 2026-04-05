@@ -21,7 +21,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>🔔 Send Notifications</h1>
+                <h1>Send Notifications</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">
@@ -106,13 +106,13 @@ if (!defined('URLROOT')) {
                         
                         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                             <button type="submit" class="btn btn-primary">
-                                📤 Send Notification
+                                Send Notification
                             </button>
                             <button type="button" class="btn btn-outline" onclick="previewNotification()">
-                                👁️ Preview
+                                Preview
                             </button>
                             <button type="reset" class="btn btn-outline">
-                                🔄 Reset
+                                Reset
                             </button>
                         </div>
                     </form>

@@ -21,7 +21,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>⚙️ Platform Settings</h1>
+                <h1>Platform Settings</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">
@@ -63,7 +63,7 @@ if (!defined('URLROOT')) {
                         </div>
                         
                         <button type="submit" class="btn btn-primary">
-                            💾 Save Changes
+                            Save Changes
                         </button>
                     </form>
                 </div>
@@ -112,7 +112,7 @@ if (!defined('URLROOT')) {
                         </div>
                         
                         <button type="submit" class="btn btn-primary">
-                            💾 Save Changes
+                            Save Changes
                         </button>
                     </form>
                 </div>
@@ -147,7 +147,7 @@ if (!defined('URLROOT')) {
                         </div>
                         
                         <button type="submit" class="btn btn-primary">
-                            💾 Save Changes
+                            Save Changes
                         </button>
                     </form>
                 </div>
@@ -189,10 +189,10 @@ if (!defined('URLROOT')) {
                         
                         <div style="display: flex; gap: 1rem;">
                             <button type="submit" class="btn btn-primary">
-                                💾 Save Changes
+                                Save Changes
                             </button>
                             <button type="button" class="btn btn-outline" onclick="testEmail()">
-                                📧 Send Test Email
+                                Send Test Email
                             </button>
                         </div>
                     </form>
@@ -219,7 +219,7 @@ if (!defined('URLROOT')) {
                         </div>
                         
                         <button type="submit" class="btn btn-warning">
-                            ⚠️ Update Maintenance Settings
+                            Update Maintenance Settings
                         </button>
                     </form>
                 </div>

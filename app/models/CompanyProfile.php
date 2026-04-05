@@ -82,6 +82,18 @@ class CompanyProfile extends Model
     }
 
     /**
+     * Update only the company logo URL
+     */
+    public function updateLogoUrl($userId, $logoUrl)
+    {
+        $query = "UPDATE company_profiles SET logo_url = :logo_url WHERE user_id = :user_id";
+        return $this->query($query, [
+            'user_id' => $userId,
+            'logo_url' => $logoUrl
+        ]);
+    }
+
+    /**
      * Delete company profile
      */
     public function deleteProfile($userId)

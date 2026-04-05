@@ -23,7 +23,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>👥 Manage Users</h1>
+                <h1>Manage Users</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">
@@ -43,13 +43,13 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['success']) {
                         case 'updated':
-                            echo '✅ User updated successfully';
+                            echo 'User updated successfully';
                             break;
                         case 'deleted':
-                            echo '✅ User account deleted successfully';
+                            echo 'User account deleted successfully';
                             break;
                         default:
-                            echo '✅ Action completed successfully';
+                            echo 'Action completed successfully';
                     }
                     ?>
                 </div>
@@ -60,22 +60,22 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['error']) {
                         case 'missing_id':
-                            echo '❌ User ID is required';
+                            echo 'User ID is required';
                             break;
                         case 'update_failed':
-                            echo '❌ Failed to update user';
+                            echo 'Failed to update user';
                             break;
                         case 'delete_failed':
-                            echo '❌ Failed to delete user account';
+                            echo 'Failed to delete user account';
                             break;
                         case 'validation_failed':
-                            echo '❌ Please check the form and try again';
+                            echo 'Please check the form and try again';
                             break;
                         case 'email_exists':
-                            echo '❌ Email already exists';
+                            echo 'Email already exists';
                             break;
                         default:
-                            echo '❌ An error occurred';
+                            echo 'An error occurred';
                     }
                     ?>
                 </div>
@@ -202,7 +202,7 @@ if (!defined('URLROOT')) {
                         </table>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-icon">👥</div>
+                            <div class="empty-icon"></div>
                             <h3>No Users Found</h3>
                             <p>There are no registered users matching your criteria.</p>
                         </div>
@@ -304,11 +304,11 @@ if (!defined('URLROOT')) {
                             </div>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading user details</div>';
+                    content.innerHTML = '<div class="error-message">Error loading user details</div>';
                     console.error('Error:', error);
                 });
         }
@@ -409,11 +409,11 @@ if (!defined('URLROOT')) {
                             </form>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading user data</div>';
+                    content.innerHTML = '<div class="error-message">Error loading user data</div>';
                     console.error('Error:', error);
                 });
         }
@@ -432,7 +432,7 @@ if (!defined('URLROOT')) {
         
         // Confirm delete
         function confirmDelete(userId, userName) {
-            if (confirm(`⚠️ WARNING: Are you sure you want to permanently delete the account for "${userName}"?\n\nThis action CANNOT be undone!\n\nAll user data will be permanently removed.`)) {
+            if (confirm(`WARNING: Are you sure you want to permanently delete the account for "${userName}"?\n\nThis action CANNOT be undone!\n\nAll user data will be permanently removed.`)) {
                 if (confirm(`Final confirmation: Delete "${userName}"'s account permanently?`)) {
                     window.location.href = '<?= URLROOT ?>/admin/deleteUser/' + userId;
                 }

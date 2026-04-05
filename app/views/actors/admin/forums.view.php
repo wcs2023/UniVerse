@@ -21,7 +21,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>💬 Moderate Forums</h1>
+                <h1>Moderate Forums</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">
@@ -32,39 +32,6 @@ if (!defined('URLROOT')) {
                             <span class="admin-user-role">Administrator</span>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Forum Stats -->
-            <div class="stats-grid" style="margin-bottom: 2rem;">
-                <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-icon primary">
-                            💬
-                        </div>
-                    </div>
-                    <div class="stat-card-value">45</div>
-                    <div class="stat-card-label">Total Topics</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-icon success">
-                            ✅
-                        </div>
-                    </div>
-                    <div class="stat-card-value">238</div>
-                    <div class="stat-card-label">Total Posts</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-card-header">
-                        <div class="stat-card-icon warning">
-                            🚩
-                        </div>
-                    </div>
-                    <div class="stat-card-value">3</div>
-                    <div class="stat-card-label">Flagged Posts</div>
                 </div>
             </div>
             
@@ -98,13 +65,13 @@ if (!defined('URLROOT')) {
                                 <td>
                                     <div style="display: flex; gap: 0.5rem;">
                                         <button class="btn btn-sm btn-outline" onclick="viewPost(1234)">
-                                            👁️ View
+                                            View
                                         </button>
                                         <button class="btn btn-sm btn-success" onclick="approvePost(1234)">
-                                            ✅ Approve
+                                            Approve
                                         </button>
                                         <button class="btn btn-sm btn-danger" onclick="deletePost(1234)">
-                                            🗑️ Delete
+                                            Delete
                                         </button>
                                     </div>
                                 </td>
@@ -119,7 +86,7 @@ if (!defined('URLROOT')) {
                 <div class="content-card-header">
                     <h2 class="content-card-title">Recent Forum Activity</h2>
                     <button class="btn btn-primary btn-sm" onclick="refreshActivity()">
-                        🔄 Refresh
+                        Refresh
                     </button>
                 </div>
                 <div class="content-card-body">
@@ -144,10 +111,10 @@ if (!defined('URLROOT')) {
                                 <td>
                                     <div style="display: flex; gap: 0.5rem;">
                                         <button class="btn btn-sm btn-outline" onclick="viewTopic(1)">
-                                            👁️ View
+                                            View
                                         </button>
                                         <button class="btn btn-sm btn-warning" onclick="closeTopic(1)">
-                                            🔒 Close
+                                            Close
                                         </button>
                                     </div>
                                 </td>
@@ -161,10 +128,10 @@ if (!defined('URLROOT')) {
                                 <td>
                                     <div style="display: flex; gap: 0.5rem;">
                                         <button class="btn btn-sm btn-outline" onclick="viewTopic(2)">
-                                            👁️ View
+                                            View
                                         </button>
                                         <button class="btn btn-sm btn-warning" onclick="closeTopic(2)">
-                                            🔒 Close
+                                            Close
                                         </button>
                                     </div>
                                 </td>
@@ -178,10 +145,10 @@ if (!defined('URLROOT')) {
                                 <td>
                                     <div style="display: flex; gap: 0.5rem;">
                                         <button class="btn btn-sm btn-outline" onclick="viewTopic(3)">
-                                            👁️ View
+                                            View
                                         </button>
                                         <button class="btn btn-sm btn-warning" onclick="closeTopic(3)">
-                                            🔒 Close
+                                            Close
                                         </button>
                                     </div>
                                 </td>

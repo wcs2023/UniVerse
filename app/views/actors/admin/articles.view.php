@@ -22,12 +22,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>📝 Manage Articles</h1>
-                <div class="admin-header-actions">
-                    <a href="<?= URLROOT ?>/admin/createArticle" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> New Article
-                    </a>
-                </div>
+                <h1>Manage Articles</h1>
             </div>
             
             <!-- Success/Error Messages -->
@@ -36,23 +31,23 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['success']) {
                         case 'created':
-                            echo '✅ Article created successfully';
+                            echo 'Article created successfully';
                             break;
                         case 'updated':
-                            echo '✅ Article updated successfully';
+                            echo 'Article updated successfully';
                             break;
                         case 'deleted':
-                            echo '✅ Article deleted successfully';
+                            echo 'Article deleted successfully';
                             break;
                         case 'status_updated':
-                            echo '✅ Article status updated successfully';
+                            echo 'Article status updated successfully';
                             break;
                         case 'bulk_deleted':
                             $count = $_GET['count'] ?? 0;
-                            echo "✅ {$count} article(s) deleted successfully";
+                            echo "{$count} article(s) deleted successfully";
                             break;
                         default:
-                            echo '✅ Action completed successfully';
+                            echo 'Action completed successfully';
                     }
                     ?>
                 </div>
@@ -63,19 +58,19 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['error']) {
                         case 'missing_id':
-                            echo '❌ Article ID is required';
+                            echo 'Article ID is required';
                             break;
                         case 'delete_failed':
-                            echo '❌ Failed to delete article';
+                            echo 'Failed to delete article';
                             break;
                         case 'not_found':
-                            echo '❌ Article not found';
+                            echo 'Article not found';
                             break;
                         case 'no_selection':
-                            echo '❌ No articles selected';
+                            echo 'No articles selected';
                             break;
                         default:
-                            echo '❌ An error occurred';
+                            echo 'An error occurred';
                     }
                     ?>
                 </div>
@@ -196,7 +191,7 @@ if (!defined('URLROOT')) {
                         </form>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-icon">📝</div>
+                            <div class="empty-icon"></div>
                             <h3>No Articles Found</h3>
                             <p>There are no articles matching your criteria.</p>
                             <a href="<?= URLROOT ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
@@ -283,11 +278,11 @@ if (!defined('URLROOT')) {
                             </div>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading article details</div>';
+                    content.innerHTML = '<div class="error-message">Error loading article details</div>';
                     console.error('Error:', error);
                 });
         }

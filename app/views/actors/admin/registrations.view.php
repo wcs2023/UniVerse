@@ -78,13 +78,13 @@ if (!defined('URLROOT')) {
                                         <td>
                                             <div style="display: flex; gap: 0.5rem;">
                                                 <button class="btn btn-sm btn-outline" onclick="viewDetails(<?= $registration['user_id'] ?>)">
-                                                    👁️ View Details
+                                                    View Details
                                                 </button>
                                                 <button class="btn btn-sm btn-success" onclick="approveRegistration(<?= $registration['user_id'] ?>)">
-                                                    ✅ Approve
+                                                    Approve
                                                 </button>
                                                 <button class="btn btn-sm btn-danger" onclick="rejectRegistration(<?= $registration['user_id'] ?>)">
-                                                    ❌ Reject
+                                                    Reject
                                                 </button>
                                             </div>
                                         </td>
@@ -94,7 +94,7 @@ if (!defined('URLROOT')) {
                         </table>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-icon">📋</div>
+                            <div class="empty-icon"></div>
                             <h3>No Pending Registrations</h3>
                             <p>All registration requests have been processed.</p>
                         </div>
