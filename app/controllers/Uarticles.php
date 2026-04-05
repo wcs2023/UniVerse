@@ -97,12 +97,34 @@ class Uarticles extends Controller
             exit;
         }
         
-        // Increment view count
-        $this->articleModel->incrementViews($articleId);
+        // --- Unique-view tracking ---
+        if (isset($_SESSION['user_id'])) {
+            // Logged-in: model deduplicates via article_views table
+            $this->articleModel->recordUniqueView($articleId, $_SESSION['user_id']);
+        } else {
+            // Guest: deduplicate via session
+            if (!isset($_SESSION['viewed_articles'])) {
+                $_SESSION['viewed_articles'] = [];
+            }
+            if (!in_array($articleId, $_SESSION['viewed_articles'])) {
+                $this->articleModel->recordUniqueView($articleId); // no userId → direct increment
+                $_SESSION['viewed_articles'][] = $articleId;
+            }
+        }
+
+        // Re-fetch to get the updated view count
+        $article = $this->articleModel->getArticleById($articleId);
+
+        // Check if the logged-in user has already liked this article
+        $hasLiked = false;
+        if (isset($_SESSION['user_id'])) {
+            $hasLiked = $this->articleModel->hasLiked($articleId, $_SESSION['user_id']);
+        }
         
         $data = [
-            'title' => $article['title'],
-            'article' => $article
+            'title'     => $article['title'],
+            'article'   => $article,
+            'has_liked' => $hasLiked
         ];
         
         $this->view('articles/single', $data);
@@ -137,6 +159,44 @@ class Uarticles extends Controller
         ];
         
         $this->view('articles/index', $data);
+    }
+
+    /**
+     * AJAX endpoint: toggle like for an article
+     * POST /uarticles/like/{articleId}
+     */
+    public function like($articleId = null)
+    {
+        header('Content-Type: application/json');
+
+        if (!$articleId) {
+            echo json_encode(['success' => false, 'message' => 'Invalid article']);
+            exit;
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Login required']);
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            exit;
+        }
+
+        $result = $this->articleModel->toggleLike($articleId, $_SESSION['user_id']);
+
+        if ($result === false) {
+            echo json_encode(['success' => false, 'message' => 'Database error']);
+            exit;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'liked'   => $result['liked'],
+            'likes'   => $result['likes']
+        ]);
+        exit;
     }
     
     /**
