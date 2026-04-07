@@ -1,7 +1,6 @@
 <?php
 // Include config to get BASE_URL constant
 // require_once dirname(dirname(dirname(__FILE__))) . '/core/config.php';
-
 if (!defined('URLROOT')) {
     define('URLROOT', BASE_URL);
 }
@@ -12,7 +11,7 @@ if (!defined('URLROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - UniVerse</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin.css">
 </head>
 <body>
     <div class="admin-layout">
@@ -48,14 +47,14 @@ if (!defined('URLROOT')) {
                     
                 </div>
                 
-                <div class="stat-card">
+                <!-- <div class="stat-card">
                     <div class="stat-card-header">
                         
                     </div>
                     <div class="stat-card-value"><?= $data['stats']['pending_registrations'] ?? 0 ?></div>
                     <div class="stat-card-label">Pending Registrations</div>
                     
-                </div>
+                </div> -->
                 
                 <div class="stat-card">
                     <div class="stat-card-header">
@@ -66,14 +65,14 @@ if (!defined('URLROOT')) {
                     
                 </div>
                 
-                <div class="stat-card">
+                <!-- <div class="stat-card">
                     <div class="stat-card-header">
                         
                     </div>
                     <div class="stat-card-value"><?= $data['stats']['pending_articles'] ?? 0 ?></div>
                     <div class="stat-card-label">Pending Moderation</div>
                    
-                </div>
+                </div> -->
             </div>
             
             <!-- Recent Activity -->

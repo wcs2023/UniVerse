@@ -33,10 +33,10 @@
             <span>Forums</span>
         </a>
         
-        <a href="<?= BASE_URL ?>/admin/notifications" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/notifications') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">🔔</i> -->
+        <!-- <a href="<?= BASE_URL ?>/admin/notifications" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/notifications') !== false ? 'active' : '' ?>">
+            <i class="icon">🔔</i>
             <span>Notifications</span>
-        </a>
+        </a> -->
         
         <a href="<?= BASE_URL ?>/admin/settings" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/settings') !== false ? 'active' : '' ?>">
             <!-- <i class="icon">⚙️</i> -->

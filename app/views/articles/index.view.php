@@ -2,14 +2,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+    
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+    <?php endif; ?>
+    
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">    
+    <?php endif; ?>
+    
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
     <title>UniVerse - <?= $data['title'] ?></title>
 </head>
 <body>
-    <?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
-    
+    <?php 
+    if ($_SESSION['user_role'] === 'undergraduate') 
+    {
+        include __DIR__ . '/../actors/undergraduate/Unavigation.view.php';
+    }
+    else if ($_SESSION['user_role'] === 'school_leaver') 
+    {
+       include __DIR__ . '/../actors/students/includes/header2.view.php';
+    } 
+    else  
+    {
+        include __DIR__ . '/../layout/nav_home.php';
+    }
+    ?>
+
     <div class="articles-page-wrapper">
         <!-- Enhanced Hero Banner -->
         <div class="articles-hero-banner">
@@ -53,24 +75,11 @@
                     </a>
                     
                     <?php if (!empty($data['categories'])): ?>
-                        <?php 
-                        // $categoryIcons = [
-                        //     'technology' => 'fas fa-laptop-code',
-                        //     'science' => 'fas fa-microscope',
-                        //     'business' => 'fas fa-chart-line',
-                        //     'education' => 'fas fa-graduation-cap',
-                        //     'health' => 'fas fa-heartbeat',
-                        //     'environment' => 'fas fa-leaf',
-                        //     'arts' => 'fas fa-palette',
-                        //     'sports' => 'fas fa-football-ball',
-                        //     'travel' => 'fas fa-plane',
-                        //     'lifestyle' => 'fas fa-spa',
-                        // ];                          
-                        ?>
+                        
                         <?php foreach($data['categories'] as $categoryData): ?>
                             <?php
                             $categoryName = is_array($categoryData) ? ($categoryData['category'] ?? '') : $categoryData;
-                            $categoryCount = is_array($categoryData) && isset($categoryData['count']) ? $categoryData['count'] : rand(1, 15);
+                            $categoryCount = is_array($categoryData) && isset($categoryData['count']) ? $categoryData['count'] : 0;
                             $iconClass = $categoryIcons[strtolower($categoryName)] ?? 'fas fa-bookmark';
                             ?>
                             
@@ -106,7 +115,7 @@
                 </div>
             </section>
 
-            <!-- Enhanced Articles Section -->
+            <!--  Articles Section -->
             <section class="articles-section">
                 <?php if (!empty($data['articles'])): ?>
                     <div class="section-header">

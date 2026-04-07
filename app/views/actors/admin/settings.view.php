@@ -10,7 +10,7 @@ if (!defined('URLROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Platform Settings - Admin Panel</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin.css">
 </head>
 <body>
     <div class="admin-layout">
