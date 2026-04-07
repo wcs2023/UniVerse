@@ -1,18 +1,36 @@
 <?php
-class Controller{
-    public function view($name,$data=[]){
+class Controller
+{
+    public function view($name, $data = [])
+    {
         extract($data);
-        $filename = "../app/views/".$name.".view.php";
-        if(file_exists($filename)){
+        $filename = "../app/views/" . $name . ".view.php";
+        if (file_exists($filename)) {
             require $filename;
-        }else{
+        } else {
             $filename = "../app/views/404.view.php";
             require $filename;
         }
     }
-    
-    public function model($model){
+
+    public function model($model)
+    {
         require_once '../app/models/' . $model . '.php';
         return new $model();
+    }
+
+    private function verifyCSRFToken()
+    {
+        if (!isset($_POST['csrf_token'], $_SESSION['csrf_token'])) {
+            return false;
+        }
+
+        return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+    }
+
+    function redirect($url)
+    {
+        header('Location: ' . BASE_URL . '/' . ltrim($url, '/'));
+        exit();
     }
 }

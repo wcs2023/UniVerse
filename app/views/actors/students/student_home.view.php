@@ -12,7 +12,7 @@
             <h1 class="hero-title">Personalized Degree Suggestions Just For You</h1>
             <p class="hero-description">Unlock your potential with tailored degree suggestions based on your Z-score and personal preferences. Make informed decisions that align with your career aspirations.</p>
             <div class="try-button">
-                <a href="<?= BASE_URL ?>/schoolleaver/degreeSuggestion" class="btn btn-try">Try Now</a>
+                <a href="<?= BASE_URL ?>/Degrees/degree_suggestion_index" class="btn btn-try">Try Now</a>
             </div>
         </div>
         <div class="hero-image">
@@ -39,7 +39,7 @@
                 <div class="feature-card">
                     <h3>Discussion Forums</h3>
                     <p>Engage in discussion, ask questions and share insights with fellow students</p>
-                    <a href="<?= BASE_URL ?>/schoolleaver/forums" class="btn btn-outline">Join Forums</a> 
+                    <a href="<?= BASE_URL ?>/Discussion_Forum/index" class="btn btn-outline">Join Forums</a> 
                 </div>
             </div>
         </div>

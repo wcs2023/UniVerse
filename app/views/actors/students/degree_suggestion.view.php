@@ -3,6 +3,9 @@
     $userType = $data['user_type'] ?? 'student';
     include_once __DIR__ . '/includes/header2.view.php';
 ?>
+<head>
+    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/degree_suggestion_styles.css">
+</head>
 
 <main class="main-container">
     <!-- Hero Section -->
@@ -41,7 +44,7 @@
                 <p>Fill in your details below to receive degree recommendations tailored to your profile.</p>
             </div>
 
-            <form method="POST" action="<?= BASE_URL ?>/schoolleaver/processDegreeRequest" class="degree-form">
+            <form method="POST" action="<?= BASE_URL ?>/Degrees/show_result" class="degree-form">
                 <!-- Z-Score Input -->
                 <div class="form-group">
                     <label for="zscore" class="form-label">
@@ -52,14 +55,14 @@
                         id="zscore" 
                         name="zscore" 
                         step="0.01"
-                        min="-3" 
+                        min="0" 
                         max="3"
                         placeholder="Enter your Z-score (e.g., 1.5)" 
                         required 
                         value="<?= isset($data['old']['zscore']) ? htmlspecialchars($data['old']['zscore']) : '' ?>"
                         class="form-input"
                     >
-                    <small class="form-hint">Enter your Z-score from A/L results (typically between -3 and 3)</small>
+                    <small class="form-hint">Enter your Z-score from A/L results (typically between 0 and 3)</small>
                 </div>
 
                 <!-- Stream Selection -->
@@ -170,305 +173,7 @@
 
 <?php include __DIR__ . '/../../layout/footer.php'; ?>
 
-<style>
-/* CSS Variables */
-:root {
-    --primary-purple: #6b46c1;
-    --secondary-purple: #8b5cf6;
-    --light-purple: #a78bfa;
-    --dark-purple: #553c9a;
-    --text-dark: #1f2937;
-    --text-light: #6b7280;
-    --white: #ffffff;
-    --light-gray: #f9fafb;
-    --border-color: #e5e7eb;
-    --success-color: #10b981;
-    --error-color: #ef4444;
-    --warning-color: #f59e0b;
-}
-
-/* Hero Section */
-.degree-hero {
-    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
-    border-radius: 12px;
-    padding: 3rem 2rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    color: white;
-    box-shadow: 0 10px 30px rgba(107, 70, 193, 0.3);
-}
-
-.hero-content h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-}
-
-.hero-content h1 i {
-    margin-right: 0.5rem;
-}
-
-.hero-content p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    max-width: 800px;
-    margin: 0 auto;
-    opacity: 0.9;
-}
-
-/* Alert Messages */
-.error-message, .success-message {
-    margin-bottom: 2rem;
-}
-
-.alert {
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-weight: 500;
-}
-
-.alert-error {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--error-color);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-}
-
-.alert-success {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--success-color);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-/* Form Section */
-.suggestion-form-section {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.form-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.form-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.form-header h2 {
-    color: var(--text-dark);
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-}
-
-.form-header h2 i {
-    color: var(--primary-purple);
-    margin-right: 0.5rem;
-}
-
-.form-header p {
-    color: var(--text-light);
-    font-size: 1rem;
-}
-
-/* Form Groups */
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    display: block;
-    color: var(--text-dark);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.form-label i {
-    color: var(--primary-purple);
-    margin-right: 0.5rem;
-    width: 16px;
-}
-
-.form-input, .form-select, .form-textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: var(--white);
-    color: var(--text-dark);
-}
-
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-    outline: none;
-    border-color: var(--primary-purple);
-    box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
-}
-
-.form-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-.form-hint {
-    display: block;
-    color: var(--text-light);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-}
-
-/* Form Actions */
-.form-actions {
-    text-align: center;
-    margin-top: 2rem;
-}
-
-.btn {
-    padding: 0.75rem 2rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background: var(--primary-purple);
-    color: var(--white);
-}
-
-.btn-primary:hover {
-    background: var(--dark-purple);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(107, 70, 193, 0.3);
-}
-
-.btn-large {
-    padding: 1rem 2.5rem;
-    font-size: 1.1rem;
-}
-
-/* Info Cards */
-.info-cards-section {
-    margin-bottom: 2rem;
-}
-
-.info-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
-
-.info-card {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.info-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.card-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem auto;
-    color: white;
-    font-size: 1.5rem;
-}
-
-.info-card h3 {
-    color: var(--text-dark);
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.info-card p {
-    color: var(--text-light);
-    line-height: 1.5;
-    font-size: 0.9rem;
-}
-
-/* Animations */
-.fade-in {
-    animation: fadeInUp 0.8s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .degree-hero {
-        padding: 2rem 1rem;
-    }
-    
-    .hero-content h1 {
-        font-size: 2rem;
-    }
-    
-    .suggestion-form-section {
-        padding: 1.5rem;
-    }
-    
-    .form-header h2 {
-        font-size: 1.5rem;
-    }
-    
-    .info-cards {
-        grid-template-columns: 1fr;
-    }
-    
-    .btn-large {
-        padding: 0.875rem 2rem;
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-content h1 {
-        font-size: 1.75rem;
-    }
-    
-    .hero-content p {
-        font-size: 1rem;
-    }
-    
-    .suggestion-form-section {
-        padding: 1rem;
-    }
-}
-</style>
+>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

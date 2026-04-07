@@ -25,7 +25,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                 <input type="text" id="forum_search" placeholder="Search topic or key words..." class="search-input">
             </div>
         </section>
-        
+
         <?php if (isset($recent_threads) && is_array($recent_threads) && count($recent_threads) > 0): ?>
             <section class="discussion-section">
                 <div class="discussion-table">
@@ -49,7 +49,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                         <div class="discussion-row">
                             <div class="col-topic">
                                 <div class="topic-title">
-                                    <a href="<?= BASE_URL ?>/Discussion_forum/thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
+                                    <a href="<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
                                 </div>
                                 <div class="topic-details">
                                     posted by:<span class="author-name"><?= htmlspecialchars($thread['author_name']) ?></span> in <span class="category-link"><?= htmlspecialchars($thread['category_name']) ?></span>
@@ -82,7 +82,9 @@ include_once __DIR__ . '/includes/header2.view.php';
                                         <a href="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <button class="btn-action btn-delete" data-tooltip="Delete">
+
+                                        <!-- delete button -->
+                                        <button class="btn-action btn-delete js-delete-thread" data-thread-id="<?= (int)$thread['thread_id'] ?>" data-tooltip="Delete">
                                             <i class="fa-solid fa-trash"></i>
 
                                         </button>
@@ -114,22 +116,23 @@ include_once __DIR__ . '/includes/header2.view.php';
                 </div>
             </section>
     </main>
-    <!-- 
-    <div id="deleteModal" class="delete-model hidden">
-        <div class="delete-box">
-            <h3>Delete Discussion</h3>
+
+    <div id="deleteModal" class="delete-model hidden" aria-hidden="true">
+        <div class="delete-box" role="dialog" aria-model="true" aria-labelledby="deleteTitle">
+            <h3 id="deleteTitle">Delete Discussion</h3>
             <p>
-                Are you sure you want to delete this discussion?
+                Are you sure you want to delete this discussion ?<br>
                 <strong>This action cannot be undone.</strong>
             </p>
             <div class="delete-action">
-                <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
-                <button id="confirmDelete" class="btn btn-confirm">Confirm</button>
+                <button id="cancelDelete" type="button" class="btn btn-secondary">Cancel</button>
+                <a id="confirmDelete" class="btn btn-confirm" href="#">Confirm</a>
             </div>
         </div>
     </div>
-    
-    <script src="<?= BASE_URL ?>/assets/js/discussion_forum.js"></script> -->
-<?php include __DIR__ . '/../../layout/footer.php'; ?>
+     
+    <script src="<?= BASE_URL ?>/assets/js/forum_delete_modal.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/discussion_forum.js"></script>
+    <?php include __DIR__ . '/../../layout/footer.php'; ?>
 
 </body>
