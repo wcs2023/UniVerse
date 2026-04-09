@@ -572,12 +572,147 @@ class Admin extends Controller
      */
     public function forums()
     {
-        // TODO: Implement forum management
+        $forumPostModel = $this->model('ForumPostModel');
+
+        if (empty($_SESSION['admin_csrf_token'])) {
+            $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        $statusFilter = $_GET['status'] ?? 'all';
+        $searchQuery = trim($_GET['search'] ?? '');
+
+        $posts = $forumPostModel->getAllPostsForAdmin($statusFilter, $searchQuery);
+
         $data = [
-            'forums' => []
+            'posts' => $posts,
+            'statusFilter' => $statusFilter,
+            'searchQuery' => $searchQuery
         ];
         
         $this->view('actors/admin/forums', $data);
+    }
+
+    /**
+     * View forum post details (AJAX)
+     */
+    public function viewForumPost($postId = null)
+    {
+        header('Content-Type: application/json');
+
+        if (!$postId) {
+            echo json_encode(['success' => false, 'message' => 'Post ID is required']);
+            exit;
+        }
+
+        $forumPostModel = $this->model('ForumPostModel');
+        $post = $forumPostModel->getPostByIdForAdmin($postId);
+
+        if (!$post) {
+            echo json_encode(['success' => false, 'message' => 'Post not found']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'post' => $post]);
+        exit;
+    }
+
+    /**
+     * Hide forum post
+     */
+    public function hideForumPost($postId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/forums?error=invalid_method');
+            exit;
+        }
+
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/forums?error=invalid_csrf');
+            exit;
+        }
+
+        if (!$postId) {
+            header('Location: ' . BASE_URL . '/admin/forums?error=missing_id');
+            exit;
+        }
+
+        $forumPostModel = $this->model('ForumPostModel');
+        $result = $forumPostModel->hidePost($postId);
+
+        if ($result) {
+            header('Location: ' . BASE_URL . '/admin/forums?success=hidden');
+        } else {
+            header('Location: ' . BASE_URL . '/admin/forums?error=hide_failed');
+        }
+        exit;
+    }
+
+    /**
+     * Unhide forum post
+     */
+    public function unhideForumPost($postId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/forums?error=invalid_method');
+            exit;
+        }
+
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/forums?error=invalid_csrf');
+            exit;
+        }
+
+        if (!$postId) {
+            header('Location: ' . BASE_URL . '/admin/forums?error=missing_id');
+            exit;
+        }
+
+        $forumPostModel = $this->model('ForumPostModel');
+        $result = $forumPostModel->unhidePost($postId);
+
+        if ($result) {
+            header('Location: ' . BASE_URL . '/admin/forums?success=unhidden');
+        } else {
+            header('Location: ' . BASE_URL . '/admin/forums?error=unhide_failed');
+        }
+        exit;
+    }
+
+    /**
+     * Permanently delete forum post
+     */
+    public function deleteForumPost($postId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/forums?error=invalid_method');
+            exit;
+        }
+
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/forums?error=invalid_csrf');
+            exit;
+        }
+
+        if (!$postId) {
+            header('Location: ' . BASE_URL . '/admin/forums?error=missing_id');
+            exit;
+        }
+
+        $forumPostModel = $this->model('ForumPostModel');
+        $result = $forumPostModel->deletePostPermanently($postId);
+
+        if ($result) {
+            header('Location: ' . BASE_URL . '/admin/forums?success=deleted');
+        } else {
+            header('Location: ' . BASE_URL . '/admin/forums?error=delete_failed');
+        }
+        exit;
     }
     
     /**

@@ -58,4 +58,123 @@ class ForumPostModel extends Model {
       return false;
     }
   }
+
+  /**
+   * Get forum posts for admin moderation with optional filters.
+   */
+  public function getAllPostsForAdmin($statusFilter = 'all', $search = '') {
+    try {
+      $query = "SELECT
+                  p.id,
+                  p.thread_id,
+                  p.user_id,
+                  p.body,
+                  p.upvotes,
+                  p.is_deleted,
+                  p.created_at,
+                  p.updated_at,
+                  t.title AS thread_title,
+                  c.name AS category_name,
+                  u.username,
+                  u.email,
+                  CONCAT(u.first_name, ' ', u.last_name) AS author_name
+                FROM forum_posts p
+                LEFT JOIN forum_threads t ON t.id = p.thread_id
+                LEFT JOIN forum_categories c ON c.id = t.category_id
+                LEFT JOIN users u ON u.user_id = p.user_id
+                WHERE 1=1";
+
+      $params = [];
+
+      if ($statusFilter === 'hidden') {
+        $query .= " AND p.is_deleted = 1";
+      } elseif ($statusFilter === 'active') {
+        $query .= " AND p.is_deleted = 0";
+      }
+
+      if (!empty($search)) {
+        $query .= " AND (t.title LIKE :search OR p.body LIKE :search OR u.username LIKE :search OR u.email LIKE :search)";
+        $params['search'] = '%' . $search . '%';
+      }
+
+      $query .= " ORDER BY p.created_at DESC";
+
+      return $this->fetchAll($query, $params);
+    } catch (Exception $e) {
+      error_log('Error getting forum posts for admin: ' . $e->getMessage());
+      return [];
+    }
+  }
+
+  /**
+   * Get single forum post details for admin.
+   */
+  public function getPostByIdForAdmin($postId) {
+    try {
+      $query = "SELECT
+                  p.id,
+                  p.thread_id,
+                  p.user_id,
+                  p.body,
+                  p.upvotes,
+                  p.is_deleted,
+                  p.created_at,
+                  p.updated_at,
+                  t.title AS thread_title,
+                  c.name AS category_name,
+                  u.username,
+                  u.email,
+                  CONCAT(u.first_name, ' ', u.last_name) AS author_name
+                FROM forum_posts p
+                LEFT JOIN forum_threads t ON t.id = p.thread_id
+                LEFT JOIN forum_categories c ON c.id = t.category_id
+                LEFT JOIN users u ON u.user_id = p.user_id
+                WHERE p.id = :id
+                LIMIT 1";
+
+      return $this->fetch($query, ['id' => $postId]);
+    } catch (Exception $e) {
+      error_log('Error getting forum post by id for admin: ' . $e->getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Hide forum post from users.
+   */
+  public function hidePost($postId) {
+    try {
+      $this->query("UPDATE forum_posts SET is_deleted = 1, updated_at = NOW() WHERE id = :id", ['id' => $postId]);
+      return true;
+    } catch (Exception $e) {
+      error_log('Error hiding forum post: ' . $e->getMessage());
+      return false;
+    }
+  }
+
+  /**
+   * Unhide forum post to make it visible again.
+   */
+  public function unhidePost($postId) {
+    try {
+      $this->query("UPDATE forum_posts SET is_deleted = 0, updated_at = NOW() WHERE id = :id", ['id' => $postId]);
+      return true;
+    } catch (Exception $e) {
+      error_log('Error unhiding forum post: ' . $e->getMessage());
+      return false;
+    }
+  }
+
+  /**
+   * Permanently delete forum post.
+   */
+  public function deletePostPermanently($postId) {
+    try {
+      $this->query("DELETE FROM forum_posts WHERE id = :id", ['id' => $postId]);
+      return true;
+    } catch (Exception $e) {
+      error_log('Error deleting forum post permanently: ' . $e->getMessage());
+      return false;
+    }
+  }
 }
