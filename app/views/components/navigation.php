@@ -85,9 +85,6 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
                     <li class="nav-item">
                         <a href="<?= BASE_URL ?>/admin/reports" class="nav-link">Reports</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="<?= BASE_URL ?>/admin/settings" class="nav-link">Settings</a>
-                    </li>
                 <?php endif; ?>
             </ul>
         </nav>

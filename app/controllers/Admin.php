@@ -720,12 +720,8 @@ class Admin extends Controller
      */
     public function notifications()
     {
-        // TODO: Implement notification management
-        $data = [
-            'notifications' => []
-        ];
-        
-        $this->view('actors/admin/notifications', $data);
+        http_response_code(404);
+        $this->view('404');
     }
     
     /**
@@ -733,9 +729,8 @@ class Admin extends Controller
      */
     public function settings()
     {
-        $data = [];
-        
-        $this->view('actors/admin/settings', $data);
+        http_response_code(404);
+        $this->view('404');
     }
     
     /**

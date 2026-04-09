@@ -27,16 +27,6 @@
             <!-- <i class="icon">💬</i> -->
             <span>Forums</span>
         </a>
-        
-        <a href="<?= BASE_URL ?>/admin/notifications" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/notifications') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">🔔</i> -->
-            <span>Notifications</span>
-        </a>
-        
-        <a href="<?= BASE_URL ?>/admin/settings" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/settings') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">⚙️</i> -->
-            <span>Settings</span>
-        </a>
     </nav>
     
     <div class="sidebar-footer">
