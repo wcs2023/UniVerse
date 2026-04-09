@@ -7,6 +7,7 @@ class ForumThreadModel extends Model {
     $sql = "SELECT t.*, u.username FROM {$this->table} t 
             JOIN users u ON u.id = t.user_id
             WHERE t.category_id = :cid
+            AND u.account_status = 'active'
             ORDER BY t.is_pinned DESC, t.last_post_at DESC
             LIMIT $limit OFFSET $offset";
     return $this->query($sql, ['cid' => $category_id]);
@@ -16,6 +17,7 @@ class ForumThreadModel extends Model {
     $sql = "SELECT t.id,t.title,t.views,t.last_post_at,t.is_pinned,u.username
             FROM {$this->table} t
             JOIN users u ON u.id = t.user_id
+            WHERE u.account_status = 'active'
             ORDER BY t.is_pinned DESC, (t.views*0.6) + TIMESTAMPDIFF(HOUR,t.last_post_at,NOW())*-1 DESC
             LIMIT $limit";
     return $this->query($sql);
@@ -25,6 +27,7 @@ class ForumThreadModel extends Model {
     $sql = "SELECT t.id,t.title,t.last_post_at,u.username
             FROM {$this->table} t
             JOIN users u ON u.id = t.user_id
+            WHERE u.account_status = 'active'
             ORDER BY t.last_post_at DESC
             LIMIT $limit";
     return $this->query($sql);
@@ -32,7 +35,7 @@ class ForumThreadModel extends Model {
 
   public function findWithAuthor($id) {
     $sql = "SELECT t.*, u.username FROM {$this->table} t 
-            JOIN users u ON u.id = t.user_id WHERE t.id = :id LIMIT 1";
+            JOIN users u ON u.id = t.user_id WHERE t.id = :id AND u.account_status = 'active' LIMIT 1";
     $rows = $this->query($sql, ['id' => $id]);
     return $rows ? $rows[0] : null;
   }

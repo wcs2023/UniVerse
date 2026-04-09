@@ -15,6 +15,25 @@ class Admin extends Controller
             exit;
         }
     }
+
+    private function ensurePostRequest()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/users?error=invalid_method');
+            exit;
+        }
+    }
+
+    private function validateCsrfToken()
+    {
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/users?error=invalid_csrf');
+            exit;
+        }
+    }
     
     /**
      * Admin Default Landing Page - Redirects to Users
@@ -30,6 +49,10 @@ class Admin extends Controller
     public function users()
     {
         $userModel = $this->model('User');
+
+        if (empty($_SESSION['admin_csrf_token'])) {
+            $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
+        }
         
         $roleFilter = $_GET['role'] ?? 'all';
         $searchQuery = $_GET['search'] ?? '';
@@ -122,6 +145,9 @@ class Admin extends Controller
      */
     public function activateUser($userId = null)
     {
+        $this->ensurePostRequest();
+        $this->validateCsrfToken();
+
         if (!$userId) {
             header('Location: ' . BASE_URL . '/admin/users?error=missing_id');
             exit;
@@ -149,6 +175,9 @@ class Admin extends Controller
      */
     public function deactivateUser($userId = null)
     {
+        $this->ensurePostRequest();
+        $this->validateCsrfToken();
+
         if (!$userId) {
             header('Location: ' . BASE_URL . '/admin/users?error=missing_id');
             exit;
@@ -281,6 +310,9 @@ class Admin extends Controller
     {
         error_log("=== DELETE USER DEBUG ===");
         error_log("User ID: " . ($userId ?? 'NULL'));
+
+        $this->ensurePostRequest();
+        $this->validateCsrfToken();
         
         if (!$userId) {
             error_log("ERROR: Missing user ID");
@@ -291,6 +323,22 @@ class Admin extends Controller
         $userModel = $this->model('User');
         
         try {
+            if ((int)$userId === (int)($_SESSION['user_id'] ?? 0)) {
+                header('Location: ' . BASE_URL . '/admin/users?error=cannot_delete_self');
+                exit;
+            }
+
+            $user = $userModel->getUserById($userId);
+            if (!$user) {
+                header('Location: ' . BASE_URL . '/admin/users?error=user_not_found');
+                exit;
+            }
+
+            if (($user['account_status'] ?? 'active') !== 'inactive') {
+                header('Location: ' . BASE_URL . '/admin/users?error=must_deactivate_first');
+                exit;
+            }
+
             error_log("Attempting to delete user: " . $userId);
             $result = $userModel->deleteUser($userId);
             error_log("Delete result: " . ($result ? 'SUCCESS' : 'FAILED'));

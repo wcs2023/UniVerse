@@ -13,6 +13,32 @@ class App{
 
     public function loadController(){
         $URL = $this->splitURL();
+
+        $routeController = strtolower($URL[0] ?? 'home');
+        if (isset($_SESSION['user_id']) && !in_array($routeController, ['login', 'logout'], true)) {
+            try {
+                $userModel = new User();
+                $sessionUser = $userModel->getUserById($_SESSION['user_id']);
+
+                if (!$sessionUser || ($sessionUser['account_status'] ?? 'active') !== 'active') {
+                    session_unset();
+                    session_destroy();
+                    session_start();
+                    $_SESSION['login_error'] = 'Your account has been deactivated. Please contact an administrator.';
+                    header('Location: ' . BASE_URL . '/login');
+                    exit;
+                }
+            } catch (Exception $e) {
+                error_log('Session account-status check failed: ' . $e->getMessage());
+                session_unset();
+                session_destroy();
+                session_start();
+                $_SESSION['login_error'] = 'Please login again.';
+                header('Location: ' . BASE_URL . '/login');
+                exit;
+            }
+        }
+
         $filename = "../app/controllers/".ucfirst($URL[0]).".php";
 
         if(file_exists($filename)){

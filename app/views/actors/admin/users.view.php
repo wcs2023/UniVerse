@@ -42,6 +42,12 @@ if (!defined('URLROOT')) {
                 <div class="alert alert-success">
                     <?php
                     switch ($_GET['success']) {
+                        case 'activated':
+                            echo 'User account activated successfully';
+                            break;
+                        case 'deactivated':
+                            echo 'User account deactivated successfully';
+                            break;
                         case 'updated':
                             echo 'User updated successfully';
                             break;
@@ -59,8 +65,23 @@ if (!defined('URLROOT')) {
                 <div class="alert alert-error">
                     <?php
                     switch ($_GET['error']) {
+                        case 'invalid_method':
+                            echo 'Invalid request method';
+                            break;
+                        case 'invalid_csrf':
+                            echo 'Security validation failed. Please try again';
+                            break;
                         case 'missing_id':
                             echo 'User ID is required';
+                            break;
+                        case 'user_not_found':
+                            echo 'User not found';
+                            break;
+                        case 'must_deactivate_first':
+                            echo 'Deactivate the account before deleting it';
+                            break;
+                        case 'cannot_delete_self':
+                            echo 'You cannot delete your own admin account';
                             break;
                         case 'update_failed':
                             echo 'Failed to update user';
@@ -186,14 +207,45 @@ if (!defined('URLROOT')) {
                                                 >
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                
-                                                <button 
-                                                    class="btn btn-sm btn-danger" 
-                                                    onclick="confirmDelete(<?= $user['user_id'] ?>, '<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>')"
-                                                    title="Delete Account"
-                                                >
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+
+                                                <?php if (($user['account_status'] ?? 'active') === 'active'): ?>
+                                                    <form method="POST" action="<?= URLROOT ?>/admin/deactivateUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-warning"
+                                                            onclick="confirmDeactivate(this.form, '<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>')"
+                                                            title="Deactivate Account"
+                                                        >
+                                                            <i class="fas fa-user-slash"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <form method="POST" action="<?= URLROOT ?>/admin/activateUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-sm btn-success"
+                                                            title="Activate Account"
+                                                        >
+                                                            <i class="fas fa-user-check"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php endif; ?>
+
+                                                <?php if (($user['account_status'] ?? 'active') === 'inactive'): ?>
+                                                    <form method="POST" action="<?= URLROOT ?>/admin/deleteUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-danger"
+                                                            onclick="confirmDelete(this.form, '<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>')"
+                                                            title="Delete Account"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
@@ -430,11 +482,16 @@ if (!defined('URLROOT')) {
             }
         }
         
-        // Confirm delete
-        function confirmDelete(userId, userName) {
-            if (confirm(`WARNING: Are you sure you want to permanently delete the account for "${userName}"?\n\nThis action CANNOT be undone!\n\nAll user data will be permanently removed.`)) {
-                if (confirm(`Final confirmation: Delete "${userName}"'s account permanently?`)) {
-                    window.location.href = '<?= URLROOT ?>/admin/deleteUser/' + userId;
+        function confirmDeactivate(form, userName) {
+            if (confirm(`Deactivate "${userName}"?\n\nThey will not be able to login until reactivated.`)) {
+                form.submit();
+            }
+        }
+
+        function confirmDelete(form, userName) {
+            if (confirm(`WARNING: Permanently delete "${userName}"?\n\nThis action CANNOT be undone.`)) {
+                if (confirm(`Final confirmation: Delete "${userName}" permanently?`)) {
+                    form.submit();
                 }
             }
         }

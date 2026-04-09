@@ -7,6 +7,7 @@ class ForumPostModel extends Model {
     $sql = "SELECT p.*, u.username FROM {$this->table} p 
             JOIN users u ON u.id = p.user_id
             WHERE p.thread_id = :tid AND p.is_deleted = 0
+            AND u.account_status = 'active'
             ORDER BY p.created_at ASC
             LIMIT $limit OFFSET $offset";
     return $this->query($sql, ['tid' => $thread_id]);

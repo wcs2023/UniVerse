@@ -23,13 +23,13 @@ class AarticleModel extends Model
                   WHERE a.user_id = :user_id
                   AND a.status = :status
                   ORDER BY a.updated_at DESC";
-        
+
         return $this->fetchAll($query, [
             'user_id' => $userId,
             'status' => $status
         ]);
     }
-    
+
     /**
      * Get article by ID
      */
@@ -43,8 +43,9 @@ class AarticleModel extends Model
                     CONCAT(u.first_name, ' ', u.last_name) as author_name
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
-                  WHERE a.article_id = :article_id";
-        
+                  WHERE a.article_id = :article_id
+                  AND u.account_status = 'active'";
+
         return $this->fetch($query, ['article_id' => $articleId]);
     }
 
@@ -72,12 +73,13 @@ class AarticleModel extends Model
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
                   WHERE a.status = 'published'
+                  AND u.account_status = 'active'
                   ORDER BY a.published_at DESC";
-        
+
         if ($limit) {
             $sql .= " LIMIT " . intval($limit) . " OFFSET " . intval($offset);
         }
-        
+
         return $this->fetchAll($sql);
     }
 
@@ -103,13 +105,15 @@ class AarticleModel extends Model
                     CONCAT(CEIL(CHAR_LENGTH(a.content) / 200), ' min read') as read_time
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
-                  WHERE a.status = 'published' AND a.category = :category
+                  WHERE a.status = 'published'
+                  AND u.account_status = 'active'
+                  AND a.category = :category
                   ORDER BY a.published_at DESC";
-        
+
         if ($limit) {
             $sql .= " LIMIT " . intval($limit);
         }
-        
+
         return $this->fetchAll($sql, ['category' => $category]);
     }
 
@@ -119,7 +123,7 @@ class AarticleModel extends Model
     public function searchArticles($query, $limit = null)
     {
         $searchTerm = '%' . $query . '%';
-        
+
         $sql = "SELECT 
                     a.article_id,
                     a.title,
@@ -138,13 +142,14 @@ class AarticleModel extends Model
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
                   WHERE a.status = 'published' 
+                  AND u.account_status = 'active'
                   AND (a.title LIKE :search1 OR a.content LIKE :search2 OR a.category LIKE :search3)
                   ORDER BY a.published_at DESC";
-        
+
         if ($limit) {
             $sql .= " LIMIT " . intval($limit);
         }
-        
+
         return $this->fetchAll($sql, [
             'search1' => $searchTerm,
             'search2' => $searchTerm,
@@ -164,27 +169,25 @@ class AarticleModel extends Model
                      AND category IS NOT NULL 
                      AND category != ''
                      ORDER BY category ASC";
-            
+
             $result = $this->fetchAll($query);
-            
+
             if ($result && count($result) > 0) {
                 return array_column($result, 'category');
             }
-            
-            // Fallback categories if no articles exist
+
             return [
                 'Career Guidance',
-                'University Selection', 
+                'University Selection',
                 'Study Tips',
                 'Industry Insights',
                 'Scholarship Information',
                 'Career Planning'
             ];
         } catch (Exception $e) {
-            // Return default categories on error
             return [
                 'Career Guidance',
-                'University Selection', 
+                'University Selection',
                 'Study Tips',
                 'Industry Insights',
                 'Scholarship Information',
@@ -209,11 +212,12 @@ class AarticleModel extends Model
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
                   WHERE a.status = 'published' 
+                  AND u.account_status = 'active'
                   AND a.category = :category 
                   AND a.article_id != :article_id
                   ORDER BY a.published_at DESC
                   LIMIT :limit";
-        
+
         return $this->fetchAll($query, [
             'category' => $category,
             'article_id' => $articleId,
@@ -229,18 +233,17 @@ class AarticleModel extends Model
         $query = "UPDATE Articles SET views = views + 1 WHERE article_id = :article_id";
         return $this->query($query, ['article_id' => $articleId]);
     }
-    
+
     /**
      * Create a new article
      */
     public function createArticle($userId, $title, $content, $status = 'draft', $category = '', $tags = '')
     {
         $publishedAt = ($status === 'published') ? date('Y-m-d H:i:s') : null;
-        
-        // Handle empty values
+
         $category = empty($category) ? null : $category;
         $tags = empty($tags) ? null : $tags;
-        
+
         $data = [
             'user_id' => $userId,
             'title' => $title,
@@ -255,19 +258,18 @@ class AarticleModel extends Model
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        
+
         return $this->insert('Articles', $data);
     }
-    
+
     /**
      * Update an existing article
      */
     public function updateArticle($articleId, $title, $content, $status, $category = '', $tags = '')
     {
-        // Get current article
         $currentArticle = $this->getArticleById($articleId);
         $publishedAt = null;
-        
+
         if ($currentArticle) {
             if ($status === 'published' && $currentArticle['status'] !== 'published') {
                 $publishedAt = date('Y-m-d H:i:s');
@@ -275,11 +277,10 @@ class AarticleModel extends Model
                 $publishedAt = $currentArticle['published_at'];
             }
         }
-        
-        // Handle empty values
+
         $category = empty($category) ? null : $category;
         $tags = empty($tags) ? null : $tags;
-        
+
         $data = [
             'title' => $title,
             'content' => $content,
@@ -289,10 +290,10 @@ class AarticleModel extends Model
             'published_at' => $publishedAt,
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        
+
         return $this->update('Articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
     }
-    
+
     /**
      * Delete an article
      */
@@ -300,7 +301,7 @@ class AarticleModel extends Model
     {
         return $this->delete('Articles', 'article_id = :article_id', ['article_id' => $articleId]);
     }
-    
+
     /**
      * Increment article views
      */
@@ -333,7 +334,7 @@ class AarticleModel extends Model
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
                   ORDER BY a.created_at DESC";
-        
+
         return $this->fetchAll($query);
     }
 
@@ -370,7 +371,7 @@ class AarticleModel extends Model
                   JOIN Users u ON a.user_id = u.user_id
                   WHERE a.status = :status
                   ORDER BY a.created_at DESC";
-        
+
         return $this->fetchAll($query, ['status' => $status]);
     }
 
@@ -383,14 +384,14 @@ class AarticleModel extends Model
             'status' => $status,
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        
+
         if ($status === 'published') {
             $data['published_at'] = date('Y-m-d H:i:s');
         }
-        
+
         return $this->update('Articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
     }
-    
+
     /**
      * Delete all articles by a specific user
      */
@@ -404,4 +405,3 @@ class AarticleModel extends Model
         }
     }
 }
-

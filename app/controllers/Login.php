@@ -9,6 +9,11 @@ class Login extends Controller {
         } else {
             // Prepare data for the view
             $data = [];
+
+            if (isset($_SESSION['login_error'])) {
+                $data['error'] = $_SESSION['login_error'];
+                unset($_SESSION['login_error']);
+            }
             
             // Check for registration success message
             if (isset($_SESSION['registration_success'])) {
@@ -35,6 +40,11 @@ class Login extends Controller {
             $user = $userModel->getUserByUsername($username);
             
             if ($user && password_verify($password, $user['password_hash'])) {
+                if (($user['account_status'] ?? 'active') !== 'active') {
+                    $this->view('/auth/login', ['error' => 'Your account is not active. Please contact an administrator.']);
+                    return;
+                }
+
                 // Login successful - Set ALL session variables
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['user_type'] = $user['user_type'];
@@ -45,6 +55,8 @@ class Login extends Controller {
                 $_SESSION['last_name'] = $user['last_name'];
                 $_SESSION['full_name'] = $user['first_name'] . ' ' . $user['last_name']; // ✅ Added full name separately
                 $_SESSION['email'] = $user['email']; // ✅ Email
+
+                $userModel->updateLastLogin($user['user_id']);
                 
                 // Log successful login
                 error_log("User logged in: " . $user['username'] . " (ID: " . $user['user_id'] . ")");
