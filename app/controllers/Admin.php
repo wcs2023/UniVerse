@@ -403,6 +403,10 @@ class Admin extends Controller
     {
         $articleModel = $this->model('AarticleModel');
         
+        if (empty($_SESSION['admin_csrf_token'])) {
+            $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
+        }
+        
         // Get all articles
         $articles = $articleModel->getAllArticles();
         
@@ -412,6 +416,132 @@ class Admin extends Controller
         
         $this->view('actors/admin/articles', $data);
     }
+
+    /**
+     * View article details (AJAX)
+     */
+    public function viewArticle($articleId = null)
+    {
+        header('Content-Type: application/json');
+
+        if (!$articleId) {
+            echo json_encode(['success' => false, 'message' => 'Article ID is required']);
+            exit;
+        }
+
+        $articleModel = $this->model('AarticleModel');
+        $article = $articleModel->getArticleByIdAdmin($articleId);
+
+        if (!$article) {
+            echo json_encode(['success' => false, 'message' => 'Article not found']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'article' => $article]);
+        exit;
+    }
+
+
+    /**
+     * Hide article from public users
+     */
+    public function hideArticle($articleId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/articles?error=invalid_method');
+            exit;
+        }
+
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/articles?error=invalid_csrf');
+            exit;
+        }
+
+        if (!$articleId) {
+            header('Location: ' . BASE_URL . '/admin/articles?error=missing_id');
+            exit;
+        }
+
+        $articleModel = $this->model('AarticleModel');
+        $result = $articleModel->hideArticle($articleId);
+
+        if ($result) {
+            header('Location: ' . BASE_URL . '/admin/articles?success=hidden');
+        } else {
+            header('Location: ' . BASE_URL . '/admin/articles?error=hide_failed');
+        }
+        exit;
+    }
+
+
+    /**
+     * Unhide article back to published
+     */
+    public function unhideArticle($articleId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/articles?error=invalid_method');
+            exit;
+        }
+
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/articles?error=invalid_csrf');
+            exit;
+        }
+
+        if (!$articleId) {
+            header('Location: ' . BASE_URL . '/admin/articles?error=missing_id');
+            exit;
+        }
+
+        $articleModel = $this->model('AarticleModel');
+        $result = $articleModel->unhideArticle($articleId);
+
+        if ($result) {
+            header('Location: ' . BASE_URL . '/admin/articles?success=unhidden');
+        } else {
+            header('Location: ' . BASE_URL . '/admin/articles?error=unhide_failed');
+        }
+        exit;
+    }
+
+    /**
+     * Permanently delete article
+     */
+    public function deleteArticle($articleId = null)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/articles?error=invalid_method');
+            exit;
+        }
+
+        $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
+        $requestToken = $_POST['csrf_token'] ?? '';
+        if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {
+            header('Location: ' . BASE_URL . '/admin/articles?error=invalid_csrf');
+            exit;
+        }
+
+        if (!$articleId) {
+            header('Location: ' . BASE_URL . '/admin/articles?error=missing_id');
+            exit;
+        }
+
+        $articleModel = $this->model('AarticleModel');
+        $result = $articleModel->deleteArticlePermanently($articleId);
+
+        if ($result) {
+            header('Location: ' . BASE_URL . '/admin/articles?success=deleted');
+        } else {
+            header('Location: ' . BASE_URL . '/admin/articles?error=delete_failed');
+        }
+        exit;
+    }
+
     
     /**
      * Manage registrations

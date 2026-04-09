@@ -50,6 +50,27 @@ class AarticleModel extends Model
     }
 
     /**
+     * Get article by ID for admin use
+     */
+    public function getArticleByIdAdmin($articleId)
+    {
+        $query = "SELECT 
+                    a.*,
+                    u.first_name,
+                    u.last_name,
+                    u.profile_picture,
+                    u.user_type,
+                    u.account_status,
+                    CONCAT(u.first_name, ' ', u.last_name) as author_name,
+                    u.email as author_email
+                  FROM Articles a
+                  JOIN Users u ON a.user_id = u.user_id
+                  WHERE a.article_id = :article_id";
+
+        return $this->fetch($query, ['article_id' => $articleId]);
+    }
+
+    /**
      * Get all published articles (for public viewing) - FIXED FOR SCHOOL LEAVERS
      */
     public function getAllPublishedArticles($limit = null, $offset = 0)
@@ -390,6 +411,30 @@ class AarticleModel extends Model
         }
 
         return $this->update('Articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
+    }
+
+    /**
+     * Hide an article from public users
+     */
+    public function hideArticle($articleId)
+    {
+        return $this->updateArticleStatus($articleId, 'archived');
+    }
+
+    /**
+     * Unhide an article (restore to published)
+     */
+    public function unhideArticle($articleId)
+    {
+        return $this->updateArticleStatus($articleId, 'published');
+    }
+
+    /**
+     * Delete an article permanently
+     */
+    public function deleteArticlePermanently($articleId)
+    {
+        return $this->delete('Articles', 'article_id = :article_id', ['article_id' => $articleId]);
     }
 
     /**
