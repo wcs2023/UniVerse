@@ -371,4 +371,14 @@ class User extends Model
             return false;
         }
     }
+    
+    public function deleteByUserId($userId)
+    {
+        try {
+            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
+        }
+    }
 }

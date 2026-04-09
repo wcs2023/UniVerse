@@ -390,5 +390,15 @@ class AarticleModel extends Model
         
         return $this->update('Articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
     }
+    
+    public function deleteByUserId($userId)
+    {
+        try {
+            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 

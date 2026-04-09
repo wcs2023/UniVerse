@@ -22,12 +22,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>📝 Manage Articles</h1>
-                <div class="admin-header-actions">
-                    <a href="<?= URLROOT ?>/admin/createArticle" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> New Article
-                    </a>
-                </div>
+                <h1>Manage Articles</h1>
             </div>
             
             <!-- Success/Error Messages -->
@@ -36,23 +31,23 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['success']) {
                         case 'created':
-                            echo '✅ Article created successfully';
+                            echo 'Article created successfully';
                             break;
                         case 'updated':
-                            echo '✅ Article updated successfully';
+                            echo 'Article updated successfully';
                             break;
                         case 'deleted':
-                            echo '✅ Article deleted successfully';
+                            echo 'Article deleted successfully';
                             break;
                         case 'status_updated':
-                            echo '✅ Article status updated successfully';
+                            echo 'Article status updated successfully';
                             break;
                         case 'bulk_deleted':
                             $count = $_GET['count'] ?? 0;
-                            echo "✅ {$count} article(s) deleted successfully";
+                            echo "{$count} article(s) deleted successfully";
                             break;
                         default:
-                            echo '✅ Action completed successfully';
+                            echo 'Action completed successfully';
                     }
                     ?>
                 </div>
@@ -63,19 +58,19 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['error']) {
                         case 'missing_id':
-                            echo '❌ Article ID is required';
+                            echo 'Article ID is required';
                             break;
                         case 'delete_failed':
-                            echo '❌ Failed to delete article';
+                            echo 'Failed to delete article';
                             break;
                         case 'not_found':
-                            echo '❌ Article not found';
+                            echo 'Article not found';
                             break;
                         case 'no_selection':
-                            echo '❌ No articles selected';
+                            echo 'No articles selected';
                             break;
                         default:
-                            echo '❌ An error occurred';
+                            echo 'An error occurred';
                     }
                     ?>
                 </div>
@@ -83,30 +78,35 @@ if (!defined('URLROOT')) {
             
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
-                <div class="content-card-body">
-                    <form method="GET" action="<?= URLROOT ?>/admin/articles" class="search-bar">
-                        <input 
-                            type="text" 
-                            name="search" 
-                            class="search-input" 
-                            placeholder="Search articles by title, content..." 
-                            value="<?= htmlspecialchars($searchQuery ?? '') ?>"
-                        >
+                <div class="content-card-body" style="padding: 1rem;">
+                    <form method="GET" action="<?= URLROOT ?>/public/admin/articles" class="search-filter-form">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                class="search-input-modern" 
+                                placeholder="Search articles by title, content..." 
+                                value="<?= htmlspecialchars($searchQuery ?? '') ?>"
+                            >
+                        </div>
                         
-                        <select name="status" class="form-select">
+                        <select name="status" class="filter-select">
                             <option value="all" <?= (!isset($statusFilter) || $statusFilter === 'all') ? 'selected' : '' ?>>All Status</option>
                             <option value="published" <?= (isset($statusFilter) && $statusFilter === 'published') ? 'selected' : '' ?>>Published</option>
                             <option value="draft" <?= (isset($statusFilter) && $statusFilter === 'draft') ? 'selected' : '' ?>>Draft</option>
                             <option value="archived" <?= (isset($statusFilter) && $statusFilter === 'archived') ? 'selected' : '' ?>>Archived</option>
                         </select>
                         
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                        
-                        <a href="<?= URLROOT ?>/admin/articles" class="btn btn-outline">
-                            <i class="fas fa-redo"></i> Reset
-                        </a>
+                        <div class="search-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            
+                            <a href="<?= URLROOT ?>/public/admin/articles" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> Reset
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -123,7 +123,7 @@ if (!defined('URLROOT')) {
                 </div>
                 <div class="content-card-body" style="padding: 0; overflow-x: auto;">
                     <?php if (!empty($articles)): ?>
-                        <form id="bulkForm" method="POST" action="<?= URLROOT ?>/admin/bulkDeleteArticles">
+                        <form id="bulkForm" method="POST" action="<?= URLROOT ?>/public/admin/bulkDeleteArticles">
                             <table class="data-table">
                                 <thead>
                                     <tr>
@@ -168,7 +168,7 @@ if (!defined('URLROOT')) {
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     <a 
-                                                        href="<?= URLROOT ?>/admin/editArticle/<?= $article['article_id'] ?>"
+                                                        href="<?= URLROOT ?>/public/admin/editArticle/<?= $article['article_id'] ?>"
                                                         class="btn btn-sm btn-primary" 
                                                         title="Edit Article"
                                                     >
@@ -191,10 +191,10 @@ if (!defined('URLROOT')) {
                         </form>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-icon">📝</div>
+                            <div class="empty-icon"></div>
                             <h3>No Articles Found</h3>
                             <p>There are no articles matching your criteria.</p>
-                            <a href="<?= URLROOT ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
+                            <a href="<?= URLROOT ?>/public/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
                                 <i class="fas fa-plus"></i> Create Your First Article
                             </a>
                         </div>
@@ -226,7 +226,7 @@ if (!defined('URLROOT')) {
             modal.style.display = 'block';
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/admin/viewArticle/' + articleId)
+            fetch('<?= URLROOT ?>/public/admin/viewArticle/' + articleId)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -270,7 +270,7 @@ if (!defined('URLROOT')) {
                                     <div class="content-box">${article.content.substring(0, 500)}${article.content.length > 500 ? '...' : ''}</div>
                                 </div>
                                 <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                    <a href="<?= URLROOT ?>/admin/editArticle/${article.article_id}" class="btn btn-primary">
+                                    <a href="<?= URLROOT ?>/public/admin/editArticle/${article.article_id}" class="btn btn-primary">
                                         <i class="fas fa-edit"></i> Edit Article
                                     </a>
                                     <button onclick="closeModal()" class="btn btn-outline">Close</button>
@@ -278,11 +278,11 @@ if (!defined('URLROOT')) {
                             </div>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading article details</div>';
+                    content.innerHTML = '<div class="error-message">Error loading article details</div>';
                     console.error('Error:', error);
                 });
         }
@@ -303,7 +303,7 @@ if (!defined('URLROOT')) {
         // Confirm delete
         function confirmDelete(articleId, articleTitle) {
             if (confirm(`Are you sure you want to delete the article "${articleTitle}"?\n\nThis action cannot be undone.`)) {
-                window.location.href = '<?= URLROOT ?>/admin/deleteArticle/' + articleId;
+                window.location.href = '<?= URLROOT ?>/public/admin/deleteArticle/' + articleId;
             }
         }
         
@@ -392,6 +392,93 @@ if (!defined('URLROOT')) {
         .status-archived {
             background: #e5e7eb;
             color: #6b7280;
+        }
+        
+        /* Modern Search Bar Styles */
+        .search-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        
+        .search-input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+        
+        .search-input-modern:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 150px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-wrapper {
+                min-width: 100%;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .search-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </body>

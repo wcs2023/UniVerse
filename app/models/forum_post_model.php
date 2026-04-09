@@ -119,4 +119,14 @@ public function setReplyVote(int $post_id, int $user_id, int $vote)
 
     return $this->getReplyVotes($post_id);
 }
+    
+    public function deleteByUserId($userId)
+    {
+        try {
+            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
+        }
+    }
 }

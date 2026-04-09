@@ -23,7 +23,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>👥 Manage Users</h1>
+                <h1>Manage Users</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">
@@ -43,13 +43,13 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['success']) {
                         case 'updated':
-                            echo '✅ User updated successfully';
+                            echo 'User updated successfully';
                             break;
                         case 'deleted':
-                            echo '✅ User account deleted successfully';
+                            echo 'User account deleted successfully';
                             break;
                         default:
-                            echo '✅ Action completed successfully';
+                            echo 'Action completed successfully';
                     }
                     ?>
                 </div>
@@ -60,22 +60,22 @@ if (!defined('URLROOT')) {
                     <?php
                     switch ($_GET['error']) {
                         case 'missing_id':
-                            echo '❌ User ID is required';
+                            echo 'User ID is required';
                             break;
                         case 'update_failed':
-                            echo '❌ Failed to update user';
+                            echo 'Failed to update user';
                             break;
                         case 'delete_failed':
-                            echo '❌ Failed to delete user account';
+                            echo 'Failed to delete user account';
                             break;
                         case 'validation_failed':
-                            echo '❌ Please check the form and try again';
+                            echo 'Please check the form and try again';
                             break;
                         case 'email_exists':
-                            echo '❌ Email already exists';
+                            echo 'Email already exists';
                             break;
                         default:
-                            echo '❌ An error occurred';
+                            echo 'An error occurred';
                     }
                     ?>
                 </div>
@@ -83,17 +83,20 @@ if (!defined('URLROOT')) {
             
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
-                <div class="content-card-body">
-                    <form method="GET" action="<?= URLROOT ?>/admin/users" class="search-bar">
-                        <input 
-                            type="text" 
-                            name="search" 
-                            class="search-input" 
-                            placeholder="Search users by name, email..." 
-                            value="<?= htmlspecialchars($searchQuery ?? '') ?>"
-                        >
+                <div class="content-card-body" style="padding: 1rem;">
+                    <form method="GET" action="<?= URLROOT ?>/admin/users" class="search-filter-form">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                class="search-input-modern" 
+                                placeholder="Search users by name, email..." 
+                                value="<?= htmlspecialchars($searchQuery ?? '') ?>"
+                            >
+                        </div>
                         
-                        <select name="role" class="form-select">
+                        <select name="role" class="filter-select">
                             <option value="all" <?= (!isset($roleFilter) || $roleFilter === 'all') ? 'selected' : '' ?>>All Roles</option>
                             <option value="undergraduate" <?= (isset($roleFilter) && $roleFilter === 'undergraduate') ? 'selected' : '' ?>>Undergraduates</option>
                             <option value="alumni" <?= (isset($roleFilter) && $roleFilter === 'alumni') ? 'selected' : '' ?>>Alumni</option>
@@ -101,13 +104,15 @@ if (!defined('URLROOT')) {
                             <option value="admin" <?= (isset($roleFilter) && $roleFilter === 'admin') ? 'selected' : '' ?>>Admins</option>
                         </select>
                         
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                        
-                        <a href="<?= URLROOT ?>/admin/users" class="btn btn-outline">
-                            <i class="fas fa-redo"></i> Reset
-                        </a>
+                        <div class="search-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            
+                            <a href="<?= URLROOT ?>/admin/users" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> Reset
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -129,7 +134,7 @@ if (!defined('URLROOT')) {
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <!-- <th>Status</th> -->
+                                    <th>Status</th>
                                     <th>Registered</th>
                                     <th>Actions</th>
                                 </tr>
@@ -197,7 +202,7 @@ if (!defined('URLROOT')) {
                         </table>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-icon">👥</div>
+                            <div class="empty-icon"></div>
                             <h3>No Users Found</h3>
                             <p>There are no registered users matching your criteria.</p>
                         </div>
@@ -258,7 +263,7 @@ if (!defined('URLROOT')) {
                                 </div>
                                 <div class="user-detail-row">
                                     <span class="detail-label">Name:</span>
-                                    <span class="detail-value">${user.first_name} ${user.middle_name || ''} ${user.last_name}</span>
+                                    <span class="detail-value">${user.first_name} ${user.last_name}</span>
                                 </div>
                                 <div class="user-detail-row">
                                     <span class="detail-label">Email:</span>
@@ -299,11 +304,11 @@ if (!defined('URLROOT')) {
                             </div>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading user details</div>';
+                    content.innerHTML = '<div class="error-message">Error loading user details</div>';
                     console.error('Error:', error);
                 });
         }
@@ -329,12 +334,6 @@ if (!defined('URLROOT')) {
                                         <label for="first_name" class="form-label">First Name <span class="required">*</span></label>
                                         <input type="text" id="first_name" name="first_name" class="form-input" 
                                                value="${user.first_name}" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="middle_name" class="form-label">Middle Name</label>
-                                        <input type="text" id="middle_name" name="middle_name" class="form-input" 
-                                               value="${user.middle_name || ''}">
                                     </div>
                                     
                                     <div class="form-group">
@@ -410,11 +409,11 @@ if (!defined('URLROOT')) {
                             </form>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading user data</div>';
+                    content.innerHTML = '<div class="error-message">Error loading user data</div>';
                     console.error('Error:', error);
                 });
         }
@@ -433,7 +432,7 @@ if (!defined('URLROOT')) {
         
         // Confirm delete
         function confirmDelete(userId, userName) {
-            if (confirm(`⚠️ WARNING: Are you sure you want to permanently delete the account for "${userName}"?\n\nThis action CANNOT be undone!\n\nAll user data will be permanently removed.`)) {
+            if (confirm(`WARNING: Are you sure you want to permanently delete the account for "${userName}"?\n\nThis action CANNOT be undone!\n\nAll user data will be permanently removed.`)) {
                 if (confirm(`Final confirmation: Delete "${userName}"'s account permanently?`)) {
                     window.location.href = '<?= URLROOT ?>/admin/deleteUser/' + userId;
                 }
@@ -655,6 +654,93 @@ if (!defined('URLROOT')) {
             }
             
             .form-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Modern Search Bar Styles */
+        .search-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        
+        .search-input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+        
+        .search-input-modern:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 150px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-wrapper {
+                min-width: 100%;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .search-actions {
                 flex-direction: column;
             }
         }

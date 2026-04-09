@@ -17,57 +17,11 @@ class Admin extends Controller
     }
     
     /**
-     * Admin Dashboard - Default landing page
+     * Admin Default Landing Page - Redirects to Users
      */
     public function index()
     {
-        $this->dashboard();
-    }
-    
-    /**
-     * Dashboard view with statistics
-     */
-    public function dashboard()
-    {
-        $userModel = $this->model('User');
-        
-        // Initialize statistics
-        $totalUsers = 0;
-        $totalUndergraduates = 0;
-        $totalAlumni = 0;
-        $totalCompanies = 0;
-        $totalArticles = 0;
-        $pendingRegistrations = 0;
-        
-        // Fetch statistics data
-        try {
-            $totalUsers = $userModel->getTotalUsersCount();
-            $totalUndergraduates = $userModel->getUsersCountByType('undergraduate');
-            $totalAlumni = $userModel->getUsersCountByType('alumni');
-            $totalCompanies = $userModel->getUsersCountByType('company');
-        } catch (Exception $e) {
-            error_log("Error getting users: " . $e->getMessage());
-        }
-        
-        try {
-            $articleModel = $this->model('AarticleModel');
-            $totalArticles = $articleModel->getTotalArticlesCount();
-        } catch (Exception $e) {
-            error_log("Error getting articles count: " . $e->getMessage());
-        }
-        
-        // Prepare data for the view
-        $data = [
-            'totalUsers' => $totalUsers,
-            'totalUndergraduates' => $totalUndergraduates ?? 0,
-            'totalAlumni' => $totalAlumni ?? 0,
-            'totalCompanies' => $totalCompanies ?? 0,
-            'totalArticles' => $totalArticles,
-            'pendingRegistrations' => $pendingRegistrations
-        ];
-        
-        // Load the dashboard view
-        $this->view('actors/admin/dashboard', $data);
+        $this->users();
     }
     
     /**
@@ -238,7 +192,6 @@ class Admin extends Controller
         
         // Validate input
         $first_name = trim($_POST['first_name'] ?? '');
-        $middle_name = trim($_POST['middle_name'] ?? '');
         $last_name = trim($_POST['last_name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $username = trim($_POST['username'] ?? '');
@@ -284,10 +237,6 @@ class Admin extends Controller
             ];
             
             // Only add optional fields if they're not empty
-            if (!empty($middle_name)) {
-                $updateData['middle_name'] = $middle_name;
-            }
-            
             if (!empty($username)) {
                 $updateData['username'] = $username;
             }
