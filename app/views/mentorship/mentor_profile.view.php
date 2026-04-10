@@ -110,18 +110,6 @@ if (!defined('APPROOT')) {
     ?>
 
     <div class="ms-container" style="padding: 2rem 1rem;">
-        <!-- Breadcrumb Navigation -->
-        <nav class="ms-breadcrumb" aria-label="Breadcrumb">
-            <?php if ($data['user_type'] === 'undergraduate'): ?>
-                <a href="<?= BASE_URL ?>/umentorships">My Mentorships</a> ›
-                <a href="<?= BASE_URL ?>/umentorships/exploreMentors">Explore Mentors</a> ›
-                <span aria-current="page"><?= htmlspecialchars($data['mentor']['full_name']) ?></span>
-            <?php else: ?>
-                <a href="<?= BASE_URL ?>/amentorships">Mentor Dashboard</a> ›
-                <span aria-current="page"><?= htmlspecialchars($data['mentor']['full_name']) ?></span>
-            <?php endif; ?>
-        </nav>
-
         <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="back-button">
             ← Back to Mentors
         </a>
@@ -166,25 +154,13 @@ if (!defined('APPROOT')) {
                         <span class="ms-stat-value" style="color: var(--primary-purple);"><?= $data['stats']['active_mentees'] ?? 0 ?></span>
                         <span class="ms-stat-label">Active Mentees</span>
                     </div>
-                    <div class="ms-stat-item" style="border-bottom: none; padding: 0;">
-                        <span class="ms-stat-value" style="color: var(--primary-purple);"><?= $data['mentor']['max_mentees'] ?? 5 ?></span>
-                        <span class="ms-stat-label">Max Mentees</span>
-                    </div>
                 </div>
 
                 <?php if ($data['user_type'] === 'undergraduate'): ?>
                     <div class="profile-actions">
-                        <?php if ($data['hasActiveRequest']): ?>
-                            <button class="ms-btn ms-btn-primary" disabled>
-                                Request Already Sent
-                            </button>
-                        <?php elseif (!$data['mentor']['is_active']): ?>
+                        <?php if (!$data['mentor']['is_active']): ?>
                             <button class="ms-btn ms-btn-primary" disabled>
                                 Currently Unavailable
-                            </button>
-                        <?php else: ?>
-                            <button class="ms-btn ms-btn-primary" onclick="openRequestModal()">
-                                Send Mentorship Request
                             </button>
                         <?php endif; ?>
                         
@@ -204,32 +180,60 @@ if (!defined('APPROOT')) {
         <div class="content-grid">
             <!-- Left Column -->
             <div>
-                <!-- About Section -->
+                <!-- Professional Background Section (About + Education Combined) -->
                 <div class="content-card">
-                    <h2 class="card-title">About</h2>
-                    <p class="bio-text">
-                        <?= nl2br(htmlspecialchars($data['profile']->short_bio ?? $data['mentor']['skills_experience'] ?? 'No bio available.')) ?>
-                    </p>
-                </div>
-
-                <!-- Expertise Section -->
-                <?php if (!empty($data['mentor']['expertise_areas'])): ?>
-                    <div class="content-card" style="margin-top: 2rem;">
-                        <h2 class="card-title">Areas of Expertise</h2>
-                        <div class="expertise-tags">
-                            <?php 
-                            $expertise = json_decode($data['mentor']['expertise_areas'], true);
-                            if (is_array($expertise)):
-                                foreach ($expertise as $area):
-                            ?>
-                                <span class="expertise-tag"><?= htmlspecialchars($area) ?></span>
-                            <?php 
-                                endforeach;
-                            endif;
-                            ?>
+                    <h2 class="card-title">Professional Background</h2>
+                    
+                    <!-- About/Bio -->
+                    <?php if (!empty($data['mentor']['skills_experience'])): ?>
+                        <div style="margin-bottom: 2rem;">
+                            <p class="bio-text"><?= nl2br(htmlspecialchars($data['mentor']['skills_experience'])) ?></p>
                         </div>
-                    </div>
-                <?php endif; ?>
+                    <?php else: ?>
+                        <p class="bio-text" style="color: #9ca3af; margin-bottom: 2rem;">Professional background information not yet provided.</p>
+                    <?php endif; ?>
+
+                    <!-- Expertise -->
+                    <?php if (!empty($data['mentor']['expertise_array'])): ?>
+                        <div style="border-top: 1px solid #e5e7eb; padding-top: 1.5rem; margin-top: 1.5rem;">
+                            <h3 style="font-size: 0.95rem; font-weight: 600; color: #1f2937; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Expertise</h3>
+                            <div class="expertise-tags">
+                                <?php foreach ($data['mentor']['expertise_array'] as $expertise): ?>
+                                    <span class="expertise-tag"><?= htmlspecialchars($expertise) ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Education -->
+                    <?php if (!empty($data['mentor']['university_name']) || !empty($data['mentor']['degree_program']) || !empty($data['mentor']['graduation_year'])): ?>
+                        <div style="border-top: 1px solid #e5e7eb; padding-top: 1.5rem;">
+                            <h3 style="font-size: 0.95rem; font-weight: 600; color: #1f2937; margin: 0 0 1rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Education</h3>
+                            <div class="contact-minimal" style="gap: 1rem;">
+                                <?php if (!empty($data['mentor']['university_name'])): ?>
+                                    <div class="contact-field">
+                                        <span class="contact-label">University</span>
+                                        <span class="contact-value"><?= htmlspecialchars($data['mentor']['university_name']) ?></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($data['mentor']['degree_program'])): ?>
+                                    <div class="contact-field">
+                                        <span class="contact-label">Degree</span>
+                                        <span class="contact-value"><?= htmlspecialchars($data['mentor']['degree_program']) ?></span>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($data['mentor']['graduation_year'])): ?>
+                                    <div class="contact-field">
+                                        <span class="contact-label">Graduated</span>
+                                        <span class="contact-value"><?= htmlspecialchars($data['mentor']['graduation_year']) ?></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <!-- Right Column -->
@@ -237,150 +241,69 @@ if (!defined('APPROOT')) {
                 <!-- Contact & Links -->
                 <div class="content-card">
                     <h2 class="card-title">Contact & Links</h2>
-                    <div class="info-grid">
-                        <?php if (!empty($data['mentor']['email'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--email">Email</span>
-                                <span class="info-value">
-                                    <a href="mailto:<?= htmlspecialchars($data['mentor']['email']) ?>">
-                                        <?= htmlspecialchars($data['mentor']['email']) ?>
-                                    </a>
-                                </span>
-                            </div>
-                        <?php endif; ?>
+                    <div class="contact-minimal">
+                        <div class="contact-field">
+                            <span class="contact-label">Role</span>
+                            <span class="contact-value"><?= htmlspecialchars($data['mentor']['current_job_title'] ?? 'Not provided') ?></span>
+                        </div>
 
-                        <?php if (!empty($data['mentor']['linkedin_url'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--link">LinkedIn</span>
-                                <span class="info-value">
-                                    <a href="<?= htmlspecialchars($data['mentor']['linkedin_url']) ?>" target="_blank">
-                                        View Profile
-                                    </a>
-                                </span>
-                            </div>
-                        <?php endif; ?>
+                        <div class="contact-field">
+                            <span class="contact-label">Company</span>
+                            <span class="contact-value"><?= htmlspecialchars($data['mentor']['current_company'] ?? 'Not provided') ?></span>
+                        </div>
 
-                        <?php if (!empty($data['mentor']['github_url'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--github">GitHub</span>
-                                <span class="info-value">
-                                    <a href="<?= htmlspecialchars($data['mentor']['github_url']) ?>" target="_blank">
-                                        View Profile
-                                    </a>
-                                </span>
-                            </div>
-                        <?php endif; ?>
+                        <div class="contact-field">
+                            <span class="contact-label">Email</span>
+                            <span class="contact-value">
+                                <?php if (!empty($data['mentor']['email'])): ?>
+                                    <a href="mailto:<?= htmlspecialchars($data['mentor']['email']) ?>"><?= htmlspecialchars($data['mentor']['email']) ?></a>
+                                <?php else: ?>
+                                    Not provided
+                                <?php endif; ?>
+                            </span>
+                        </div>
 
-                        <?php if (!empty($data['mentor']['portfolio_url'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--web">Portfolio</span>
-                                <span class="info-value">
-                                    <a href="<?= htmlspecialchars($data['mentor']['portfolio_url']) ?>" target="_blank">
-                                        View Website
-                                    </a>
-                                </span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
+                        <div class="contact-field">
+                            <span class="contact-label">LinkedIn</span>
+                            <span class="contact-value">
+                                <?php if (!empty($data['mentor']['linkedin_url'])): ?>
+                                    <a href="<?= htmlspecialchars($data['mentor']['linkedin_url']) ?>" target="_blank">View Profile</a>
+                                <?php else: ?>
+                                    Not provided
+                                <?php endif; ?>
+                            </span>
+                        </div>
 
-                <!-- Education -->
-                <div class="content-card" style="margin-top: 2rem;">
-                    <h2 class="card-title">Education</h2>
-                    <div class="info-grid">
-                        <?php if (!empty($data['mentor']['university_name'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--edu">University</span>
-                                <span class="info-value"><?= htmlspecialchars($data['mentor']['university_name']) ?></span>
-                            </div>
-                        <?php endif; ?>
+                        <div class="contact-field">
+                            <span class="contact-label">GitHub</span>
+                            <span class="contact-value">
+                                <?php if (!empty($data['mentor']['github_url'])): ?>
+                                    <a href="<?= htmlspecialchars($data['mentor']['github_url']) ?>" target="_blank">View Profile</a>
+                                <?php else: ?>
+                                    Not provided
+                                <?php endif; ?>
+                            </span>
+                        </div>
 
-                        <?php if (!empty($data['mentor']['degree_program'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--degree">Degree</span>
-                                <span class="info-value"><?= htmlspecialchars($data['mentor']['degree_program']) ?></span>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (!empty($data['mentor']['graduation_year'])): ?>
-                            <div class="info-item">
-                                <span class="info-label ms-icon-label ms-icon-label--date">Graduated</span>
-                                <span class="info-value"><?= htmlspecialchars($data['mentor']['graduation_year']) ?></span>
-                            </div>
-                        <?php endif; ?>
+                        <div class="contact-field">
+                            <span class="contact-label">Portfolio</span>
+                            <span class="contact-value">
+                                <?php if (!empty($data['mentor']['portfolio_url'])): ?>
+                                    <a href="<?= htmlspecialchars($data['mentor']['portfolio_url']) ?>" target="_blank">View Website</a>
+                                <?php else: ?>
+                                    Not provided
+                                <?php endif; ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Request Modal -->
-    <?php if ($data['user_type'] === 'undergraduate' && !$data['hasActiveRequest'] && $data['mentor']['is_active']): ?>
-        <div id="requestModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="requestModalTitle">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="requestModalTitle">Send Mentorship Request</h3>
-                    <button class="modal-close" onclick="closeRequestModal()" aria-label="Close request dialog"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <form id="requestForm" onsubmit="sendRequest(event)">
-                        <div class="form-group">
-                            <label for="message">Message to <?= htmlspecialchars($data['mentor']['first_name']) ?> <span aria-hidden="true">*</span><span class="visually-hidden">required</span></label>
-                            <textarea id="message" 
-                                      name="message" 
-                                      required
-                                      aria-required="true"
-                                      placeholder="Introduce yourself and explain why you'd like this person as your mentor..."></textarea>
-                        </div>
-                        <input type="hidden" name="mentor_id" value="<?= $data['mentor']['mentor_id'] ?>">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ms-btn ms-btn-secondary" onclick="closeRequestModal()">Cancel</button>
-                    <button type="submit" form="requestForm" class="ms-btn ms-btn-primary">Send Request</button>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 
     <script>
-        function openRequestModal() {
-            document.getElementById('requestModal').classList.add('active');
-        }
-
-        function closeRequestModal() {
-            document.getElementById('requestModal').classList.remove('active');
-        }
-
-        async function sendRequest(event) {
-            event.preventDefault();
-            
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            try {
-                const response = await fetch('<?= BASE_URL ?>/umentorships/request', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    MentorshipSystem.showNotification('Mentorship request sent successfully!', 'success');
-                    setTimeout(() => { window.location.href = '<?= BASE_URL ?>/umentorships'; }, 1500);
-                } else {
-                    MentorshipSystem.showNotification('Error: ' + (result.message || 'Failed to send request'), 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                MentorshipSystem.showNotification('An error occurred. Please try again.', 'error');
-            }
-        }
-
-        // Close modal handled globally by mentorship.js
     </script>
     <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 </body>

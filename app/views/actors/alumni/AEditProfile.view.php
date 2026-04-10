@@ -660,6 +660,37 @@ if (!defined('URLROOT')) {
                         You can disable this at any time.
                     </small>
                 </div>
+
+                <div id="mentor-expertise-section" style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb;">
+                    <h3 style="margin: 0 0 0.5rem 0; color: var(--text-dark, #1a1a2e); font-size: 1rem;">Mentor Expertise (IT Focus)</h3>
+                    <p style="margin: 0 0 1rem 0; color: #6b7280; font-size: 0.9rem;">Select the areas where you can mentor undergraduate students.</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.8rem;">
+                        <?php foreach (($data['expertiseCategories'] ?? []) as $category): ?>
+                            <?php
+                                $categoryName = $category['category_name'] ?? '';
+                                $categoryDescription = $category['description'] ?? '';
+                                $isChecked = in_array($categoryName, $data['selectedExpertise'] ?? [], true);
+                            ?>
+                            <label style="display: flex; flex-direction: column; gap: 0.35rem; padding: 0.7rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb; cursor: pointer;">
+                                <span style="display: flex; align-items: center; gap: 0.55rem;">
+                                    <input
+                                        type="checkbox"
+                                        class="mentor-expertise-checkbox"
+                                        name="mentor_expertise[]"
+                                        value="<?= htmlspecialchars($categoryName) ?>"
+                                        <?= $isChecked ? 'checked' : '' ?>
+                                        style="width: 17px; height: 17px; accent-color: var(--primary-purple, #6c63ff);"
+                                    >
+                                    <span style="font-weight: 600; color: #1f2937;"><?= htmlspecialchars($categoryName) ?></span>
+                                </span>
+                                <?php if (!empty($categoryDescription)): ?>
+                                    <small style="margin: 0; color: #6b7280; font-size: 0.78rem;"><?= htmlspecialchars($categoryDescription) ?></small>
+                                <?php endif; ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
 
             <!-- Form Actions -->
@@ -685,6 +716,23 @@ if (!defined('URLROOT')) {
 
         function closePhotoModal() {
             document.getElementById('photoModal').style.display = 'none';
+        }
+
+        function toggleMentorExpertiseSection() {
+            const mentorshipCheckbox = document.getElementById('mentorship_available');
+            const expertiseSection = document.getElementById('mentor-expertise-section');
+            const expertiseCheckboxes = document.querySelectorAll('.mentor-expertise-checkbox');
+
+            if (!mentorshipCheckbox || !expertiseSection) {
+                return;
+            }
+
+            const isEnabled = mentorshipCheckbox.checked;
+            expertiseSection.style.display = isEnabled ? 'block' : 'none';
+
+            expertiseCheckboxes.forEach((checkbox) => {
+                checkbox.disabled = !isEnabled;
+            });
         }
 
         function previewModalImage(input) {
@@ -728,6 +776,13 @@ if (!defined('URLROOT')) {
                 closePhotoModal();
             }
         });
+
+        const mentorshipCheckbox = document.getElementById('mentorship_available');
+        if (mentorshipCheckbox) {
+            mentorshipCheckbox.addEventListener('change', toggleMentorExpertiseSection);
+        }
+
+        toggleMentorExpertiseSection();
     </script>
 </body>
 </html>
