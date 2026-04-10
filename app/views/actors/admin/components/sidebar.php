@@ -33,10 +33,10 @@
             <span>Notifications</span>
         </a> -->
         
-        <a href="<?= BASE_URL ?>/admin/settings" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/settings') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">⚙️</i> -->
+        <!-- <a href="<?= BASE_URL ?>/admin/settings" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/settings') !== false ? 'active' : '' ?>">
+            <i class="icon">⚙️</i>
             <span>Settings</span>
-        </a>
+        </a> -->
     </nav>
     
     <div class="sidebar-footer">
