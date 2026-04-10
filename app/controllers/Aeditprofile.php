@@ -67,9 +67,14 @@ class Aeditprofile extends Controller {
             ];
         }
         
+        $expertiseCategories = $this->alumniModel->getExpertiseCategories();
+        $selectedExpertise = $this->alumniModel->getMentorExpertiseByUserId($userId);
+
         // Prepare data for view
         $data = [
             'user' => $userData,
+            'expertiseCategories' => $expertiseCategories,
+            'selectedExpertise' => $selectedExpertise,
             'error' => $_SESSION['profile_error'] ?? null,
             'success' => $_SESSION['profile_success'] ?? null,
             'title' => 'Edit Profile'
@@ -121,9 +126,17 @@ class Aeditprofile extends Controller {
             
             // Handle mentorship availability
             $mentorshipAvailable = isset($_POST['mentorship_available']) && $_POST['mentorship_available'] == '1';
+            $mentorExpertise = $validatedData['mentor_expertise'] ?? [];
+
+            if ($mentorshipAvailable && empty($mentorExpertise)) {
+                throw new Exception("Please select at least one expertise area when enabling mentorship");
+            }
             
             // Remove null values to prevent overwriting with nulls
             $updateData = array_filter($updateData, function($value) {
+                if (is_array($value)) {
+                    return !empty($value);
+                }
                 return $value !== null && $value !== '';
             });
             
@@ -132,6 +145,11 @@ class Aeditprofile extends Controller {
             
             // Update mentorship availability
             $this->alumniModel->updateMentorshipAvailability($userId, $mentorshipAvailable);
+
+            // Save mentor expertise only for mentorship flow
+            if ($mentorshipAvailable) {
+                $this->alumniModel->updateMentorExpertise($userId, $mentorExpertise);
+            }
             
             // Handle profile picture if uploaded with form
             if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
@@ -178,7 +196,16 @@ class Aeditprofile extends Controller {
                 throw new Exception("Graduation year must be between 1950 and 2030");
             }
         }
-        
+
+        if (isset($data['mentor_expertise'])) {
+            $allowedExpertise = $this->alumniModel->getExpertiseCategoryNames();
+            $submitted = is_array($data['mentor_expertise']) ? $data['mentor_expertise'] : [$data['mentor_expertise']];
+
+            $data['mentor_expertise'] = array_values(array_unique(array_filter(array_map('trim', $submitted), function ($item) use ($allowedExpertise) {
+                return $item !== '' && in_array($item, $allowedExpertise, true);
+            })));
+        }
+
         return $data;
     }
 

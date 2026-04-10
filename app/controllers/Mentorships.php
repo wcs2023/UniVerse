@@ -22,7 +22,7 @@ class Mentorships extends Controller
     public function index()
     {
         // Get user information from session
-        $user_role = $_SESSION['user_role'] ?? '';
+        $user_role = $_SESSION['user_type'] ?? $_SESSION['user_role'] ?? '';
         $user_id = $_SESSION['user_id'] ?? 0;
         
         // If no user_role or user_id, redirect to login
@@ -86,7 +86,8 @@ class Mentorships extends Controller
         
         // Check if current user has already sent a request to this mentor
         $hasActiveRequest = false;
-        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'undergraduate') {
+        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'undergraduate' ||
+            isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate') {
             $hasActiveRequest = $mentorshipModel->hasActiveRequest($user_id, $mentor_id);
         }
         

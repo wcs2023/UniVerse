@@ -37,6 +37,9 @@ class Umentorships extends Controller
     {
         $studentId = $_SESSION['user_id'];
 
+        // Auto-complete sessions that have passed their time window
+        $this->mentorshipModel->autoCompletePassedSessions();
+
         // Get student's upcoming scheduled bookings
         $upcomingBookings = $this->mentorshipModel->getStudentBookings($studentId, 'scheduled') ?? [];
 
@@ -70,7 +73,7 @@ class Umentorships extends Controller
      */
     public function exploreMentors()
     {
-        // Verify user is an undergraduate
+        // Verify user is an undergraduate (additional check)
         $userRole = $_SESSION['user_type'] ?? $_SESSION['user_role'] ?? '';
         if ($userRole !== 'undergraduate' && $userRole !== 'student') {
             header('Location: ' . BASE_URL . '/login');
@@ -79,17 +82,15 @@ class Umentorships extends Controller
 
         // Get search/filter parameters
         $searchTerm = $_GET['search'] ?? '';
-        $industry = $_GET['industry'] ?? '';
         $expertise = $_GET['expertise'] ?? '';
 
         // Get all available mentors with their available slots
-        $mentors = $this->mentorshipModel->getAvailableMentorsWithSlots($searchTerm, $industry, $expertise);
+        $mentors = $this->mentorshipModel->getAvailableMentorsWithSlots($searchTerm, '', $expertise);
 
         // Load the explore mentors view
         $this->view('mentorship/explore_mentors', [
             'mentors' => $mentors ?? [],
             'searchTerm' => $searchTerm,
-            'industry' => $industry,
             'expertise' => $expertise
         ]);
     }
@@ -112,15 +113,11 @@ class Umentorships extends Controller
             return;
         }
 
-        // Get mentor's available slots
-        $availableSlots = $this->mentorshipModel->getAvailableSlots($mentorUserId);
+        // Get mentor's available slots (use mentor_id, not user_id)
+        $availableSlots = $this->mentorshipModel->getAvailableSlots($mentor['mentor_id']);
 
         // Get mentor stats
         $stats = $this->mentorshipModel->getMentorStats($mentorUserId);
-
-        // Check if student already has active request/booking with this mentor
-        $studentId = $_SESSION['user_id'];
-        $hasActiveRequest = $this->mentorshipModel->hasActiveRequest($studentId, $mentor['mentor_id']);
 
         // Get user type for navigation
         $userType = $_SESSION['user_type'] ?? $_SESSION['user_role'] ?? 'undergraduate';
@@ -129,7 +126,6 @@ class Umentorships extends Controller
             'mentor' => $mentor,
             'available_slots' => $availableSlots ?? [],
             'stats' => $stats ?? ['completed_sessions' => 0, 'active_mentees' => 0],
-            'hasActiveRequest' => $hasActiveRequest,
             'user_type' => $userType
         ]);
     }

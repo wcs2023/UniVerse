@@ -46,6 +46,9 @@ class Amentorships extends Controller
         $mentorUserId = $_SESSION['user_id'];
         $_SESSION['mentor_id'] = $mentorUserId;
 
+        // Auto-complete sessions that have passed their time window
+        $this->mentorshipModel->autoCompletePassedSessions();
+
         // Check if user is registered as mentor and is active
         $mentorStatus = $this->mentorshipModel->getMentorStatus($mentorUserId);
         
@@ -60,6 +63,7 @@ class Amentorships extends Controller
                     'total_sessions' => 0,
                     'completed_sessions' => 0,
                     'active_mentees' => 0,
+                    'total_mentees' => 0,
                     'average_rating' => 0
                 ],
                 'unread_notifications' => 0
@@ -133,7 +137,11 @@ class Amentorships extends Controller
         $validSlots = [];
 
         foreach ($slots as $slot) {
-            $slotDate = new DateTime($slot);
+            try {
+                $slotDate = new DateTime($slot);
+            } catch (Exception $e) {
+                continue; // Skip malformed datetime values
+            }
             
             if ($slotDate <= $now) {
                 continue; // Skip past slots
