@@ -74,41 +74,49 @@ if (!defined('BASE_URL')) {
         <!-- Filter Bar -->
         <div class="ms-filter-bar">
             <label for="searchInput" class="visually-hidden">Search mentors</label>
-            <input type="text" class="ms-search-input" id="searchInput" placeholder="Search by name, skills, company..." aria-label="Search mentors by name, skills, or company">
-            <!-- <label for="industryFilter" class="visually-hidden">Filter by industry</label>
-            <select class="ms-filter-select" id="industryFilter" aria-label="Filter mentors by industry">
-                <option value="">All Industries</option>
-                <option value="tech">Technology</option>
-                <option value="finance">Finance</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="education">Education</option>
-                <option value="other">Other</option>
-            </select> -->
+            <input type="text" class="ms-search-input" id="searchInput" placeholder="Search by name, skills, company..." value="<?= htmlspecialchars($data['searchTerm'] ?? '') ?>" aria-label="Search mentors by name, skills, or company">
+
+            <label for="expertiseFilter" class="visually-hidden">Filter by expertise</label>
+            <select class="ms-filter-select" id="expertiseFilter" aria-label="Filter mentors by expertise">
+                <option value="">All Expertise</option>
+                <option value="Software Development" <?= (($data['expertise'] ?? '') === 'Software Development') ? 'selected' : '' ?>>Software Development</option>
+                <option value="Cloud &amp; DevOps" <?= (($data['expertise'] ?? '') === 'Cloud & DevOps') ? 'selected' : '' ?>>Cloud &amp; DevOps</option>
+                <option value="Cybersecurity" <?= (($data['expertise'] ?? '') === 'Cybersecurity') ? 'selected' : '' ?>>Cybersecurity</option>
+                <option value="Data &amp; AI/ML" <?= (($data['expertise'] ?? '') === 'Data & AI/ML') ? 'selected' : '' ?>>Data &amp; AI/ML</option>
+                <option value="UI/UX &amp; Product" <?= (($data['expertise'] ?? '') === 'UI/UX & Product') ? 'selected' : '' ?>>UI/UX &amp; Product</option>
+                <option value="Networking &amp; Infra" <?= (($data['expertise'] ?? '') === 'Networking & Infra') ? 'selected' : '' ?>>Networking &amp; Infra</option>
+                <option value="Database Systems" <?= (($data['expertise'] ?? '') === 'Database Systems') ? 'selected' : '' ?>>Database Systems</option>
+                <option value="Embedded &amp; IoT" <?= (($data['expertise'] ?? '') === 'Embedded & IoT') ? 'selected' : '' ?>>Embedded &amp; IoT</option>
+                <option value="QA &amp; Testing" <?= (($data['expertise'] ?? '') === 'QA & Testing') ? 'selected' : '' ?>>QA &amp; Testing</option>
+                <option value="Computer Architecture" <?= (($data['expertise'] ?? '') === 'Computer Architecture') ? 'selected' : '' ?>>Computer Architecture</option>
+                <option value="Open Source &amp; Tools" <?= (($data['expertise'] ?? '') === 'Open Source & Tools') ? 'selected' : '' ?>>Open Source &amp; Tools</option>
+                <option value="Tech Career &amp; Interview Prep" <?= (($data['expertise'] ?? '') === 'Tech Career & Interview Prep') ? 'selected' : '' ?>>Tech Career &amp; Interview Prep</option>
+            </select>
         </div>
 
         <!-- Mentors Grid -->
         <div class="ms-mentors-grid" id="mentorsGrid">
             <?php if (isset($data['mentors']) && count($data['mentors']) > 0): ?>
                 <?php foreach ($data['mentors'] as $mentor): ?>
+                    <?php
+                        $mentorName = trim((string)($mentor['name'] ?? '')) ?: 'Anonymous Mentor';
+                        $mentorRole = trim((string)($mentor['current_job_title'] ?? '')) ?: 'Role not provided';
+                        $mentorCompany = trim((string)($mentor['current_company'] ?? '')) ?: 'Company not provided';
+                        $mentorEmail = trim((string)($mentor['email'] ?? ''));
+                        $mentorSlots = (int)($mentor['available_slots'] ?? 0);
+                    ?>
                     <div class="ms-mentor-card" data-mentor-id="<?= $mentor['mentor_id'] ?>">
                         <div class="ms-mentor-header">
-                            <img src="<?= !empty($mentor['profile_picture']) ? BASE_URL . htmlspecialchars($mentor['profile_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
-                                alt="<?= htmlspecialchars($mentor['name'] ?? 'Mentor') ?>"
+                            <img src="<?= !empty($mentor['profile_picture']) ? BASE_URL . htmlspecialchars($mentor['profile_picture']) : BASE_URL . '/assets/images/U.png' ?>"
+                                alt="<?= htmlspecialchars($mentorName) ?>"
                                 class="ms-mentor-avatar"
-                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
-                            <h3 class="ms-mentor-name"><?= htmlspecialchars($mentor['name'] ?? 'Anonymous Mentor') ?></h3>
-                            <p class="ms-mentor-title"><?= htmlspecialchars($mentor['current_job_title'] ?? 'Professional') ?></p>
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                            <h3 class="ms-mentor-name"><?= htmlspecialchars($mentorName) ?></h3>
                         </div>
                         
                         <div class="ms-mentor-body">
-                            <?php if (!empty($mentor['current_company'])): ?>
-                                <div class="ms-mentor-company">
-                                    <?= htmlspecialchars($mentor['current_company']) ?>
-                                </div>
-                            <?php endif; ?>
-                            
                             <?php if (!empty($mentor['skills_experience'])): ?>
-                                <div class="ms-mentor-skills">
+                                <div class="ms-mentor-skills ms-mentor-skills-top">
                                     <?php 
                                     $skills = array_slice(explode(',', $mentor['skills_experience']), 0, 3);
                                     foreach ($skills as $skill): 
@@ -117,6 +125,18 @@ if (!defined('BASE_URL')) {
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
+
+                            <div class="ms-mentor-details">
+                                <div class="ms-mentor-detail-row">
+                                    <span class="ms-mentor-detail-label">Role</span>
+                                    <span class="ms-mentor-detail-value"><?= htmlspecialchars($mentorRole) ?></span>
+                                </div>
+
+                                <div class="ms-mentor-detail-row">
+                                    <span class="ms-mentor-detail-label">Company</span>
+                                    <span class="ms-mentor-detail-value"><?= htmlspecialchars($mentorCompany) ?></span>
+                                </div>
+                            </div>
                             
                             <?php if (!empty($mentor['rating'])): ?>
                                 <div class="ms-mentor-rating">
@@ -125,17 +145,27 @@ if (!defined('BASE_URL')) {
                                 </div>
                             <?php endif; ?>
                             
-                            <div class="ms-availability-count" style="<?= ($mentor['available_slots'] ?? 0) == 0 ? 'color: #999;' : '' ?>">
-                                <?php if (($mentor['available_slots'] ?? 0) > 0): ?>
-                                    <?= $mentor['available_slots'] ?> slots available
+                            <div class="ms-availability-count" style="<?= $mentorSlots === 0 ? 'color: #999;' : '' ?>">
+                                <?php if ($mentorSlots > 0): ?>
+                                    <?= $mentorSlots ?> slots available
                                 <?php else: ?>
                                     No slots available currently
                                 <?php endif; ?>
                             </div>
-                            
-                            <button class="ms-btn ms-btn-view" onclick="viewMentor(<?= $mentor['mentor_id'] ?>)">
-                                <?= ($mentor['available_slots'] ?? 0) > 0 ? 'View & Book' : 'View Profile' ?>
-                            </button>
+
+                            <div style="display: grid; gap: 0.75rem; margin-top: 0.25rem;">
+                                <button
+                                    class="ms-btn ms-btn-book"
+                                    onclick="viewMentor(<?= (int)$mentor['mentor_id'] ?>)"
+                                    <?= $mentorSlots > 0 ? '' : 'disabled' ?>
+                                >
+                                    <?= $mentorSlots > 0 ? 'View Time &amp; Book' : 'No Slots Available' ?>
+                                </button>
+
+                                <button class="ms-btn ms-btn-view" onclick="goToMentorProfile(<?= (int)$mentor['user_id'] ?>)">
+                                    View Profile
+                                </button>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -158,7 +188,6 @@ if (!defined('BASE_URL')) {
             </div>
             <div class="ms-modal-body">
                 <div id="mentorInfo" style="text-align: center; margin-bottom: 1.5rem;">
-                    <img id="modalMentorAvatar" src="" alt="Mentor profile picture" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 0.5rem;" onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
                     <h4 id="modalMentorName" style="margin: 0;"></h4>
                     <p id="modalMentorTitle" style="color: #4b5563; margin: 0.25rem 0;"></p>
                 </div>
@@ -187,48 +216,30 @@ if (!defined('BASE_URL')) {
         document.getElementById('searchInput').addEventListener('input', function() {
             filterMentors();
         });
-        
-        document.getElementById('industryFilter').addEventListener('change', function() {
+
+        document.getElementById('expertiseFilter').addEventListener('change', function() {
             filterMentors();
         });
 
         function filterMentors() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const expertiseTerm = document.getElementById('expertiseFilter').value.toLowerCase();
             const cards = document.querySelectorAll('.ms-mentor-card');
-            let visibleCount = 0;
             
             cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
+                const matchesExpertise = !expertiseTerm || text.includes(expertiseTerm);
+
+                if (matchesSearch && matchesExpertise) {
                     card.style.display = '';
-                    visibleCount++;
                 } else {
                     card.style.display = 'none';
                 }
             });
-
-            // Handle no results state
-            const existingEmpty = document.getElementById('searchEmptyState');
-            if (visibleCount === 0) {
-                if (!existingEmpty) {
-                    const emptyDiv = document.createElement('div');
-                    emptyDiv.id = 'searchEmptyState';
-                    emptyDiv.className = 'ms-empty-state';
-                    emptyDiv.style.gridColumn = '1 / -1';
-                    emptyDiv.innerHTML = `
-                        <div class="ms-empty-icon ">
-                        </div>
-                        <h3>No Results Found</h3>
-                        <p>Try a different name, skill, or company.</p>
-                    `;
-                    document.getElementById('mentorsGrid').appendChild(emptyDiv);
-                }
-            } else {
-                if (existingEmpty) {
-                    existingEmpty.remove();
-                }
-            }
         }
+
+        filterMentors();
 
         // View mentor and show booking modal
         function viewMentor(mentorId) {
@@ -241,9 +252,8 @@ if (!defined('BASE_URL')) {
                     if (data.success) {
                         // Update modal with mentor info
                         if (data.mentor) {
-                            document.getElementById('modalMentorAvatar').src = data.mentor.profile_picture ? '<?= BASE_URL ?>' + data.mentor.profile_picture : '<?= BASE_URL ?>/assets/images/default-avatar.svg';
-                            document.getElementById('modalMentorName').textContent = data.mentor.name || 'Mentor';
-                            document.getElementById('modalMentorTitle').textContent = data.mentor.current_job_title || '';
+                            document.getElementById('modalMentorName').textContent = data.mentor.full_name || data.mentor.name || 'Mentor';
+                            document.getElementById('modalMentorTitle').textContent = data.mentor.current_job_title || data.mentor.title || '';
                         }
                         
                         // Render available slots
@@ -259,6 +269,10 @@ if (!defined('BASE_URL')) {
                     console.error('Error:', error);
                     MentorshipSystem.showNotification('Failed to load mentor details', 'error');
                 });
+        }
+
+        function goToMentorProfile(mentorUserId) {
+            window.location.href = `<?= BASE_URL ?>/umentorships/viewMentor/${mentorUserId}`;
         }
 
         function renderSlots(slots) {

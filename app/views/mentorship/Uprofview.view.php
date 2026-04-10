@@ -44,11 +44,18 @@
 
                 <select name="expertise" class="filter-select">
                     <option value="">All Expertise</option>
-                    <option value="Software Engineering" <?= (isset($data['expertise']) && $data['expertise'] === 'Software Engineering') ? 'selected' : '' ?>>Software Engineering</option>
-                    <option value="Data Science" <?= (isset($data['expertise']) && $data['expertise'] === 'Data Science') ? 'selected' : '' ?>>Data Science</option>
-                    <option value="Product Management" <?= (isset($data['expertise']) && $data['expertise'] === 'Product Management') ? 'selected' : '' ?>>Product Management</option>
-                    <option value="UX Design" <?= (isset($data['expertise']) && $data['expertise'] === 'UX Design') ? 'selected' : '' ?>>UX Design</option>
-                    <option value="Marketing" <?= (isset($data['expertise']) && $data['expertise'] === 'Marketing') ? 'selected' : '' ?>>Marketing</option>
+                    <option value="Software Development" <?= (isset($data['expertise']) && $data['expertise'] === 'Software Development') ? 'selected' : '' ?>>Software Development</option>
+                    <option value="Cloud &amp; DevOps" <?= (isset($data['expertise']) && $data['expertise'] === 'Cloud & DevOps') ? 'selected' : '' ?>>Cloud &amp; DevOps</option>
+                    <option value="Cybersecurity" <?= (isset($data['expertise']) && $data['expertise'] === 'Cybersecurity') ? 'selected' : '' ?>>Cybersecurity</option>
+                    <option value="Data &amp; AI/ML" <?= (isset($data['expertise']) && $data['expertise'] === 'Data & AI/ML') ? 'selected' : '' ?>>Data &amp; AI/ML</option>
+                    <option value="UI/UX &amp; Product" <?= (isset($data['expertise']) && $data['expertise'] === 'UI/UX & Product') ? 'selected' : '' ?>>UI/UX &amp; Product</option>
+                    <option value="Networking &amp; Infra" <?= (isset($data['expertise']) && $data['expertise'] === 'Networking & Infra') ? 'selected' : '' ?>>Networking &amp; Infra</option>
+                    <option value="Database Systems" <?= (isset($data['expertise']) && $data['expertise'] === 'Database Systems') ? 'selected' : '' ?>>Database Systems</option>
+                    <option value="Embedded &amp; IoT" <?= (isset($data['expertise']) && $data['expertise'] === 'Embedded & IoT') ? 'selected' : '' ?>>Embedded &amp; IoT</option>
+                    <option value="QA &amp; Testing" <?= (isset($data['expertise']) && $data['expertise'] === 'QA & Testing') ? 'selected' : '' ?>>QA &amp; Testing</option>
+                    <option value="Computer Architecture" <?= (isset($data['expertise']) && $data['expertise'] === 'Computer Architecture') ? 'selected' : '' ?>>Computer Architecture</option>
+                    <option value="Open Source &amp; Tools" <?= (isset($data['expertise']) && $data['expertise'] === 'Open Source & Tools') ? 'selected' : '' ?>>Open Source &amp; Tools</option>
+                    <option value="Tech Career &amp; Interview Prep" <?= (isset($data['expertise']) && $data['expertise'] === 'Tech Career & Interview Prep') ? 'selected' : '' ?>>Tech Career &amp; Interview Prep</option>
                 </select>
 
                 <button type="submit" class="btn-search">
