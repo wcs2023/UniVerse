@@ -280,7 +280,7 @@ class AarticleModel extends Model
             'updated_at' => date('Y-m-d H:i:s')
         ];
 
-        return $this->insert('Articles', $data);
+        return $this->insert('articles', $data);
     }
 
     /**
@@ -312,7 +312,7 @@ class AarticleModel extends Model
             'updated_at' => date('Y-m-d H:i:s')
         ];
 
-        return $this->update('Articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
+        return $this->update('articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
     }
 
     /**
@@ -320,7 +320,7 @@ class AarticleModel extends Model
      */
     public function deleteArticle($articleId)
     {
-        return $this->delete('Articles', 'article_id = :article_id', ['article_id' => $articleId]);
+        return $this->delete('articles', 'article_id = :article_id', ['article_id' => $articleId]);
     }
 
     /**
@@ -410,7 +410,7 @@ class AarticleModel extends Model
             $data['published_at'] = date('Y-m-d H:i:s');
         }
 
-        return $this->update('Articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
+        return $this->update('articles', $data, 'article_id = :article_id', ['article_id' => $articleId]);
     }
 
     /**
@@ -434,7 +434,7 @@ class AarticleModel extends Model
      */
     public function deleteArticlePermanently($articleId)
     {
-        return $this->delete('Articles', 'article_id = :article_id', ['article_id' => $articleId]);
+        return $this->delete('articles', 'article_id = :article_id', ['article_id' => $articleId]);
     }
 
     /**
@@ -443,7 +443,7 @@ class AarticleModel extends Model
     public function deleteByUserId($userId)
     {
         try {
-            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
+            return $this->delete('articles', 'user_id = :user_id', ['user_id' => $userId]);
         } catch (Exception $e) {
             error_log("Error deleting articles by user: " . $e->getMessage());
             return false;

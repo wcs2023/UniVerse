@@ -452,6 +452,7 @@ class Admin extends Controller
             exit;
         }
 
+        
         $sessionToken = $_SESSION['admin_csrf_token'] ?? '';
         $requestToken = $_POST['csrf_token'] ?? '';
         if (empty($sessionToken) || empty($requestToken) || !hash_equals($sessionToken, $requestToken)) {

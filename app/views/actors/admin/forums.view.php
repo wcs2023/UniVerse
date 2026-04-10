@@ -70,7 +70,7 @@
 
             <div class="content-card" style="margin-bottom: 1.5rem;">
                 <div class="content-card-body" style="padding: 1rem;">
-                    <form method="GET" action="<?= URLROOT ?>/admin/forums" class="search-filter-form">
+                    <form method="GET" action="<?= BASE_URL ?>/admin/forums" class="search-filter-form">
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon"></i>
                             <input
@@ -92,7 +92,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-search"></i> Search
                             </button>
-                            <a href="<?= URLROOT ?>/admin/forums" class="btn btn-outline">
+                            <a href="<?= BASE_URL ?>/admin/forums" class="btn btn-outline">
                                 <i class="fas fa-redo"></i> Reset
                             </a>
                         </div>
@@ -142,7 +142,7 @@
                                                 </button>
 
                                                 <?php if (!$isHidden): ?>
-                                                    <form method="POST" action="<?= URLROOT ?>/admin/hideForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/hideForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             class="btn btn-sm btn-warning"
@@ -154,7 +154,7 @@
                                                         </button>
                                                     </form>
                                                 <?php else: ?>
-                                                    <form method="POST" action="<?= URLROOT ?>/admin/unhideForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/unhideForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             class="btn btn-sm btn-success"
@@ -167,7 +167,7 @@
                                                     </form>
                                                 <?php endif; ?>
 
-                                                <form method="POST" action="<?= URLROOT ?>/admin/deleteForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
+                                                <form method="POST" action="<?= BASE_URL ?>/admin/deleteForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
                                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                     <button
                                                         class="btn btn-sm btn-danger"
@@ -219,7 +219,7 @@
             modal.classList.add('is-open');
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
 
-            fetch('<?= URLROOT ?>/admin/viewForumPost/' + postId, {
+            fetch('<?= BASE_URL ?>/admin/viewForumPost/' + postId, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
             .then(async response => {
@@ -257,15 +257,15 @@
                         </div>
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
                             ${!isHidden ? `
-                                <form method="POST" action="<?= URLROOT ?>/admin/hideForumPost/${post.id}" style="display:inline;">
+                                <form method="POST" action="<?= BASE_URL ?>/admin/hideForumPost/${post.id}" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                     <button type="button" class="btn btn-warning" onclick="confirmHide(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-eye-slash"></i> Hide</button>
                                 </form>` : `
-                                <form method="POST" action="<?= URLROOT ?>/admin/unhideForumPost/${post.id}" style="display:inline;">
+                                <form method="POST" action="<?= BASE_URL ?>/admin/unhideForumPost/${post.id}" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                     <button type="button" class="btn btn-success" onclick="confirmUnhide(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-eye"></i> Unhide</button>
                                 </form>`}
-                            <form method="POST" action="<?= URLROOT ?>/admin/deleteForumPost/${post.id}" style="display:inline;">
+                            <form method="POST" action="<?= BASE_URL ?>/admin/deleteForumPost/${post.id}" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                 <button type="button" class="btn btn-danger" onclick="confirmDelete(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
                             </form>

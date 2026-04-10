@@ -102,7 +102,7 @@
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
                 <div class="content-card-body" style="padding: 1rem;">
-                    <form method="GET" action="<?= URLROOT ?>/admin/users" class="search-filter-form">
+                    <form method="GET" action="<?= BASE_URL ?>/admin/users" class="search-filter-form">
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon"></i>
                             <input 
@@ -127,7 +127,7 @@
                                 <i class="fas fa-search"></i> Search
                             </button>
                             
-                            <a href="<?= URLROOT ?>/admin/users" class="btn btn-outline">
+                            <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline">
                                 <i class="fas fa-redo"></i> Reset
                             </a>
                         </div>
@@ -139,7 +139,7 @@
             <div class="content-card">
                 <div class="content-card-header">
                     <h2 class="content-card-title">All Users (<?= count($users ?? []) ?>)</h2>
-                    <a href="<?= URLROOT ?>/admin/exportUsers" class="btn btn-primary btn-sm">
+                    <a href="<?= BASE_URL ?>/admin/exportUsers" class="btn btn-primary btn-sm">
                         <i class="fas fa-download"></i> Export Users
                     </a>
                 </div>
@@ -206,7 +206,7 @@
                                                 </button>
 
                                                 <?php if (($user['account_status'] ?? 'active') === 'active'): ?>
-                                                    <form method="POST" action="<?= URLROOT ?>/admin/deactivateUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/deactivateUser/<?= $user['user_id'] ?>" style="display: inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             type="button"
@@ -218,7 +218,7 @@
                                                         </button>
                                                     </form>
                                                 <?php else: ?>
-                                                    <form method="POST" action="<?= URLROOT ?>/admin/activateUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/activateUser/<?= $user['user_id'] ?>" style="display: inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             type="submit"
@@ -231,7 +231,7 @@
                                                 <?php endif; ?>
 
                                                 <?php if (($user['account_status'] ?? 'active') === 'inactive'): ?>
-                                                    <form method="POST" action="<?= URLROOT ?>/admin/deleteUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/deleteUser/<?= $user['user_id'] ?>" style="display: inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             type="button"
@@ -296,7 +296,7 @@
             modal.style.display = 'block';
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/admin/viewUser/' + userId)
+            fetch('<?= BASE_URL ?>/admin/viewUser/' + userId)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -370,14 +370,14 @@
             modal.style.display = 'block';
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/admin/viewUser/' + userId)
+            fetch('<?= BASE_URL ?>/admin/viewUser/' + userId)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const user = data.user;
                         
                         content.innerHTML = `
-                            <form id="editUserForm" method="POST" action="<?= URLROOT ?>/admin/updateUser/${user.user_id}">
+                            <form id="editUserForm" method="POST" action="<?= BASE_URL ?>/admin/updateUser/${user.user_id}">
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label for="first_name" class="form-label">First Name <span class="required">*</span></label>

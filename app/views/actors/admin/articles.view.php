@@ -1,6 +1,8 @@
 <?php
 // BASE_URL is already available from the controller
-
+if (!defined('URLROOT')) {
+    define('URLROOT', BASE_URL);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,7 +97,7 @@
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
                 <div class="content-card-body" style="padding: 1rem;">
-                    <form method="GET" action="<?= URLROOT ?>/admin/articles" class="search-filter-form">
+                    <form method="GET" action="<?= BASE_URL ?>/admin/articles" class="search-filter-form">
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon"></i>
                             <input 
@@ -119,7 +121,7 @@
                                 <i class="fas fa-search"></i> Search
                             </button>
                             
-                            <a href="<?= URLROOT ?>/admin/articles" class="btn btn-outline">
+                            <a href="<?= BASE_URL ?>/admin/articles" class="btn btn-outline">
                                 <i class="fas fa-redo"></i> Reset
                             </a>
                         </div>
@@ -185,7 +187,7 @@
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     <?php if (($article['status'] ?? 'draft') !== 'archived'): ?>
-                                                        <form method="POST" action="<?= URLROOT ?>/admin/hideArticle/<?= $article['article_id'] ?>" style="display:inline;">
+                                                        <form method="POST" action="<?= BASE_URL ?>/admin/hideArticle/<?= $article['article_id'] ?>" style="display:inline;">
                                                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                             <button 
                                                                 class="btn btn-sm btn-warning" 
@@ -197,7 +199,7 @@
                                                             </button>
                                                         </form>
                                                     <?php else: ?>
-                                                        <form method="POST" action="<?= URLROOT ?>/admin/unhideArticle/<?= $article['article_id'] ?>" style="display:inline;">
+                                                        <form method="POST" action="<?= BASE_URL ?>/admin/unhideArticle/<?= $article['article_id'] ?>" style="display:inline;">
                                                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                             <button 
                                                                 class="btn btn-sm btn-success" 
@@ -209,7 +211,7 @@
                                                             </button>
                                                         </form>
                                                     <?php endif; ?>
-                                                    <form method="POST" action="<?= URLROOT ?>/admin/deleteArticle/<?= $article['article_id'] ?>" style="display:inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/deleteArticle/<?= $article['article_id'] ?>" style="display:inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button 
                                                             class="btn btn-sm btn-danger" 
@@ -232,7 +234,7 @@
                             <div class="empty-icon"></div>
                             <h3>No Articles Found</h3>
                             <p>There are no articles matching your criteria.</p>
-                            <a href="<?= URLROOT ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
+                            <a href="<?= BASE_URL ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
                                 <i class="fas fa-plus"></i> Create Your First Article
                             </a>
                         </div>

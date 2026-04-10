@@ -59,7 +59,6 @@ class User extends Model
                         last_name,
                         user_type,
                         account_status,
-                        email_verified,
                         phone,
                         created_at,
                         last_login
@@ -92,7 +91,6 @@ class User extends Model
                         last_name,
                         user_type,
                         account_status,
-                        email_verified,
                         phone,
                         created_at,
                         last_login
