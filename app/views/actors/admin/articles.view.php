@@ -10,7 +10,7 @@ if (!defined('URLROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Articles - Admin Panel</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -36,6 +36,12 @@ if (!defined('URLROOT')) {
                         case 'updated':
                             echo 'Article updated successfully';
                             break;
+                        case 'hidden':
+                            echo 'Article hidden from public users successfully';
+                            break;
+                        case 'unhidden':
+                            echo 'Article restored and visible to public users';
+                            break;
                         case 'deleted':
                             echo 'Article deleted successfully';
                             break;
@@ -57,8 +63,20 @@ if (!defined('URLROOT')) {
                 <div class="alert alert-error">
                     <?php
                     switch ($_GET['error']) {
+                        case 'invalid_method':
+                            echo 'Invalid request method';
+                            break;
+                        case 'invalid_csrf':
+                            echo 'Security validation failed. Please try again';
+                            break;
                         case 'missing_id':
                             echo 'Article ID is required';
+                            break;
+                        case 'hide_failed':
+                            echo 'Failed to hide article';
+                            break;
+                        case 'unhide_failed':
+                            echo 'Failed to restore article';
                             break;
                         case 'delete_failed':
                             echo 'Failed to delete article';
@@ -79,7 +97,7 @@ if (!defined('URLROOT')) {
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
                 <div class="content-card-body" style="padding: 1rem;">
-                    <form method="GET" action="<?= URLROOT ?>/public/admin/articles" class="search-filter-form">
+                    <form method="GET" action="<?= URLROOT ?>/admin/articles" class="search-filter-form">
                         <div class="search-wrapper">
                             <i class="fas fa-search search-icon"></i>
                             <input 
@@ -103,7 +121,7 @@ if (!defined('URLROOT')) {
                                 <i class="fas fa-search"></i> Search
                             </button>
                             
-                            <a href="<?= URLROOT ?>/public/admin/articles" class="btn btn-outline">
+                            <a href="<?= URLROOT ?>/admin/articles" class="btn btn-outline">
                                 <i class="fas fa-redo"></i> Reset
                             </a>
                         </div>
@@ -123,7 +141,7 @@ if (!defined('URLROOT')) {
                 </div>
                 <div class="content-card-body" style="padding: 0; overflow-x: auto;">
                     <?php if (!empty($articles)): ?>
-                        <form id="bulkForm" method="POST" action="<?= URLROOT ?>/public/admin/bulkDeleteArticles">
+                        <div id="bulkForm">
                             <table class="data-table">
                                 <thead>
                                     <tr>
@@ -151,8 +169,9 @@ if (!defined('URLROOT')) {
                                             </td>
                                             <td><?= htmlspecialchars($article['author_name'] ?? 'Unknown') ?></td>
                                             <td>
-                                                <span class="status-badge status-<?= htmlspecialchars($article['status'] ?? 'draft') ?>">
-                                                    <?= ucfirst(htmlspecialchars($article['status'] ?? 'draft')) ?>
+                                                <?php $status = $article['status'] ?? 'draft'; ?>
+                                                <span class="status-badge status-<?= htmlspecialchars($status) ?>">
+                                                    <?= $status === 'archived' ? 'Hidden' : ucfirst(htmlspecialchars($status)) ?>
                                                 </span>
                                             </td>
                                             <td><?= htmlspecialchars($article['category'] ?? 'N/A') ?></td>
@@ -167,34 +186,55 @@ if (!defined('URLROOT')) {
                                                     >
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-                                                    <a 
-                                                        href="<?= URLROOT ?>/public/admin/editArticle/<?= $article['article_id'] ?>"
-                                                        class="btn btn-sm btn-primary" 
-                                                        title="Edit Article"
-                                                    >
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <button 
-                                                        class="btn btn-sm btn-danger" 
-                                                        onclick="confirmDelete(<?= $article['article_id'] ?>, '<?= htmlspecialchars(addslashes($article['title'])) ?>')"
-                                                        title="Delete Article"
-                                                        type="button"
-                                                    >
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    <?php if (($article['status'] ?? 'draft') !== 'archived'): ?>
+                                                        <form method="POST" action="<?= URLROOT ?>/admin/hideArticle/<?= $article['article_id'] ?>" style="display:inline;">
+                                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                            <button 
+                                                                class="btn btn-sm btn-warning" 
+                                                                onclick="confirmHide(this.form, '<?= htmlspecialchars(addslashes($article['title'])) ?>')"
+                                                                title="Hide Article"
+                                                                type="button"
+                                                            >
+                                                                <i class="fas fa-eye-slash"></i>
+                                                            </button>
+                                                        </form>
+                                                    <?php else: ?>
+                                                        <form method="POST" action="<?= URLROOT ?>/admin/unhideArticle/<?= $article['article_id'] ?>" style="display:inline;">
+                                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                            <button 
+                                                                class="btn btn-sm btn-success" 
+                                                                onclick="confirmUnhide(this.form, '<?= htmlspecialchars(addslashes($article['title'])) ?>')"
+                                                                title="Unhide Article"
+                                                                type="button"
+                                                            >
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </form>
+                                                    <?php endif; ?>
+                                                    <form method="POST" action="<?= URLROOT ?>/admin/deleteArticle/<?= $article['article_id'] ?>" style="display:inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button 
+                                                            class="btn btn-sm btn-danger" 
+                                                            onclick="confirmDelete(this.form, '<?= htmlspecialchars(addslashes($article['title'])) ?>')"
+                                                            title="Delete Article Permanently"
+                                                            type="button"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                        </form>
+                        </div>
                     <?php else: ?>
                         <div class="empty-state">
                             <div class="empty-icon"></div>
                             <h3>No Articles Found</h3>
                             <p>There are no articles matching your criteria.</p>
-                            <a href="<?= URLROOT ?>/public/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
+                            <a href="<?= URLROOT ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
                                 <i class="fas fa-plus"></i> Create Your First Article
                             </a>
                         </div>
@@ -222,15 +262,33 @@ if (!defined('URLROOT')) {
         function viewArticle(articleId) {
             const modal = document.getElementById('articleModal');
             const content = document.getElementById('articleDetailsContent');
+
+            // Ensure modal is attached to <body> so fixed positioning is true viewport-based.
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
             
-            modal.style.display = 'block';
+            modal.classList.add('is-open');
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/public/admin/viewArticle/' + articleId)
-                .then(response => response.json())
+            fetch('<?= URLROOT ?>/admin/viewArticle/' + articleId, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(async response => {
+                    const text = await response.text();
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw new Error('Non-JSON response from server');
+                    }
+                })
                 .then(data => {
                     if (data.success) {
                         const article = data.article;
+                        const articleTitle = article.title || 'Untitled';
+                        const articleContent = article.content || '';
                         content.innerHTML = `
                             <div class="article-details">
                                 <div class="article-detail-row">
@@ -239,7 +297,7 @@ if (!defined('URLROOT')) {
                                 </div>
                                 <div class="article-detail-row">
                                     <span class="detail-label">Title:</span>
-                                    <span class="detail-value"><strong>${article.title}</strong></span>
+                                    <span class="detail-value"><strong>${articleTitle}</strong></span>
                                 </div>
                                 <div class="article-detail-row">
                                     <span class="detail-label">Author:</span>
@@ -247,7 +305,7 @@ if (!defined('URLROOT')) {
                                 </div>
                                 <div class="article-detail-row">
                                     <span class="detail-label">Status:</span>
-                                    <span class="detail-value"><span class="status-badge status-${article.status}">${article.status}</span></span>
+                                    <span class="detail-value"><span class="status-badge status-${article.status}">${article.status === 'archived' ? 'Hidden' : article.status}</span></span>
                                 </div>
                                 <div class="article-detail-row">
                                     <span class="detail-label">Category:</span>
@@ -266,13 +324,29 @@ if (!defined('URLROOT')) {
                                     <span class="detail-value">${new Date(article.updated_at).toLocaleString()}</span>
                                 </div>
                                 <div class="article-content-preview">
-                                    <h4>Content Preview:</h4>
-                                    <div class="content-box">${article.content.substring(0, 500)}${article.content.length > 500 ? '...' : ''}</div>
+                                    <h4>Content:</h4>
+                                    <div class="content-box">${articleContent}</div>
                                 </div>
                                 <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                    <a href="<?= URLROOT ?>/public/admin/editArticle/${article.article_id}" class="btn btn-primary">
-                                        <i class="fas fa-edit"></i> Edit Article
-                                    </a>
+                                    ${article.status !== 'archived' ? `
+                                    <form method="POST" action="<?= URLROOT ?>/admin/hideArticle/${article.article_id}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                        <button type="button" class="btn btn-warning" onclick="confirmHide(this.form, '${articleTitle.replace(/'/g, "\\'")}')">
+                                            <i class="fas fa-eye-slash"></i> Hide
+                                        </button>
+                                    </form>` : `
+                                    <form method="POST" action="<?= URLROOT ?>/admin/unhideArticle/${article.article_id}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                        <button type="button" class="btn btn-success" onclick="confirmUnhide(this.form, '${articleTitle.replace(/'/g, "\\'")}')">
+                                            <i class="fas fa-eye"></i> Unhide
+                                        </button>
+                                    </form>`}
+                                    <form method="POST" action="<?= URLROOT ?>/admin/deleteArticle/${article.article_id}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                        <button type="button" class="btn btn-danger" onclick="confirmDelete(this.form, '${articleTitle.replace(/'/g, "\\'")}')">
+                                            <i class="fas fa-trash"></i> Delete Permanently
+                                        </button>
+                                    </form>
                                     <button onclick="closeModal()" class="btn btn-outline">Close</button>
                                 </div>
                             </div>
@@ -282,28 +356,39 @@ if (!defined('URLROOT')) {
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">Error loading article details</div>';
+                    content.innerHTML = '<div class="error-message">Error loading article details. Please refresh and try again.</div>';
                     console.error('Error:', error);
                 });
         }
         
         // Close modal
         function closeModal() {
-            document.getElementById('articleModal').style.display = 'none';
+            document.getElementById('articleModal').classList.remove('is-open');
         }
         
         // Close modal when clicking outside
         window.onclick = function(event) {
             const modal = document.getElementById('articleModal');
             if (event.target == modal) {
-                modal.style.display = 'none';
+                modal.classList.remove('is-open');
             }
         }
         
-        // Confirm delete
-        function confirmDelete(articleId, articleTitle) {
-            if (confirm(`Are you sure you want to delete the article "${articleTitle}"?\n\nThis action cannot be undone.`)) {
-                window.location.href = '<?= URLROOT ?>/public/admin/deleteArticle/' + articleId;
+        function confirmHide(form, articleTitle) {
+            if (confirm(`Hide "${articleTitle}" from public users?\n\nIt will remain available in the admin panel.`)) {
+                form.submit();
+            }
+        }
+
+        function confirmUnhide(form, articleTitle) {
+            if (confirm(`Restore "${articleTitle}" to public users?`)) {
+                form.submit();
+            }
+        }
+
+        function confirmDelete(form, articleTitle) {
+            if (confirm(`Permanently delete the article "${articleTitle}"?\n\nThis action cannot be undone.`)) {
+                form.submit();
             }
         }
         
@@ -329,9 +414,7 @@ if (!defined('URLROOT')) {
                 return;
             }
             
-            if (confirm(`Are you sure you want to delete ${checkboxes.length} article(s)?\n\nThis action cannot be undone.`)) {
-                document.getElementById('bulkForm').submit();
-            }
+            alert('Bulk delete is not configured yet in this panel. Use individual Delete for now.');
         }
         
         // Auto-hide alerts after 5 seconds
@@ -346,6 +429,36 @@ if (!defined('URLROOT')) {
     </script>
     
     <style>
+        #articleModal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
+            background: #f3f4f6;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        #articleModal.is-open {
+            display: flex;
+        }
+
+        #articleModal .modal-content {
+            margin: 0;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: min(800px, 100%);
+            background: #ffffff;
+            opacity: 1;
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+        }
+
         .article-details {
             display: flex;
             flex-direction: column;

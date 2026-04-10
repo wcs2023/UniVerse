@@ -3,12 +3,12 @@
 class ArticleModel extends Model
 {
     protected $db;
-    
+
     public function __construct()
     {
         $this->db = Database::getInstance()->getConnection();
     }
-    
+
     /**
      * Get articles by author and status
      */
@@ -31,16 +31,16 @@ class ArticleModel extends Model
                       WHERE a.user_id = ?
                       AND a.status = ?
                       ORDER BY a.updated_at DESC";
-            
+
             $stmt = $this->db->prepare($query);
             $stmt->execute([$authorId, $status]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error getting articles by status: " . $e->getMessage());
             return [];
         }
     }
-    
+
     /**
      * Get article by ID
      */
@@ -55,17 +55,18 @@ class ArticleModel extends Model
                         CONCAT(u.first_name, ' ', u.last_name) as author_name
                       FROM articles a
                       JOIN users u ON a.user_id = u.user_id
-                      WHERE a.article_id = ?";
-            
+                      WHERE a.article_id = ?
+                      AND u.account_status = 'active'";
+
             $stmt = $this->db->prepare($query);
             $stmt->execute([$articleId]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error getting article by ID: " . $e->getMessage());
             return null;
         }
     }
-    
+
     /**
      * Create a new article
      */
@@ -73,39 +74,38 @@ class ArticleModel extends Model
     {
         try {
             $publishedAt = ($status === 'published') ? date('Y-m-d H:i:s') : null;
-            
+
             $query = "INSERT INTO articles 
                       (user_id, title, content, status, category, tags, published_at, created_at, updated_at)
                       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
-            
+
             $stmt = $this->db->prepare($query);
             $stmt->execute([$authorId, $title, $content, $status, $category, $tags, $publishedAt]);
-            
+
             return $this->db->lastInsertId();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error creating article: " . $e->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Update an existing article
      */
     public function updateArticle($articleId, $title, $content, $status, $category = '', $tags = '')
     {
         try {
-            // Get current article to check if status changed to published
             $currentArticle = $this->getArticleById($articleId);
             $publishedAt = null;
-            
-            if ($status === 'published' && $currentArticle['status'] !== 'published') {
-                // First time publishing
-                $publishedAt = date('Y-m-d H:i:s');
-            } elseif ($status === 'published' && $currentArticle['published_at']) {
-                // Already published, keep original date
-                $publishedAt = $currentArticle['published_at'];
+
+            if ($currentArticle) {
+                if ($status === 'published' && $currentArticle['status'] !== 'published') {
+                    $publishedAt = date('Y-m-d H:i:s');
+                } elseif ($status === 'published' && $currentArticle['published_at']) {
+                    $publishedAt = $currentArticle['published_at'];
+                }
             }
-            
+
             $query = "UPDATE articles 
                       SET title = ?,
                           content = ?,
@@ -115,15 +115,15 @@ class ArticleModel extends Model
                           published_at = ?,
                           updated_at = NOW()
                       WHERE article_id = ?";
-            
+
             $stmt = $this->db->prepare($query);
             return $stmt->execute([$title, $content, $status, $category, $tags, $publishedAt, $articleId]);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error updating article: " . $e->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Delete an article
      */
@@ -133,47 +133,27 @@ class ArticleModel extends Model
             $query = "DELETE FROM articles WHERE article_id = ?";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([$articleId]);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error deleting article: " . $e->getMessage());
             return false;
         }
     }
-    
-    /*    
-     * - Logged-in users: inserts into article_views (IGNORE duplicate).
-     *   Only increments articles.views when a new row is actually inserted.
-     *   The caller is responsible for ensuring the guest hasn't viewed before     
-     * Returns true if the view count was incremented, false if already counted.
+
+    /**
+     * Increment article view count
      */
-    public function recordUniqueView($articleId, $userId = null)
+    public function incrementViews($articleId)
     {
         try {
-            if ($userId !== null) {
-                // Logged-in user: deduplicate via article_views table
-                $insertStmt = $this->db->prepare(
-                    "INSERT IGNORE INTO article_views (article_id, user_id) VALUES (?, ?)"
-                );
-                $insertStmt->execute([$articleId, $userId]);
-
-                if ($insertStmt->rowCount() === 0) {
-                    // Already viewed – do not increment
-                    return false;
-                }
-            }
-
-            // New view (or guest first visit) – increment counter
-            $updateStmt = $this->db->prepare(
-                "UPDATE articles SET views = views + 1 WHERE article_id = ?"
-            );
-            $updateStmt->execute([$articleId]);
-            return true;
-
-        } catch(PDOException $e) {
-            error_log("Error recording unique view: " . $e->getMessage());
+            $query = "UPDATE articles SET views = views + 1 WHERE article_id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$articleId]);
+        } catch (PDOException $e) {
+            error_log("Error incrementing views: " . $e->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Increment article like count
      */
@@ -183,12 +163,12 @@ class ArticleModel extends Model
             $query = "UPDATE articles SET likes = likes + 1 WHERE article_id = ?";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([$articleId]);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error incrementing likes: " . $e->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Get all published articles (for public viewing)
      */
@@ -204,62 +184,16 @@ class ArticleModel extends Model
                       FROM articles a
                       JOIN users u ON a.user_id = u.user_id
                       WHERE a.status = 'published'
+                      AND u.account_status = 'active'
                       ORDER BY a.published_at DESC
                       LIMIT ? OFFSET ?";
-            
+
             $stmt = $this->db->prepare($query);
             $stmt->execute([$limit, $offset]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error getting published articles: " . $e->getMessage());
             return [];
-        }
-    }
-    
-    /**
-     * Check if a user has already liked an article
-     */
-    public function hasLiked($articleId, $userId)
-    {
-        try {
-            $query = "SELECT like_id FROM article_likes WHERE article_id = ? AND user_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$articleId, $userId]);
-            return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
-        } catch(PDOException $e) {
-            error_log("Error checking like status: " . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Toggle like on an article (insert or delete from article_likes)
-     * Returns ['liked' => bool, 'likes' => int] or false on error
-     */
-    public function toggleLike($articleId, $userId)
-    {
-        try {
-            if ($this->hasLiked($articleId, $userId)) {
-                // Unlike
-                $stmt = $this->db->prepare("DELETE FROM article_likes WHERE article_id = ? AND user_id = ?");
-                $stmt->execute([$articleId, $userId]);
-                $liked = false;
-            } else {
-                // Like
-                $stmt = $this->db->prepare("INSERT INTO article_likes (article_id, user_id) VALUES (?, ?)");
-                $stmt->execute([$articleId, $userId]);
-                $liked = true;
-            }
-
-            // Fetch updated likes count
-            $stmt = $this->db->prepare("SELECT likes FROM articles WHERE article_id = ?");
-            $stmt->execute([$articleId]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return ['liked' => $liked, 'likes' => (int)($row['likes'] ?? 0)];
-        } catch(PDOException $e) {
-            error_log("Error toggling like: " . $e->getMessage());
-            return false;
         }
     }
 
@@ -270,7 +204,7 @@ class ArticleModel extends Model
     {
         try {
             $searchTerm = "%$keyword%";
-            
+
             $query = "SELECT 
                         a.*,
                         u.first_name,
@@ -279,16 +213,32 @@ class ArticleModel extends Model
                       FROM articles a
                       JOIN users u ON a.user_id = u.user_id
                       WHERE a.status = 'published'
+                      AND u.account_status = 'active'
                       AND (a.title LIKE ? OR a.content LIKE ? OR a.tags LIKE ?)
                       ORDER BY a.published_at DESC
                       LIMIT ?";
-            
+
             $stmt = $this->db->prepare($query);
             $stmt->execute([$searchTerm, $searchTerm, $searchTerm, $limit]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             error_log("Error searching articles: " . $e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Delete all articles by a specific user
+     */
+    public function deleteByUserId($userId)
+    {
+        try {
+            $query = "DELETE FROM articles WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            return $stmt->execute([$userId]);
+        } catch (PDOException $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
         }
     }
 }
