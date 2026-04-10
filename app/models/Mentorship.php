@@ -184,6 +184,16 @@ class Mentorship
         return $this->bookingModel->markSessionNoShow($bookingId, $noShowBy);
     }
 
+    public function markBookingCompleted($bookingId, $mentorUserId)
+    {
+        return $this->bookingModel->markBookingCompleted($bookingId, $mentorUserId);
+    }
+
+    public function autoCompletePassedSessions()
+    {
+        return $this->bookingModel->autoCompletePassedSessions();
+    }
+
     // =====================================================
     // FEEDBACK (delegates to MentorshipFeedback)
     // =====================================================

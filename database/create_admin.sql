@@ -11,10 +11,12 @@ INSERT INTO Users (
     password_hash,
     first_name,
     last_name,
+    date_of_birth,
+    gender,
     phone,
+    profile_picture,
     user_type,
     account_status,
-    email_verified,
     created_at,
     updated_at
 ) VALUES (
@@ -23,10 +25,12 @@ INSERT INTO Users (
     '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',  -- Password: "password" (change this!)
     'Admin',                                                   -- First name
     'User',                                                    -- Last name
-    '0771234567',                                             -- Phone (optional)
+    NULL,                                                      -- date_of_birth (NULL by default)
+    NULL,                                                      -- gender (NULL by default)
+    '0771234567',                                              -- Phone (optional)
+    NULL,                                                      -- profile_picture (NULL by default)
     'admin',                                                   -- User type (admin/alumni/undergraduate/company)
     'active',                                                  -- Account status
-    1,                                                         -- Email verified (tinyint)
     NOW(),                                                     -- Created at
     NOW()                                                      -- Updated at
 );

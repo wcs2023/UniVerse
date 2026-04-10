@@ -45,9 +45,9 @@ const MentorshipSystem = {
      * Start countdown for a specific session
      */
     startCountdown: function(sessionId, sessionDatetime, meetingLink, cardElement) {
-        const countdownElement = cardElement.querySelector('.countdown-timer');
+        const countdownElement = cardElement.querySelector('.countdown-timer, .countdown, .ms-countdown');
         const joinButton = cardElement.querySelector('.join-meeting-btn');
-        const statusBadge = cardElement.querySelector('.session-status-badge');
+        const statusBadge = cardElement.querySelector('.session-status-badge, .ms-badge');
         
         // Clear any existing interval for this session
         if (this.countdownIntervals[sessionId]) {
@@ -152,19 +152,20 @@ const MentorshipSystem = {
      * Update status badge based on session status
      */
     updateStatusBadge: function(badgeElement, status) {
-        badgeElement.classList.remove('badge-upcoming', 'badge-soon', 'badge-active', 'badge-ended');
+        badgeElement.classList.remove('badge-upcoming', 'badge-soon', 'badge-active', 'badge-ended',
+                                       'ms-badge-upcoming', 'ms-badge-soon', 'ms-badge-active');
         
         if (status.hasEnded) {
-            badgeElement.className = 'session-status-badge badge-ended';
+            badgeElement.className = badgeElement.className.includes('ms-badge') ? 'ms-badge badge-ended' : 'session-status-badge badge-ended';
             badgeElement.textContent = 'Ended';
         } else if (status.isActive) {
-            badgeElement.className = 'session-status-badge badge-active';
+            badgeElement.className = badgeElement.className.includes('ms-badge') ? 'ms-badge ms-badge-active' : 'session-status-badge badge-active';
             badgeElement.textContent = '🔴 LIVE';
         } else if (status.isStartingSoon) {
-            badgeElement.className = 'session-status-badge badge-soon';
+            badgeElement.className = badgeElement.className.includes('ms-badge') ? 'ms-badge ms-badge-soon' : 'session-status-badge badge-soon';
             badgeElement.textContent = 'Starting Soon';
         } else {
-            badgeElement.className = 'session-status-badge badge-upcoming';
+            badgeElement.className = badgeElement.className.includes('ms-badge') ? 'ms-badge ms-badge-upcoming' : 'session-status-badge badge-upcoming';
             badgeElement.textContent = 'Upcoming';
         }
     },
@@ -280,7 +281,7 @@ const MentorshipSystem = {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    session_id: sessionId,
+                    booking_id: sessionId,
                     rating: rating,
                     review_text: reviewText || ''
                 })
@@ -315,13 +316,13 @@ const MentorshipSystem = {
         if (!confirmed) return false;
 
         try {
-            const response = await fetch(`${this.config.baseUrl}/umentorships/cancelSession`, {
+            const response = await fetch(`${this.config.baseUrl}/umentorships/cancelBooking`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    session_id: sessionId,
+                    booking_id: sessionId,
                     reason: reason
                 })
             });
@@ -1116,8 +1117,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the system
     MentorshipSystem.init();
 
-    // Global: close any modal on outside click
-    document.querySelectorAll('.modal').forEach(function(modal) {
+    // Global: close any modal on outside click (supports both .modal and .ms-modal)
+    document.querySelectorAll('.modal, .ms-modal').forEach(function(modal) {
         modal.addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('show');
@@ -1129,7 +1130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Global: close modals on Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            document.querySelectorAll('.modal.show, .modal.active').forEach(function(modal) {
+            document.querySelectorAll('.modal.show, .modal.active, .ms-modal.show, .ms-modal.active').forEach(function(modal) {
                 modal.classList.remove('show');
                 modal.classList.remove('active');
             });

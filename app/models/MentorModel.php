@@ -25,7 +25,7 @@ class MentorModel extends MentorshipBase
                 return $mentorId;
             }
             
-            $query = "INSERT INTO mentors (user_id, is_active, expertise_areas) VALUES (?, 1, NULL)";
+            $query = "INSERT INTO mentors (user_id, is_active) VALUES (?, 1)";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
             
@@ -68,7 +68,11 @@ class MentorModel extends MentorshipBase
         try {
             $query = "SELECT 
                         u.user_id, u.first_name, u.last_name, u.email, u.profile_picture,
-                        m.mentor_id, m.expertise_areas, m.is_active,
+                        m.mentor_id, m.is_active,
+                        (SELECT GROUP_CONCAT(ec.category_name ORDER BY ec.category_name SEPARATOR ', ')
+                         FROM user_expertise ue
+                         INNER JOIN expertise_categories ec ON ue.category_id = ec.category_id
+                         WHERE ue.user_id = u.user_id) as expertise_areas,
                         ap.current_job_title as title, ap.current_company as company, ap.skills_experience as bio,
                         ap.linkedin_url, ap.github_url,
                         (SELECT COUNT(*) FROM mentorship_bookings mb WHERE mb.mentor_id = m.mentor_id AND mb.status = 'completed') as total_sessions,
@@ -88,8 +92,13 @@ class MentorModel extends MentorshipBase
             }
 
             if (!empty($expertise)) {
-                $query .= " AND m.expertise_areas LIKE ?";
-                $params[] = "%$expertise%";
+                $query .= " AND EXISTS (
+                                SELECT 1
+                                FROM user_expertise ue2
+                                INNER JOIN expertise_categories ec2 ON ue2.category_id = ec2.category_id
+                                WHERE ue2.user_id = u.user_id AND ec2.category_name = ?
+                            )";
+                $params[] = $expertise;
             }
 
             $query .= " ORDER BY available_slots DESC, total_sessions DESC, u.first_name ASC";
@@ -99,9 +108,7 @@ class MentorModel extends MentorshipBase
             $mentors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($mentors as &$mentor) {
-                $mentor['expertise_areas'] = $mentor['expertise_areas'] 
-                    ? array_map('trim', explode(',', $mentor['expertise_areas'])) 
-                    : [];
+                $mentor['expertise_array'] = $this->parseExpertiseAreas($mentor['expertise_areas'] ?? null);
                 $mentor['avg_rating'] = round((float)($mentor['avg_rating'] ?? 0), 1);
             }
 
@@ -123,7 +130,11 @@ class MentorModel extends MentorshipBase
         try {
             $query = "SELECT 
                         u.user_id, u.first_name, u.last_name, u.email, u.profile_picture,
-                        m.mentor_id, m.expertise_areas, m.is_active,
+                                                m.mentor_id, m.is_active,
+                                                (SELECT GROUP_CONCAT(ec.category_name ORDER BY ec.category_name SEPARATOR ', ')
+                                                 FROM user_expertise ue
+                                                 INNER JOIN expertise_categories ec ON ue.category_id = ec.category_id
+                                                 WHERE ue.user_id = u.user_id) as expertise_areas,
                         ap.current_job_title as title, ap.current_company as company, ap.skills_experience as bio,
                         ap.linkedin_url, ap.github_url
                       FROM mentors m
@@ -132,7 +143,11 @@ class MentorModel extends MentorshipBase
                       WHERE m.mentor_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $mentor = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($mentor) {
+                $mentor['expertise_array'] = $this->parseExpertiseAreas($mentor['expertise_areas'] ?? null);
+            }
+            return $mentor;
         } catch (PDOException $e) {
             error_log("Error getting mentor by ID: " . $e->getMessage());
             return null;
@@ -151,16 +166,25 @@ class MentorModel extends MentorshipBase
             $query = "SELECT 
                         u.user_id, u.first_name, u.last_name, u.email, u.profile_picture,
                         CONCAT(u.first_name, ' ', u.last_name) as full_name,
-                        m.mentor_id, m.expertise_areas, m.is_active, m.max_mentees,
+                        m.mentor_id, m.is_active, m.max_mentees,
+                        (SELECT GROUP_CONCAT(ec.category_name ORDER BY ec.category_name SEPARATOR ', ')
+                         FROM user_expertise ue
+                         INNER JOIN expertise_categories ec ON ue.category_id = ec.category_id
+                         WHERE ue.user_id = u.user_id) as expertise_areas,
                         ap.current_job_title, ap.current_company, ap.skills_experience,
-                        ap.linkedin_url, ap.github_url
+                        ap.linkedin_url, ap.github_url, ap.portfolio_url,
+                        ap.university_name, ap.degree_program, ap.graduation_year
                       FROM mentors m
                       INNER JOIN users u ON m.user_id = u.user_id
                       LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
                       WHERE m.user_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$userId]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $mentor = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($mentor) {
+                $mentor['expertise_array'] = $this->parseExpertiseAreas($mentor['expertise_areas'] ?? null);
+            }
+            return $mentor;
         } catch (PDOException $e) {
             error_log("Error getting mentor by user ID: " . $e->getMessage());
             return null;
@@ -186,8 +210,11 @@ class MentorModel extends MentorshipBase
                         u.email, 
                         u.profile_picture,
                         m.mentor_id, 
-                        m.expertise_areas, 
                         m.is_active,
+                                                (SELECT GROUP_CONCAT(ec.category_name ORDER BY ec.category_name SEPARATOR ', ')
+                                                 FROM user_expertise ue
+                                                 INNER JOIN expertise_categories ec ON ue.category_id = ec.category_id
+                                                 WHERE ue.user_id = u.user_id) as expertise_areas,
                         ap.current_job_title, 
                         ap.current_company, 
                         ap.skills_experience,
@@ -212,8 +239,13 @@ class MentorModel extends MentorshipBase
             }
 
             if (!empty($expertise)) {
-                $query .= " AND m.expertise_areas LIKE ?";
-                $params[] = "%$expertise%";
+                $query .= " AND EXISTS (
+                                SELECT 1
+                                FROM user_expertise ue2
+                                INNER JOIN expertise_categories ec2 ON ue2.category_id = ec2.category_id
+                                WHERE ue2.user_id = u.user_id AND ec2.category_name = ?
+                            )";
+                $params[] = $expertise;
             }
 
             if (!empty($industry)) {
@@ -229,6 +261,7 @@ class MentorModel extends MentorshipBase
             $mentors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($mentors as &$mentor) {
+                $mentor['expertise_array'] = $this->parseExpertiseAreas($mentor['expertise_areas'] ?? null);
                 $mentor['rating'] = round((float)($mentor['rating'] ?? 0), 1);
             }
 
@@ -280,6 +313,7 @@ class MentorModel extends MentorshipBase
                 'total_sessions' => (int)$totalSessions,
                 'completed_sessions' => (int)$completedSessions,
                 'total_mentees' => (int)$mentees,
+                'active_mentees' => (int)$mentees,
                 'average_rating' => $rating['average'],
                 'review_count' => $rating['count']
             ];
@@ -289,10 +323,35 @@ class MentorModel extends MentorshipBase
                 'total_sessions' => 0, 
                 'completed_sessions' => 0,
                 'total_mentees' => 0, 
+                'active_mentees' => 0,
                 'average_rating' => 0,
                 'review_count' => 0
             ];
         }
+    }
+
+    private function parseExpertiseAreas($expertiseRaw)
+    {
+        if (empty($expertiseRaw)) {
+            return [];
+        }
+
+        if (is_array($expertiseRaw)) {
+            return array_values(array_filter(array_map('trim', $expertiseRaw), function ($value) {
+                return $value !== '';
+            }));
+        }
+
+        $decoded = json_decode($expertiseRaw, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return array_values(array_filter(array_map('trim', $decoded), function ($value) {
+                return $value !== '';
+            }));
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', (string)$expertiseRaw)), function ($value) {
+            return $value !== '';
+        }));
     }
 
     /**

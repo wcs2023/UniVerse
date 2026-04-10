@@ -3,37 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
-    <?php endif; ?>
-
-    
-    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css"> 
-    <?php endif; ?>
-
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Universe - <?= $data['title'] ?></title>
-
 </head>
 <body>
-<?php 
-    if ($_SESSION['user_role'] === 'undergraduate') 
-    {
-        include __DIR__ . '/../actors/undergraduate/Unavigation.view.php';
-    
-    }
-    else if ($_SESSION['user_role'] === 'school_leaver') 
-    {
-       include __DIR__ . '/../actors/students/includes/header2.view.php';
-    } 
-    else  
-    {
-        include __DIR__ . '/../layout/nav_home.php';
-    }
-?>
+
+<?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
 
 <div class="page-container">
     <div class="articles-container">

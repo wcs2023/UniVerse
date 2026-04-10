@@ -13,6 +13,35 @@ class AlumniModel extends Model
         $this->db = Database::getInstance()->getConnection();
     }
 
+    private function getCanonicalExpertiseCategories()
+    {
+        return [
+            ['category_name' => 'Software Development', 'description' => 'Full Stack, Backend, Frontend, Mobile'],
+            ['category_name' => 'Cloud & DevOps', 'description' => 'AWS, Azure, GCP, CI/CD, Docker, Kubernetes'],
+            ['category_name' => 'Cybersecurity', 'description' => 'Ethical Hacking, Network Security, SOC'],
+            ['category_name' => 'Data & AI/ML', 'description' => 'Data Science, Machine Learning, LLMs'],
+            ['category_name' => 'UI/UX & Product', 'description' => 'UX Research, Product Management, Design Systems'],
+            ['category_name' => 'Networking & Infra', 'description' => 'Network Engineering, Sysadmin, Linux'],
+            ['category_name' => 'Database Systems', 'description' => 'SQL, NoSQL, System Design, Microservices'],
+            ['category_name' => 'Embedded & IoT', 'description' => 'Arduino, FPGA, Firmware, Hardware Design'],
+            ['category_name' => 'QA & Testing', 'description' => 'Test Automation, Performance Testing, QA'],
+            ['category_name' => 'Computer Architecture', 'description' => 'CPU Design, MIPS, Compilers, OS Internals'],
+            ['category_name' => 'Open Source & Tools', 'description' => 'Git, Linux CLI, Contributing to OSS'],
+            ['category_name' => 'Tech Career & Interview Prep', 'description' => 'Resume Review, DSA, Placement Guidance'],
+        ];
+    }
+
+    private function ensureCanonicalExpertiseCategories()
+    {
+        $insert = $this->db->prepare(
+            "INSERT IGNORE INTO expertise_categories (category_name, description) VALUES (?, ?)"
+        );
+
+        foreach ($this->getCanonicalExpertiseCategories() as $category) {
+            $insert->execute([$category['category_name'], $category['description']]);
+        }
+    }
+
     /**
      * Get alumni profile by user ID
      * 
@@ -30,7 +59,7 @@ class AlumniModel extends Model
                         ap.profile_id, ap.university_name, ap.degree_program,
                         ap.graduation_year, ap.current_job_title, ap.current_company,
                         ap.linkedin_url, ap.github_url, ap.portfolio_url,
-                        ap.skills_experience, ap.profile_completed
+                                ap.skills_experience, ap.profile_completed
                       FROM users u
                       LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
                       WHERE u.user_id = ?";
@@ -113,7 +142,7 @@ class AlumniModel extends Model
                         ap.profile_id, ap.university_name, ap.degree_program,
                         ap.graduation_year, ap.current_job_title as `current_role`,
                         ap.current_company as `company`, ap.linkedin_url,
-                        ap.github_url, ap.portfolio_url, ap.skills_experience as short_bio,
+                                                ap.github_url, ap.portfolio_url, ap.skills_experience as short_bio,
                         CASE WHEN m.is_active = 1 THEN 1 ELSE 0 END as available_for_mentorship
                       FROM users u
                       LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
@@ -431,15 +460,92 @@ class AlumniModel extends Model
             } else {
                 // Create new mentor record if user wants to be available
                 if ($isAvailable) {
-                    $query = "INSERT INTO mentors (user_id, is_active, expertise_areas, max_mentees) 
-                              VALUES (?, 1, NULL, 5)";
+                    $query = "INSERT INTO mentors (user_id, is_active, max_mentees) 
+                              VALUES (?, 1, 5)";
                     $stmt = $this->db->prepare($query);
                     $stmt->execute([$userId]);
                 }
             }
+
             return true;
         } catch (PDOException $e) {
             error_log("Error updating mentorship availability: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getExpertiseCategories()
+    {
+        try {
+            $this->ensureCanonicalExpertiseCategories();
+            return $this->getCanonicalExpertiseCategories();
+        } catch (PDOException $e) {
+            error_log("Error getting expertise categories: " . $e->getMessage());
+            return $this->getCanonicalExpertiseCategories();
+        }
+    }
+
+    public function getExpertiseCategoryNames()
+    {
+        $rows = $this->getExpertiseCategories();
+        return array_values(array_map(function ($row) {
+            return $row['category_name'];
+        }, $rows));
+    }
+
+    public function getMentorExpertiseByUserId($userId)
+    {
+        try {
+            $query = "SELECT ec.category_name
+                      FROM user_expertise ue
+                      INNER JOIN expertise_categories ec ON ue.category_id = ec.category_id
+                      WHERE ue.user_id = ?
+                      ORDER BY ec.category_name ASC";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return array_values(array_map(function ($row) {
+                return $row['category_name'];
+            }, $rows));
+        } catch (PDOException $e) {
+            error_log("Error getting mentor expertise: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function updateMentorExpertise($userId, array $expertiseAreas)
+    {
+        try {
+            $this->ensureCanonicalExpertiseCategories();
+            $this->db->beginTransaction();
+
+            $query = "DELETE FROM user_expertise WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+
+            if (!empty($expertiseAreas)) {
+                $placeholders = implode(', ', array_fill(0, count($expertiseAreas), '?'));
+                $query = "SELECT category_id, category_name
+                          FROM expertise_categories
+                          WHERE category_name IN ($placeholders)";
+                $stmt = $this->db->prepare($query);
+                $stmt->execute($expertiseAreas);
+                $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (!empty($categories)) {
+                    $insert = $this->db->prepare("INSERT INTO user_expertise (user_id, category_id) VALUES (?, ?)");
+                    foreach ($categories as $category) {
+                        $insert->execute([$userId, (int)$category['category_id']]);
+                    }
+                }
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->db->rollBack();
+            error_log("Error updating mentor expertise: " . $e->getMessage());
             return false;
         }
     }

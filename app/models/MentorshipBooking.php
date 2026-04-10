@@ -430,6 +430,8 @@ class MentorshipBooking extends MentorshipBase
         try {
             $query = "SELECT 
                         mb.*,
+                        mb.session_datetime as slot_datetime,
+                        m.user_id as mentor_user_id,
                         su.first_name as student_first_name, su.last_name as student_last_name,
                         su.profile_picture as student_picture, su.email as student_email,
                         mu.first_name as mentor_first_name, mu.last_name as mentor_last_name,
@@ -494,6 +496,69 @@ class MentorshipBooking extends MentorshipBase
         } catch (PDOException $e) {
             error_log("Error marking session completed: " . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Mark a booking as completed with ownership verification
+     * Only the mentor who owns the booking can mark it completed
+     * 
+     * @param int $bookingId The booking ID
+     * @param int $mentorUserId The mentor's user ID (for authorization)
+     * @return array Result with success status
+     */
+    public function markBookingCompleted($bookingId, $mentorUserId)
+    {
+        try {
+            $booking = $this->getBookingById($bookingId);
+            if (!$booking) {
+                return ['success' => false, 'message' => 'Booking not found'];
+            }
+
+            // Verify this booking belongs to this mentor
+            if ($booking['mentor_user_id'] != $mentorUserId) {
+                return ['success' => false, 'message' => 'Unauthorized'];
+            }
+
+            if ($booking['status'] !== 'scheduled') {
+                return ['success' => false, 'message' => 'Only scheduled sessions can be marked as completed'];
+            }
+
+            // Verify session time has passed
+            if (strtotime($booking['session_datetime']) > time()) {
+                return ['success' => false, 'message' => 'Cannot mark a future session as completed'];
+            }
+
+            $query = "UPDATE mentorship_bookings SET status = 'completed', updated_at = NOW() WHERE booking_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$bookingId]);
+
+            return ['success' => true, 'message' => 'Session marked as completed'];
+        } catch (PDOException $e) {
+            error_log("Error marking booking completed: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Failed to mark session as completed'];
+        }
+    }
+
+    /**
+     * Auto-complete sessions that are more than 2 hours past their start time
+     * Called at the beginning of dashboard loads to keep statuses current
+     * 
+     * @return int Number of sessions auto-completed
+     */
+    public function autoCompletePassedSessions()
+    {
+        try {
+            $query = "UPDATE mentorship_bookings 
+                      SET status = 'completed', updated_at = NOW() 
+                      WHERE status = 'scheduled' 
+                      AND session_datetime < DATE_SUB(NOW(), INTERVAL 2 HOUR)";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->rowCount();
+        } catch (PDOException $e) {
+            error_log("Error auto-completing sessions: " . $e->getMessage());
+            return 0;
         }
     }
 
