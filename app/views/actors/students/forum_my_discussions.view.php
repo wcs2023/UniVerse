@@ -1,12 +1,51 @@
 <head>
-    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_my_Dis_styles.css">
-</head>
-<?php
-$pageTitle = $title ?? 'My Discussion';
-include_once __DIR__ . '/includes/header2.view.php';
-?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/student_style.css">
+    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_my_Dis_styles.css">
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+        <style>        
+            .form-container
+            {
+                margin-top: 18vh; /* Adjust this value based on your header height */
+            }
+        </style>
+    <?php endif; ?>
+        
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+        
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">    
+    <?php endif; ?>
+     
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+     
+    <?php endif; ?> 
+
+
+
+</head>
+
+<?php
+    $pageTitle = $title ?? 'My Discussion';
+    if ($_SESSION['user_role'] === 'undergraduate') 
+    {
+        include __DIR__ . '/../undergraduate/Unavigation.view.php';
+    }
+    else if ($_SESSION['user_role'] === 'school_leaver') 
+    {
+        include __DIR__ . '/../includes/header2.view.php';
+    }
+    else if ($_SESSION['user_role'] === 'alumni')
+    {
+        include __DIR__ . '/../alumni/Anavbar.php';
+    } 
+    else 
+    {
+        include __DIR__ . '/../layout/nav_home.php';
+    }
+?>
 
 <div class="form-container">
     <div class="form-header">
@@ -20,6 +59,7 @@ include_once __DIR__ . '/includes/header2.view.php';
         </div>
     </div>
 
+    
     <div class="stat-bar">
         <div class="stat-item">
             <div class="stat-num"><?= count($threads) ?></div>
@@ -63,7 +103,6 @@ include_once __DIR__ . '/includes/header2.view.php';
                                     echo date('M d, Y g:i A', strtotime($lastPostTime));
                                     ?></td>
                     <td class="action-cell">
-
                         <a href="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>

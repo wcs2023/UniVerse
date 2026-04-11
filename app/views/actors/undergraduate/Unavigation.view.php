@@ -20,7 +20,7 @@
                     <a href="<?= BASE_URL ?>/ujobs" class="nav-link">Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= BASE_URL ?>/udiscussion" class="nav-link">Discussion Forums</a>
+                    <a href="<?= BASE_URL ?>/Discussion_forum" class="nav-link">Discussion Forums</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?= BASE_URL ?>/umentorships" class="nav-link">Mentorship</a>

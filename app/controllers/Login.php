@@ -44,6 +44,15 @@ class Login extends Controller {
                     $this->view('/auth/login', ['error' => 'Your account is not active. Please contact an administrator.']);
                     return;
                 }
+                $_SESSION['USER'] = [
+                    'user_id'    => $user['user_id'],
+                    'user_type'  => $user['user_type'],
+                    'username'   => $user['username'],
+                    'first_name' => $user['first_name'],
+                    'last_name'  => $user['last_name'],
+                    'full_name'  => $user['first_name'] . ' ' . $user['last_name'],
+                    'email'      => $user['email'],
+                ];
 
                 // Login successful - Set ALL session variables
                 $_SESSION['user_id'] = $user['user_id'];

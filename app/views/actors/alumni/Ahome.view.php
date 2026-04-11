@@ -76,7 +76,7 @@
                     <h2>Join the Discussion</h2>
                     <p>Connect with fellow alumni and current students in our discussion forums. Share insights, ask
                         questions, and build meaningful professional connections.</p>
-                    <a href="<?= BASE_URL ?>/adiscussion" class="btn" style="margin-top: 1.5rem;">Explore Forums</a>
+                    <a href="<?= BASE_URL ?>/Discussion_forum" class="btn" style="margin-top: 1.5rem;">Explore Forums</a>
                 </div>
                 <div class="mentor-image"
                     style="background-image: url('<?= BASE_URL ?>/assets/images/career.jpg'); background-color: #e0e7ff;">

@@ -11,6 +11,7 @@ class DegreeModel extends Model{
                 dp.degree_id,
                 dp.unicode,
                 dp.details,
+                dp.degree_name,
                 dc.cutoff_mark
                 
                 FROM degree_cutoffs dc

@@ -21,10 +21,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-body{
-    background-color: var(--bg-gray);
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,'Helvetica Neue','Ariel', sans-serif;
-}
+
 .main-container{
     max-width: 900px;
     margin: 2rem auto;
