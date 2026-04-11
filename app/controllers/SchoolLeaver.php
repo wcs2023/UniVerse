@@ -108,6 +108,21 @@ class SchoolLeaver extends Controller
         $this->view('actors/students/degree_result', $data);
     }
 
+    private function getCategories($articles)
+    {
+        $categories = [];
+        foreach ($articles as $article) {
+            if (isset($article['category'])) {
+                $cat = strtolower($article['category']);
+                if (!isset($categories[$cat])) {
+                    $categories[$cat] = ['category' => $article['category'], 'count' => 0];
+                }
+                $categories[$cat]['count']++;
+            }
+        }
+        return array_values($categories);
+    }
+
     /**
      * Display articles for school leavers - CONNECTED TO UNDERGRADUATE ARTICLES
      */
@@ -118,16 +133,15 @@ class SchoolLeaver extends Controller
             $articleModel = $this->model('AarticleModel');
             
             // Get all published articles (same as undergraduate system)
-            $articles = $articleModel->getAllPublishedArticles();
+            $articles = $articleModel->getAllPublishedArticles(10,0);
             
             // Get article categories for filtering
-            $categories = $articleModel->getCategories() ?? [
-                'Career Guidance',
-                'University Selection', 
-                'Study Tips',
-                'Industry Insights',
-                'Scholarship Information',
-                'Career Planning'
+            $categories = $this->getCategories($articles);
+
+            $data = [
+                'title' => 'Articles',
+                'articles' => $articles,
+                'categories' => $categories,
             ];
             
         } catch (Exception $e) {
@@ -183,7 +197,7 @@ class SchoolLeaver extends Controller
         ];
 
         // Use the same articles view as undergraduates but with school leaver context
-        $this->view('actors/students/articles', $data);
+        $this->view('/articles/index', $data);
     }
 
     /**
@@ -242,7 +256,7 @@ class SchoolLeaver extends Controller
             'user_type' => 'school_leaver'
         ];
 
-        $this->view('actors/students/article_detail', $data);
+        $this->view('articles/single', $data);
     }
 
     /**
@@ -294,6 +308,7 @@ class SchoolLeaver extends Controller
 
         $this->view('actors/students/articles', $data);
     }
+
 
     /**
      * Search articles - SHARED SEARCH FUNCTIONALITY

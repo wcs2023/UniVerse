@@ -27,7 +27,8 @@ if (!defined('BASE_URL')) {
         window.USER_TYPE = 'undergraduate';
     </script>
     <style>
-        body { padding-top: 80px; background-color: #a78bfa45 !important; }
+        body { padding-top: 80px; background-color: #a78bfa45 !important;}
+    
         .visually-hidden {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -52,7 +53,13 @@ if (!defined('BASE_URL')) {
             color: #6b46c1;
             background: #f5f3ff;
         }
-    </style>
+        .ms-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            margin-bottom: 7rem;
+        }
+        </style>
 </head>
 
 <body style="margin-top: 2rem;">
@@ -63,7 +70,7 @@ if (!defined('BASE_URL')) {
         include $navFile;
     }
     ?>
-
+    <div class="containerEM">
     <div class="ms-container">
         <!-- Page Header -->
         <div class="ms-page-header" style="display: block;">
@@ -169,14 +176,18 @@ if (!defined('BASE_URL')) {
                         </div>
                     </div>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <div class="ms-empty-state">
-                    <div class="ms-empty-icon ms-empty-icon--css">?</div>
-                    <h3>No Mentors Available</h3>
-                    <p>There are currently no active mentors. Please check back later!</p>
+            <?php elseif (count($data['mentors']) === 0): ?>
+                <div class="ms-empty-state" >
+                    <div style="text-align: center; padding: 2rem; color: #6b7280;">
+                        ?
+                        <p>There are currently no active mentors. Please check back later!</p>
+                        <h3>No Mentors Available</h3>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
+    </div>
+        <?php include __DIR__ . '/../layout/footer.php'; ?>
     </div>
 
     <!-- Book Slot Modal -->
@@ -362,6 +373,5 @@ if (!defined('BASE_URL')) {
     </script>
     <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 
-    <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
 </html>

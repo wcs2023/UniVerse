@@ -46,7 +46,7 @@ class UserModel extends Model
                     :username, :email, :password_hash, :first_name, :middle_name, :last_name,
                     :date_of_birth, :gender, :phone, :user_type
                   )";
-        
+    
         $result = $this->query($query, [
             'username' => $data['username'],
             'email' => $data['email'],

@@ -12,7 +12,7 @@ if (!defined('URLROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - UniVerse</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
 </head>
 <body>
     <div class="admin-layout">
@@ -80,7 +80,7 @@ if (!defined('URLROOT')) {
             <div class="content-card">
                 <div class="content-card-header">
                     <h2 class="content-card-title">Recent Activity</h2>
-                    <a href="<?= URLROOT ?>/admin/users" class="btn btn-outline btn-sm">View All</a>
+                    <a href="<?= URLROOT ?>/public/admin/users" class="btn btn-outline btn-sm">View All</a>
                 </div>
                 <div class="content-card-body">
                     <table class="data-table">

@@ -3,6 +3,8 @@
     include_once __DIR__ . '/includes/header2.view.php';
 ?>
 
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">
+
 <main class="main-container">
     <div class="profile-container">
         <!-- Profile Header -->
@@ -21,73 +23,7 @@
                 <a href="<?= BASE_URL ?>/schoolleaver/profile/edit" class="btn btn-primary">Edit Profile</a>
             </div>
         </section>
-
-        <!-- Quick Stats -->
-        <section class="profile-stats fade-in">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa-solid fa-search"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>5</h3>
-                    <p>Degree Searches</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa-solid fa-bookmark"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>3</h3>
-                    <p>Saved Universities</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>12</h3>
-                    <p>Forum Posts</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fa-solid fa-article"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>8</h3>
-                    <p>Articles Read</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recent Activities -->
-        <section class="recent-activities fade-in">
-            <h2>Recent Activities</h2>
-            <div class="activity-list">
-                <?php if (!empty($data['recent_activities'])): ?>
-                    <?php foreach ($data['recent_activities'] as $activity): ?>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div class="activity-content">
-                                <p><?= htmlspecialchars($activity) ?></p>
-                                <span class="activity-time">2 hours ago</span>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="no-activities">
-                        <i class="fa-solid fa-inbox"></i>
-                        <p>No recent activities</p>
-                        <a href="<?= BASE_URL ?>/schoolleaver/degreeSuggestion" class="btn btn-outline">Start Exploring</a>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </section>
-
+        
         <!-- Quick Links -->
         <section class="quick-links fade-in">
             <h2>Quick Actions</h2>
@@ -110,22 +46,13 @@
                         <p>Career guidance and tips</p>
                     </div>
                 </a>
-                <a href="<?= BASE_URL ?>/schoolleaver/forums" class="link-card">
+                <a href="<?= BASE_URL ?>/Discussion_forum" class="link-card">
                     <div class="link-icon">
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div class="link-content">
                         <h3>Join Forums</h3>
                         <p>Connect with other students</p>
-                    </div>
-                </a>
-                <a href="<?= BASE_URL ?>/schoolleaver/contact" class="link-card">
-                    <div class="link-icon">
-                        <i class="fa-solid fa-envelope"></i>
-                    </div>
-                    <div class="link-content">
-                        <h3>Get Support</h3>
-                        <p>Contact our career advisors</p>
                     </div>
                 </a>
             </div>
@@ -362,7 +289,7 @@
     .profile-stats {
         grid-template-columns: 1fr;
     }
-
+    
     .links-grid {
         grid-template-columns: 1fr;
     }
@@ -377,7 +304,7 @@
             card.style.animationDelay = `${index * 0.1}s`;
             card.classList.add('fade-in');
         });
-
+        
         // Add animation to activity items
         const activities = document.querySelectorAll('.activity-item');
         activities.forEach((item, index) => {

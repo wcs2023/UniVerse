@@ -25,6 +25,70 @@ class Company extends Controller
         $this->applicationModel = $this->model('JobApplication');
         $this->companyProfileModel = $this->model('CompanyProfile');
         $this->userModel = $this->model('User');
+
+        // Cache company profile essentials for header rendering
+        $companyId = $_SESSION['user_id'];
+        $profile = $this->companyProfileModel->getProfileByUserId($companyId);
+
+        // Normalize/migrate legacy stored logo paths if needed
+        if ($profile && !empty($profile['logo_url'])) {
+            $projectRoot = dirname(__DIR__, 2);
+            $raw = is_string($profile['logo_url']) ? $profile['logo_url'] : '';
+            $raw = trim($raw);
+
+            // Normalize to be relative to BASE_URL (BASE_URL already points to /public)
+            $normalized = ltrim($raw, '/');
+            if (strpos($normalized, 'public/') === 0) {
+                $normalized = substr($normalized, 7);
+            }
+
+            // If it's a full URL, attempt to extract path under /public/
+            if (preg_match('#^https?://#i', $normalized)) {
+                $parsed = parse_url($normalized);
+                $path = is_array($parsed) ? ($parsed['path'] ?? '') : '';
+                $path = ltrim($path, '/');
+                $publicPos = strpos($path, 'public/');
+                if ($publicPos !== false) {
+                    $normalized = substr($path, $publicPos + 7);
+                } else {
+                    $normalized = $path;
+                }
+            }
+
+            // Only handle expected upload paths
+            if (preg_match('#^uploads/company_profiles/[^/\\\\]+\.(jpg|jpeg|png|gif)$#i', $normalized)) {
+                $targetAbs = $projectRoot . '/public/' . $normalized;
+                $targetDir = dirname($targetAbs);
+
+                // If target file missing, try to migrate from legacy location: DOCUMENT_ROOT/public
+                if (!file_exists($targetAbs) && isset($_SERVER['DOCUMENT_ROOT'])) {
+                    $legacyAbs = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') . '/public/' . $normalized;
+                    if (file_exists($legacyAbs)) {
+                        if (!is_dir($targetDir)) {
+                            mkdir($targetDir, 0755, true);
+                        }
+
+                        // Copy then attempt to delete legacy file
+                        if (@copy($legacyAbs, $targetAbs)) {
+                            @unlink($legacyAbs);
+                        }
+                    }
+                }
+
+                // If DB still contains legacy prefix, update it
+                if ($raw !== $normalized) {
+                    $this->companyProfileModel->updateLogoUrl($companyId, $normalized);
+                    $profile['logo_url'] = $normalized;
+                }
+            }
+        }
+        if ($profile) {
+            $_SESSION['company_logo_url'] = $profile['logo_url'] ?? null;
+            $_SESSION['company_name'] = $profile['company_name'] ?? null;
+        } else {
+            $_SESSION['company_logo_url'] = null;
+            $_SESSION['company_name'] = null;
+        }
     }
     
     /**
@@ -464,7 +528,8 @@ class Company extends Controller
                 }
                 
                 // Create upload directory if it doesn't exist
-                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/public/uploads/company_profiles/';
+                $projectRoot = dirname(__DIR__, 2);
+                $upload_dir = $projectRoot . '/public/uploads/company_profiles/';
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0755, true);
                 }
@@ -476,7 +541,12 @@ class Company extends Controller
                 
                 // Delete old profile picture if exists
                 if ($profile && $profile['logo_url']) {
-                    $old_file = $_SERVER['DOCUMENT_ROOT'] . '/' . $profile['logo_url'];
+                    $oldRelative = ltrim($profile['logo_url'], '/');
+                    if (strpos($oldRelative, 'public/') === 0) {
+                        $oldRelative = substr($oldRelative, 7);
+                    }
+
+                    $old_file = $projectRoot . '/public/' . $oldRelative;
                     if (file_exists($old_file)) {
                         unlink($old_file);
                     }
@@ -484,7 +554,8 @@ class Company extends Controller
                 
                 // Move uploaded file
                 if (move_uploaded_file($file['tmp_name'], $upload_path)) {
-                    $data['logo_url'] = 'public/uploads/company_profiles/' . $filename;
+                    // Stored relative to BASE_URL (which already points to /public)
+                    $data['logo_url'] = 'uploads/company_profiles/' . $filename;
                 } else {
                     $_SESSION['error'] = 'Failed to upload image';
                     $this->view('actors/company/profile', ['user' => $user, 'profile' => $profile]);
@@ -502,6 +573,7 @@ class Company extends Controller
             if ($profile) {
                 if ($this->companyProfileModel->updateProfile($companyId, $data)) {
                     $_SESSION['success'] = 'Profile updated successfully!';
+                    $profile = $this->companyProfileModel->getProfileByUserId($companyId);
                 } else {
                     $_SESSION['error'] = 'Failed to update profile';
                 }
@@ -514,6 +586,12 @@ class Company extends Controller
                     $_SESSION['error'] = 'Failed to create profile';
                 }
             }
+
+            // Keep cached header logo in sync
+            if ($profile) {
+                $_SESSION['company_logo_url'] = $profile['logo_url'] ?? null;
+                $_SESSION['company_name'] = $profile['company_name'] ?? null;
+            }
         }
         
         $this->view('actors/company/profile', [
@@ -522,3 +600,4 @@ class Company extends Controller
         ]);
     }
 }
+

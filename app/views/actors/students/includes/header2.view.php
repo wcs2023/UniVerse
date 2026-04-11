@@ -16,7 +16,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/header2_styles.css">
     
-    <style>
+    
+    <!-- <style>
         /* CSS Variables */
         :root {
             --primary-purple: #6b46c1;
@@ -111,7 +112,8 @@
         
 
       
-    </style>
+    </style> -->
+    <!-- <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_styles.css"> -->
 </head>
 
 <header class="header">
@@ -122,15 +124,15 @@
             <li><a href="<?= BASE_URL ?>/schoolleaver/profile" class="nav-link">My Profile</a></li>
             <li><a href="<?= BASE_URL ?>/schoolleaver/articles" class="nav-link">Career Articles</a></li>
             <li><a href="<?= BASE_URL ?>/Discussion_Forum/index" class="nav-link">Discussion Forums</a></li>
-            <li><a href="<?= BASE_URL ?>/schoolleaver/degreeSuggestion" class="nav-link">Degree Suggestions</a></li>
+            <li><a href="<?= BASE_URL ?>/Degrees/degree_suggestion_index" class="nav-link">Degree Suggestions</a></li>
             <li><a href="<?= BASE_URL ?>/logout" class="nav-link">Logout</a></li>
-            <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
+            <!-- <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
         </ul>
-        <i class="fa-solid fa-bars" onclick="openmenu()"></i>
+        <i class="fa-solid fa-bars" onclick="openmenu()"></i> -->
     </div>
 </header>
 
-<script>
+<!-- <script>
     // Mobile menu functions
     function openmenu() {
         document.getElementById('nav_menu').classList.add('active');
@@ -139,4 +141,4 @@
     function closemenu() {
         document.getElementById('nav_menu').classList.remove('active');
     }
-</script>
+</script> -->

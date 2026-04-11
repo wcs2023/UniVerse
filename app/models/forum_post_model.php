@@ -17,7 +17,7 @@ class Forum_post_model extends Model
 
         $params = ['thread_id' => $thread_id];
 
-        $result =  $this->fetch($query, $params);
+        $result =  $this->fetchAll($query, $params);
 
         return $result ?: [];
     }
@@ -27,7 +27,13 @@ class Forum_post_model extends Model
         $query = "INSERT INTO {$this->table} (thread_id,user_id,content) 
         VALUES (:thread_id,:user_id,:content) ";
 
-        return $this->query($query, $data);
+        $params = [
+            'thread_id' => $data['thread_id'],
+            'user_id' => $data['user_id'],
+            'content' => $data['content']
+        ];
+
+        return $this->query($query, $params);
     }
 
     public function getPostDetailsWithId($post_id)
@@ -35,8 +41,8 @@ class Forum_post_model extends Model
         $query = "SELECT fp.*,
                     u.first_name AS author_fname,
                     u.last_name AS author_lname,
-                    u.user_id as author_id,
-                    FROM{$this->table} fp
+                    u.user_id as author_id
+                    FROM {$this->table} fp
                     JOIN users u ON fp.user_id = u.user_id
                     WHERE fp.post_id = :post_id
                     ";
@@ -67,5 +73,60 @@ class Forum_post_model extends Model
         $query = "DELETE FROM {$this->table} WHERE thread_id = :thread_id";
 
         return $this->query($query, ['thread_id' => $thread_id]);
+    }
+
+    public function getReplyVotes(int $post_id)
+{
+    $query = "SELECT
+                SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END) AS likes,
+                SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END) AS dislikes
+              FROM forum_post_votes
+              WHERE post_id = :post_id";
+
+    $row = $this->fetch($query, ['post_id' => $post_id]);
+
+    return [
+        'likes' => (int)($row['likes'] ?? 0),
+        'dislikes' => (int)($row['dislikes'] ?? 0)
+    ];
+}
+
+public function setReplyVote(int $post_id, int $user_id, int $vote)
+{
+    $vote = ($vote === -1) ? -1 : 1;
+
+    $existing = $this->fetch(
+        "SELECT vote FROM forum_post_votes WHERE post_id = :post_id AND user_id = :user_id",
+        ['post_id' => $post_id, 'user_id' => $user_id]
+    );
+
+    if (is_array($existing) && (int)$existing['vote'] === $vote) {
+        $this->query(
+            "DELETE FROM forum_post_votes WHERE post_id = :post_id AND user_id = :user_id",
+            ['post_id' => $post_id, 'user_id' => $user_id]
+        );
+    } elseif (is_array($existing)) {
+        $this->query(
+            "UPDATE forum_post_votes SET vote = :vote WHERE post_id = :post_id AND user_id = :user_id",
+            ['vote' => $vote, 'post_id' => $post_id, 'user_id' => $user_id]
+        );
+    } else {
+        $this->query(
+            "INSERT INTO forum_post_votes (post_id, user_id, vote) VALUES (:post_id, :user_id, :vote)",
+            ['post_id' => $post_id, 'user_id' => $user_id, 'vote' => $vote]
+        );
+    }
+
+    return $this->getReplyVotes($post_id);
+}
+    
+    public function deleteByUserId($userId)
+    {
+        try {
+            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
+        }
     }
 }

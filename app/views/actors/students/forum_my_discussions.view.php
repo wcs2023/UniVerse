@@ -6,6 +6,7 @@ $pageTitle = $title ?? 'My Discussion';
 include_once __DIR__ . '/includes/header2.view.php';
 ?>
 
+<link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/student_style.css">
 
 <div class="form-container">
     <div class="form-header">
@@ -19,7 +20,6 @@ include_once __DIR__ . '/includes/header2.view.php';
         </div>
     </div>
 
-    
     <div class="stat-bar">
         <div class="stat-item">
             <div class="stat-num"><?= count($threads) ?></div>

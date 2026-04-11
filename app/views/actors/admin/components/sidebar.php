@@ -8,12 +8,7 @@
     </div>
     
     <nav class="sidebar-nav">
-        <a href="<?= BASE_URL ?>/admin/dashboard" class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], '/admin/dashboard') !== false || $_SERVER['REQUEST_URI'] === BASE_URL . '/admin') ? 'active' : '' ?>">
-            <!-- <i class="icon"></i> -->
-            <span>Dashboard</span>
-        </a>
-        
-        <a href="<?= BASE_URL ?>/admin/users" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false ? 'active' : '' ?>">
+        <a href="<?= BASE_URL ?>/admin/users" class="nav-item <?= (strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false || preg_match('#/admin/?$#', $_SERVER['REQUEST_URI'])) ? 'active' : '' ?>">
             <!-- <i class="icon">👥</i> -->
             <span>Users</span>
         </a>
@@ -33,15 +28,15 @@
             <span>Forums</span>
         </a>
         
-        <a href="<?= BASE_URL ?>/admin/notifications" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/notifications') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">🔔</i> -->
+        <!-- <a href="<?= BASE_URL ?>/admin/notifications" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/notifications') !== false ? 'active' : '' ?>">
+            <i class="icon">🔔</i>
             <span>Notifications</span>
-        </a>
+        </a> -->
         
-        <a href="<?= BASE_URL ?>/admin/settings" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/settings') !== false ? 'active' : '' ?>">
-            <!-- <i class="icon">⚙️</i> -->
+        <!-- <a href="<?= BASE_URL ?>/admin/settings" class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/settings') !== false ? 'active' : '' ?>">
+            <i class="icon">⚙️</i>
             <span>Settings</span>
-        </a>
+        </a> -->
     </nav>
     
     <div class="sidebar-footer">

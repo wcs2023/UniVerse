@@ -80,4 +80,11 @@ class Model
         $sql = "DELETE FROM {$table} WHERE {$where}";
         return $this->db->query($sql, $whereParams);
     }
+
+    protected function first($sql,$param = [])
+    {
+        return $this->fetch($sql,$param);
+    }
+
 }
+

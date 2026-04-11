@@ -1,10 +1,9 @@
-<head>
-    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_home_styles.css">
-</head>
 <?php
-$pageTitle = $title ?? 'Discussion Forum';
-include_once __DIR__ . '/includes/header2.view.php';
+    $pageTitle = $title ?? 'Discussion Forum';
+    include_once __DIR__ . '/includes/header2.view.php';
 ?>
+
+
 <body data-base-url="<?= BASE_URL ?>">
     <main class="main-container">
         <section class="forum-header">
@@ -78,7 +77,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                                 <div class="col-action">
                                     <div class="action-btn">
                                         <a href="<?= BASE_URL ?>/Discussion_Forum/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
-                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            <i class="fa-solid fa-pen-to-square"></i> 
                                         </a>
                                         <button class="btn-action btn-delete" data-thread-id="<?= $thread['thread_id'] ?>" data-tooltip="Delete">
                                             <i class="fa-solid fa-trash"></i>
@@ -123,6 +122,27 @@ include_once __DIR__ . '/includes/header2.view.php';
     </div>
     
     <style>
+        .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 1rem;
+        }
+
+        .nav-link {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: color 0.3s ease, background 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+        color: var(--dark-purple);
+        background: hsl(0, 10%, 94%);
+        }
+
         .delete-modal {
             position: fixed;
             top: 0;
@@ -170,7 +190,10 @@ include_once __DIR__ . '/includes/header2.view.php';
         .btn-confirm:hover {
             background: #c82333;
         }
-    </style>
+        </style>
+        <link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/forum/forum_home_styles.css"> 
+        <link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/forum/responsive_forum_home.css">
+        <!-- <link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/student_style.css"> -->
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

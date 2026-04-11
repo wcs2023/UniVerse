@@ -26,7 +26,7 @@ include_once __DIR__ . '/includes/header2.view.php';
                         <option value="" disabled selected>Select a Category</option>
                         <?php if (isset($categories)): ?>
                             <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat['cat_id'] ?>" <?= (isset($old['$cat_id']) ? $old['cat_id'] : $thread['cat_id']) == $cat['cat_id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
+                                <option value="<?= $cat['cat_id'] ?>" <?= (isset($old['cat_id']) ? $old['cat_id'] : $thread['cat_id']) == $cat['cat_id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>

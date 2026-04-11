@@ -1,6 +1,33 @@
 <head>
     <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_create_styles.css">
     <link rel="stylesheet" href="<?= BASE_URL; ?>/css/styles.css">
+    <style>
+        .main-container
+        {
+            margin-top: 7rem;
+        }
+        .btn-secondary
+        {
+            padding: 0.8rem 1.2rem;
+            text-decoration: none;
+            border: 10px;
+            border-radius: 13px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-secondary:hover
+        {
+            background-color: lightgray;
+        }
+
+    </style>
 </head>
 <?php
 $pageTitle = $title ?? 'Start a Discussion';
@@ -47,9 +74,12 @@ include 'Unavigation.view.php';
 
                 <div class="form-action">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fa-solid fa-paper-plane"></i> Create Thread
+                        <!-- <i class="fa-solid fa-paper-plane"></i> -->
+                         Create Thread
                     </button>
-                    <a href="<?= BASE_URL ?>/Udiscussion/index" class="btn btn-cancel">Cancel</a>
+                    <button class="btn-secondary">
+                        <a href="<?= BASE_URL ?>/Udiscussion/index">Cancel</a>
+                    </button>
                 </div>
             </form>
         </div>

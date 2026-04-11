@@ -1,11 +1,8 @@
-<head>
-    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_home_styles.css">
-    <link rel="stylesheet" href="<?= BASE_URL; ?>/css/styles.css">
-</head>
 <?php
-$pageTitle = $title ?? 'Discussion Forum';
+    $pageTitle = $title ?? 'Discussion Forum';
+    include_once __DIR__ . '/Unavigation.view.php';
 ?>
-<?php include 'Unavigation.view.php'; ?>
+
 <body data-base-url="<?= BASE_URL ?>">
     <main class="main-container">
         <section class="forum-header">
@@ -42,13 +39,11 @@ $pageTitle = $title ?? 'Discussion Forum';
                         <?php endif; ?>
                     </div>
 
-
-
                     <?php foreach ($recent_threads as $thread): ?>
                         <div class="discussion-row">
                             <div class="col-topic">
                                 <div class="topic-title">
-                                    <a href="<?= BASE_URL ?>/Discussion_forum/thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
+                                    <a href="<?= BASE_URL ?>/Udiscussion/view_thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
                                 </div>
                                 <div class="topic-details">
                                     posted by:<span class="author-name"><?= htmlspecialchars($thread['author_name']) ?></span> in <span class="category-link"><?= htmlspecialchars($thread['category_name']) ?></span>
@@ -79,11 +74,10 @@ $pageTitle = $title ?? 'Discussion Forum';
                                 <div class="col-action">
                                     <div class="action-btn">
                                         <a href="<?= BASE_URL ?>/Udiscussion/edit_post/<?= $thread['thread_id'] ?>" class="btn-action btn-edit" data-tooltip="Edit">
-                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            <i class="fa-solid fa-pen-to-square">E</i>
                                         </a>
-                                        <button class="btn-action btn-delete" data-tooltip="Delete">
-                                            <i class="fa-solid fa-trash"></i>
-
+                                        <button class="btn-action btn-delete" data-thread-id="<?= $thread['thread_id'] ?>" data-tooltip="Delete">
+                                            <i class="fa-solid fa-trash">D</i>
                                         </button>
                                     </div>
                                 </div>
@@ -94,27 +88,23 @@ $pageTitle = $title ?? 'Discussion Forum';
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="no-discussion">
-                        <div class="no-content">
-                            <i class="fa-solid fa-comments"></i>
-                            <h3>No Discussions Found</h3>
-                            <p>Be the first one to start a discussion!</p>
-                            <a href="<?= BASE_URL ?>/Udiscussion/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
-
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-
-
-
-
                 </div>
             </section>
+        <?php else: ?>
+            <section class="discussion-section">
+                <div class="no-discussion">
+                    <div class="no-content">
+                        <i class="fa-solid fa-comments"></i>
+                        <h3>No Discussions Found</h3>
+                        <p>Be the first one to start a discussion!</p>
+                        <a href="<?= BASE_URL ?>/Udiscussion/create_posts" class="btn btn-primary"><i class="fa-solid fa-plus"></i>Start a New Discussion </a>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
     </main>
-    <!-- 
-    <div id="deleteModal" class="delete-model hidden">
+    
+    <div id="deleteModal" class="delete-modal hidden">
         <div class="delete-box">
             <h3>Delete Discussion</h3>
             <p>
@@ -128,7 +118,98 @@ $pageTitle = $title ?? 'Discussion Forum';
         </div>
     </div>
     
-    <script src="<?= BASE_URL ?>/assets/js/discussion_forum.js"></script> -->
+    <style>
+        .delete-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .delete-modal.hidden {
+            display: none;
+        }
+        .delete-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .delete-box h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .delete-box p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        .delete-action {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .btn-confirm {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-confirm:hover {
+            background: #c82333;
+        }
+        </style>
+        <link rel="stylesheet" href="<?= BASE_URL;?>/css/styles.css">
+        <link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/forum/responsive_forum_home.css">
+        <link rel="stylesheet" href="<?= BASE_URL;?>/assets/css/forum/forum_home_styles.css"> 
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteModal = document.getElementById('deleteModal');
+            const cancelBtn = document.getElementById('cancelDelete');
+            const confirmBtn = document.getElementById('confirmDelete');
+            const baseUrl = document.body.getAttribute('data-base-url');
+            let threadIdToDelete = null;
+            
+            // Add click listeners to all delete buttons
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    threadIdToDelete = this.getAttribute('data-thread-id');
+                    deleteModal.classList.remove('hidden');
+                });
+            });
+            
+            // Cancel delete
+            cancelBtn.addEventListener('click', function() {
+                deleteModal.classList.add('hidden');
+                threadIdToDelete = null;
+            });
+            
+            // Confirm delete
+            confirmBtn.addEventListener('click', function() {
+                if (threadIdToDelete) {
+                    window.location.href = baseUrl + '/Udiscussion/delete_post/' + threadIdToDelete;
+                }
+            });
+            
+            // Close modal on outside click
+            deleteModal.addEventListener('click', function(e) {
+                if (e.target === deleteModal) {
+                    deleteModal.classList.add('hidden');
+                    threadIdToDelete = null;
+                }
+            });
+        });
+    </script>
 <?php include __DIR__ . '/../../layout/footer.php'; ?>
 
 </body>

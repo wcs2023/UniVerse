@@ -71,7 +71,8 @@ class Forum_thread_model extends Model
                     u.first_name as author_fname,
                     u.last_name as author_lname,
                     u.user_id as author_id,
-                    fc.name as cat_name
+                    fc.name as cat_name,
+                    (SELECT COUNT(*) FROM forum_posts  fp WHERE fp.thread_id = ft.thread_id) as reply_count
                     FROM {$this->table} ft
                     JOIN users u on ft.user_id = u.user_id
                     JOIN forum_categories fc on ft.cat_id = fc.cat_id
@@ -92,7 +93,7 @@ class Forum_thread_model extends Model
                     u.first_name as author_fname,
                     u.last_name as author_lname,
                     fc.name as cat_name,
-                    (SELECT COUNT(*) FROM forum_posts WHERE thread_id = ft.thread_id) as reply_count,
+                    (SELECT COUNT(*) FROM forum_posts  fp WHERE fp.thread_id = ft.thread_id) as reply_count,
                     (SELECT fp.created_at FROM forum_posts fp WHERE fp.thread_id = ft.thread_id ORDER BY fp.created_at DESC LIMIT 1) as last_post_at
                   FROM {$this->table} ft
                   JOIN users u ON ft.user_id = u.user_id
@@ -115,8 +116,89 @@ class Forum_thread_model extends Model
     }
 
     public function delete_post($thread_id){
-        $query = "DELETE * FROM {$this->table} WHERE thread_id = :thread_id";
+        $query = "DELETE FROM {$this->table} WHERE thread_id = :thread_id";
 
         return $this->query($query,['thread_id'=>$thread_id]);
     }
+
+    public function searchByTitle(string $search_term,int $limit = 50)
+    {
+        $limit = (int)$limit;
+        $query = "SELECT ft.*,
+        u.first_name as author_fname,
+        u.last_name as author_lname,
+        fc.name as cat_name,
+        (SELECT COUNT(*) FROM forum_posts fp WHERE fp.thread_id = ft.thread_id ) as reply_count,
+        (SELECT fp.created_at FROM forum_posts fp WHERE fp.thread_id = ft.thread_id ORDER BY fp.created_at DESC LIMIT 1) as last_posted_at,
+        (SELECT CONCAT(u2.first_name,' ',u2.last_name) 
+        FROM forum_posts fp2 
+        JOIN users u2 ON fp2.user_id = u2.user_id
+        WhERE fp2.thread_id = ft.thread_id 
+        ORDER BY fp2.created_at DESC LIMIT 1) AS last_posted_author
+        FROM {$this->table} ft
+        JOIN users u ON ft.user_id = u.user_id
+        JOIN forum_categories fc ON ft.cat_id = fc.cat_id
+        WHERE ft.title LIKE :search_term
+        ORDER BY ft.is_pinned DESC,ft.updated_at DESC LIMIT $limit";
+
+        return $this->fetchAll($query,['search_term' =>'%' . $search_term . '%']) ?: [];
+    }
+
+    public function getThreadVotes(int $thread_id){
+        $query = "SELECT 
+                    SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END) AS likes,
+                    SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END) AS dislikes
+                    FROM forum_thread_votes
+                    WHERE thread_id = :thread_id";
+
+        $row = $this->fetch($query,['thread_id' => $thread_id]);
+
+        return [
+            'likes' => (int)($row['likes'] ?? 0),
+            'dislikes' => (int)($row['dislikes'] ?? 0)
+        ];
+    }
+
+    public function setThreadVote(int $thread_id,int $user_id,int $vote){
+        $vote = ($vote === -1) ? -1 : 1;
+
+        $existing = $this->fetch(
+            "SELECT vote FROM forum_thread_votes WHERE thread_id = :thread_id AND user_id = :user_id",['thread_id' => $thread_id,'user_id' => $user_id]
+        );
+
+        if(is_array($existing) && (int)$existing['vote'] === $vote){
+            $this->query(
+                "DELETE FROM forum_thread_votes WHERE thread_id = :thread_id AND user_id = :user_id",
+                
+                ['thread_id' =>$thread_id,'user_id' => $user_id]
+            );
+        }
+        elseif(is_array($existing)) {
+            $this->query(
+                "UPDATE forum_thread_votes SET vote =:vote WHERE thread_id = :thread_id AND user_id = :user_id",
+                
+                ['vote' =>$vote,'thread_id' =>$thread_id,'user_id' =>$user_id]
+            );
+        }
+        else{
+            $this->query(
+                "INSERT INTO forum_thread_votes(thread_id,user_id,vote) 
+                VALUES (:thread_id,:user_id,:vote)",
+
+                ['thread_id'=>$thread_id,'user_id' => $user_id,'vote'=>$vote]
+            );
+        }
+
+        return $this->getThreadVotes($thread_id);
+    }
+    public function deleteByUserId($userId)
+    {
+        try {
+            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
+        } catch (Exception $e) {
+            error_log("Error deleting articles by user: " . $e->getMessage());
+            return false;
+        }
+    }
+    
 }

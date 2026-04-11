@@ -10,9 +10,31 @@
         <div class="user-profile-dropdown">
             <div class="profile-trigger">
                 <div class="profile-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <?php
+                        $companyLogoPath = $_SESSION['company_logo_url'] ?? '';
+                        $companyLogoPath = is_string($companyLogoPath) ? $companyLogoPath : '';
+                        $companyLogoPath = ltrim($companyLogoPath, '/');
+                        if (strpos($companyLogoPath, 'public/') === 0) {
+                            $companyLogoPath = substr($companyLogoPath, 7);
+                        }
+                        $companyLogoSrc = $companyLogoPath ? (BASE_URL . '/' . $companyLogoPath) : '';
+                    ?>
+
+                    <svg class="profile-icon-fallback" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: <?= !empty($companyLogoSrc) ? 'none' : 'block' ?>;">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
+
+                    <?php if (!empty($companyLogoSrc)): ?>
+                        <img
+                            src="<?= htmlspecialchars($companyLogoSrc) ?>"
+                            alt=""
+                            width="28"
+                            height="28"
+                            loading="lazy"
+                            onload="this.previousElementSibling.style.display='none';"
+                            onerror="this.style.display='none'; this.previousElementSibling.style.display='block';"
+                        >
+                    <?php endif; ?>
                 </div>
                 <div class="profile-info">
                     <span class="profile-name"><?= htmlspecialchars($data['user']->firstname ?? 'User') ?></span>

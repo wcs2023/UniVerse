@@ -20,14 +20,14 @@ body {
     margin: 2rem auto;
     padding: 0 1rem;
 }
-
+/* 
 .btn {
     padding: 8px 12px;
     border: 1px solid #999;
     background: #fff;
     border-radius: 8px;
     cursor: pointer;
-}
+} */
 
 .alert {
     padding: 10px;
@@ -36,10 +36,10 @@ body {
     border-radius: 8px;
     margin-top: .5rem;
 }
-
+/* 
 a {
     color: inherit;
-}
+} */
 
 .u-nav {
     background: #fff;

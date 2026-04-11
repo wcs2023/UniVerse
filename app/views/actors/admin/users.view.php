@@ -1,9 +1,6 @@
 <?php
 
 // BASE_URL is already available from the controller
-if (!defined('URLROOT')) {
-    define('URLROOT', BASE_URL);
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +8,7 @@ if (!defined('URLROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - Admin Panel</title>
-    <link rel="stylesheet" href="<?= URLROOT ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -23,7 +20,7 @@ if (!defined('URLROOT')) {
         <div class="admin-main">
             <!-- Header -->
             <div class="admin-header">
-                <h1>👥 Manage Users</h1>
+                <h1>Manage Users</h1>
                 <div class="admin-header-actions">
                     <div class="admin-user">
                         <div class="admin-user-avatar">
@@ -42,14 +39,20 @@ if (!defined('URLROOT')) {
                 <div class="alert alert-success">
                     <?php
                     switch ($_GET['success']) {
+                        case 'activated':
+                            echo 'User account activated successfully';
+                            break;
+                        case 'deactivated':
+                            echo 'User account deactivated successfully';
+                            break;
                         case 'updated':
-                            echo '✅ User updated successfully';
+                            echo 'User updated successfully';
                             break;
                         case 'deleted':
-                            echo '✅ User account deleted successfully';
+                            echo 'User account deleted successfully';
                             break;
                         default:
-                            echo '✅ Action completed successfully';
+                            echo 'Action completed successfully';
                     }
                     ?>
                 </div>
@@ -59,23 +62,38 @@ if (!defined('URLROOT')) {
                 <div class="alert alert-error">
                     <?php
                     switch ($_GET['error']) {
+                        case 'invalid_method':
+                            echo 'Invalid request method';
+                            break;
+                        case 'invalid_csrf':
+                            echo 'Security validation failed. Please try again';
+                            break;
                         case 'missing_id':
-                            echo '❌ User ID is required';
+                            echo 'User ID is required';
+                            break;
+                        case 'user_not_found':
+                            echo 'User not found';
+                            break;
+                        case 'must_deactivate_first':
+                            echo 'Deactivate the account before deleting it';
+                            break;
+                        case 'cannot_delete_self':
+                            echo 'You cannot delete your own admin account';
                             break;
                         case 'update_failed':
-                            echo '❌ Failed to update user';
+                            echo 'Failed to update user';
                             break;
                         case 'delete_failed':
-                            echo '❌ Failed to delete user account';
+                            echo 'Failed to delete user account';
                             break;
                         case 'validation_failed':
-                            echo '❌ Please check the form and try again';
+                            echo 'Please check the form and try again';
                             break;
                         case 'email_exists':
-                            echo '❌ Email already exists';
+                            echo 'Email already exists';
                             break;
                         default:
-                            echo '❌ An error occurred';
+                            echo 'An error occurred';
                     }
                     ?>
                 </div>
@@ -83,17 +101,20 @@ if (!defined('URLROOT')) {
             
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
-                <div class="content-card-body">
-                    <form method="GET" action="<?= URLROOT ?>/admin/users" class="search-bar">
-                        <input 
-                            type="text" 
-                            name="search" 
-                            class="search-input" 
-                            placeholder="Search users by name, email..." 
-                            value="<?= htmlspecialchars($searchQuery ?? '') ?>"
-                        >
+                <div class="content-card-body" style="padding: 1rem;">
+                    <form method="GET" action="<?= BASE_URL ?>/admin/users" class="search-filter-form">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                name="search" 
+                                class="search-input-modern" 
+                                placeholder="Search users by name, email..." 
+                                value="<?= htmlspecialchars($searchQuery ?? '') ?>"
+                            >
+                        </div>
                         
-                        <select name="role" class="form-select">
+                        <select name="role" class="filter-select">
                             <option value="all" <?= (!isset($roleFilter) || $roleFilter === 'all') ? 'selected' : '' ?>>All Roles</option>
                             <option value="undergraduate" <?= (isset($roleFilter) && $roleFilter === 'undergraduate') ? 'selected' : '' ?>>Undergraduates</option>
                             <option value="alumni" <?= (isset($roleFilter) && $roleFilter === 'alumni') ? 'selected' : '' ?>>Alumni</option>
@@ -101,13 +122,15 @@ if (!defined('URLROOT')) {
                             <option value="admin" <?= (isset($roleFilter) && $roleFilter === 'admin') ? 'selected' : '' ?>>Admins</option>
                         </select>
                         
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                        
-                        <a href="<?= URLROOT ?>/admin/users" class="btn btn-outline">
-                            <i class="fas fa-redo"></i> Reset
-                        </a>
+                        <div class="search-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            
+                            <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> Reset
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -116,7 +139,7 @@ if (!defined('URLROOT')) {
             <div class="content-card">
                 <div class="content-card-header">
                     <h2 class="content-card-title">All Users (<?= count($users ?? []) ?>)</h2>
-                    <a href="<?= URLROOT ?>/admin/exportUsers" class="btn btn-primary btn-sm">
+                    <a href="<?= BASE_URL ?>/admin/exportUsers" class="btn btn-primary btn-sm">
                         <i class="fas fa-download"></i> Export Users
                     </a>
                 </div>
@@ -129,7 +152,7 @@ if (!defined('URLROOT')) {
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <!-- <th>Status</th> -->
+                                    <th>Status</th>
                                     <th>Registered</th>
                                     <th>Actions</th>
                                 </tr>
@@ -181,14 +204,45 @@ if (!defined('URLROOT')) {
                                                 >
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                
-                                                <button 
-                                                    class="btn btn-sm btn-danger" 
-                                                    onclick="confirmDelete(<?= $user['user_id'] ?>, '<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>')"
-                                                    title="Delete Account"
-                                                >
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+
+                                                <?php if (($user['account_status'] ?? 'active') === 'active'): ?>
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/deactivateUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-warning"
+                                                            onclick="confirmDeactivate(this.form, '<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>')"
+                                                            title="Deactivate Account"
+                                                        >
+                                                            <i class="fas fa-user-slash"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/activateUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-sm btn-success"
+                                                            title="Activate Account"
+                                                        >
+                                                            <i class="fas fa-user-check"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php endif; ?>
+
+                                                <?php if (($user['account_status'] ?? 'active') === 'inactive'): ?>
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/deleteUser/<?= $user['user_id'] ?>" style="display: inline;">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-danger"
+                                                            onclick="confirmDelete(this.form, '<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>')"
+                                                            title="Delete Account"
+                                                        >
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
@@ -197,7 +251,7 @@ if (!defined('URLROOT')) {
                         </table>
                     <?php else: ?>
                         <div class="empty-state">
-                            <div class="empty-icon">👥</div>
+                            <div class="empty-icon"></div>
                             <h3>No Users Found</h3>
                             <p>There are no registered users matching your criteria.</p>
                         </div>
@@ -242,7 +296,7 @@ if (!defined('URLROOT')) {
             modal.style.display = 'block';
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/admin/viewUser/' + userId)
+            fetch('<?= BASE_URL ?>/admin/viewUser/' + userId)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -258,7 +312,7 @@ if (!defined('URLROOT')) {
                                 </div>
                                 <div class="user-detail-row">
                                     <span class="detail-label">Name:</span>
-                                    <span class="detail-value">${user.first_name} ${user.middle_name || ''} ${user.last_name}</span>
+                                    <span class="detail-value">${user.first_name} ${user.last_name}</span>
                                 </div>
                                 <div class="user-detail-row">
                                     <span class="detail-label">Email:</span>
@@ -299,11 +353,11 @@ if (!defined('URLROOT')) {
                             </div>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading user details</div>';
+                    content.innerHTML = '<div class="error-message">Error loading user details</div>';
                     console.error('Error:', error);
                 });
         }
@@ -316,25 +370,19 @@ if (!defined('URLROOT')) {
             modal.style.display = 'block';
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/admin/viewUser/' + userId)
+            fetch('<?= BASE_URL ?>/admin/viewUser/' + userId)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const user = data.user;
                         
                         content.innerHTML = `
-                            <form id="editUserForm" method="POST" action="<?= URLROOT ?>/admin/updateUser/${user.user_id}">
+                            <form id="editUserForm" method="POST" action="<?= BASE_URL ?>/admin/updateUser/${user.user_id}">
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label for="first_name" class="form-label">First Name <span class="required">*</span></label>
                                         <input type="text" id="first_name" name="first_name" class="form-input" 
                                                value="${user.first_name}" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="middle_name" class="form-label">Middle Name</label>
-                                        <input type="text" id="middle_name" name="middle_name" class="form-input" 
-                                               value="${user.middle_name || ''}">
                                     </div>
                                     
                                     <div class="form-group">
@@ -410,11 +458,11 @@ if (!defined('URLROOT')) {
                             </form>
                         `;
                     } else {
-                        content.innerHTML = `<div class="error-message">❌ ${data.message}</div>`;
+                        content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
                 })
                 .catch(error => {
-                    content.innerHTML = '<div class="error-message">❌ Error loading user data</div>';
+                    content.innerHTML = '<div class="error-message">Error loading user data</div>';
                     console.error('Error:', error);
                 });
         }
@@ -431,11 +479,16 @@ if (!defined('URLROOT')) {
             }
         }
         
-        // Confirm delete
-        function confirmDelete(userId, userName) {
-            if (confirm(`⚠️ WARNING: Are you sure you want to permanently delete the account for "${userName}"?\n\nThis action CANNOT be undone!\n\nAll user data will be permanently removed.`)) {
-                if (confirm(`Final confirmation: Delete "${userName}"'s account permanently?`)) {
-                    window.location.href = '<?= URLROOT ?>/admin/deleteUser/' + userId;
+        function confirmDeactivate(form, userName) {
+            if (confirm(`Deactivate "${userName}"?\n\nThey will not be able to login until reactivated.`)) {
+                form.submit();
+            }
+        }
+
+        function confirmDelete(form, userName) {
+            if (confirm(`WARNING: Permanently delete "${userName}"?\n\nThis action CANNOT be undone.`)) {
+                if (confirm(`Final confirmation: Delete "${userName}" permanently?`)) {
+                    form.submit();
                 }
             }
         }
@@ -655,6 +708,93 @@ if (!defined('URLROOT')) {
             }
             
             .form-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Modern Search Bar Styles */
+        .search-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        
+        .search-input-modern {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+        
+        .search-input-modern:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-input-modern::placeholder {
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 150px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #6b46c1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-wrapper {
+                min-width: 100%;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .search-actions {
                 flex-direction: column;
             }
         }
