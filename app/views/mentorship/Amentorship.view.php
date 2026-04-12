@@ -30,6 +30,23 @@ if (!defined('BASE_URL')) {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
+        .slot-row { display: flex; gap: 8px; align-items: center; }
+        .slot-row .slot-input { flex: 1; }
+        .slot-done-btn {
+            padding: 6px 14px;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .slot-done-btn.done { background: #10b981; }
+        .slot-done-btn:hover { opacity: 0.88; }
+        .slot-time-label { font-size: 0.82rem; color: #059669; margin-top: 4px; }
     </style>
 </head>
 
@@ -54,7 +71,7 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- Success Message -->
-        <?php if (isset($_GET['success'])): ?>
+        <?php if (isset($_GET['success']) && $_GET['success'] !== 'slots_added'): ?>
             <div class="ms-success-message">
                 <span class="ms-status-dot ms-status-dot--active"></span>
                 <span>
@@ -276,9 +293,13 @@ if (!defined('BASE_URL')) {
                 <div id="slotsContainer">
                     <div class="ms-time-slot-input-group">
                         <label>Slot 1</label>
-                        <input type="datetime-local" class="slot-input" 
-                               min="<?= date('Y-m-d\TH:i') ?>" 
-                               max="<?= date('Y-m-d\TH:i', strtotime('+14 days')) ?>">
+                        <div class="slot-row">
+                            <input type="datetime-local" class="slot-input"
+                                   min="<?= date('Y-m-d\TH:i') ?>"
+                                   max="<?= date('Y-m-d\TH:i', strtotime('+14 days')) ?>">
+                            <button type="button" class="slot-done-btn" onclick="doneSlot(this)">Done</button>
+                        </div>
+                        <div class="slot-time-label"></div>
                     </div>
                 </div>
 
@@ -328,9 +349,13 @@ if (!defined('BASE_URL')) {
             document.getElementById('slotsContainer').innerHTML = `
                 <div class="ms-time-slot-input-group">
                     <label>Slot 1</label>
-                    <input type="datetime-local" class="slot-input" 
-                           min="${new Date().toISOString().slice(0, 16)}" 
-                           max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                    <div class="slot-row">
+                        <input type="datetime-local" class="slot-input"
+                               min="${new Date().toISOString().slice(0, 16)}"
+                               max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                        <button type="button" class="slot-done-btn" onclick="doneSlot(this)">Done</button>
+                    </div>
+                    <div class="slot-time-label"></div>
                 </div>
             `;
             slotCount = 1;
@@ -342,12 +367,32 @@ if (!defined('BASE_URL')) {
             const html = `
                 <div class="ms-time-slot-input-group">
                     <label>Slot ${slotCount}</label>
-                    <input type="datetime-local" class="slot-input" 
-                           min="${new Date().toISOString().slice(0, 16)}" 
-                           max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                    <div class="slot-row">
+                        <input type="datetime-local" class="slot-input"
+                               min="${new Date().toISOString().slice(0, 16)}"
+                               max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                        <button type="button" class="slot-done-btn" onclick="doneSlot(this)">Done</button>
+                    </div>
+                    <div class="slot-time-label"></div>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
+        }
+
+        function doneSlot(btn) {
+            const group = btn.closest('.ms-time-slot-input-group');
+            const input = group.querySelector('.slot-input');
+            const label = group.querySelector('.slot-time-label');
+            input.blur(); // close the calendar popup
+            if (input.value) {
+                const d = new Date(input.value);
+                label.textContent = '✅ ' + d.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+                btn.textContent = '✓ Done';
+                btn.classList.add('done');
+            } else {
+                label.textContent = '';
+                MentorshipSystem.showNotification('Please select a date and time first.', 'error');
+            }
         }
 
         async function submitSlots() {
@@ -364,13 +409,6 @@ if (!defined('BASE_URL')) {
                 MentorshipSystem.showNotification('Please add at least one time slot.', 'error');
                 return;
             }
-
-            // Show confirmation with count
-            const confirmed = await MentorshipSystem.showConfirmationModal(
-                'Add Availability',
-                `Add ${slots.length} availability slot${slots.length > 1 ? 's' : ''}?`
-            );
-            if (!confirmed) return;
 
             fetch('<?= BASE_URL ?>/amentorships/addAvailability', {
                 method: 'POST',
