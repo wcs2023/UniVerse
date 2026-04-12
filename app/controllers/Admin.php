@@ -88,11 +88,15 @@ class Admin extends Controller
             $users = []; // Make sure users is an empty array on error
         }
         
+        $roledata = $userModel->getUserCountWithRole();
+        $contentdata = $userModel->getAllContentWithCount();
         // IMPORTANT: Prepare data array for the view
         $data = [
             'users' => $users,
             'roleFilter' => $roleFilter,
-            'searchQuery' => $searchQuery
+            'searchQuery' => $searchQuery,
+            'roledata' => $roledata,
+            'contentdata' => $contentdata
         ];
         
         // Load the users management view with the data

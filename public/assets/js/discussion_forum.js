@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 
                 if (threads.length === 0) {
-                    rowContainer.innerHTML = "<div class='no-results' style='text-align: center; padding: 2rem; color:#221c35;'><b>No results found...</b></div>";
+                    rowContainer.innerHTML = "<div class='no-results' style='text-align: center; padding: 2rem; color:#553c9a;'><b>No results found...</b></div>";
                     return;
                 }
 

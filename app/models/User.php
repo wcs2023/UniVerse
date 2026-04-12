@@ -134,6 +134,24 @@ class User extends Model
         }
     }
 
+    public function getUserCountWithRole()
+    {
+        $query = "SELECT user_type, COUNT(*) as count FROM users WHERE user_type!= 'admin' GROUP BY user_type";
+        return $this->fetchAll($query);
+    }
+
+    public function getAllContentWithCount()
+    {
+        $query = "SELECT (SELECT COUNT(*) FROM jobs) as jobPostCount,
+                    (SELECT COUNT(*) FROM job_applications) as jobApplicationCount,
+                    (SELECT COUNT(*) FROM mentorship_bookings) as bookedSessionCount,
+                    (SELECT COUNT(*) FROM articles) as articleCount,
+                    (SELECT COUNT(*) FROM forum_posts) as forumCount
+                    ";
+
+        return $this->fetchAll($query);
+    }
+
     /**
      * Update user
      */
