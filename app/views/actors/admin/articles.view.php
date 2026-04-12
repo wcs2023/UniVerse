@@ -7,11 +7,38 @@ if (!defined('URLROOT')) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Articles - Admin Panel</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .containerChart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+    border-radius: 12px;
+    border-left: 4px solid #6c63ff;
+    margin-bottom: 1.5rem;
+    }
+
+    .pieChart {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .pieChart canvas {
+        max-width: 350px !important;   /* bigger than 200px */
+        max-height: 350px !important;
+        width: 300px !important;
+        height: 300px !important;
+    }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -93,7 +120,12 @@ if (!defined('URLROOT')) {
                     ?>
                 </div>
             <?php endif; ?>
-            
+            <div class="containerChart">
+                <div class="pieChart">
+                    <h2>Article Types</h2>
+                    <canvas id="articleTypeChart" style="max-width: 200px; max-height: 200px;"></canvas>
+                </div>
+            </div>
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
                 <div class="content-card-body" style="padding: 1rem;">
@@ -426,6 +458,71 @@ if (!defined('URLROOT')) {
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
+
+        document.addEventListener("DOMContentLoaded", function() {
+        // Get the canvas element
+        var ctx = document.getElementById('articleTypeChart').getContext('2d');
+
+        // Data for the chart
+        var rawArticleData = <?=  json_encode($articlesCount) ?>;
+                        console.log(rawArticleData);
+        var labels = rawArticleData.map(item => item.category)
+        var count = rawArticleData.map(item => item.count)
+        var backgroundColors = [
+            '#4F2D7F',
+            '#870074', 
+            '#5B3256',
+            ' #BE93E4',
+            ' #645394',
+            '#FAE6FA'
+        ].slice(0, labels.length);
+
+
+        var data = {
+            labels: labels, // Categories (User types)
+            datasets: [{
+                label: 'Article Categories',
+                data: count, // Example data: [adminCount, studentCount, undergradCount]
+                backgroundColor: backgroundColors,
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+
+        // Pie Chart Configuration
+        var config = {
+            type: 'pie', // Chart type (pie chart)
+            data: data,  // Data for the chart
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',   // ✅ moves legend below pie
+                        align: 'center',
+                        labels: {
+                            color: '#2d2d5e',
+                            font: { weight: '600' },
+                            padding: 16
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#4F2D7F',
+                        titleColor: '#fff',
+                        bodyColor: '#FAE6FA',
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' articles';
+                            }
+                        }
+                    }
+                }
+            }
+    };
+        // Create the Pie chart
+        new Chart(ctx, config);
+    });
+
     </script>
     
     <style>

@@ -152,6 +152,12 @@ class User extends Model
         return $this->fetchAll($query);
     }
 
+    public function getArticleCountWithType()
+    {
+        $query = "SELECT category, COUNT(*) as count FROM articles WHERE category != '' GROUP BY category";
+        return $this->fetchAll($query);
+    }
+
     /**
      * Update user
      */
