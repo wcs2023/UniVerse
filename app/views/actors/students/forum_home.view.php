@@ -87,7 +87,7 @@
                         <div class="discussion-row">
                             <div class="col-topic">
                                 <div class="topic-title">
-                                    <a href="<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
+                                    <a href="<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?? '#' ?>"><?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
                                 </div>
                                 <div class="topic-details">
                                     posted by:<span class="author-name"><?= htmlspecialchars($thread['author_name']) ?></span> in <span class="category-link"><?= htmlspecialchars($thread['category_name']) ?></span>

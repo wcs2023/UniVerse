@@ -581,7 +581,7 @@ class Admin extends Controller
      */
     public function forums()
     {
-        $forumPostModel = $this->model('ForumPostModel');
+        $forumPostModel = $this->model('Forum_post_model');
 
         if (empty($_SESSION['admin_csrf_token'])) {
             $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
@@ -591,11 +591,13 @@ class Admin extends Controller
         $searchQuery = trim($_GET['search'] ?? '');
 
         $posts = $forumPostModel->getAllPostsForAdmin($statusFilter, $searchQuery);
+        $forumCount = $forumPostModel->getForumsWithType();
 
         $data = [
             'posts' => $posts,
             'statusFilter' => $statusFilter,
-            'searchQuery' => $searchQuery
+            'searchQuery' => $searchQuery,
+            'forumsCount' => $forumCount
         ];
         
         $this->view('actors/admin/forums', $data);
@@ -613,7 +615,7 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('ForumPostModel');
+        $forumPostModel = $this->model('Forum_post_model');
         $post = $forumPostModel->getPostByIdForAdmin($postId);
 
         if (!$post) {
@@ -647,7 +649,7 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('ForumPostModel');
+        $forumPostModel = $this->model('Forum_post_model');
         $result = $forumPostModel->hidePost($postId);
 
         if ($result) {
@@ -680,7 +682,7 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('ForumPostModel');
+        $forumPostModel = $this->model('forum_post_model');
         $result = $forumPostModel->unhidePost($postId);
 
         if ($result) {
@@ -713,7 +715,7 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('ForumPostModel');
+        $forumPostModel = $this->model('Forum_post_model');
         $result = $forumPostModel->deletePostPermanently($postId);
 
         if ($result) {
