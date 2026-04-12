@@ -52,6 +52,22 @@ if (!defined('BASE_URL')) {
             color: #6b46c1;
             background: #f5f3ff;
         }
+        .ms-mentor-expertise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .ms-expertise-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            background: #ede9fe;
+            color: #6d28d9;
+            border: 1px solid #c4b5fd;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -95,7 +111,7 @@ if (!defined('BASE_URL')) {
         </div>
 
         <!-- Mentors Grid -->
-        <div class="ms-mentors-grid" id="mentorsGrid">
+        <div class="ms-mentors-grid" id="mentorsGrid" style="min-height: 60vh; align-content: start;">
             <?php if (isset($data['mentors']) && count($data['mentors']) > 0): ?>
                 <?php foreach ($data['mentors'] as $mentor): ?>
                     <?php
@@ -105,7 +121,11 @@ if (!defined('BASE_URL')) {
                         $mentorEmail = trim((string)($mentor['email'] ?? ''));
                         $mentorSlots = (int)($mentor['available_slots'] ?? 0);
                     ?>
-                    <div class="ms-mentor-card" data-mentor-id="<?= $mentor['mentor_id'] ?>">
+                    <?php
+                        $expertiseList = $mentor['expertise_array'] ?? [];
+                        $expertiseAttr = htmlspecialchars(implode('|', array_map('strtolower', $expertiseList)));
+                    ?>
+                    <div class="ms-mentor-card" data-mentor-id="<?= $mentor['mentor_id'] ?>" data-expertise="<?= $expertiseAttr ?>">
                         <div class="ms-mentor-header">
                             <img src="<?= !empty($mentor['profile_picture']) ? BASE_URL . htmlspecialchars($mentor['profile_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                 alt="<?= htmlspecialchars($mentorName) ?>"
@@ -113,13 +133,19 @@ if (!defined('BASE_URL')) {
                                 onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
                             <h3 class="ms-mentor-name"><?= htmlspecialchars($mentorName) ?></h3>
                         </div>
-                        
+
                         <div class="ms-mentor-body">
-                            <?php if (!empty($mentor['skills_experience'])): ?>
+                            <?php if (!empty($expertiseList)): ?>
+                                <div class="ms-mentor-expertise-tags">
+                                    <?php foreach ($expertiseList as $exp): ?>
+                                        <span class="ms-expertise-tag"><?= htmlspecialchars($exp) ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php elseif (!empty($mentor['skills_experience'])): ?>
                                 <div class="ms-mentor-skills ms-mentor-skills-top">
-                                    <?php 
+                                    <?php
                                     $skills = array_slice(explode(',', $mentor['skills_experience']), 0, 3);
-                                    foreach ($skills as $skill): 
+                                    foreach ($skills as $skill):
                                     ?>
                                         <span class="ms-skill-tag"><?= htmlspecialchars(trim($skill)) ?></span>
                                     <?php endforeach; ?>
@@ -131,20 +157,19 @@ if (!defined('BASE_URL')) {
                                     <span class="ms-mentor-detail-label">Role</span>
                                     <span class="ms-mentor-detail-value"><?= htmlspecialchars($mentorRole) ?></span>
                                 </div>
-
                                 <div class="ms-mentor-detail-row">
                                     <span class="ms-mentor-detail-label">Company</span>
                                     <span class="ms-mentor-detail-value"><?= htmlspecialchars($mentorCompany) ?></span>
                                 </div>
                             </div>
-                            
+
                             <?php if (!empty($mentor['rating'])): ?>
                                 <div class="ms-mentor-rating">
                                     <span class="ms-rating-stars"><?= str_repeat('&#9733;', round($mentor['rating'])) . str_repeat('&#9734;', 5 - round($mentor['rating'])) ?></span>
                                     <span class="rating-count">(<?= $mentor['review_count'] ?? 0 ?> reviews)</span>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <div class="ms-availability-count" style="<?= $mentorSlots === 0 ? 'color: #999;' : '' ?>">
                                 <?php if ($mentorSlots > 0): ?>
                                     <?= $mentorSlots ?> slots available
@@ -161,7 +186,6 @@ if (!defined('BASE_URL')) {
                                 >
                                     <?= $mentorSlots > 0 ? 'View Time &amp; Book' : 'No Slots Available' ?>
                                 </button>
-
                                 <button class="ms-btn ms-btn-view" onclick="goToMentorProfile(<?= (int)$mentor['user_id'] ?>)">
                                     View Profile
                                 </button>
@@ -171,7 +195,13 @@ if (!defined('BASE_URL')) {
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="ms-empty-state">
-                    <div class="ms-empty-icon ms-empty-icon--css">?</div>
+                    <div class="ms-empty-icon" aria-hidden="true">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            <path d="M11 8a3 3 0 0 0-3 3" />
+                        </svg>
+                    </div>
                     <h3>No Mentors Available</h3>
                     <p>There are currently no active mentors. Please check back later!</p>
                 </div>
@@ -222,21 +252,42 @@ if (!defined('BASE_URL')) {
         });
 
         function filterMentors() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const expertiseTerm = document.getElementById('expertiseFilter').value.toLowerCase();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const expertiseTerm = document.getElementById('expertiseFilter').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.ms-mentor-card');
-            
+            let visible = 0;
+
             cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
+                const cardExpertise = (card.dataset.expertise || '').toLowerCase(); // pipe-separated
+
                 const matchesSearch = !searchTerm || text.includes(searchTerm);
-                const matchesExpertise = !expertiseTerm || text.includes(expertiseTerm);
+                // Match expertise against the dedicated data attribute (exact category name)
+                const matchesExpertise = !expertiseTerm ||
+                    cardExpertise.split('|').some(e => e.trim() === expertiseTerm);
 
                 if (matchesSearch && matchesExpertise) {
                     card.style.display = '';
+                    visible++;
                 } else {
                     card.style.display = 'none';
                 }
             });
+
+            // Show/hide empty state
+            const grid = document.getElementById('mentorsGrid');
+            let emptyState = grid.querySelector('.ms-filter-empty');
+            if (visible === 0 && cards.length > 0) {
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.className = 'ms-empty-state ms-filter-empty';
+                    emptyState.innerHTML = '<div class="ms-empty-icon" aria-hidden="true"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg></div><h3>No mentors match your filter</h3><p>Try a different expertise or clear the filter.</p>';
+                    grid.appendChild(emptyState);
+                }
+                emptyState.style.display = '';
+            } else if (emptyState) {
+                emptyState.style.display = 'none';
+            }
         }
 
         filterMentors();

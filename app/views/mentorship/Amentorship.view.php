@@ -136,7 +136,16 @@ if (!defined('BASE_URL')) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="ms-empty-state" style="grid-column: 1 / -1;">
-                                <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                                <div class="ms-empty-icon" aria-hidden="true">
+                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                        <line x1="8" y1="14" x2="8" y2="18" />
+                                        <line x1="6" y1="16" x2="10" y2="16" />
+                                    </svg>
+                                </div>
                                 <h3>No Availability Set</h3>
                                 <p>Add your available time slots so students can book sessions with you.</p>
                             </div>
@@ -220,7 +229,15 @@ if (!defined('BASE_URL')) {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="ms-empty-state">
-                            <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                            <div class="ms-empty-icon" aria-hidden="true">
+                                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                    <circle cx="12" cy="16" r="2" fill="#a78bfa" stroke="none" />
+                                </svg>
+                            </div>
                             <h3>No Upcoming Bookings</h3>
                             <p>When students book your available slots, they'll appear here.</p>
                         </div>
