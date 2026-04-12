@@ -4,9 +4,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
 <head>          
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
         <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
-        <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-        <title>UniVerse - <?= htmlspecialchars($data['article']['title']) ?></title>
+    <?php endif; ?>
+    
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">    
+    <?php endif; ?>
+    
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    <title>UniVerse - <?= htmlspecialchars($data['article']['title']) ?></title>
+
 <style>
 :root {
     --primary-purple: #6b46c1;
@@ -192,7 +202,21 @@
 </head>
 
 <body>
-    <?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?> 
+    <?php 
+    if ($_SESSION['user_role'] === 'undergraduate') 
+    {
+        include __DIR__ . '/../actors/undergraduate/Unavigation.view.php';
+    }
+    else if ($_SESSION['user_role'] === 'school_leaver') 
+    {
+       include __DIR__ . '/../actors/students/includes/header2.view.php';
+    } 
+    else  
+    {
+        include __DIR__ . '/../layout/nav_home.php';
+    }
+    ?>
+    
     <div class="article-single-container">
         <div class="article-card">
             <div class="article-header">
@@ -219,7 +243,7 @@
                            data-article-id="<?= $data['article']['article_id'] ?>"
                            data-liked="<?= $data['has_liked'] ? 'true' : 'false' ?>"
                            <?= !isset($_SESSION['user_id']) ? 'title="Log in to like this article"' : '' ?>
-                       >
+                    <
                            <span class="heart-icon"><?= $data['has_liked'] ? '❤️' : '🤍' ?></span>
                            <span id="like-count"><?= (int)$data['article']['likes'] ?></span>
                        </button>

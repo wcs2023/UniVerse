@@ -88,11 +88,17 @@ class Admin extends Controller
             $users = []; // Make sure users is an empty array on error
         }
         
+        $roledata = $userModel->getUserCountWithRole();
+        $contentdata = $userModel->getAllContentWithCount();
+        
         // IMPORTANT: Prepare data array for the view
         $data = [
             'users' => $users,
             'roleFilter' => $roleFilter,
-            'searchQuery' => $searchQuery
+            'searchQuery' => $searchQuery,
+            'roledata' => $roledata,
+            'contentdata' => $contentdata,
+            // 'articlesCount' => $articlesCount
         ];
         
         // Load the users management view with the data
@@ -402,6 +408,7 @@ class Admin extends Controller
     public function articles()
     {
         $articleModel = $this->model('AarticleModel');
+        $userModel = $this->model('User');
         
         if (empty($_SESSION['admin_csrf_token'])) {
             $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
@@ -409,9 +416,10 @@ class Admin extends Controller
         
         // Get all articles
         $articles = $articleModel->getAllArticles();
-        
+        $artilesCount = $userModel->getArticleCountWithType();        
         $data = [
-            'articles' => $articles
+            'articles' => $articles,
+            'articlesCount' => $artilesCount
         ];
         
         $this->view('actors/admin/articles', $data);

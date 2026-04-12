@@ -27,8 +27,7 @@ if (!defined('BASE_URL')) {
         window.USER_TYPE = 'undergraduate';
     </script>
     <style>
-        body { padding-top: 80px; background-color: #a78bfa45 !important;}
-    
+        body { padding-top: 80px; background-color: #a78bfa45 !important; }
         .visually-hidden {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -53,13 +52,7 @@ if (!defined('BASE_URL')) {
             color: #6b46c1;
             background: #f5f3ff;
         }
-        .ms-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            margin-bottom: 7rem;
-        }
-        </style>
+    </style>
 </head>
 
 <body style="margin-top: 2rem;">
@@ -70,7 +63,7 @@ if (!defined('BASE_URL')) {
         include $navFile;
     }
     ?>
-    <div class="containerEM">
+
     <div class="ms-container">
         <!-- Page Header -->
         <div class="ms-page-header" style="display: block;">
@@ -176,18 +169,14 @@ if (!defined('BASE_URL')) {
                         </div>
                     </div>
                 <?php endforeach; ?>
-            <?php elseif (count($data['mentors']) === 0): ?>
-                <div class="ms-empty-state" >
-                    <div style="text-align: center; padding: 2rem; color: #6b7280;">
-                        ?
-                        <p>There are currently no active mentors. Please check back later!</p>
-                        <h3>No Mentors Available</h3>
-                    </div>
+            <?php else: ?>
+                <div class="ms-empty-state">
+                    <div class="ms-empty-icon ms-empty-icon--css">?</div>
+                    <h3>No Mentors Available</h3>
+                    <p>There are currently no active mentors. Please check back later!</p>
                 </div>
             <?php endif; ?>
         </div>
-    </div>
-        <?php include __DIR__ . '/../layout/footer.php'; ?>
     </div>
 
     <!-- Book Slot Modal -->
@@ -305,8 +294,8 @@ if (!defined('BASE_URL')) {
                 const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                 
                 return `
-                    <label class="ms-slot-option" onclick="selectSlot(${slot.slot_id}, event)">
-                        <input type="radio" name="slot" class="ms-slot-radio" value="${slot.slot_id}">
+                    <label class="ms-slot-option" onclick="selectSlot(${slot.slot_id}, event)" style="cursor: pointer;">
+                        <input type="radio" name="slot" class="ms-slot-radio" value="${slot.slot_id}" onchange="selectSlot(${slot.slot_id}, event)">
                         <div class="ms-slot-info">
                             <div class="ms-slot-date">${dateStr}</div>
                             <div class="ms-slot-time">${timeStr}</div>
@@ -317,8 +306,18 @@ if (!defined('BASE_URL')) {
         }
 
         function selectSlot(slotId, event) {
+            slotId = parseInt(slotId);
+            event.preventDefault();
+            event.stopPropagation();
+            
             selectedSlotId = slotId;
             document.getElementById('selectedSlotId').value = slotId;
+            
+            // Check the radio button
+            const radio = event.currentTarget.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
             
             // Update visual selection
             document.querySelectorAll('.ms-slot-option').forEach(el => {
@@ -328,6 +327,7 @@ if (!defined('BASE_URL')) {
             
             // Enable book button
             document.getElementById('bookBtn').disabled = false;
+            console.log('Slot selected: ' + slotId);
         }
 
         function closeBookModal() {
@@ -337,7 +337,10 @@ if (!defined('BASE_URL')) {
         }
 
         function confirmBooking() {
+            console.log('confirmBooking called. selectedSlotId:', selectedSlotId);
+            
             if (!selectedSlotId) {
+                console.warn('No slot selected. selectedSlotId:', selectedSlotId);
                 MentorshipSystem.showNotification('Please select a time slot.', 'error');
                 return;
             }
@@ -346,13 +349,20 @@ if (!defined('BASE_URL')) {
             btn.disabled = true;
             btn.textContent = 'Booking...';
             
+            const bookingData = { slot_id: selectedSlotId };
+            console.log('Sending booking request:', bookingData);
+            
             fetch('<?= BASE_URL ?>/umentorships/bookSlot', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ slot_id: selectedSlotId })
+                body: JSON.stringify(bookingData)
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response received. Status:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('Booking response:', data);
                 if (data.success) {
                     window.location.href = '<?= BASE_URL ?>/umentorships?success=booked';
                 } else {
@@ -362,7 +372,7 @@ if (!defined('BASE_URL')) {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Booking error:', error);
                 MentorshipSystem.showNotification('Failed to book session. Please try again.', 'error');
                 btn.disabled = false;
                 btn.textContent = 'Book Session';
@@ -373,5 +383,6 @@ if (!defined('BASE_URL')) {
     </script>
     <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
 
+    <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>
 </html>

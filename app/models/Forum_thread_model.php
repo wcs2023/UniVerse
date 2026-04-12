@@ -191,14 +191,14 @@ class Forum_thread_model extends Model
 
         return $this->getThreadVotes($thread_id);
     }
-    public function deleteByUserId($userId)
-    {
-        try {
-            return $this->delete('Articles', 'user_id = :user_id', ['user_id' => $userId]);
-        } catch (Exception $e) {
-            error_log("Error deleting articles by user: " . $e->getMessage());
-            return false;
-        }
-    }
     
+    public function getThreadCountByUserId(int $user_id){
+        $query = "SELECT COUNT(*) AS thread_count
+        FROM {$this->table}
+        WHERE user_id = :user_id"; 
+        
+        $row = $this->fetch($query, ['user_id' => $user_id]);
+        
+        return (int)($row['thread_count'] ?? 0);
+    }
 }

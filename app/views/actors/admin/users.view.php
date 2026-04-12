@@ -5,16 +5,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - Admin Panel</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .data-analysis {
+        background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+        border-radius: 12px;
+        padding: 1.5rem;
+        border-left: 4px solid #6c63ff; /* purple accent line */
+    }
+
+    .data-analysis .content-card-title {
+        color: #2d2d5e;
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
+
+    .canvas {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        background: #f5f4f7;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(108, 99, 255, 0.1);
+        margin: 1rem 0;
+    }
+        .exportbtn {
+        background: linear-gradient(135deg, #6c63ff, #a855f7);
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+    }
+
+    .exportbtn:hover {
+        transform: translateY(-2px);          /* lifts up on hover */
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.5);
+        background: linear-gradient(135deg, #a855f7, #6c63ff); /* reverses gradient */
+    }
+
+    .exportbtn:active {
+        transform: translateY(0);             /* presses down on click */
+    }
+
+    .bar-chart {
+    background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    border-left: 4px solid #6c63ff;
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;          /* centres everything */
+    gap: 1rem;
+}
+
+.bar-chart .content-card-title {
+    color: #2d2d5e;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-align: center;
+    width: 100%;
+}
+
+.bar-chart canvas {
+    max-width: 40rem;             /* wider than your current 20rem */
+    max-height: 25rem;
+    width: 100% !important;       /* overrides inline style */
+}
+    </style>
+
+
 </head>
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
         <?php include __DIR__ . '/components/sidebar.php'; ?>
+        <!-- canvas for user type distribution chart -->
         
         <!-- Main Content -->
         <div class="admin-main">
@@ -53,8 +130,8 @@
                             break;
                         default:
                             echo 'Action completed successfully';
-                    }
-                    ?>
+                            }
+                            ?>
                 </div>
             <?php endif; ?>
             
@@ -86,16 +163,16 @@
                         case 'delete_failed':
                             echo 'Failed to delete user account';
                             break;
-                        case 'validation_failed':
+                            case 'validation_failed':
                             echo 'Please check the form and try again';
                             break;
-                        case 'email_exists':
-                            echo 'Email already exists';
-                            break;
-                        default:
+                            case 'email_exists':
+                                echo 'Email already exists';
+                                break;
+                                default:
                             echo 'An error occurred';
-                    }
-                    ?>
+                            }
+                            ?>
                 </div>
             <?php endif; ?>
             
@@ -137,11 +214,23 @@
             
             <!-- Users Table -->
             <div class="content-card">
-                <div class="content-card-header">
+                <div class="content-card-header data-analysis">
                     <h2 class="content-card-title">All Users (<?= count($users ?? []) ?>)</h2>
-                    <a href="<?= BASE_URL ?>/admin/exportUsers" class="btn btn-primary btn-sm">
-                        <i class="fas fa-download"></i> Export Users
-                    </a>
+                    <!-- pie chart -->
+                    <div class="canvas">
+                        <!-- <label for="canvas">System Data</label> -->
+                        <canvas id="userTypeChart" style="max-width: 20rem; max-height: 20rem;"></canvas>
+                    </div>
+                    <div>
+                        <a href="<?= BASE_URL ?>/admin/exportUsers" class="btn btn-primary btn-sm exportbtn">
+                            <i class="fas fa-download"></i> Export Users
+                        </a>
+                    </div>
+                </div>
+                <div class="bar-chart">
+                    <h2 class="content-card-title">All Content</h2>
+
+                    <canvas id="contentChart" style="max-width: 20rem; max-height: 20rem;"></canvas>
                 </div>
                 <div class="content-card-body" style="padding: 0; overflow-x: auto;">
                     <?php if (!empty($users)): ?>
@@ -286,8 +375,8 @@
             </div>
         </div>
     </div>
-    
     <script>
+        
         // View user details
         function viewUser(userId) {
             const modal = document.getElementById('userModal');
@@ -502,6 +591,147 @@
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
+
+        // Wait for DOM to load 
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the canvas element
+        var ctx = document.getElementById('userTypeChart').getContext('2d');
+
+        // Data for the chart
+        var rawRoleData = <?=  json_encode($roledata) ?>;
+
+        var labels = rawRoleData.map(item => item.user_type)
+        var count = rawRoleData.map(item => item.count)
+        var backgroundColors = [
+            '#4F2D7F',
+            '#870074', 
+            '#5B3256',
+            ' #BE93E4',
+            ' #645394',
+            '#FAE6FA'
+        ].slice(0, labels.length);
+
+        console.log(rawRoleData);
+        console.log(rawRoleData[0]);
+
+        var data = {
+            labels: labels, // Categories (User types)
+            datasets: [{
+                label: 'User Types',
+                data: count, // Example data: [adminCount, studentCount, undergradCount]
+                backgroundColor: backgroundColors,
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+
+        // Pie Chart Configuration
+        var config = {
+            type: 'pie', // Chart type (pie chart)
+            data: data,  // Data for the chart
+            options: {
+                responsive: true, // Makes the chart responsive to window resizing
+                plugins: {
+                    legend: {
+                        position: 'top', // Position of the legend
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' users'; // Custom label format
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // Create the Pie chart
+        new Chart(ctx, config);
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the canvas element
+        var ctx = document.getElementById('contentChart').getContext('2d');
+
+        // Data for the chart
+        var rawContentData = <?=  json_encode($contentdata[0]) ?>;
+        // console.log(rawContentData);
+
+        var labels = ['Job Posts', 'Applications', 'Sessions', 'Articles', 'Forum Posts'];
+        var count  = [
+            rawContentData.jobPostCount,
+            rawContentData.jobApplicationCount,
+            rawContentData.bookedSessionCount,
+            rawContentData.articleCount,
+            rawContentData.forumCount
+        ]
+       
+        var backgroundColors = [
+            '#4F2D7F',
+            '#870074', 
+            '#5B3256',
+            ' #BE93E4',
+            ' #645394',
+            '#FAE6FA'
+        ].slice(0, labels.length);
+
+      
+
+        var data = {
+            labels: labels, // Categories (User types)
+            datasets: [{
+                label: 'Content Count',
+                data: count, 
+                backgroundColor:backgroundColors,
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+
+        // Pie Chart Configuration
+        var config = {
+            type: 'bar', // Chart type (bar chart)
+            data: data,  // Data for the chart
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#2d2d5e',          // purple legend text
+                        font: { weight: '600' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#4F2D7F',    // dark purple tooltip
+                    titleColor: '#fff',
+                    bodyColor: '#FAE6FA',
+                    callbacks: {
+                        label: (ctx) => `${ctx.label}: ${ctx.raw}`
+                    }
+                }
+            },
+        scales: {
+            x: {
+                ticks: { color: '#5B3256' },   // purple axis labels
+                grid:  { color: 'rgba(108, 99, 255, 0.08)' }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: { color: '#5B3256' },
+                grid:  { color: 'rgba(108, 99, 255, 0.08)' }
+            }
+        }
+    }
+        };
+
+        // Create the Pie chart
+        new Chart(ctx, config);
+    });
+
+
+
     </script>
     
     <style>

@@ -120,9 +120,9 @@
     <div class="nav-container">
         <a href="<?= BASE_URL ?>/home" class="logo">UniVerse</a>
         <ul class="nav-menu" id="nav_menu">
-            <li><a href="<?= BASE_URL ?>/schoolleaver" class="nav-link">Home</a></li>
-            <li><a href="<?= BASE_URL ?>/schoolleaver/profile" class="nav-link">My Profile</a></li>
-            <li><a href="<?= BASE_URL ?>/schoolleaver/articles" class="nav-link">Career Articles</a></li>
+            <li><a href="<?= BASE_URL ?>/schoolLeaver" class="nav-link">Home</a></li>
+            <li><a href="<?= BASE_URL ?>/studentProfile/profile" class="nav-link">My Profile</a></li>
+            <li><a href="<?= BASE_URL ?>/uarticles" class="nav-link">Career Articles</a></li>
             <li><a href="<?= BASE_URL ?>/Discussion_Forum/index" class="nav-link">Discussion Forums</a></li>
             <li><a href="<?= BASE_URL ?>/Degrees/degree_suggestion_index" class="nav-link">Degree Suggestions</a></li>
             <li><a href="<?= BASE_URL ?>/logout" class="nav-link">Logout</a></li>

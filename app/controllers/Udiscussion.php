@@ -19,8 +19,7 @@ class Udiscussion extends Controller
 
     public function getCurrentUserId()
     {
-        $user = $this->getCurrentUser();
-        return $user['user_id'] ?? null;
+        return $_SESSION['user_id'] ?? null;
     }
 
     private function isAdmin($admin_id)

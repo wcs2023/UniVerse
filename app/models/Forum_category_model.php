@@ -13,13 +13,13 @@ class Forum_category_model extends Model{
                     FROM {$this->table} fc 
                     LEFT JOIN forum_threads ft ON fc.cat_id = ft.cat_id
                     GROUP BY fc.cat_id
-                    -- ORDER BY fc.display_order ASC , fc.name ASC";
+                    ORDER BY fc.display_order ASC , fc.name ASC";
 
                     return $this->fetchAll($query);
 
     }
 
-    public function allOrdered(){
+    public function getOrderedCat(){
         $query = "SELECT * FROM {$this->table} ORDER BY display_order ASC,name ASC";
 
         return $this->fetchAll($query);

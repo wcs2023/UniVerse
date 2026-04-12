@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+
+    <?php if($_SESSION['user_type'] === 'undergraduate') ?>    
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+
+    <?php if($_SESSION['user_type'] === 'school_leaver') ?>    
+        <link rel="stylesheet" href="<?= BASE_URL ?>/css/school_leaver_styles.css">
+
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Universe - <?= $data['title'] ?></title>
 </head>
 <body>
 
-<?php include __DIR__ . '/../actors/undergraduate/Unavigation.view.php'; ?>
+    <?php if($_SESSION['user_type'] === 'undergraduate')   
+        include __DIR__ . '/../actors/undergraduate/Unavigation.view.php';
+
+    elseif($_SESSION['user_type'] === 'school_leaver')   
+        include __DIR__ . '/../actors/students/includes/header2.view.php';
+    ?>
 
 <div class="page-container">
     <div class="articles-container">

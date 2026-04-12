@@ -1,6 +1,14 @@
 <head>
     <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_style.css">
+    <style>
+        .imgS {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+    </style>
 </head>
+    
 <?php
     $title = "School Leavers' Home";
     include_once __DIR__ . '/includes/header2.view.php';
@@ -12,18 +20,20 @@
             <h1 class="hero-title">Personalized Degree Suggestions Just For You</h1>
             <p class="hero-description">Unlock your potential with tailored degree suggestions based on your Z-score and personal preferences. Make informed decisions that align with your career aspirations.</p>
             <div class="try-button">
-                <a href="<?= BASE_URL ?>/schoolleaver/degreeSuggestion" class="btn btn-try">Try Now</a>
+                <a href="<?= BASE_URL ?>/Degrees/degree_suggestion_index" class="btn btn-try">Try Now</a>
             </div>
         </div>
         <div class="hero-image">
-            <div class="placeholder-img"></div>
+            <div class="placeholder-img">
+                <!-- <img src="<?= BASE_URL ?>/assets/images/zscore.png" alt="Z-Score Image" class="imgS"> -->
+            </div>
         </div>
     </section>
 
     <!-- features section -->
     <section class="features-section fade-in">
         <div class="feature-image">
-            <div class="placeholder-img"></div>
+            <div class="placeholder-img"><img src="<?= BASE_URL ?>/assets/images/feature-image.png" alt="Feature Image"></div>
         </div>
         <div class="feature-content">
             <h2>Explore Articles and Forums to Enhance Your Career Journey</h2>
@@ -39,7 +49,7 @@
                 <div class="feature-card">
                     <h3>Discussion Forums</h3>
                     <p>Engage in discussion, ask questions and share insights with fellow students</p>
-                    <a href="<?= BASE_URL ?>/Discussion_forum" class="btn btn-outline">Join Forums</a> 
+                    <a href="<?= BASE_URL ?>/Discussion_Forum/index" class="btn btn-outline">Join Forums</a> 
                 </div>
             </div>
         </div>
