@@ -22,6 +22,155 @@ class Forum_post_model extends Model
         return $result ?: [];
     }
 
+    public function getForumsWithType()
+    {
+        $query = "SELECT c.name AS category, COUNT(t.thread_id) AS count
+                  FROM forum_categories c
+                  LEFT JOIN forum_threads t ON c.cat_id = t.cat_id
+                  GROUP BY c.cat_id";
+
+        return $this->fetchAll($query);
+    }
+
+    public function getAllPostsForAdmin($statusFilter = 'all', $search = '') 
+    {
+        try 
+        {
+            $query = "SELECT
+                        p.post_id       AS id,
+                        p.thread_id,
+                        p.user_id,
+                        p.content       AS body,
+                        p.is_deleted,
+                        p.created_at,
+                        p.updated_at,
+                        t.title         AS thread_title,
+                        c.name          AS category_name,
+                        u.username,
+                        u.email,
+                        CONCAT(u.first_name, ' ', u.last_name) AS author_name
+                    FROM forum_posts p
+                    LEFT JOIN forum_threads t    ON t.thread_id = p.thread_id
+                    LEFT JOIN forum_categories c ON c.cat_id    = t.cat_id
+                    LEFT JOIN users u            ON u.user_id   = p.user_id
+                    WHERE 1=1";
+
+            $params = [];
+
+            if ($statusFilter === 'hidden') {
+                $query .= " AND p.is_deleted = 1";
+            } elseif ($statusFilter === 'active') {
+                $query .= " AND p.is_deleted = 0";
+            }
+
+            if (!empty($search)) {
+                $query .= " AND (
+                    t.title    LIKE :search1 OR
+                    p.content  LIKE :search2 OR
+                    u.username LIKE :search3 OR
+                    u.email    LIKE :search4
+                )";
+                $params['search1'] = '%' . $search . '%';
+                $params['search2'] = '%' . $search . '%';
+                $params['search3'] = '%' . $search . '%';
+                $params['search4'] = '%' . $search . '%';
+            }
+
+            $query .= " ORDER BY p.created_at DESC";
+
+            return $this->fetchAll($query, $params);
+        } 
+        catch (Exception $e) 
+        {
+            error_log('Error getting forum posts for admin: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getPostByIdForAdmin($postId) 
+    {
+        try 
+        {
+            $query = "SELECT
+                    p.post_id       AS id,
+                    p.thread_id,
+                    p.user_id,
+                    p.content       AS body,
+                    p.is_deleted,
+                    p.created_at,
+                    p.updated_at,
+                    t.title         AS thread_title,
+                    c.name          AS category_name,
+                    u.username,
+                    u.email,
+                    CONCAT(u.first_name, ' ', u.last_name) AS author_name
+                  FROM forum_posts p
+                  LEFT JOIN forum_threads t    ON t.thread_id = p.thread_id
+                  LEFT JOIN forum_categories c ON c.cat_id    = t.cat_id
+                  LEFT JOIN users u            ON u.user_id   = p.user_id
+                  WHERE p.post_id = :id
+                  LIMIT 1";
+
+            return $this->fetch($query, ['id' => $postId]);
+        } 
+        catch (Exception $e) 
+        {
+            error_log('Error getting forum post by id for admin: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function hidePost($postId) 
+    {
+        try 
+        {
+            $this->query(
+                "UPDATE forum_posts SET is_deleted = 1, updated_at = NOW() WHERE post_id = :id",
+                ['id' => $postId]
+            );
+            return true;
+        }
+        catch (Exception $e) 
+        {
+            error_log('Error hiding forum post: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function unhidePost($postId) 
+    {
+        try 
+        {
+            $this->query(
+                "UPDATE forum_posts SET is_deleted = 0, updated_at = NOW() WHERE post_id = :id",
+                ['id' => $postId]
+            );
+            return true;
+        } 
+        catch (Exception $e) 
+        {
+            error_log('Error unhiding forum post: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function deletePostPermanently($postId) 
+    {
+        try 
+        {
+            $this->query(
+                "DELETE FROM forum_posts WHERE post_id = :id",
+                ['id' => $postId]
+            );
+            return true;
+        }
+        catch (Exception $e) 
+        {
+            error_log('Error deleting forum post permanently: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     public function create_reply($data)
     {
         $query = "INSERT INTO {$this->table} (thread_id,user_id,content) 

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <?php if($_SESSION['user_type'] === 'undergraduate') ?>    
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
 
     <?php if($_SESSION['user_type'] === 'school_leaver') ?>    
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/school_leaver_styles.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_styles.css">
 
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

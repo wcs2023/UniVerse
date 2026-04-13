@@ -10,8 +10,8 @@ if (!defined('APPROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($data['mentor']['full_name']) ?> - Mentor Profile</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/mentorship.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         /* Page-specific styles using CSS variables from alumni.css */
@@ -305,6 +305,6 @@ if (!defined('APPROOT')) {
 
     <script>
     </script>
-    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship.js"></script>
 </body>
 </html>

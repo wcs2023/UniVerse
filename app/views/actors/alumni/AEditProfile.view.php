@@ -13,7 +13,7 @@ if (!defined('URLROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - UniVerse</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         body {

@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
         <style>        
             .main-container {
                 margin-top: 10vh; /* Adjust this value based on your header height */
@@ -18,7 +18,7 @@
     <?php endif; ?>
 
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
         <style>
             .btn-edit{
                 padding:1.4rem ;}
@@ -87,7 +87,7 @@
                         <div class="discussion-row">
                             <div class="col-topic">
                                 <div class="topic-title">
-                                    <a href="<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?? '#' ?>"> <?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
+                                    <a href="<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?? '#' ?>"><?= htmlspecialchars($thread['title'] ?? 'No title') ?></a>
                                 </div>
                                 <div class="topic-details">
                                     posted by:<span class="author-name"><?= htmlspecialchars($thread['author_name']) ?></span> in <span class="category-link"><?= htmlspecialchars($thread['category_name']) ?></span>

@@ -8,22 +8,23 @@ if (!defined('URLROOT')) {
 <html lang="en">
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>  <!-- ← add this -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Articles - Admin Panel</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .containerChart {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #f8f9ff, #eef0ff);
-    border-radius: 12px;
-    border-left: 4px solid #6c63ff;
-    margin-bottom: 1.5rem;
-    }
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+            border-radius: 12px;
+            border-left: 4px solid #6c63ff;
+            margin-bottom: 1.5rem;
+        }
 
     .pieChart {
         display: flex;
@@ -33,10 +34,10 @@ if (!defined('URLROOT')) {
     }
 
     .pieChart canvas {
-        max-width: 350px !important;   /* bigger than 200px */
-        max-height: 350px !important;
-        width: 300px !important;
-        height: 300px !important;
+        max-width: 450px !important;   /* bigger than 200px */
+        max-height:450px !important;
+        width: 400px !important;
+        height: 400px !important;
     }
     </style>
 </head>
@@ -120,10 +121,12 @@ if (!defined('URLROOT')) {
                     ?>
                 </div>
             <?php endif; ?>
+            <center>
+                <h2>Article Types</h2> 
+            </center> 
             <div class="containerChart">
                 <div class="pieChart">
-                    <h2>Article Types</h2>
-                    <canvas id="articleTypeChart" style="max-width: 200px; max-height: 200px;"></canvas>
+                    <canvas id="articleTypeChart"></canvas>
                 </div>
             </div>
             <!-- Filters and Search -->
@@ -497,13 +500,26 @@ if (!defined('URLROOT')) {
                 responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
+                    datalabels: {              // ← ADD THIS WHOLE BLOCK
+                    display: true,
+                    color: '#fff',
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        },
+                        formatter: function(value, context) {
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percent = Math.round((value / total) * 100);
+                            return value + '\n(' + percent + '%)';
+                        }
+                    },
                     legend: {
                         position: 'bottom',   // ✅ moves legend below pie
                         align: 'center',
                         labels: {
                             color: '#2d2d5e',
                             font: { weight: '600' },
-                            padding: 16
+                            padding: 20
                         }
                     },
                     tooltip: {
@@ -520,6 +536,7 @@ if (!defined('URLROOT')) {
             }
     };
         // Create the Pie chart
+        Chart.register(ChartDataLabels); 
         new Chart(ctx, config);
     });
 

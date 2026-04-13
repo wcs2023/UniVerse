@@ -3,7 +3,7 @@
 
     <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_my_Dis_styles.css">
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
         <style>        
             .form-container
             {
@@ -19,7 +19,7 @@
     <?php endif; ?>
      
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
      
     <?php endif; ?> 
 
@@ -35,7 +35,7 @@
     }
     else if ($_SESSION['user_role'] === 'school_leaver') 
     {
-        include __DIR__ . '/../includes/header2.view.php';
+        include __DIR__ . '/includes/header2.view.php';
     }
     else if ($_SESSION['user_role'] === 'alumni')
     {

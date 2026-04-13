@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify OTP</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <style>
         /* Reuse same styles as above */
         body { font-family: "Segoe UI", sans-serif; background-color: #a78bfa45; padding-top: 10rem; }

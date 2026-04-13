@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniVerse - Edit Profile</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
 </head>
 <body>
@@ -196,6 +196,11 @@
 
     <?php include __DIR__ . '/../../layout/footer.php'; ?>
     <script>
+        var today = new Date();
+        var maxData = new Date(today.setFullYear(today.getFullYear() - 16));
+        var formattedDate = maxData.toISOString().split('T')[0];
+        document.getElementById('dob').setAttribute('max',formattedDate);
+                        
         function openPhotoModal() {
             document.getElementById('photoModal').style.display = 'flex';
         }

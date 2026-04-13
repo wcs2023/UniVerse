@@ -1,5 +1,8 @@
 <?php
-
+// Ensure variables are available
+$posts = $posts ?? [];
+$searchQuery = $searchQuery ?? '';
+$statusFilter = $statusFilter ?? 'all';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,8 +10,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moderate Forums - Admin Panel</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>  <!-- ← add this -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .forumChart 
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+            border-radius: 12px;
+            border-left: 4px solid #6c63ff;
+            margin-bottom: 1.5rem;
+        }
+
+        .canvas-card 
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .canvas-card canvas 
+        {
+            max-width: 450px !important;
+            max-height: 450px !important;
+            width: 400px !important;
+            height: 400px !important;
+        }
+
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -19,6 +54,17 @@
                 <h1>Moderate Forums</h1>
             </div>
 
+            <!-- canvas -->
+            <center>
+            <h2>Forum Types</h2>
+            </center>
+            <div class="forumChart">
+                <div class="canvas-card">
+                    <span class="chart-title">
+                    </span>
+                    <canvas id="forumTypeChart"></canvas>
+                </div>
+            </div>
             <?php if (isset($_GET['success'])): ?>
                 <div class="alert alert-success">
                     <?php
@@ -195,13 +241,13 @@
         </div>
     </div>
 
-    <div id="forumPostModal" class="modal-overlay">
+    <div id="forumPostModal" class="modal-overlay" style="background-color: #ddd1f9;">
         <div class="modal-card">
             <div class="modal-header">
                 <h2>Forum Post Details</h2>
                 <span class="modal-close" onclick="closePostModal()">&times;</span>
             </div>
-            <div class="modal-body" id="forumPostDetailsContent">
+            <div class="modal-body" id="forumPostDetailsContent" >
                 <div class="loading">Loading...</div>
             </div>
         </div>
@@ -249,7 +295,6 @@
                         <div class="post-detail-row"><span class="detail-label">Author:</span><span class="detail-value">${author}</span></div>
                         <div class="post-detail-row"><span class="detail-label">Email:</span><span class="detail-value">${post.email || 'N/A'}</span></div>
                         <div class="post-detail-row"><span class="detail-label">Status:</span><span class="detail-value"><span class="status-badge ${isHidden ? 'status-archived' : 'status-published'}">${isHidden ? 'Hidden' : 'Visible'}</span></span></div>
-                        <div class="post-detail-row"><span class="detail-label">Upvotes:</span><span class="detail-value">${post.upvotes || 0}</span></div>
                         <div class="post-detail-row"><span class="detail-label">Created:</span><span class="detail-value">${post.created_at ? new Date(post.created_at).toLocaleString() : 'N/A'}</span></div>
                         <div class="post-content-preview">
                             <h4>Post Content:</h4>
@@ -317,6 +362,82 @@
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
+
+     document.addEventListener("DOMContentLoaded", function() {
+        // Get the canvas element
+        var ctx = document.getElementById('forumTypeChart').getContext('2d');
+
+        // Data for the chart
+        var rawForumData = <?=  json_encode($forumsCount) ?>;
+                        console.log(rawForumData);
+        var labels = rawForumData.map(item => item.category)
+        var count = rawForumData.map(item => item.count)
+        var backgroundColors = [
+            '#4F2D7F',
+            '#870074', 
+            '#5B3256',
+            ' #BE93E4',
+            ' #645394',
+            '#FAE6FA'
+        ].slice(0, labels.length);
+
+
+        var data = {
+            labels: labels, // Categories (User types)
+            datasets: [{
+                label: 'Forum Categories',
+                data: count, // Example data: [adminCount, studentCount, undergradCount]
+                backgroundColor: backgroundColors,
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+
+        // Pie Chart Configuration
+        var config = {
+            type: 'pie', // Chart type (pie chart)
+            data: data,  // Data for the chart
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    datalabels: {              // ← ADD THIS WHOLE BLOCK
+                        color: '#fff',
+                        font: { weight: '600', size: 14 },
+                        formatter: function(value, context) {
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percent = Math.round((value / total) * 100);
+                            return value + '\n(' + percent + '%)';  // ← only count and percentage
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',   // ✅ moves legend below pie
+                        align: 'centre',
+                        labels: {
+                            color: '#2d2d5e',
+                            font: { weight: '600' },
+                            padding: 16
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#4F2D7F',
+                        titleColor: '#fff',
+                        bodyColor: '#FAE6FA',
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' forums';
+                            }
+                        }
+                    }
+                }
+            }
+    };
+        // Create the Pie chart
+        
+        Chart.register(ChartDataLabels);
+        new Chart(ctx, config);
+    });
+
     </script>
 
     <style>

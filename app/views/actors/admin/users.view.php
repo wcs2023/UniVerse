@@ -6,10 +6,11 @@
 <html lang="en">
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>  <!-- ← add this -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - Admin Panel</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/admin.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -164,8 +165,8 @@
                             echo 'Failed to delete user account';
                             break;
                             case 'validation_failed':
-                            echo 'Please check the form and try again';
-                            break;
+                                echo 'Please check the form and try again';
+                                break;
                             case 'email_exists':
                                 echo 'Email already exists';
                                 break;
@@ -174,7 +175,18 @@
                             }
                             ?>
                 </div>
-            <?php endif; ?>
+                <?php endif; ?>
+                
+            <!-- pie chart -->
+            <div class="canvas bar-chart">
+                <!-- <label for="canvas">System Data</label> -->
+                <h2 class="content-card-title">All Users</h2>
+                <canvas id="userTypeChart" style="max-width: 20rem; max-height: 20rem;"></canvas>
+            </div>
+            <div class="bar-chart">
+                <h2 class="content-card-title">All Content</h2>
+                <canvas id="contentChart" style="max-width: 20rem; max-height: 20rem;"></canvas>
+            </div>
             
             <!-- Filters and Search -->
             <div class="content-card" style="margin-bottom: 1.5rem;">
@@ -216,21 +228,11 @@
             <div class="content-card">
                 <div class="content-card-header data-analysis">
                     <h2 class="content-card-title">All Users (<?= count($users ?? []) ?>)</h2>
-                    <!-- pie chart -->
-                    <div class="canvas">
-                        <!-- <label for="canvas">System Data</label> -->
-                        <canvas id="userTypeChart" style="max-width: 20rem; max-height: 20rem;"></canvas>
-                    </div>
                     <div>
                         <a href="<?= BASE_URL ?>/admin/exportUsers" class="btn btn-primary btn-sm exportbtn">
                             <i class="fas fa-download"></i> Export Users
                         </a>
                     </div>
-                </div>
-                <div class="bar-chart">
-                    <h2 class="content-card-title">All Content</h2>
-
-                    <canvas id="contentChart" style="max-width: 20rem; max-height: 20rem;"></canvas>
                 </div>
                 <div class="content-card-body" style="padding: 0; overflow-x: auto;">
                     <?php if (!empty($users)): ?>
@@ -632,8 +634,17 @@
             options: {
                 responsive: true, // Makes the chart responsive to window resizing
                 plugins: {
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: '600', size: 14 },
+                        formatter: function(value, context) {
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percent = Math.round((value / total) * 100);
+                            return value + '\n(' + percent + '%)';  // ← only count and percentage
+                        }
+                    },  
                     legend: {
-                        position: 'top', // Position of the legend
+                        position: 'bottom', // Position of the legend
                     },
                     tooltip: {
                         callbacks: {
@@ -647,6 +658,7 @@
         };
 
         // Create the Pie chart
+        Chart.register(ChartDataLabels); 
         new Chart(ctx, config);
     });
 
@@ -696,6 +708,15 @@
         options: {
             responsive: true,
             plugins: {
+                datalabels: {
+                    color: '#fff',
+                    font: { weight: '600', size: 14 },
+                    formatter: function(value, context) {
+                        let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        let percent = Math.round((value / total) * 100);
+                        return value + '\n(' + percent + '%)';  // ← only count and percentage
+                    }
+                },
                 legend: {
                     position: 'top',
                     labels: {

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniVerse - Bridge Your Future</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" type="image/png" href="assets/images/U.png">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
 </head>
 <body>
     <!-- Scroll Progress Bar -->
@@ -141,6 +141,6 @@
         </div>
     </section>
     <?php include __DIR__ . '/layout/footer.php'; ?>
-    <script src="js/main.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/main.js"></script>
 </body>
 </html>

@@ -19,6 +19,7 @@ require_once BASE_PATH . '/core/App.php';
 require_once BASE_PATH . '/core/Controller.php';
 require_once BASE_PATH . '/core/Model.php';
 require_once BASE_PATH . '/core/Database.php';
+require_once BASE_PATH . '/core/functions.php';
 
 // Autoload models dynamically,like the user model loaded in registration controller
 spl_autoload_register(function($className) {
