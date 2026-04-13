@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join UniVerse - Registration</title>
-  <link rel="stylesheet" href="<?= BASE_URL ?>/css/registration.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/registration.css">
   <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-  <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
 </head>
 <body>
   <?php include __DIR__ . '/nav_withback.php'; ?>
@@ -167,9 +167,9 @@
             
             <div class="form-group full-width">
               <label for="dateOfBirth">Date of Birth</label>
-              <input type="date" id="dateOfBirth" name="date_of_birth" autocomplete="bday" max="2010-12-31">
+              <input type="date" id="dateOfBirth" name="date_of_birth" autocomplete="bday">
               <div class="field-error"></div>
-              <div class="field-hint">Must be at least 13 years old</div>
+              <div class="field-hint">Must be at least 1 years old</div>
             </div>
           </div>
         </div>
@@ -463,6 +463,12 @@
 
   <?php include __DIR__ . '/../layout/footer.php'; ?>
   
-  <script src="<?= BASE_URL ?>/js/registration.js"></script>
+  <script src="<?= BASE_URL ?>/js/registration.js">
+    var today = new Date();
+    var minData = new Date(today.setFullYear(today.getFullYear - 16));
+    var formattedDate = minData.toISOString().split('T')[0];
+    document.getElementById('dateOfBirth').setAttribute('max',formattedDate);
+  </script>
+
 </body>
 </html>

@@ -18,8 +18,8 @@ if (!defined('BASE_URL')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explore Mentors - UniVerse</title>
     <!-- <link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css"> -->
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/mentorship.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/mentorship.css">
     
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <script>
@@ -381,7 +381,7 @@ if (!defined('BASE_URL')) {
 
         // Close modal handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= BASE_URL ?>/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship.js"></script>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>

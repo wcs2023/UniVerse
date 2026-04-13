@@ -12,7 +12,7 @@ $current_uri = $_SERVER['REQUEST_URI'];
 $current_path = parse_url($current_uri, PHP_URL_PATH);
 ?>
 
-<link rel="stylesheet" href="<?= BASE_URL ?>/css/alumni.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
 
 <header class="header" role="banner">
     <div class="container">

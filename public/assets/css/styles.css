@@ -556,9 +556,9 @@ body {
   display: flex;
   gap: 1rem;
 }
-
+/* fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff */
 .hero-image {
-  background-image: url("/assets/images/hero.jpeg");
+  background-image: url("../images/hero.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -2125,7 +2125,7 @@ body {
   position: relative;
   overflow: hidden;
   display: flex;
-  background-image: url("../assets/images/hero.jpeg");
+  background-image: url("../images/hero.jpeg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

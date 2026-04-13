@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <title><?= htmlspecialchars($data['job']['title']) ?> - UniVerse</title>
     <style>
@@ -250,7 +250,6 @@
 </head>
 <body style="margin-top: 7rem;">
     <?php include 'Unavigation.view.php'; ?>
-
     <div class="job-details-container">
         <a href="<?= BASE_URL ?>/ujobs" class="back-link">← Back to Jobs</a>
 

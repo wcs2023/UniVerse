@@ -5,7 +5,7 @@
     
 <head>          
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/css/styles.css">
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <?php endif; ?>
     
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
@@ -243,7 +243,7 @@
                            data-article-id="<?= $data['article']['article_id'] ?>"
                            data-liked="<?= $data['has_liked'] ? 'true' : 'false' ?>"
                            <?= !isset($_SESSION['user_id']) ? 'title="Log in to like this article"' : '' ?>
-                    <
+                            >
                            <span class="heart-icon"><?= $data['has_liked'] ? '❤️' : '🤍' ?></span>
                            <span id="like-count"><?= (int)$data['article']['likes'] ?></span>
                        </button>
