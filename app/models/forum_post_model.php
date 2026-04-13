@@ -76,47 +76,61 @@ class Forum_post_model extends Model
     }
 
     public function getReplyVotes(int $post_id)
-{
-    $query = "SELECT
+    {
+        $query = "SELECT
                 SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END) AS likes,
                 SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END) AS dislikes
               FROM forum_post_votes
               WHERE post_id = :post_id";
 
-    $row = $this->fetch($query, ['post_id' => $post_id]);
+        $row = $this->fetch($query, ['post_id' => $post_id]);
 
-    return [
-        'likes' => (int)($row['likes'] ?? 0),
-        'dislikes' => (int)($row['dislikes'] ?? 0)
-    ];
-}
-
-public function setReplyVote(int $post_id, int $user_id, int $vote)
-{
-    $vote = ($vote === -1) ? -1 : 1;
-
-    $existing = $this->fetch(
-        "SELECT vote FROM forum_post_votes WHERE post_id = :post_id AND user_id = :user_id",
-        ['post_id' => $post_id, 'user_id' => $user_id]
-    );
-
-    if (is_array($existing) && (int)$existing['vote'] === $vote) {
-        $this->query(
-            "DELETE FROM forum_post_votes WHERE post_id = :post_id AND user_id = :user_id",
-            ['post_id' => $post_id, 'user_id' => $user_id]
-        );
-    } elseif (is_array($existing)) {
-        $this->query(
-            "UPDATE forum_post_votes SET vote = :vote WHERE post_id = :post_id AND user_id = :user_id",
-            ['vote' => $vote, 'post_id' => $post_id, 'user_id' => $user_id]
-        );
-    } else {
-        $this->query(
-            "INSERT INTO forum_post_votes (post_id, user_id, vote) VALUES (:post_id, :user_id, :vote)",
-            ['post_id' => $post_id, 'user_id' => $user_id, 'vote' => $vote]
-        );
+        return [
+            'likes' => (int)($row['likes'] ?? 0),
+            'dislikes' => (int)($row['dislikes'] ?? 0)
+        ];
     }
 
-    return $this->getReplyVotes($post_id);
-}
+    public function setReplyVote(int $post_id, int $user_id, int $vote)
+    {
+        $vote = ($vote === -1) ? -1 : 1;
+
+        $existing = $this->fetch(
+            "SELECT vote FROM forum_post_votes WHERE post_id = :post_id AND user_id = :user_id",
+            ['post_id' => $post_id, 'user_id' => $user_id]
+        );
+
+        $existing_vote = 0;
+
+        if (is_array($existing) && (int)$existing['vote'] === $vote) {
+            $this->query(
+                "DELETE FROM forum_post_votes WHERE post_id = :post_id AND user_id = :user_id",
+                ['post_id' => $post_id, 'user_id' => $user_id]
+            );
+
+            $existing_vote = 0;
+        } elseif (is_array($existing)) {
+            $this->query(
+                "UPDATE forum_post_votes SET vote = :vote WHERE post_id = :post_id AND user_id = :user_id",
+                ['vote' => $vote, 'post_id' => $post_id, 'user_id' => $user_id]
+            );
+
+            $existing_vote = $vote;
+        } else {
+            $this->query(
+                "INSERT INTO forum_post_votes (post_id, user_id, vote) VALUES (:post_id, :user_id, :vote)",
+                ['post_id' => $post_id, 'user_id' => $user_id, 'vote' => $vote]
+            );
+
+            $existing_vote = $vote;
+        }
+
+        $count = $this->getReplyVotes($post_id);
+
+        return [
+            'likes' => $count['likes'],
+            'dislikes' => $count['dislikes'],
+            'user_vote' => $existing_vote
+        ];
+    }
 }

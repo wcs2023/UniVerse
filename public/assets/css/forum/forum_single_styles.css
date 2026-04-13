@@ -260,3 +260,113 @@ body {
 .js-edit-textarea{
     width:100%;
 }
+
+.action-btn.active {
+  color: #2563eb; /* blue */
+  font-weight: bold;
+}
+
+.action-btn.disliked {
+  color: #dc2626; /* red */
+  font-weight: bold;
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reply-action.active {
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.reply-action.disliked {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* ===== EDIT REPLY FORM ===== */
+.reply-edit-form {
+  margin-top: 12px;
+  background: var(--light-gray);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px;
+  animation: fadeInUp 0.3s ease;
+}
+
+/* hidden state (you already use .hidden in JS) */
+.reply-edit-form.hidden {
+  display: none;
+}
+
+/* textarea */
+.reply-edit-form textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text-dark);
+  background: var(--white);
+  transition: all 0.2s ease;
+}
+
+/* focus state */
+.reply-edit-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.15);
+}
+
+/* buttons container */
+.reply-edit-form .reply-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* save button */
+.reply-edit-form .submit-btn {
+  background: var(--primary-purple);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reply-edit-form .submit-btn:hover {
+  background: var(--dark-purple);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(107, 70, 193, 0.25);
+}
+
+/* cancel button */
+.reply-edit-form .cancel-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reply-edit-form .cancel-btn:hover {
+  background: var(--light-gray);
+  color: var(--text-dark);
+  border-color: var(--primary-purple);
+}
+
+/* smooth transition when toggling */
+.reply-edit-form {
+  transition: all 0.25s ease;
+}

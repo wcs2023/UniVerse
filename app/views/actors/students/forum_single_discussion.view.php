@@ -45,15 +45,15 @@ include_once __DIR__ . '/includes/header2.view.php';
         </div>
 
         <div class="post-stats">
-            <div class="stat"><strong><?= htmlspecialchars($thread['likes']) ?></strong><span> likes</span></div>
-            <div class="stat"><strong><?= htmlspecialchars($thread['dislikes']) ?></strong><span> dislikes</span></div>
+            <div class="stat"><strong class="js-thread-like-count"><?= htmlspecialchars($thread['likes']) ?></strong><span> likes</span></div>
+            <div class="stat"><strong class="js-thread-dislike-count"><?= htmlspecialchars($thread['dislikes']) ?></strong><span> dislikes</span></div>
             <div class="stat"><strong><?= htmlspecialchars($thread['replies']) ?></strong><span> replies</span></div>
             <div class="stat"><strong><?= htmlspecialchars($thread['views']) ?></strong><span> views</span></div>
         </div>
 
         <div class="post-actions">
-            <button class="action-btn js-thread-like" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-up"></i> Like</button>
-            <button class="action-btn js-thread-dislike" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-down"></i> dislike</button>
+            <button class="action-btn js-thread-like <?= $thread['user_vote'] == 1 ? 'active' : '' ?>" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-up"></i> Like</button>
+            <button class="action-btn js-thread-dislike <?= $thread['user_vote'] == -1 ? 'disliked' : '' ?>" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-down"></i> dislike</button>
         </div>
 
     </div>
@@ -92,8 +92,14 @@ include_once __DIR__ . '/includes/header2.view.php';
                         </form>
 
                         <div class="reply-actions">
-                            <button class="reply-action" type="button"><?= $post['likes'] ?> <i class="fa-regular fa-thumbs-up"></i> likes</button>
-                            <button class="reply-action" type="button"><?= $post['dislikes'] ?> <i class="fa-regular fa-thumbs-down"></i> dislike</button>
+                            <button class="reply-action js-reply-like <?= ($post['user_vote'] ?? 0) == 1 ? 'active' : '' ?>" type="button" data-post-id="<?= (int)$post['post_id'] ?>">
+                                <span class="js-reply-like-count"><?= $post['likes'] ?> </span>
+                                <i class="fa-regular fa-thumbs-up"></i> likes
+                            </button>
+                            <button class="reply-action js-reply-dislike <?= ($post['user_vote'] ?? 0) == -1 ? 'active' : '' ?>" type="button" data-post-id="<?= (int)$post['post_id'] ?>">
+                                <span class="js-reply-dislike-count"><?= $post['dislikes'] ?> </span>
+                                <i class="fa-regular fa-thumbs-down"></i> dislike
+                            </button>
                             <?php if ($current_user_id !== null && $current_user_id === $post['author_id']): ?>
                                 <div class="post-actions">
                                     <button type="button"

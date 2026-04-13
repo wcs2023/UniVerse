@@ -56,15 +56,17 @@ class Forum_thread_model extends Model
         return $this->fetchAll($query, ['limit' => $limit]);
     }
 
-    public function create_thread($thread){
-        $query = "INSERT INTO {$this ->table} (title,cat_id,content,user_id) 
+    public function create_thread($thread)
+    {
+        $query = "INSERT INTO {$this->table} (title,cat_id,content,user_id) 
             VALUES (:title,:cat_id,:content,:user_id)";
-        
-        
-        return $this->query($query,$thread);
+
+
+        return $this->query($query, $thread);
     }
 
-    public function getIdWithDetails($thread_id){
+    public function getIdWithDetails($thread_id)
+    {
 
         $query = "SELECT 
                     ft.*,
@@ -76,18 +78,20 @@ class Forum_thread_model extends Model
                     FROM {$this->table} ft
                     JOIN users u on ft.user_id = u.user_id
                     JOIN forum_categories fc on ft.cat_id = fc.cat_id
-                    WHERE ft.thread_id = :thread_id";                    
+                    WHERE ft.thread_id = :thread_id";
 
-                    return $this->fetch($query,['thread_id'=>$thread_id]);
+        return $this->fetch($query, ['thread_id' => $thread_id]);
     }
 
-    public function countViews($thread_id){
+    public function countViews($thread_id)
+    {
         $query = "UPDATE {$this->table} SET views = views + 1 WHERE thread_id = :thread_id";
 
-        return $this->query($query,['thread_id' => $thread_id]);
+        return $this->query($query, ['thread_id' => $thread_id]);
     }
 
-    public function getByUser($user_id,$limit=50){
+    public function getByUser($user_id, $limit = 50)
+    {
         $query = "SELECT 
                     ft.*,
                     u.first_name as author_fname,
@@ -102,26 +106,27 @@ class Forum_thread_model extends Model
                   ORDER BY ft.created_at DESC
                   LIMIT :limit";
 
-                        return $this->fetchAll($query,['user_id'=>$user_id,'limit'=>$limit]);
-
+        return $this->fetchAll($query, ['user_id' => $user_id, 'limit' => $limit]);
     }
 
-    public function update_post($thread_id,$updatedData){
+    public function update_post($thread_id, $updatedData)
+    {
 
         $query = "UPDATE {$this->table} SET title = :title,content=:content, cat_id =:category WHERE thread_id = :thread_id";
 
-        $updatedData['thread_id'] = $thread_id; 
+        $updatedData['thread_id'] = $thread_id;
 
-        return $this->query($query,$updatedData);
+        return $this->query($query, $updatedData);
     }
 
-    public function delete_post($thread_id){
+    public function delete_post($thread_id)
+    {
         $query = "DELETE FROM {$this->table} WHERE thread_id = :thread_id";
 
-        return $this->query($query,['thread_id'=>$thread_id]);
+        return $this->query($query, ['thread_id' => $thread_id]);
     }
 
-    public function searchByTitle(string $search_term,int $limit = 50)
+    public function searchByTitle(string $search_term, int $limit = 50)
     {
         $limit = (int)$limit;
         $query = "SELECT ft.*,
@@ -141,17 +146,18 @@ class Forum_thread_model extends Model
         WHERE ft.title LIKE :search_term
         ORDER BY ft.is_pinned DESC,ft.updated_at DESC LIMIT $limit";
 
-        return $this->fetchAll($query,['search_term' =>'%' . $search_term . '%']) ?: [];
+        return $this->fetchAll($query, ['search_term' => '%' . $search_term . '%']) ?: [];
     }
 
-    public function getThreadVotes(int $thread_id){
+    public function getThreadVotes(int $thread_id)
+    {
         $query = "SELECT 
                     SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END) AS likes,
                     SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END) AS dislikes
                     FROM forum_thread_votes
                     WHERE thread_id = :thread_id";
 
-        $row = $this->fetch($query,['thread_id' => $thread_id]);
+        $row = $this->fetch($query, ['thread_id' => $thread_id]);
 
         return [
             'likes' => (int)($row['likes'] ?? 0),
@@ -159,46 +165,58 @@ class Forum_thread_model extends Model
         ];
     }
 
-    public function setThreadVote(int $thread_id,int $user_id,int $vote){
+    public function setThreadVote(int $thread_id, int $user_id, int $vote)
+    {
         $vote = ($vote === -1) ? -1 : 1;
 
         $existing = $this->fetch(
-            "SELECT vote FROM forum_thread_votes WHERE thread_id = :thread_id AND user_id = :user_id",['thread_id' => $thread_id,'user_id' => $user_id]
+            "SELECT vote FROM forum_thread_votes WHERE thread_id = :thread_id AND user_id = :user_id",
+            ['thread_id' => $thread_id, 'user_id' => $user_id]
         );
 
-        if(is_array($existing) && (int)$existing['vote'] === $vote){
+        $existing_vote = 0;
+
+        if (is_array($existing) && (int)$existing['vote'] === $vote) {
             $this->query(
                 "DELETE FROM forum_thread_votes WHERE thread_id = :thread_id AND user_id = :user_id",
-                
-                ['thread_id' =>$thread_id,'user_id' => $user_id]
+
+                ['thread_id' => $thread_id, 'user_id' => $user_id]
             );
-        }
-        elseif(is_array($existing)) {
+
+            $existing_vote = 0;
+        } elseif (is_array($existing)) {
             $this->query(
                 "UPDATE forum_thread_votes SET vote =:vote WHERE thread_id = :thread_id AND user_id = :user_id",
-                
-                ['vote' =>$vote,'thread_id' =>$thread_id,'user_id' =>$user_id]
+
+                ['vote' => $vote, 'thread_id' => $thread_id, 'user_id' => $user_id]
             );
-        }
-        else{
+            $existing_vote = $vote;
+        } else {
             $this->query(
                 "INSERT INTO forum_thread_votes(thread_id,user_id,vote) 
                 VALUES (:thread_id,:user_id,:vote)",
 
-                ['thread_id'=>$thread_id,'user_id' => $user_id,'vote'=>$vote]
+                ['thread_id' => $thread_id, 'user_id' => $user_id, 'vote' => $vote]
             );
+            $existing_vote = $vote;
         }
 
-        return $this->getThreadVotes($thread_id);
+        $count =  $this->getThreadVotes($thread_id);
+        return [
+            'likes' => $count['likes'],
+            'dislikes' => $count['dislikes'],
+            'user_vote' => $existing_vote
+        ];
     }
-    
-    public function getThreadCountByUserId(int $user_id){
+
+    public function getThreadCountByUserId(int $user_id)
+    {
         $query = "SELECT COUNT(*) AS thread_count
         FROM {$this->table}
-        WHERE user_id = :user_id"; 
-        
+        WHERE user_id = :user_id";
+
         $row = $this->fetch($query, ['user_id' => $user_id]);
-        
+
         return (int)($row['thread_count'] ?? 0);
     }
 }

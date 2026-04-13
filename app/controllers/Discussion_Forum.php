@@ -191,7 +191,8 @@ class Discussion_Forum extends Controller
             'is_locked' => $thread['is_locked'],
             'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname'],
             'likes' => $thread_votes['likes'] ?? 0,
-            'dislikes' => $thread_votes['dislikes'] ?? 0
+            'dislikes' => $thread_votes['dislikes'] ?? 0,
+            'user_vote' => $thread_votes['user_vote'] ?? 0
         ];
 
         $post_data = [];
@@ -206,7 +207,8 @@ class Discussion_Forum extends Controller
                 'is_edited' => $post['is_edited'] ?? false,
                 'edited_at' => $post['edited_at'] ?? null,
                 'likes' => $post_votes['likes'] ?? 0,
-                'dislikes' => $post_votes['dislikes'] ?? 0
+                'dislikes' => $post_votes['dislikes'] ?? 0,
+                'user_vote' => $post_votes['user_vote'] ?? 0    
             ];
         }
 
@@ -382,7 +384,7 @@ class Discussion_Forum extends Controller
         $delete_reply = $this->post_model->delete_all_reply($thread_id);
 
         if ($result && $delete_reply) {
-            header("Location: " . BASE_URL . "/Discussion_Forum/view_thread?success=Thread deleted successfully!");
+            header("Location: " . BASE_URL . "/Discussion_Forum/view_my_discussion?success=Thread deleted successfully!");
             exit;
         } else {
             header("Location: " . BASE_URL . "/Discussion_Forum/view_thread?error=Delete Failed!");
@@ -645,7 +647,7 @@ class Discussion_Forum extends Controller
         }
 
         $user_id = (int)$this->getCurrentUserId();
-        $post_like = $this->thread_model->setThreadVote($post_id, $user_id, 1);
+        $post_like = $this->post_model->setReplyVote($post_id, $user_id, 1);
 
         $this->jsonResponse(['ok' => true, 'post_id' => $post_id] + $post_like);
     }
@@ -660,7 +662,7 @@ class Discussion_Forum extends Controller
         }
 
         $user_id = (int)$this->getCurrentUserId();
-        $post_dislike = $this->thread_model->setThreadVote($post_id, $user_id, -1);
+        $post_dislike = $this->post_model->setReplyVote($post_id, $user_id, -1);
 
         $this->jsonResponse(['ok' => true, 'post_id' => $post_id] + $post_dislike);
     }

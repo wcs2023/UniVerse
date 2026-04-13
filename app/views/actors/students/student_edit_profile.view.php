@@ -112,14 +112,7 @@
                                         name="first_name"
                                         value="<?= htmlspecialchars($data['user']['first_name'] ?? '') ?>">
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="middle-name">Middle Name</label>
-                                    <input type="text"
-                                        id="middle-name"
-                                        name="middle_name"
-                                        value="<?= htmlspecialchars($data['user']['middle_name'] ?? '') ?>">
-                                </div>
+                               
 
                                 <div class="form-group">
                                     <label for="last-name">Last Name</label>
