@@ -21,7 +21,7 @@
                 ?>
                 <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
                      alt="Profile Photo"
-                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                     onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
             </div>
             <div class="profile-info">
                 <h1><?= htmlspecialchars($data['user']['first_name'] . ' ' . $data['user']['last_name']) ?></h1>

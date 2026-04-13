@@ -375,9 +375,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   images.forEach((img) => {
     img.addEventListener("error", function () {
-      // Replace with placeholder if image fails to load
-      this.src = "/placeholder.svg?height=200&width=200&text=Image+Not+Found"
-    })
+      // Remove error handler to prevent infinite loop, then set fallback
+      this.onerror = null
+      this.removeAttribute("onerror")
+      this.src = "/UniVerse/public/assets/images/U.png"
+    }, { once: true })
   })
 })
 

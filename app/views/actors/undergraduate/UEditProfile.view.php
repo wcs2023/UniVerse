@@ -46,7 +46,7 @@
                                         <img src="<?= BASE_URL ?><?= $profilePic ?>" 
                                              alt="Profile Preview" 
                                              id="modal-profile-preview"
-                                             onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                                             onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
                                     </div>
                                     <button type="button" class="upload-photo-btn" onclick="document.getElementById('modal-profile-picture').click()">Upload New Photo</button>
                                     <input type="file" id="modal-profile-picture" name="profile_picture" accept="image/*" onchange="previewModalImage(this)" style="display: none;">
@@ -74,7 +74,7 @@
                                     <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
                                          alt="Profile Picture" 
                                          id="profile-preview"
-                                         onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'"
+                                         onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'"
                                          style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; cursor: pointer;">
                                     <p class="picture-note">Click to edit</p>
                                 </div>
