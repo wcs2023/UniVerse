@@ -20,24 +20,24 @@
 ?>
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum/forum_single_styles.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum/forum_home_styles.css">
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <?php endif; ?>
-        
+    
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-        
+    
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">    
     <?php endif; ?>
-
+        
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
     <?php endif; ?>
-
+                
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
 
@@ -158,7 +158,7 @@
                             id="reply-content"
                             placeholder="Write your reply here..."
                             required
-                            minlength="10"></textarea>
+                            ></textarea>
 
                         <div class="reply-buttons">
                             <button class="submit-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Post Reply</button>

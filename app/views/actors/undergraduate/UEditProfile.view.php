@@ -196,6 +196,11 @@
 
     <?php include __DIR__ . '/../../layout/footer.php'; ?>
     <script>
+        var today = new Date();
+        var maxData = new Date(today.setFullYear(today.getFullYear() - 16));
+        var formattedDate = maxData.toISOString().split('T')[0];
+        document.getElementById('dob').setAttribute('max',formattedDate);
+                        
         function openPhotoModal() {
             document.getElementById('photoModal').style.display = 'flex';
         }

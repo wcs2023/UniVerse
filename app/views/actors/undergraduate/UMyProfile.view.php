@@ -102,13 +102,13 @@
                 </div>
 
                 <!-- Address -->
-                <div class="info-item">
+                <!-- <div class="info-item">
                     <div class="info-label">
                         <i class="icon-address"></i>
                         Address
                     </div>
                     <div class="info-value"><?= htmlspecialchars($data['user']['address'] ?? 'Not provided') ?></div>
-                </div>
+                </div> -->
 
                 <!-- Academic Information -->
                 <!-- University -->

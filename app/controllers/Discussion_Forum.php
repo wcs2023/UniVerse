@@ -381,6 +381,7 @@ class Discussion_Forum extends Controller
 
         $result = $this->thread_model->delete_post($thread_id);
         $delete_reply = $this->post_model->delete_all_reply($thread_id);
+        
 
         if ($result && $delete_reply) {
             header("Location: " . BASE_URL . "/Discussion_Forum/view_thread?success=Thread deleted successfully!");
@@ -390,48 +391,87 @@ class Discussion_Forum extends Controller
             exit;
         }
     }
-
     public function reply_post($thread_id = null)
     {
-
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . BASE_URL . '/Login/index?redirect=/Discussion_Forum/view_thread/' . $thread_id);
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             $user_id = $this->getCurrentUserId();
 
             $data = [
-                'content' => trim($_POST['content'] ?? ''),
-                'thread_id' => $thread_id,
-                'user_id' => $user_id,
-
+                'content'     => trim($_POST['content'] ?? ''),
+                'thread_id'   => $thread_id,
+                'user_id'     => $user_id,
                 'content_err' => ''
-
             ];
 
-
-
-            //validate
+            // Validate
             if (empty($data['content'])) {
                 $data['content_err'] = 'Please enter your content';
-            } else if (strlen($data['content']) < 10) {
+            } elseif (strlen($data['content']) < 10) {
                 $data['content_err'] = 'Your reply must be at least 10 characters long';
             }
 
             if (empty($data['content_err'])) {
                 if ($this->post_model->create_reply($data)) {
                     header("Location: " . BASE_URL . "/Discussion_Forum/view_thread/{$thread_id}?success=reply_posted");
+                    exit;
                 } else {
-                    header("Location: " . BASE_URL . "Discussion_Forum/view_thread/{$thread_id}?error=reply_failed");
+                    header("Location: " . BASE_URL . "/Discussion_Forum/view_thread/{$thread_id}?error=reply_failed");
+                    exit;
                 }
             } else {
-                $this->view('actors/students/forum_single_discussion', $data);
+                // Re-fetch everything the view needs
+                $thread     = $this->thread_model->getIdWithDetails($thread_id);
+                $thread_votes = $this->thread_model->getThreadVotes($thread_id);
+                $posts      = $this->post_model->getByThread($thread_id);
+
+                $thread_data = [
+                    'thread_id'   => $thread['thread_id'],
+                    'title'       => $thread['title'],
+                    'content'     => $thread['content'],
+                    'author_id'   => $thread['author_id'],
+                    'created_at'  => $thread['created_at'],
+                    'views'       => $thread['views'],
+                    'replies'     => $thread['reply_count'] ?? 0,
+                    'cat_name'    => $thread['cat_name'],
+                    'is_locked'   => $thread['is_locked'],
+                    'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname'],
+                    'likes'       => $thread_votes['likes'] ?? 0,
+                    'dislikes'    => $thread_votes['dislikes'] ?? 0
+                ];
+
+                $post_data = [];
+                foreach ($posts as $post) {
+                    $post_votes  = $this->post_model->getReplyVotes((int)$post['post_id']);
+                    $post_data[] = [
+                        'post_id'     => $post['post_id'],
+                        'content'     => $post['content'],
+                        'author_id'   => $post['author_id'],
+                        'author_name' => $post['author_fname'] . ' ' . $post['author_lname'],
+                        'created_at'  => $post['created_at'],
+                        'is_edited'   => $post['is_edited'] ?? false,
+                        'edited_at'   => $post['edited_at'] ?? null,
+                        'likes'       => $post_votes['likes'] ?? 0,
+                        'dislikes'    => $post_votes['dislikes'] ?? 0
+                    ];
+                }
+
+                $this->view('actors/students/forum_single_discussion', [
+                    'title'       => $thread['title'],
+                    'thread'      => $thread_data,
+                    'posts'       => $post_data,
+                    'curr_user_id' => $user_id,
+                    'can_edit'    => $this->isAdmin($thread_data['author_id']),
+                    // Pass the reply error back so the form can show it
+                    'reply_content'     => $data['content'],
+                    'reply_content_err' => $data['content_err']
+                ]);
             }
         } else {
-
             redirect("Discussion_Forum/view_thread/{$thread_id}");
         }
     }

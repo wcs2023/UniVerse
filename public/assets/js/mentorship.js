@@ -331,7 +331,7 @@ const MentorshipSystem = {
 
             if (data.success) {
                 this.showNotification('Session cancelled', 'success');
-                setTimeout(() => window.location.reload(), 1500);
+                setTimeout(() => window.location.reload(), 1500);assets
                 return true;
             } else {
                 this.showNotification(data.message || 'Failed to cancel session', 'error');

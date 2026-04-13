@@ -164,29 +164,57 @@ class User extends Model
     public function updateUser($userId, $data)
     {
         try {
+            // Whitelist only the fields users are allowed to update
+            $allowedFields = ['first_name', 'last_name', 'date_of_birth', 'gender', 'phone'];
+
             $setParts = [];
-            $params = ['user_id' => $userId];
-            
-            foreach ($data as $key => $value) {
-                $setParts[] = "$key = :$key";
-                $params[$key] = $value;
+            $params   = ['user_id' => $userId];
+
+            foreach ($allowedFields as $field) {
+                if (array_key_exists($field, $data)) {
+                    $setParts[]     = "{$field} = :{$field}";
+                    $params[$field] = $data[$field] !== '' ? $data[$field] : null;
+                }
             }
-            
-            $setClause = implode(', ', $setParts);
-            $query = "UPDATE users SET $setClause, updated_at = NOW() WHERE user_id = :user_id";
-            
-            // Execute and return the statement to check rowCount
+
+            if (empty($setParts)) return false;
+
+            $query = "UPDATE users SET " . implode(', ', $setParts) . ", updated_at = NOW() WHERE user_id = :user_id";
+
             $stmt = $this->query($query, $params);
-            
-            // Return true if at least one row was affected
             return $stmt->rowCount() > 0;
+
         } catch (Exception $e) {
             error_log("Error in updateUser(): " . $e->getMessage());
-            error_log("Query: " . ($query ?? 'N/A'));
-            error_log("Params: " . print_r($params, true));
             return false;
         }
     }
+    // public function updateUser($userId, $data)
+    // {
+    //     try {
+    //         $setParts = [];
+    //         $params = ['user_id' => $userId];
+            
+    //         foreach ($data as $key => $value) {
+    //             $setParts[] = "$key = :$key";
+    //             $params[$key] = $value;
+    //         }
+            
+    //         $setClause = implode(', ', $setParts);
+    //         $query = "UPDATE users SET $setClause, updated_at = NOW() WHERE user_id = :user_id";
+            
+    //         // Execute and return the statement to check rowCount
+    //         $stmt = $this->query($query, $params);
+            
+    //         // Return true if at least one row was affected
+    //         return $stmt->rowCount() > 0;
+    //     } catch (Exception $e) {
+    //         error_log("Error in updateUser(): " . $e->getMessage());
+    //         error_log("Query: " . ($query ?? 'N/A'));
+    //         error_log("Params: " . print_r($params, true));
+    //         return false;
+    //     }
+    // }
 
     /**
      * Update user profile picture
