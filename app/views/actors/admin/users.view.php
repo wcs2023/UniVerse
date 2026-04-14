@@ -513,29 +513,10 @@
                                     
                                     <div class="form-group">
                                         <label for="date_of_birth" class="form-label">Date of Birth</label>
-                                        <input type="date" id="date_of_birth" name="date_of_birth" class="form-input" 
+                                        <input type="date" id="date_Of_Birth" name="date_of_birth" class="form-input" 
                                                value="${user.date_of_birth || ''}">
                                     </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="user_type" class="form-label">User Type <span class="required">*</span></label>
-                                        <select id="user_type" name="user_type" class="form-select" required>
-                                            <option value="undergraduate" ${user.user_type === 'undergraduate' ? 'selected' : ''}>Undergraduate</option>
-                                            <option value="alumni" ${user.user_type === 'alumni' ? 'selected' : ''}>Alumni</option>
-                                            <option value="company" ${user.user_type === 'company' ? 'selected' : ''}>Company</option>
-                                            <option value="school_leaver" ${user.user_type === 'school_leaver' ? 'selected' : ''}>School Leaver</option>
-                                            <option value="admin" ${user.user_type === 'admin' ? 'selected' : ''}>Admin</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="account_status" class="form-label">Account Status <span class="required">*</span></label>
-                                        <select id="account_status" name="account_status" class="form-select" required>
-                                            <option value="active" ${(user.account_status || 'active') === 'active' ? 'selected' : ''}>Active</option>
-                                            <option value="inactive" ${user.account_status === 'inactive' ? 'selected' : ''}>Inactive</option>
-                                            <option value="suspended" ${user.account_status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                                        </select>
-                                    </div>
+        
                                 </div>
                                 
                                 <div class="form-actions" style="margin-top: 1.5rem;">
@@ -548,6 +529,10 @@
                                 </div>
                             </form>
                         `;
+                        var today = new Date();
+                        var minData = new Date(today.setFullYear(today.getFullYear() - 16));
+                        var formattedDate = minData.toISOString().split('T')[0];
+                        document.getElementById('date_Of_Birth').setAttribute('max',formattedDate);
                     } else {
                         content.innerHTML = `<div class="error-message">${data.message}</div>`;
                     }
@@ -557,7 +542,6 @@
                     console.error('Error:', error);
                 });
         }
-        
         // Close modal
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
@@ -593,15 +577,15 @@
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
-
+        
         // Wait for DOM to load 
     document.addEventListener("DOMContentLoaded", function() {
         // Get the canvas element
         var ctx = document.getElementById('userTypeChart').getContext('2d');
-
+        
         // Data for the chart
         var rawRoleData = <?=  json_encode($roledata) ?>;
-
+        
         var labels = rawRoleData.map(item => item.user_type)
         var count = rawRoleData.map(item => item.count)
         var backgroundColors = [
@@ -656,7 +640,7 @@
                 }
             }
         };
-
+        
         // Create the Pie chart
         Chart.register(ChartDataLabels); 
         new Chart(ctx, config);
@@ -665,11 +649,11 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Get the canvas element
         var ctx = document.getElementById('contentChart').getContext('2d');
-
+        
         // Data for the chart
         var rawContentData = <?=  json_encode($contentdata[0]) ?>;
         // console.log(rawContentData);
-
+        
         var labels = ['Job Posts', 'Applications', 'Sessions', 'Articles', 'Forum Posts'];
         var count  = [
             rawContentData.jobPostCount,
@@ -678,7 +662,7 @@
             rawContentData.articleCount,
             rawContentData.forumCount
         ]
-       
+        
         var backgroundColors = [
             '#4F2D7F',
             '#870074', 
@@ -689,7 +673,7 @@
         ].slice(0, labels.length);
 
       
-
+        
         var data = {
             labels: labels, // Categories (User types)
             datasets: [{
@@ -705,7 +689,7 @@
         var config = {
             type: 'bar', // Chart type (bar chart)
             data: data,  // Data for the chart
-        options: {
+            options: {
             responsive: true,
             plugins: {
                 datalabels: {
@@ -745,12 +729,12 @@
             }
         }
     }
-        };
+    
+};
 
-        // Create the Pie chart
-        new Chart(ctx, config);
+    // Create the Pie chart
+    new Chart(ctx, config);
     });
-
 
 
     </script>

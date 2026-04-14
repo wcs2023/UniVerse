@@ -66,7 +66,7 @@
 
 .forum-table {
     width: 100%;
-    background-color: white;
+    background-color: rgb(254, 254, 254);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -79,8 +79,8 @@
 }
 
 .forum-table thead {
-    background-color: var(--primary-purple);
-    color: white;
+    background-color: #6B46C1;
+    color: rgb(255, 255, 255);
 }
 
 .forum-table th{
@@ -109,10 +109,10 @@
 
 .forum-table td {
     padding: 15px;
-    border-bottom:1px solid #a78bfa;
+    border-bottom:1px solid var(--text-light);
 }
 .forum-table tbody tr:hover{
-    background: #f5f2fd;
+    background-color:hsl(262, 52%, 96%);
 }
 
 .thread-title{
@@ -128,10 +128,10 @@
 
 .category-name{
     display: inline-block;
-    background: #eceaf4;
-    font-size: 12px;
     font-weight: bold;
-    color: #553c9a;
+    color:hsl(262, 86%, 58%);
+    font-size: 12px;
+    background-color:#f1ebff;
     padding: 4px 12px;
     border-radius:12px;
     margin-top:5px;
@@ -145,4 +145,45 @@
 .date-cell{
     color:var(--text-light);
     font-size:13px;
+}
+
+.delete-model {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.delete-model.hidden {
+  display: none;
+}
+
+.delete-box {
+  width: min(520px, 92vw);
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.delete-action {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.btn-confirm {
+    background: #b91c1c;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.btn-confirm:hover{
+    background: #991b1b;
 }

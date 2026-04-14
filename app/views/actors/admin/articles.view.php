@@ -147,8 +147,8 @@ if (!defined('URLROOT')) {
                         <select name="status" class="filter-select">
                             <option value="all" <?= (!isset($statusFilter) || $statusFilter === 'all') ? 'selected' : '' ?>>All Status</option>
                             <option value="published" <?= (isset($statusFilter) && $statusFilter === 'published') ? 'selected' : '' ?>>Published</option>
-                            <option value="draft" <?= (isset($statusFilter) && $statusFilter === 'draft') ? 'selected' : '' ?>>Draft</option>
-                            <option value="archived" <?= (isset($statusFilter) && $statusFilter === 'archived') ? 'selected' : '' ?>>Archived</option>
+                            <!-- <option value="draft" <?= (isset($statusFilter) && $statusFilter === 'draft') ? 'selected' : '' ?>>Draft</option> -->
+                            <option value="archived" <?= (isset($statusFilter) && $statusFilter === 'Hidden') ? 'selected' : '' ?>>Hidden</option>
                         </select>
                         
                         <div class="search-actions">
@@ -269,9 +269,9 @@ if (!defined('URLROOT')) {
                             <div class="empty-icon"></div>
                             <h3>No Articles Found</h3>
                             <p>There are no articles matching your criteria.</p>
-                            <a href="<?= BASE_URL ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
+                            <!-- <a href="<?= BASE_URL ?>/admin/createArticle" class="btn btn-primary" style="margin-top: 1rem;">
                                 <i class="fas fa-plus"></i> Create Your First Article
-                            </a>
+                            </a> -->
                         </div>
                     <?php endif; ?>
                 </div>

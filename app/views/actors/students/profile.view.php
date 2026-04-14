@@ -1,5 +1,6 @@
 <head>
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">    
 </head>
 <main class="main-container">
     <?php
@@ -37,7 +38,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
-                    <i class="fa-solid fa-article"></i>
+                    <i class="fa-solid fa-newspaper"></i>
                 </div>
                 <div class="stat-info">
                     <h3>8</h3>
@@ -45,8 +46,6 @@
                 </div>
             </div>
         </section>
-
-        
 
         <!-- Quick Links -->
         <section class="quick-links fade-in" style="margin-bottom: 4rem;">

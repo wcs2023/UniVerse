@@ -1,51 +1,17 @@
-<?php
-    $pageTitle = $title ?? '';
-    
-    if ($_SESSION['user_role'] === 'undergraduate') 
-    {
-    include __DIR__ . '/../undergraduate/Unavigation.view.php';
-    }
-    else if ($_SESSION['user_role'] === 'school_leaver') 
-    {
-    include __DIR__ . '/includes/header2.view.php';
-    }
-    else if ($_SESSION['user_role'] === 'alumni') 
-    {
-    include __DIR__ . '/../alumni/Anavbar.php';
-    } 
-    else  
-    {
-    include __DIR__ . '/../layout/nav_home.php';
-    }
-?>
-
 <head>
-    
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum/forum_single_styles.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/forum/forum_home_styles.css">
-    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
-    <?php endif; ?>
-    
-    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-    
-    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">    
-    <?php endif; ?>
-        
-    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
-        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
-    <?php endif; ?>
-                
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
+
+<?php
+$pageTitle = $title ?? '';
+include_once __DIR__ . '/includes/header2.view.php';
+?>
 
 <?php $current_user_id = $_SESSION['user_id'] ?? null; ?>
 
 <main class="container" data-base-url="<?= BASE_URL ?>">
 
-    <div class="go-back" style="margin-top: 8rem; margin-bottom: 1rem;">
+    <div class="go-back">
         <a href="<?= BASE_URL ?>/Discussion_Forum/index">← Back to Home</a>
     </div>
 
@@ -79,21 +45,21 @@
         </div>
 
         <div class="post-stats">
-            <div class="stat"><strong><?= htmlspecialchars($thread['likes']) ?></strong><span> likes</span></div>
-            <div class="stat"><strong><?= htmlspecialchars($thread['dislikes']) ?></strong><span> dislikes</span></div>
+            <div class="stat"><strong class="js-thread-like-count"><?= htmlspecialchars($thread['likes']) ?></strong><span> likes</span></div>
+            <div class="stat"><strong class="js-thread-dislike-count"><?= htmlspecialchars($thread['dislikes']) ?></strong><span> dislikes</span></div>
             <div class="stat"><strong><?= htmlspecialchars($thread['replies']) ?></strong><span> replies</span></div>
             <div class="stat"><strong><?= htmlspecialchars($thread['views']) ?></strong><span> views</span></div>
         </div>
 
         <div class="post-actions">
-            <button class="action-btn js-thread-like" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-up"></i> Like</button>
-            <button class="action-btn js-thread-dislike" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-down"></i> dislike</button>
+            <button class="action-btn js-thread-like <?= $thread['user_vote'] == 1 ? 'active' : '' ?>" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-up"></i> Like</button>
+            <button class="action-btn js-thread-dislike <?= $thread['user_vote'] == -1 ? 'disliked' : '' ?>" type="button" data-thread-id="<?= (int)$thread['thread_id'] ?>"><i class="fa-regular fa-thumbs-down"></i> dislike</button>
         </div>
 
     </div>
 
     <!-- Replies -->
-    <div class="replies-card" style="margin-bottom: 4rem;">
+    <div class="replies-card">
 
         <?php if (!empty($posts)): ?>
             <div class="replies-header">
@@ -126,8 +92,14 @@
                         </form>
 
                         <div class="reply-actions">
-                            <button class="reply-action" type="button"><?= $post['likes'] ?> <i class="fa-regular fa-thumbs-up"></i> likes</button>
-                            <button class="reply-action" type="button"><?= $post['dislikes'] ?> <i class="fa-regular fa-thumbs-down"></i> dislike</button>
+                            <button class="reply-action js-reply-like <?= ($post['user_vote'] ?? 0) == 1 ? 'active' : '' ?>" type="button" data-post-id="<?= (int)$post['post_id'] ?>">
+                                <span class="js-reply-like-count"><?= $post['likes'] ?> </span>
+                                <i class="fa-regular fa-thumbs-up"></i> likes
+                            </button>
+                            <button class="reply-action js-reply-dislike <?= ($post['user_vote'] ?? 0) == -1 ? 'active' : '' ?>" type="button" data-post-id="<?= (int)$post['post_id'] ?>">
+                                <span class="js-reply-dislike-count"><?= $post['dislikes'] ?> </span>
+                                <i class="fa-regular fa-thumbs-down"></i> dislike
+                            </button>
                             <?php if ($current_user_id !== null && $current_user_id === $post['author_id']): ?>
                                 <div class="post-actions">
                                     <button type="button"
@@ -147,7 +119,7 @@
         <?php endif; ?>
 
         <!-- Reply Form -->
-        <?php if (isset($_SESSION['user_id'])): ?>
+        <?php if (isset($_SESSION['USER'])): ?>
             <form action="<?= BASE_URL ?>/Discussion_Forum/reply_post/<?= $thread['thread_id'] ?>" method="post">
                 <div class="reply-input-section">
                     <div class="avatar"></div>
@@ -158,7 +130,7 @@
                             id="reply-content"
                             placeholder="Write your reply here..."
                             required
-                            ></textarea>
+                            minlength="10"></textarea>
 
                         <div class="reply-buttons">
                             <button class="submit-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Post Reply</button>
@@ -190,6 +162,8 @@
         </div>
     </div>
 </div>
+
+
 
 <?php include __DIR__ . '/../../layout/footer.php'; ?>
 

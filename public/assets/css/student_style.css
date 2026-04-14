@@ -206,6 +206,9 @@
   animation: fadeInUp 0.8s ease-out;
 }
 
+
+
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

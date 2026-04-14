@@ -165,14 +165,14 @@ $statusFilter = $statusFilter ?? 'all';
                             </thead>
                             <tbody>
                                 <?php foreach ($posts as $post): ?>
-                                    <?php $isHidden = (int)($post['is_deleted'] ?? 0) === 1; ?>
+                                    <?php $isLocked = (int)($post['is_locked'] ?? 0) === 1; ?>
                                     <tr>
-                                        <td>#<?= htmlspecialchars($post['id']) ?></td>
-                                        <td><?= htmlspecialchars($post['thread_title'] ?? 'Unknown Thread') ?></td>
-                                        <td><?= htmlspecialchars($post['author_name'] ?: ($post['username'] ?? 'Unknown')) ?></td>
+                                        <td>#<?= htmlspecialchars($post['thread_id']) ?></td>
+                                        <td><?= htmlspecialchars($post['title'] ?? 'Unknown Thread') ?></td>
+                                        <td><?= htmlspecialchars($post['username'] ?: ($post['username'] ?? 'Unknown')) ?></td>
                                         <td>
-                                            <span class="status-badge <?= $isHidden ? 'status-archived' : 'status-published' ?>">
-                                                <?= $isHidden ? 'Hidden' : 'Visible' ?>
+                                            <span class="status-badge <?= $isLocked ? 'status-archived' : 'status-published' ?>">
+                                                <?= $isLocked ? 'Locked' : 'Unlocked' ?>
                                             </span>
                                         </td>
                                         <td><?= !empty($post['created_at']) ? date('M d, Y', strtotime($post['created_at'])) : 'N/A' ?></td>
@@ -180,19 +180,19 @@ $statusFilter = $statusFilter ?? 'all';
                                             <div class="action-buttons">
                                                 <button
                                                     class="btn btn-sm btn-outline"
-                                                    onclick="viewPost(<?= (int)$post['id'] ?>)"
+                                                    onclick="viewPost(<?= (int)$post['thread_id'] ?>)"
                                                     title="View Details"
                                                     type="button"
                                                 >
                                                     <i class="fas fa-eye"></i>
                                                 </button>
 
-                                                <?php if (!$isHidden): ?>
-                                                    <form method="POST" action="<?= BASE_URL ?>/admin/hideForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
+                                                <?php if (!$isLocked): ?>
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/hideForumPost/<?= (int)$post['thread_id'] ?>" style="display:inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             class="btn btn-sm btn-warning"
-                                                            onclick="confirmHide(this.form, '<?= htmlspecialchars(addslashes($post['thread_title'] ?? 'Forum Post')) ?>')"
+                                                            onclick="confirmHide(this.form, '<?= htmlspecialchars(addslashes($post['title'] ?? 'Forum Post')) ?>')"
                                                             title="Hide Post"
                                                             type="button"
                                                         >
@@ -200,11 +200,11 @@ $statusFilter = $statusFilter ?? 'all';
                                                         </button>
                                                     </form>
                                                 <?php else: ?>
-                                                    <form method="POST" action="<?= BASE_URL ?>/admin/unhideForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
+                                                    <form method="POST" action="<?= BASE_URL ?>/admin/unhideForumPost/<?= (int)$post['thread_id'] ?>" style="display:inline;">
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                         <button
                                                             class="btn btn-sm btn-success"
-                                                            onclick="confirmUnhide(this.form, '<?= htmlspecialchars(addslashes($post['thread_title'] ?? 'Forum Post')) ?>')"
+                                                            onclick="confirmUnhide(this.form, '<?= htmlspecialchars(addslashes($post['title'] ?? 'Forum Post')) ?>')"
                                                             title="Unhide Post"
                                                             type="button"
                                                         >
@@ -213,11 +213,11 @@ $statusFilter = $statusFilter ?? 'all';
                                                     </form>
                                                 <?php endif; ?>
 
-                                                <form method="POST" action="<?= BASE_URL ?>/admin/deleteForumPost/<?= (int)$post['id'] ?>" style="display:inline;">
+                                                <form method="POST" action="<?= BASE_URL ?>/admin/deleteForumPost/<?= (int)$post['thread_id'] ?>" style="display:inline;">
                                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                                     <button
                                                         class="btn btn-sm btn-danger"
-                                                        onclick="confirmDelete(this.form, '<?= htmlspecialchars(addslashes($post['thread_title'] ?? 'Forum Post')) ?>')"
+                                                        onclick="confirmDelete(this.form, '<?= htmlspecialchars(addslashes($post['title'] ?? 'Forum Post')) ?>')"
                                                         title="Delete Post Permanently"
                                                         type="button"
                                                     >
@@ -283,34 +283,34 @@ $statusFilter = $statusFilter ?? 'all';
                 }
 
                 const post = data.post;
-                const isHidden = Number(post.is_deleted || 0) === 1;
-                const title = post.thread_title || 'Unknown Thread';
+                const is_locked = Number(post.is_locked || 0) === 1;
+                const title = post.title || 'Unknown Thread';
                 const author = post.author_name || post.username || 'Unknown';
                 const body = post.body || '';
 
                 content.innerHTML = `
                     <div class="post-details">
-                        <div class="post-detail-row"><span class="detail-label">Post ID:</span><span class="detail-value">#${post.id}</span></div>
-                        <div class="post-detail-row"><span class="detail-label">Thread:</span><span class="detail-value"><strong>${title}</strong></span></div>
+                        <div class="post-detail-row"><span class="detail-label">Post ID:</span><span class="detail-value">#${post.thread_id}</span></div>
+
                         <div class="post-detail-row"><span class="detail-label">Author:</span><span class="detail-value">${author}</span></div>
                         <div class="post-detail-row"><span class="detail-label">Email:</span><span class="detail-value">${post.email || 'N/A'}</span></div>
-                        <div class="post-detail-row"><span class="detail-label">Status:</span><span class="detail-value"><span class="status-badge ${isHidden ? 'status-archived' : 'status-published'}">${isHidden ? 'Hidden' : 'Visible'}</span></span></div>
+                        <div class="post-detail-row"><span class="detail-label">Status:</span><span class="detail-value"><span class="status-badge ${is_locked ? 'status-archived' : 'status-published'}">${is_locked ? 'Hidden' : 'Visible'}</span></span></div>
                         <div class="post-detail-row"><span class="detail-label">Created:</span><span class="detail-value">${post.created_at ? new Date(post.created_at).toLocaleString() : 'N/A'}</span></div>
                         <div class="post-content-preview">
                             <h4>Post Content:</h4>
                             <div class="content-box">${body}</div>
                         </div>
                         <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                            ${!isHidden ? `
-                                <form method="POST" action="<?= BASE_URL ?>/admin/hideForumPost/${post.id}" style="display:inline;">
+                            ${!is_locked ? `
+                                <form method="POST" action="<?= BASE_URL ?>/admin/hideForumPost/${post.thread_id}" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
-                                    <button type="button" class="btn btn-warning" onclick="confirmHide(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-eye-slash"></i> Hide</button>
+                                    <button type="button" class="btn btn-warning" onclick="confirmHide(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-lock"></i> Lock</button>
                                 </form>` : `
-                                <form method="POST" action="<?= BASE_URL ?>/admin/unhideForumPost/${post.id}" style="display:inline;">
+                                <form method="POST" action="<?= BASE_URL ?>/admin/unhideForumPost/${post.thread_id}" style="display:inline;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
-                                    <button type="button" class="btn btn-success" onclick="confirmUnhide(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-eye"></i> Unhide</button>
+                                    <button type="button" class="btn btn-success" onclick="confirmUnhide(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-unlock"></i> Unlock</button>
                                 </form>`}
-                            <form method="POST" action="<?= BASE_URL ?>/admin/deleteForumPost/${post.id}" style="display:inline;">
+                            <form method="POST" action="<?= BASE_URL ?>/admin/deleteForumPost/${post.thread_id}" style="display:inline;">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                 <button type="button" class="btn btn-danger" onclick="confirmDelete(this.form, '${title.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
                             </form>

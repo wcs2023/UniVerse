@@ -165,11 +165,11 @@ class User extends Model
     {
         try {
             // Whitelist only the fields users are allowed to update
-            $allowedFields = ['first_name', 'last_name', 'date_of_birth', 'gender', 'phone'];
+            $allowedFields = ['first_name', 'last_name', 'date_of_birth', 'gender', 'phone','username','email'];
 
             $setParts = [];
             $params   = ['user_id' => $userId];
-
+            
             foreach ($allowedFields as $field) {
                 if (array_key_exists($field, $data)) {
                     $setParts[]     = "{$field} = :{$field}";

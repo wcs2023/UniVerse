@@ -337,7 +337,7 @@ class AarticleModel extends Model
     /**
      * Get all articles (for admin panel)
      */
-    public function getAllArticles()
+    public function getAllArticles($filter='all',$searchQuery='')
     {
         $query = "SELECT 
                     a.article_id,
@@ -354,9 +354,24 @@ class AarticleModel extends Model
                     u.user_type
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
-                  ORDER BY a.created_at DESC";
+                  WHERE 1=1 ";
+        $param = []; 
+        if($filter !== 'all')
+        {
+            $query .= " AND a.status = ? ";
+            $param[] = $filter;
+        }
 
-        return $this->fetchAll($query);
+        if(!empty($searchQuery))
+        {
+            $query .= " AND (a.title LIKE ? OR a.category LIKE ?)";
+            $param[] = "%$searchQuery%";
+            $param[] = "%$searchQuery%";
+        }
+
+        $query .= " ORDER BY a.created_at DESC";
+
+        return $this->fetchAll($query,$param);
     }
 
     /**
