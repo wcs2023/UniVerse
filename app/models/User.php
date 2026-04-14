@@ -408,14 +408,16 @@ class User extends Model
             $query = "UPDATE users SET 
                         password_hash = :password_hash,
                         updated_at = NOW()
-                      WHERE user_id = :user_id";
+                    WHERE user_id = :user_id";
             
             $stmt = $this->query($query, [
                 'password_hash' => $hashedPassword,
                 'user_id' => $userId
             ]);
             
-            return $stmt->rowCount() > 0;
+            // Return true if the query executed. 
+            // rowCount() > 0 is only true if the data actually CHANGED.
+            return $stmt !== false; 
         } catch (Exception $e) {
             error_log("Error in updatePassword(): " . $e->getMessage());
             return false;

@@ -106,7 +106,7 @@
 
     <?php include __DIR__ . '/../../layout/footer.php'; ?>
     
-    <script>
+    <!-- <script>
         window.onload = function() {
             window.scrollTo(0, 0);
         };
@@ -144,9 +144,87 @@
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
         });
-    </script>
+    </script> -->
+<script>
+    window.onload = function() {
+        window.scrollTo(0, 0);
+    };
 
+    const form = document.getElementById('password-form');
+    const currentPassword = document.getElementById('current-password');
+    const newPassword = document.getElementById('new-password');
+    const confirmPassword = document.getElementById('confirm-password');
+    const saveBtn = document.querySelector('.save-btn');
+    const cancelBtn = document.querySelector('.cancel-btn');
+
+    // create inline error area
+    const errorBox = document.createElement('div');
+    errorBox.className = 'alert alert-error';
+    errorBox.style.display = 'none';
+    form.insertBefore(errorBox, form.querySelector('.form-actions'));
+
+    function showError(message) {
+        errorBox.textContent = message;
+        errorBox.style.display = 'block';
+    }
+
+    function clearError() {
+        errorBox.textContent = '';
+        errorBox.style.display = 'none';
+    }
+
+    function validateForm() {
+        const current = currentPassword.value.trim();
+        const newPass = newPassword.value.trim();
+        const confirmPass = confirmPassword.value.trim();
+
+        if (!current || !newPass || !confirmPass) {
+            saveBtn.disabled = false; 
+            clearError();
+            return true;
+        }
+
+        if (newPass.length < 8) {
+            showError('Password must be at least 8 characters long');
+            saveBtn.disabled = true;
+            return false;
+        }
+
+        if (newPass !== confirmPass) {
+            showError('New passwords do not match');
+            saveBtn.disabled = true;
+            return false;
+        }
+
+        clearError();
+        saveBtn.disabled = false;
+        return true;
+    }
+
+    currentPassword.addEventListener('input', validateForm);
+    newPassword.addEventListener('input', validateForm);
+    confirmPassword.addEventListener('input', validateForm);
+
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+        }
+    });
+
+    cancelBtn.addEventListener('click', function() {
+        currentPassword.value = '';
+        newPassword.value = '';
+        confirmPassword.value = '';
+        clearError();
+        saveBtn.disabled = false;
+    });
+</script>
 <style>
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
         .alert {
             padding: 15px;
             margin: 20px 0;

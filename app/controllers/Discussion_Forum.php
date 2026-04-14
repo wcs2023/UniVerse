@@ -13,7 +13,6 @@ class Discussion_Forum extends Controller
         $this->post_model = $this->model('Forum_post_model');
     }
 
-
     public function getCurrentUser()
     {
         return $_SESSION['USER'] ?? NULL;

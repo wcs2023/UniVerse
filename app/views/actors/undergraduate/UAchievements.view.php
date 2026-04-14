@@ -6,6 +6,45 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <title>UniVerse - Achievements</title>
+    <style>
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .achievement-organization {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }   
+        
+        .achiement-card
+        {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .achievement-organization
+        {
+            flex: 1;
+        }
+        
+    </style>
+
 </head>
 <body>
     <?php include 'Unavigation.view.php'; ?>
@@ -136,31 +175,5 @@
         };
     </script>
 
-    <style>
-        .alert {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border-left: 4px solid #10b981;
-        }
-
-        .alert-error {
-            background-color: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
-        }
-
-        .achievement-organization {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
 </body>
 </html>

@@ -180,13 +180,13 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="address1">Address</label>
                                 <input type="text"
                                     id="address1"
                                     name="address_line1"
-                                    value="<?= htmlspecialchars($data['user']['address'] ?? '') ?>">
-                            </div>
+                                    value="<//?= htmlspecialchars($data['user']['address'] ?? '') ?>">
+                            </div> -->
                         </div>
                         <div class="form-section">
                             <h2>Change Password</h2>
