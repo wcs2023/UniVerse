@@ -281,6 +281,10 @@
                             <td>
                                 <div class="action-buttons">
                                     <button class="btn btn-sm btn-primary" onclick="viewApplicationDetails(event, <?= $application['application_id'] ?>)">View</button>
+
+                                    <?php if (!empty($application['user_id'])): ?>
+                                        <a class="btn btn-sm btn-secondary" href="<?= BASE_URL ?>/company/applicantProfile/<?= (int)$application['user_id'] ?>">View Profile</a>
+                                    <?php endif; ?>
                                     
                                     <?php if ($application['status'] == 'pending' || $application['status'] == 'under_review'): ?>
                                         <button class="btn btn-sm btn-secondary" onclick="updateStatusWithAction(<?= $application['application_id'] ?>, 'shortlisted')">Shortlist</button>

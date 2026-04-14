@@ -286,6 +286,60 @@ class Company extends Controller
         
         $this->view('actors/company/applications', $data);
     }
+
+    /**
+     * View an applicant profile (company-side, read-only)
+     * Only allowed if the applicant applied to a job owned by this company.
+     */
+    public function applicantProfile($applicantUserId = null)
+    {
+        $companyId = $_SESSION['user_id'];
+        $user = $this->userModel->getUserById($companyId);
+
+        $applicantUserId = is_numeric($applicantUserId) ? (int)$applicantUserId : 0;
+        if ($applicantUserId <= 0) {
+            $_SESSION['error'] = 'Invalid applicant selected';
+            header('Location: ' . BASE_URL . '/company/applications');
+            exit;
+        }
+
+        // Access control
+        if (!$this->applicationModel->companyHasApplicant($companyId, $applicantUserId)) {
+            $_SESSION['error'] = 'Access denied';
+            header('Location: ' . BASE_URL . '/company/applications');
+            exit;
+        }
+
+        $applicant = $this->userModel->getUserById($applicantUserId);
+        if (!$applicant) {
+            $_SESSION['error'] = 'Applicant not found';
+            header('Location: ' . BASE_URL . '/company/applications');
+            exit;
+        }
+
+        $undergradProfileModel = $this->model('UndergraduateProfile');
+        $achievementModel = $this->model('Achievement');
+        $articleModel = $this->model('ArticleModel');
+
+        $undergradProfile = $undergradProfileModel->getProfileByUserId($applicantUserId);
+        $achievements = $achievementModel->getAchievementsByUserId($applicantUserId);
+
+        // Only show published content
+        $articles = $articleModel->getArticlesByStatus($applicantUserId, 'published');
+        if (is_array($articles) && count($articles) > 20) {
+            $articles = array_slice($articles, 0, 20);
+        }
+
+        $data = [
+            'user' => $user,
+            'applicant' => $applicant,
+            'undergradProfile' => $undergradProfile,
+            'achievements' => $achievements ?? [],
+            'articles' => $articles ?? []
+        ];
+
+        $this->view('actors/company/applicant_profile', $data);
+    }
     
     /**
      * Update Application Status (AJAX)
