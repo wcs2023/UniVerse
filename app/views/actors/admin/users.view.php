@@ -208,6 +208,7 @@
                             <option value="undergraduate" <?= (isset($roleFilter) && $roleFilter === 'undergraduate') ? 'selected' : '' ?>>Undergraduates</option>
                             <option value="alumni" <?= (isset($roleFilter) && $roleFilter === 'alumni') ? 'selected' : '' ?>>Alumni</option>
                             <option value="company" <?= (isset($roleFilter) && $roleFilter === 'company') ? 'selected' : '' ?>>Companies</option>
+                            <option value="school_leaver" <?= (isset($roleFilter) && $roleFilter === 'school_leaver') ? 'selected' : '' ?>>School Leavers</option>
                             <option value="admin" <?= (isset($roleFilter) && $roleFilter === 'admin') ? 'selected' : '' ?>>Admins</option>
                         </select>
                         

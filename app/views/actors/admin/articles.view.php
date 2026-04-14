@@ -144,11 +144,10 @@ if (!defined('URLROOT')) {
                             >
                         </div>
                         
-                        <select name="status" class="filter-select">
+                        <select name="status" class="filter-select" value="<?= htmlspecialchars($statusFilter ?? 'all') ?>">
                             <option value="all" <?= (!isset($statusFilter) || $statusFilter === 'all') ? 'selected' : '' ?>>All Status</option>
                             <option value="published" <?= (isset($statusFilter) && $statusFilter === 'published') ? 'selected' : '' ?>>Published</option>
-                            <!-- <option value="draft" <?= (isset($statusFilter) && $statusFilter === 'draft') ? 'selected' : '' ?>>Draft</option> -->
-                            <option value="archived" <?= (isset($statusFilter) && $statusFilter === 'Hidden') ? 'selected' : '' ?>>Hidden</option>
+                            <option value="hidden" <?= (isset($statusFilter) && $statusFilter === 'hidden') ? 'selected' : '' ?>>Hidden</option>
                         </select>
                         
                         <div class="search-actions">
@@ -291,7 +290,6 @@ if (!defined('URLROOT')) {
             </div>
         </div>
     </div>
-    
     <script>
         // View article details
         function viewArticle(articleId) {
@@ -306,7 +304,7 @@ if (!defined('URLROOT')) {
             modal.classList.add('is-open');
             content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             
-            fetch('<?= URLROOT ?>/admin/viewArticle/' + articleId, {
+            fetch('<?= BASE_URL ?>/admin/viewArticle/' + articleId, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
@@ -364,19 +362,19 @@ if (!defined('URLROOT')) {
                                 </div>
                                 <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
                                     ${article.status !== 'archived' ? `
-                                    <form method="POST" action="<?= URLROOT ?>/admin/hideArticle/${article.article_id}" style="display:inline;">
+                                    <form method="POST" action="<?= BASE_URL ?>/admin/hideArticle/${article.article_id}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                         <button type="button" class="btn btn-warning" onclick="confirmHide(this.form, '${articleTitle.replace(/'/g, "\\'")}')">
                                             <i class="fas fa-eye-slash"></i> Hide
                                         </button>
                                     </form>` : `
-                                    <form method="POST" action="<?= URLROOT ?>/admin/unhideArticle/${article.article_id}" style="display:inline;">
+                                    <form method="POST" action="<?= BASE_URL ?>/admin/unhideArticle/${article.article_id}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                         <button type="button" class="btn btn-success" onclick="confirmUnhide(this.form, '${articleTitle.replace(/'/g, "\\'")}')">
                                             <i class="fas fa-eye"></i> Unhide
                                         </button>
                                     </form>`}
-                                    <form method="POST" action="<?= URLROOT ?>/admin/deleteArticle/${article.article_id}" style="display:inline;">
+                                    <form method="POST" action="<?= BASE_URL ?>/admin/deleteArticle/${article.article_id}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['admin_csrf_token'] ?? '') ?>">
                                         <button type="button" class="btn btn-danger" onclick="confirmDelete(this.form, '${articleTitle.replace(/'/g, "\\'")}')">
                                             <i class="fas fa-trash"></i> Delete Permanently

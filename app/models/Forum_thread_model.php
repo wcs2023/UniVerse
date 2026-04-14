@@ -108,8 +108,11 @@ class Forum_thread_model extends Model
             }
 
             if (!empty($search)) {
-                $query .= " AND (t.title LIKE :search OR t.content LIKE :search OR u.username LIKE :search OR u.email LIKE :search)";
-                $params['search'] = '%' . $search . '%';
+                $query .= " AND (t.title LIKE :search1 OR t.content LIKE :search2 OR u.username LIKE :search3 OR u.email LIKE :search4)";
+                $params['search1'] = "%$search%";
+                $params['search2'] = "%$search%";
+                $params['search3'] = "%$search%";
+                $params['search4'] = "%$search%";
             }
 
             $query .= " ORDER BY t.created_at DESC";
