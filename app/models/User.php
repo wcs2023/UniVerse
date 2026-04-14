@@ -146,7 +146,7 @@ class User extends Model
                     (SELECT COUNT(*) FROM job_applications) as jobApplicationCount,
                     (SELECT COUNT(*) FROM mentorship_bookings) as bookedSessionCount,
                     (SELECT COUNT(*) FROM articles) as articleCount,
-                    (SELECT COUNT(*) FROM forum_posts) as forumCount
+                    (SELECT COUNT(*) FROM forum_threads) as forumCount
                     ";
 
         return $this->fetchAll($query);
