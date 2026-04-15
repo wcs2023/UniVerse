@@ -2,7 +2,6 @@
 
 class Discussion_Forum extends Controller
 {
-
     protected $thread_model;
     protected $category_model;
     protected $post_model;
@@ -162,9 +161,9 @@ class Discussion_Forum extends Controller
             header("Location: " . BASE_URL . "/Discussion_Forum?error=Invalid thread ID");
             exit;
         }
-
+        $currentUserId = $this->getCurrentUserId();
         $thread = $this->thread_model->getIdWithDetails($thread_id);
-        $thread_votes = $this->thread_model->getThreadVotes($thread_id);
+        $thread_votes = $this->thread_model->getThreadVotes($thread_id,$currentUserId);
 
         if (!$thread) {
             header("Location: " . BASE_URL . "/Discussion_Forum?error=Thread not found");
@@ -196,7 +195,7 @@ class Discussion_Forum extends Controller
 
         $post_data = [];
         foreach ($posts as $post) {
-            $post_votes = $this->post_model->getReplyVotes((int)$post['post_id']);
+            $post_votes = $this->post_model->getReplyVotes((int)$post['post_id'], $currentUserId);
             $post_data[] = [
                 'post_id' => $post['post_id'],
                 'content' => $post['content'],

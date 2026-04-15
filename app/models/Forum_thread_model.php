@@ -277,21 +277,61 @@ class Forum_thread_model extends Model
         return $this->fetchAll($query, ['search_term' => '%' . $search_term . '%']) ?: [];
     }
 
-    public function getThreadVotes(int $thread_id)
+    // public function getThreadVotes(int $thread_id, int $user_id = null)
+    // {
+    //     $query = "SELECT 
+    //                 SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END) AS likes,
+    //                 SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END) AS dislikes
+    //                 FROM forum_thread_votes
+    //                 WHERE thread_id = :thread_id";
+
+    //     $row = $this->fetch($query, ['thread_id' => $thread_id]);
+
+    //     return [
+    //         'likes' => (int)($row['likes'] ?? 0),
+    //         'dislikes' => (int)($row['dislikes'] ?? 0)
+    //     ];
+    // }
+    public function getThreadVotes(int $thread_id, ?int $user_id = null)
     {
         $query = "SELECT 
-                    SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END) AS likes,
-                    SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END) AS dislikes
-                    FROM forum_thread_votes
-                    WHERE thread_id = :thread_id";
+                    COALESCE(SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END), 0) AS likes,
+                    COALESCE(SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END), 0) AS dislikes";
 
-        $row = $this->fetch($query, ['thread_id' => $thread_id]);
+        if ($user_id !== null) {
+            $query .= ",
+                    COALESCE((
+                        SELECT vote
+                        FROM forum_thread_votes
+                        WHERE thread_id = :sub_thread_id
+                        AND user_id = :sub_user_id
+                        LIMIT 1
+                    ), 0) AS user_vote";
+        } else {
+            $query .= ",
+                    0 AS user_vote";
+        }
+
+        $query .= " FROM forum_thread_votes
+                    WHERE thread_id = :main_thread_id";
+
+        $params = [
+            'main_thread_id' => $thread_id
+        ];
+
+        if ($user_id !== null) {
+            $params['sub_thread_id'] = $thread_id;
+            $params['sub_user_id'] = $user_id;
+        }
+
+        $row = $this->fetch($query, $params);
 
         return [
             'likes' => (int)($row['likes'] ?? 0),
-            'dislikes' => (int)($row['dislikes'] ?? 0)
+            'dislikes' => (int)($row['dislikes'] ?? 0),
+            'user_vote' => (int)($row['user_vote'] ?? 0)
         ];
-    }
+    } 
 
     public function setThreadVote(int $thread_id, int $user_id, int $vote)
     {
@@ -329,14 +369,54 @@ class Forum_thread_model extends Model
             $existing_vote = $vote;
         }
 
-        $count =  $this->getThreadVotes($thread_id);
+        $count =  $this->getThreadVotes($thread_id, $user_id);
         return [
             'likes' => $count['likes'],
             'dislikes' => $count['dislikes'],
             'user_vote' => $existing_vote
         ];
     }
+    public function getReplyVotes(int $post_id, ?int $user_id = null)
+    {
+        $query = "SELECT 
+                    COALESCE(SUM(CASE WHEN vote = 1 THEN 1 ELSE 0 END), 0) AS likes,
+                    COALESCE(SUM(CASE WHEN vote = -1 THEN 1 ELSE 0 END), 0) AS dislikes";
 
+        if ($user_id !== null) {
+            $query .= ",
+                    COALESCE((
+                        SELECT vote
+                        FROM forum_post_votes
+                        WHERE post_id = :sub_post_id
+                        AND user_id = :sub_user_id
+                        LIMIT 1
+                    ), 0) AS user_vote";
+        } else {
+            $query .= ",
+                    0 AS user_vote";
+        }
+
+        $query .= " FROM forum_post_votes
+                    WHERE post_id = :main_post_id";
+
+        $params = [
+            'main_post_id' => $post_id
+        ];
+
+        if ($user_id !== null) {
+            $params['sub_post_id'] = $post_id;
+            $params['sub_user_id'] = $user_id;
+        }
+
+        $row = $this->fetch($query, $params);
+
+        return [
+            'likes' => (int)($row['likes'] ?? 0),
+            'dislikes' => (int)($row['dislikes'] ?? 0),
+            'user_vote' => (int)($row['user_vote'] ?? 0)
+        ];
+    }
+    
     public function getThreadCountByUserId(int $user_id)
     {
         $query = "SELECT COUNT(*) AS thread_count

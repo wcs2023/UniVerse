@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
         <style>        
             .main-container {
-                margin-top: 10vh; /* Adjust this value based on your header height */
+                margin-top: 7rem; /* Adjust this value based on your header height */
             }
         </style>
     <?php endif; ?>
@@ -82,11 +82,13 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="fa-solid fa-save"></i> Save
                     </button>
-                    <a href="<?= BASE_URL ?>/Discussion_Forum/index" class="btn btn-cancel">Cancel</a>
+                    <button type="reset" class="btn btn-secondary" onclick="window.location.href='<?= BASE_URL ?>/Discussion_Forum/view_thread/<?= $thread['thread_id'] ?>'">
+                         <i class="fa-solid fa-redo"></i> Cancel
+                    </button>
                 </div>
             </form>
         </div>
     </main>
 
-
+    <?php include __DIR__ . '/../../layout/footer.php'; ?>
 </body>

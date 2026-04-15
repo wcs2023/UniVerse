@@ -39,7 +39,7 @@
 
 
 <body>
-    <main class="main-container" style="margin-bottom: 4rem; margin-top: 8rem;">
+    <main class="main-container">
         <div class="form-container">
             <div class="form-header">
                 <h1><i class="fa-solid fa-circle-plus"></i> Start a Discussion</h1>

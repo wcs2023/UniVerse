@@ -1,10 +1,50 @@
 <head>
     <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/forum/forum_my_Dis_styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
+        <style>
+            .form-container
+            {
+                margin-top: 7rem;
+            }
+        </style>
+    <?php endif; ?>
+    
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'school_leaver'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/student_style.css">    
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">   
+    <?php endif; ?>
+
+
 </head>
 <?php
 $pageTitle = $title ?? 'My Discussion';
-include_once __DIR__ . '/includes/header2.view.php';
+?>  
+<?php 
+    if ($_SESSION['user_role'] === 'undergraduate') 
+    {
+        include __DIR__ . '/../undergraduate/Unavigation.view.php';
+    }
+    else if ($_SESSION['user_role'] === 'school_leaver') 
+    {
+    include __DIR__ . '/includes/header2.view.php';
+    } 
+    else if ($_SESSION['user_role'] === 'alumni') 
+    {
+        include __DIR__ . '/../alumni/Anavbar.php';
+    }
+    else  
+    {
+        include __DIR__ . '/../layout/nav_home.php';
+    }
 ?>
+
 
 <body data-base-url="<?= BASE_URL ?>">
     <div class="form-container">
