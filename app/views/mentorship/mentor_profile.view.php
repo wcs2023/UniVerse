@@ -10,8 +10,17 @@ if (!defined('APPROOT')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($data['mentor']['full_name']) ?> - Mentor Profile</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/mentorship.css">
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
+    <?php endif; ?>
+        
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
+    
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
+    <?php endif; ?>
+
+
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         /* Page-specific styles using CSS variables from alumni.css */
@@ -109,7 +118,7 @@ if (!defined('APPROOT')) {
     }
     ?>
 
-    <div class="ms-container" style="padding: 2rem 1rem;">
+    <div class="ms-container" style="padding: 3rem 5rem;">
         <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="back-button">
             ← Back to Mentors
         </a>
@@ -119,7 +128,7 @@ if (!defined('APPROOT')) {
             <?php 
             $profilePic = !empty($data['mentor']['profile_picture']) 
                 ? BASE_URL . $data['mentor']['profile_picture']
-                : BASE_URL . '/assets/images/default-avatar.svg';
+                : BASE_URL . '/assets/images/U.png';
             ?>
             <img src="<?= $profilePic ?>" 
                  alt="<?= htmlspecialchars($data['mentor']['full_name']) ?>"

@@ -32,10 +32,15 @@
             color: #666;
         }   
         
-        .achiement-card
+        .achievement-card
         {
             display: flex;
             flex-direction: column;
+        }
+
+        .achievement-body
+        {
+            flex: 1;
         }
 
         .achievement-organization
@@ -43,6 +48,7 @@
             flex: 1;
         }
         
+
     </style>
 
 </head>
@@ -120,21 +126,25 @@
                             <?= ucfirst(htmlspecialchars($achievement['achievement_type'])) ?>
                         </span>
                     </div>
-                    <div class="achievement-date"><?= date('F Y', strtotime($achievement['date_achieved'])) ?></div>
-                    <div class="achievement-description">
-                        <?= htmlspecialchars($achievement['description']) ?>
+                    <div class="achievement-body"> 
+                        <div class="achievement-date"><?= date('F Y', strtotime($achievement['date_achieved'])) ?></div>
+                        <div class="achievement-description">
+                            <?= htmlspecialchars($achievement['description']) ?>
+                        </div>
                     </div>
-                    <?php if (!empty($achievement['institution'])): ?>
-                    <div class="achievement-organization">
-                        <strong>Issued by:</strong> <?= htmlspecialchars($achievement['institution']) ?>
-                    </div>
-                    <?php endif; ?>
-                    <div class="achievement-actions">
-                        <button class="edit-btn" onclick="editAchievement(<?= $achievement['achievement_id'] ?>)">Edit</button>
-                        <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">Delete</button>
-                        <?php if (!empty($achievement['certificate_url'])): ?>
-                        <a href="<?= htmlspecialchars($achievement['certificate_url']) ?>" target="_blank" class="view-link">View Certificate</a>
+                    <div> 
+                        <?php if (!empty($achievement['institution'])): ?>
+                            <div class="achievement-organization">
+                                <strong>Issued by:</strong> <?= htmlspecialchars($achievement['institution']) ?>
+                            </div>
                         <?php endif; ?>
+                        <div class="achievement-actions">
+                            <button class="edit-btn" onclick="editAchievement(<?= $achievement['achievement_id'] ?>)">Edit</button>
+                            <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">Delete</button>
+                            <?php if (!empty($achievement['certificate_url'])): ?>
+                                <a href="<?= htmlspecialchars($achievement['certificate_url']) ?>" target="_blank" class="view-link">View Certificate</a>
+                                <?php endif; ?>
+                        </div>
                     </div>
                 </div>
                 <?php endforeach; ?>

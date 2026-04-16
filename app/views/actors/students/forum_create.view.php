@@ -5,6 +5,12 @@
 
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'undergraduate'): ?>
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
+        <style>
+            .main-container
+            {
+                margin-top: 6rem; /* Adjust this value based on your header height */
+            }
+        </style>
     <?php endif; ?>
     
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
