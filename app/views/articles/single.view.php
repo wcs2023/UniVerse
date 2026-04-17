@@ -197,6 +197,10 @@
         gap: 1rem;
     }
 }
+    .article-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+    }
 
 </style>
 </head>
@@ -222,9 +226,9 @@
             <div class="article-header">
                 <h1><?= $data['article']['title'] ?></h1>
             </div>
-            <div class="article-body">
-                <p>
-                    <?= $data['article']['content']?>
+            <div class="article-body article-content">
+                <p>    
+                    <?= nl2br(htmlspecialchars($data['article']['content'])) ?>
                 </p>
                 <hr>
                 <footer class="article-footer"> 

@@ -20,7 +20,6 @@ if (!defined('APPROOT')) {
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
     <?php endif; ?>
 
-
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
     <style>
         /* Page-specific styles using CSS variables from alumni.css */

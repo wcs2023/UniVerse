@@ -96,6 +96,26 @@ class JobApplication extends Model
     }
 
     /**
+     * Verify that a given applicant has applied to a job owned by a company
+     */
+    public function companyHasApplicant($companyId, $applicantUserId)
+    {
+        $query = "SELECT 1
+                  FROM job_applications ja
+                  INNER JOIN jobs j ON ja.job_id = j.job_id
+                  WHERE j.company_id = :company_id
+                    AND ja.user_id = :user_id
+                  LIMIT 1";
+
+        $row = $this->fetch($query, [
+            'company_id' => $companyId,
+            'user_id' => $applicantUserId
+        ]);
+
+        return (bool)$row;
+    }
+
+    /**
      * Get application by ID
      */
     public function getApplicationById($applicationId)

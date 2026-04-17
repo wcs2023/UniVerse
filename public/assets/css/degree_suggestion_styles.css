@@ -13,6 +13,12 @@
     --warning-color: #f59e0b;
 }
 
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 /* Hero Section */
 .degree-hero {
     background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));

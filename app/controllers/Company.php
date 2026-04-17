@@ -172,6 +172,16 @@ class Company extends Controller
                 'status' => $_POST['status'] ?? 'active'
             ];
             
+            if (!empty($data['salary_min']) && $data['salary_min'] < 0) {
+                $_SESSION['error'] = 'Minimum salary cannot be negative';
+            }
+            elseif (!empty($data['salary_max']) && $data['salary_max'] < 0) {
+                $_SESSION['error'] = 'Maximum salary cannot be negative';
+            }
+            elseif (!empty($data['salary_min']) && !empty($data['salary_max']) && $data['salary_min'] > $data['salary_max']) {
+                $_SESSION['error'] = 'Minimum salary must be less than maximum salary';
+            }
+ 
             // Validate required fields
             if (empty($data['title']) || empty($data['description']) || empty($data['responsibilities'])) {
                 $_SESSION['error'] = 'Please fill in all required fields';
@@ -201,21 +211,20 @@ class Company extends Controller
      * Manage Jobs
      */
     public function managejobs()
-    {
+    {   
         $companyId = $_SESSION['user_id'];
         $user = $this->userModel->getUserById($companyId);
-        
-        // Get filter parameters
+
         $status = $_GET['status'] ?? null;
-        
-        // Get all jobs for this company
-        $jobs = $this->jobModel->getJobsByCompany($companyId, $status);
-        
+        $search = trim($_GET['search'] ?? '');
+
+        $jobs = $this->jobModel->getJobsByCompany($companyId, $status, $search);
+
         $data = [
             'user' => $user,
             'jobs' => $jobs ?? []
         ];
-        
+
         $this->view('actors/company/managejobs', $data);
     }
     
@@ -286,6 +295,60 @@ class Company extends Controller
         
         $this->view('actors/company/applications', $data);
     }
+
+    /**
+     * View an applicant profile (company-side, read-only)
+     * Only allowed if the applicant applied to a job owned by this company.
+     */
+    public function applicantProfile($applicantUserId = null)
+    {
+        $companyId = $_SESSION['user_id'];
+        $user = $this->userModel->getUserById($companyId);
+
+        $applicantUserId = is_numeric($applicantUserId) ? (int)$applicantUserId : 0;
+        if ($applicantUserId <= 0) {
+            $_SESSION['error'] = 'Invalid applicant selected';
+            header('Location: ' . BASE_URL . '/company/applications');
+            exit;
+        }
+
+        // Access control
+        if (!$this->applicationModel->companyHasApplicant($companyId, $applicantUserId)) {
+            $_SESSION['error'] = 'Access denied';
+            header('Location: ' . BASE_URL . '/company/applications');
+            exit;
+        }
+
+        $applicant = $this->userModel->getUserById($applicantUserId);
+        if (!$applicant) {
+            $_SESSION['error'] = 'Applicant not found';
+            header('Location: ' . BASE_URL . '/company/applications');
+            exit;
+        }
+
+        $undergradProfileModel = $this->model('UndergraduateProfile');
+        $achievementModel = $this->model('Achievement');
+        $articleModel = $this->model('ArticleModel');
+
+        $undergradProfile = $undergradProfileModel->getProfileByUserId($applicantUserId);
+        $achievements = $achievementModel->getAchievementsByUserId($applicantUserId);
+
+        // Only show published content
+        $articles = $articleModel->getArticlesByStatus($applicantUserId, 'published');
+        if (is_array($articles) && count($articles) > 20) {
+            $articles = array_slice($articles, 0, 20);
+        }
+
+        $data = [
+            'user' => $user,
+            'applicant' => $applicant,
+            'undergradProfile' => $undergradProfile,
+            'achievements' => $achievements ?? [],
+            'articles' => $articles ?? []
+        ];
+
+        $this->view('actors/company/applicant_profile', $data);
+    }
     
     /**
      * Update Application Status (AJAX)
@@ -353,6 +416,67 @@ class Company extends Controller
         }
         exit;
     }
+     
+    
+    public function changePassword() {
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . BASE_URL . '/login');
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/company/profile');
+            exit();
+        }
+
+        try {
+            $userId = $_SESSION['user_id'];
+            $currentPassword = $_POST['currentPassword'] ?? '';
+            $newPassword = $_POST['newPassword'] ?? '';
+            $confirmPassword = $_POST['confirmPassword'] ?? '';
+
+            // Validate inputs
+            if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+                throw new Exception('All fields are required');
+            }
+
+            if ($newPassword !== $confirmPassword) {
+                throw new Exception('New passwords do not match');
+            }
+
+            if (strlen($newPassword) < 8) {
+                throw new Exception('Password must be at least 8 characters long');
+            }
+
+            // Verify current password
+            $userModel = new User();
+            $user = $userModel->getUserById($userId);
+
+            if (!password_verify($currentPassword, $user['password_hash'])) {
+                throw new Exception('Current password is incorrect');
+            }
+
+            // Update password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $updated = $userModel->updatePassword($userId, $hashedPassword);
+
+            if ($updated) {
+                $_SESSION['success'] = 'Password updated successfully!';
+            } else {
+                throw new Exception('Failed to update password');
+            }
+
+        } catch (Exception $e) {
+            error_log("Password change error: " . $e->getMessage());
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        // header('Location: ' . BASE_URL . '/');
+        header('Location: ' . BASE_URL . '/company/profile');
+        exit();
+    }
+
     
     /**
      * Update Job Status (AJAX)
@@ -370,7 +494,7 @@ class Company extends Controller
                 $job = $this->jobModel->getJobById($jobId);
                 
                 if ($job && $job['company_id'] == $companyId) {
-                    $result = $this->jobModel->updateJob($jobId, ['status' => $status]);
+                    $result = $this->jobModel->updateJobStatus($jobId, $status);
                     
                     if ($result) {
                         echo json_encode(['success' => true, 'message' => 'Job status updated']);
@@ -386,7 +510,7 @@ class Company extends Controller
         }
         exit;
     }
-    
+        
     /**
      * Edit Job
      */
@@ -434,7 +558,17 @@ class Company extends Controller
                 'contact_phone' => trim($_POST['contact_phone'] ?? ''),
                 'status' => $_POST['status'] ?? 'active'
             ];
-            
+ 
+            if (!empty($data['salary_min']) && $data['salary_min'] < 0) {
+                $_SESSION['error'] = 'Minimum salary cannot be negative';
+            }
+            elseif (!empty($data['salary_max']) && $data['salary_max'] < 0) {
+                $_SESSION['error'] = 'Maximum salary cannot be negative';
+            }
+            elseif (!empty($data['salary_min']) && !empty($data['salary_max']) && $data['salary_min'] > $data['salary_max']) {
+                $_SESSION['error'] = 'Minimum salary must be less than maximum salary';
+            }
+ 
             // Validate phone number if provided (Sri Lankan format)
             if (!empty($data['contact_phone']) && !preg_match('/^\+94\d{9}$/', $data['contact_phone'])) {
                 $_SESSION['error'] = 'Contact phone must be in format +94xxxxxxxxx (e.g., +94771234567)';

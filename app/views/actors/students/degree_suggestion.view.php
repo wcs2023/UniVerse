@@ -1,10 +1,11 @@
+<head>
+    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/degree_suggestion_styles.css">
 <?php
     $title = "Degree Recommendation System";
     $userType = $data['user_type'] ?? 'student';
     include_once __DIR__ . '/includes/header2.view.php';
 ?>
-<head>
-    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/degree_suggestion_styles.css">
+    <title> <?=$title?> </title>;
 </head>
 
 <main class="main-container">

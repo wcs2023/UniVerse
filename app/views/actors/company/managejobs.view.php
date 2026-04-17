@@ -28,14 +28,28 @@
                 <h2 class="card-title">Job Listings</h2>
                 <p class="card-subtitle">Manage your active and past job postings</p>
             </div>
-            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search jobs..." style="max-width: 300px;">
-                <select id="statusFilter" class="form-control" style="max-width: 200px;" onchange="filterJobs()">
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control" 
+                    placeholder="Search jobs..."
+                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                    style="max-width: 300px;"
+                >
+
+                <select id="statusFilter" class="form-control" style="max-width: 200px;">
                     <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="closed">Closed</option>
-                    <option value="draft">Draft</option>
+                    <option value="active" <?= (($_GET['status'] ?? '') === 'active') ? 'selected' : '' ?>>Active</option>
+                    <option value="closed" <?= (($_GET['status'] ?? '') === 'closed') ? 'selected' : '' ?>>Closed</option>
+                    <option value="draft" <?= (($_GET['status'] ?? '') === 'draft') ? 'selected' : '' ?>>Draft</option>
                 </select>
+
+                <button type="button" class="action-btn edit-btn" style="padding: 0.5rem 1rem;"
+                onclick="applyFilters()">Search</button>
+                <button type="button" class="action-btn delete-btn" style="padding: 0.5rem 1rem;"
+                onclick="resetFilters()">Reset</button>
+
             </div>
             
             <table class="table">
@@ -112,10 +126,34 @@
             });
         });
 
-        function filterJobs() {
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.trim();
             const status = document.getElementById('statusFilter').value;
-            window.location.href = '<?= BASE_URL ?>/company/managejobs' + (status ? '?status=' + status : '');
+
+            const params = new URLSearchParams();
+
+            if (search) params.append('search', search);
+            if (status) params.append('status', status);
+
+            window.location.href = '<?= BASE_URL ?>/company/managejobs' + (params.toString() ? '?' + params.toString() : '');
         }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            window.location.href = '<?= BASE_URL ?>/company/managejobs';
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            applyFilters();
+        });
 
         function closeJob(jobId) {
             if (confirm('Are you sure you want to close this job posting?')) {

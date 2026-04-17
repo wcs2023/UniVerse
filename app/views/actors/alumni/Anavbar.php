@@ -30,7 +30,7 @@ $current_path = parse_url($current_uri, PHP_URL_PATH);
                     <a href="<?= BASE_URL ?>/aarticles" class="nav-link <?= (strpos($current_path, '/articles') !== false || strpos($current_path, '/aarticles') !== false) ? 'active' : '' ?>" <?= (strpos($current_path, '/articles') !== false || strpos($current_path, '/aarticles') !== false) ? 'aria-current="page"' : '' ?>>Articles</a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?= BASE_URL ?>/Discussion_forum" class="nav-link <?= (strpos($current_path, '/adiscussion') !== false) ? 'active' : '' ?>" <?= (strpos($current_path, '/adiscussion') !== false) ? 'aria-current="page"' : '' ?>>Discussion Forums</a>
+                    <a href="<?= BASE_URL ?>/Discussion_forum" class="nav-link <?= (strpos($current_path, '/Discussion_forum') !== false) ? 'active' : '' ?>" <?= (strpos($current_path, '/adiscussion') !== false) ? 'aria-current="page"' : '' ?>>Discussion Forums</a>
                 </li>
                 <li class="nav-item">
                     <a href="<?= BASE_URL ?>/amentorships" class="nav-link <?= (strpos($current_path, '/mentorships') !== false || strpos($current_path, '/amentorships') !== false) ? 'active' : '' ?>" <?= (strpos($current_path, '/mentorships') !== false || strpos($current_path, '/amentorships') !== false) ? 'aria-current="page"' : '' ?>>Mentoring</a>

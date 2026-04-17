@@ -35,43 +35,40 @@
                             </div>
                         <?php endif; ?>
 
-                        <form class="contact-form" action="<?= BASE_URL ?>/contact" method="POST">
-                            <div class="form-group">
-                                <label for="name">Full Name <span class="required">*</span></label>
-                                <input type="text" id="name" name="name" value="<?= htmlspecialchars($name ?? '') ?>" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email Address <span class="required">*</span></label>
-                                <input type="email" id="email" name="email" value="<?= htmlspecialchars($email ?? '') ?>" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="subject">Subject <span class="required">*</span></label>
-                                <select id="subject" name="subject" required>
-                                    <option value="">Select a subject</option>
-                                    <option value="general" <?= (($subject ?? '') === 'general') ? 'selected' : '' ?>>General Inquiry</option>
-                                    <option value="technical" <?= (($subject ?? '') === 'technical') ? 'selected' : '' ?>>Technical Support</option>
-                                    <option value="partnerships" <?= (($subject ?? '') === 'partnerships') ? 'selected' : '' ?>>Partnership Opportunities</option>
-                                    <option value="feedback" <?= (($subject ?? '') === 'feedback') ? 'selected' : '' ?>>Feedback & Suggestions</option>
-                                    <option value="account" <?= (($subject ?? '') === 'account') ? 'selected' : '' ?>>Account Issues</option>
-                                    <option value="other" <?= (($subject ?? '') === 'other') ? 'selected' : '' ?>>Other</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="message">Message <span class="required">*</span></label>
-                                <textarea id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required><?= htmlspecialchars($message ?? '') ?></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary submit-btn">
-                                <span>Send Message</span>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
-                                </svg>
-                            </button>
-                        </form>
+                <form class="contact-form" action="<?= BASE_URL ?>/contact" method="POST">
+                    <div class="form-group">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($data['name'] ?? '') ?>" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($data['email'] ?? '') ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject <span class="required">*</span></label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="general" <?= (($data['subject'] ?? '') === 'general') ? 'selected' : '' ?>>General Inquiry</option>
+                            <option value="technical" <?= (($data['subject'] ?? '') === 'technical') ? 'selected' : '' ?>>Technical Support</option>
+                            <option value="partnerships" <?= (($data['subject'] ?? '') === 'partnerships') ? 'selected' : '' ?>>Partnership Opportunities</option>
+                            <option value="feedback" <?= (($data['subject'] ?? '') === 'feedback') ? 'selected' : '' ?>>Feedback & Suggestions</option>
+                            <option value="account" <?= (($data['subject'] ?? '') === 'account') ? 'selected' : '' ?>>Account Issues</option>
+                            <option value="other" <?= (($data['subject'] ?? '') === 'other') ? 'selected' : '' ?>>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message <span class="required">*</span></label>
+                        <textarea id="message" name="message" rows="6" placeholder="Tell us how we can help you..." required><?= htmlspecialchars($data['message'] ?? '') ?></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary submit-btn">
+                        <span>Send Message</span>
+                    </button>
+                </form>
+            </div>
                 </section>
 
                 <!-- FAQ Section -->

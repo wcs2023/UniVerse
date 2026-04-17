@@ -145,6 +145,48 @@ class Admin extends Controller
         }
         exit;
     }
+
+    public function degreeprogramimport()
+    {
+        $data = [];
+        $this->view('actors/admin/degree_program_import', $data);
+    }
+
+    public function importdegreeprogramcsv()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+            exit;
+        }
+
+        if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+            $_SESSION['error'] = 'Please upload a valid CSV file.';
+            header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+            exit;
+        }
+
+        $fileTmpPath = $_FILES['csv_file']['tmp_name'];
+        $fileName = $_FILES['csv_file']['name'];
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if ($fileExt !== 'csv') {
+            $_SESSION['error'] = 'Only CSV files are allowed.';
+            header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+            exit;
+        }
+
+        $degreeProgramModel = $this->model('DegreeProgram');
+        $result = $degreeProgramModel->importFromCsv($fileTmpPath);
+
+        if ($result['success']) {
+            $_SESSION['success'] = "CSV imported successfully. Inserted: {$result['inserted']}, Updated: {$result['updated']}, Skipped: {$result['skipped']}";
+        } else {
+            $_SESSION['error'] = $result['message'];
+        }
+
+        header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+        exit;
+    }
     
     /**
      * Activate user account
