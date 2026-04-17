@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <!-- <title>Document</title> -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/styles.css">
     <style>
         .profile-content {
@@ -49,14 +49,13 @@
             <div class="settings-form">
                 <h3>Change Password</h3>
                 
-                <form method="POST" action="<?= BASE_URL ?>/usettings/changePassword" id="password-form">
+                <form method="POST" action="<?= BASE_URL ?>/reset/updatePassword" id="password-form">
                     <div class="form-group">
                         <label for="new-password">New Password</label>
-                        <input type="password" id="new-password" name="new_password" 
+                        <input type="password" id="new-password" name="password" 
                                placeholder="Enter your new password" required>
                         <small class="form-hint">Password must be at least 8 characters long</small>
                     </div>
-
                     <div class="form-group">
                         <label for="confirm-password">Confirm New Password</label>
                         <input type="password" id="confirm-password" name="confirm_password" 

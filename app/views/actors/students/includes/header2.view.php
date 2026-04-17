@@ -1,61 +1,28 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $title ?? 'UniVerse - School Leavers'; ?></title>
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= BASE_URL ?>/assets/images/U.png">
-    
-    <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/317f05ac77.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/header2_styles.css">
-    
-    
-    <!-- <style>
-        /* CSS Variables */
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/header2_styles.css">
+    <style>
         :root {
             --primary-purple: #6b46c1;
             --dark-purple: #553c9a;
-            --light-purple: #8b5cf6;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
             --white: #ffffff;
-            --light-gray: #f9fafb;
+            --text-dark: #1f2937;
             --border-color: #e5e7eb;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            line-height: 1.6;
-            color: var(--text-dark);
-        }
-
-        /* Header Styles */
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+            z-index: 100;
         }
-
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -63,27 +30,21 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 2rem;
+            height: 64px;
         }
-
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--primary-purple);
             text-decoration: none;
         }
-
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 0.25rem;
             margin: 0;
             padding: 0;
         }
-
-        .nav-menu li {
-            display: inline;
-        }
-
         .nav-link {
             text-decoration: none;
             color: var(--text-dark);
@@ -91,33 +52,65 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             transition: all 0.3s ease;
+            display: block;
         }
-
         .nav-link:hover,
         .nav-link.active {
-            color: var(--primary-purple);
-            background: rgba(107, 70, 193, 0.1);
+            background-color: var(--primary-purple);
+            color: var(--white);
         }
 
-        /* Mobile Menu */
-        .fa-bars,
-        .fa-xmark {
+        /* Hamburger button */
+        .hamburger {
             display: none;
-            font-size: 1.5rem;
-            color: var(--primary-purple);
+            flex-direction: column;
+            gap: 5px;
             cursor: pointer;
-            padding: 0.5rem;
+            padding: 8px;
+            background: none;
+            border: none;
         }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--primary-purple);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        
-
-      
-    </style> -->
-    <!-- <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_styles.css"> -->
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                padding: 0.75rem 1rem;
+                gap: 0.25rem;
+            }
+            .nav-menu.open {
+                display: flex;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .nav-link {
+                padding: 0.65rem 1rem;
+            }
+        }
+    </style>
 </head>
 
 <header class="header">
-    <div class="nav-container">
+    <nav class="nav-container">
         <a href="<?= BASE_URL ?>/home" class="logo">UniVerse</a>
         <ul class="nav-menu" id="nav_menu">
             <li><a href="<?= BASE_URL ?>/schoolLeaver" class="nav-link">Home</a></li>
@@ -126,19 +119,35 @@
             <li><a href="<?= BASE_URL ?>/Discussion_Forum/index" class="nav-link">Discussion Forums</a></li>
             <li><a href="<?= BASE_URL ?>/Degrees/degree_suggestion_index" class="nav-link">Degree Suggestions</a></li>
             <li><a href="<?= BASE_URL ?>/logout" class="nav-link">Logout</a></li>
-            <!-- <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
         </ul>
-        <i class="fa-solid fa-bars" onclick="openmenu()"></i> -->
-    </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
 </header>
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav_menu');
 
-<!-- <script>
-    // Mobile menu functions
-    function openmenu() {
-        document.getElementById('nav_menu').classList.add('active');
-    }
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        navMenu.classList.toggle('open');
+    });
 
-    function closemenu() {
-        document.getElementById('nav_menu').classList.remove('active');
-    }
-</script> -->
+    navMenu.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            navMenu.classList.remove('open');
+        });
+    });
+
+    const currentPath = window.location.pathname.replace(/\/$/, "");
+
+    navMenu.querySelectorAll('.nav-link').forEach(link => {
+        const linkPath = new URL(link.href).pathname.replace(/\/$/, "");
+
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        }
+    });
+</script>

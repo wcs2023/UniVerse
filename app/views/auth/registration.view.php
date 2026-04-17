@@ -169,7 +169,7 @@
               <label for="dateOfBirth">Date of Birth</label>
               <input type="date" id="dateOfBirth" name="date_of_birth" autocomplete="bday">
               <div class="field-error"></div>
-              <div class="field-hint">Must be at least 1 years old</div>
+              <div class="field-hint">Must be at least 16 years old</div>
             </div>
           </div>
         </div>
@@ -463,11 +463,18 @@
 
   <?php include __DIR__ . '/../layout/footer.php'; ?>
   
-  <script src="<?= BASE_URL ?>/js/registration.js">
-    var today = new Date();
-    var minData = new Date(today.setFullYear(today.getFullYear - 16));
-    var formattedDate = minData.toISOString().split('T')[0];
-    document.getElementById('dateOfBirth').setAttribute('max',formattedDate);
+  <script src="<?= BASE_URL ?>/assets/js/registration.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var dobInput = document.getElementById("dateOfBirth");
+      if (dobInput) {
+        var today = new Date();
+        var maxDate = new Date(today);
+        maxDate.setFullYear(today.getFullYear() - 16);
+        dobInput.max = maxDate.toISOString().split("T")[0];
+      }
+    });
+
   </script>
 
 </body>

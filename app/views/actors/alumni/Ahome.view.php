@@ -53,7 +53,7 @@
     </section>
 
     <!-- Mentor Section -->
-    <section class="mentor-section">
+    <section class="mentor-section"> 
         <div class="container">
             <div class="mentor-content">
                 <div class="mentor-image"></div>

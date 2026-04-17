@@ -61,12 +61,12 @@
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
                     <div class="form-group">
                         <label for="salary_min">Minimum Salary (LKR)</label>
-                        <input type="number" id="salary_min" name="salary_min" class="form-control" placeholder="e.g., 50000">
+                        <input type="number" id="salary_min" name="salary_min" class="form-control" placeholder="e.g., 50000" min="0">
                     </div>
 
                     <div class="form-group">
                         <label for="salary_max">Maximum Salary (LKR)</label>
-                        <input type="number" id="salary_max" name="salary_max" class="form-control" placeholder="e.g., 100000">
+                        <input type="number" id="salary_max" name="salary_max" class="form-control" placeholder="e.g., 100000" min="0">
                     </div>
                 </div>
 
@@ -152,4 +152,32 @@
             document.querySelector('input[name="status"]').value = 'draft';
             document.querySelector('form').submit();
         }
-    </script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form'); // or use specific form id
+            const minInput = document.getElementById('salary_min');
+            const maxInput = document.getElementById('salary_max');
+
+            form.addEventListener('submit', function(e) {
+                const min = parseFloat(minInput.value) || 0;
+                const max = parseFloat(maxInput.value) || 0;
+
+                if (min < 0 || max < 0) {
+                    alert('Salary cannot be negative');
+                    e.preventDefault();
+                    return;
+                }
+
+                if (max && min && min > max) {
+                    alert('Minimum salary must be less than maximum salary');
+                    e.preventDefault();
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded',function()
+        {
+            const inputDate = document.getElementById('application_deadline');
+            const today = new Date().toISOString().split('T')[0];
+            inputDate.setAttribute('min', today);
+        })
+</script>

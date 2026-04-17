@@ -367,7 +367,7 @@ if (!defined('URLROOT')) {
         }
     </style>
 </head>
-<body style="padding-top: 80px;">
+<body >
     <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
@@ -783,6 +783,27 @@ if (!defined('URLROOT')) {
         }
 
         toggleMentorExpertiseSection();
+        document.addEventListener("DOMContentLoaded", function () {
+            var dobInput = document.getElementById("dateOfBirth");
+            if (dobInput) {
+            var today = new Date();
+            var maxDate = new Date(today);
+            maxDate.setFullYear(today.getFullYear() - 16);
+            dobInput.max = maxDate.toISOString().split("T")[0];
+            }
+        });
+
+    const dobInput = document.getElementById('date_of_birth');
+
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 16);
+
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+
+    dobInput.max = `${yyyy}-${mm}-${dd}`;
+
     </script>
 </body>
 </html>

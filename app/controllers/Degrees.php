@@ -12,8 +12,6 @@ class Degrees extends Controller{
         $this->view("actors/students/degree_suggestion",$data);
     }
 
-
-
     public function show_result(){
         // $data = [];
         
@@ -61,14 +59,17 @@ class Degrees extends Controller{
                 $this->view("actors/students/degree_suggestion",$data);
                 return ;
             }
-
+            
             $infos = $this->degreeModel->getDegreeRecommendations($zscore,$district,$stream);
-
+            $topUniversity = !empty($infos) ? ($infos[0]['university_name'] ?? '') : '';
+            $topUnicode = !empty($infos) ? ($infos[0]['unicode'] ?? '') : '';
             $data = [
                 'zscore' =>$zscore,
                 'district'=>$district,
                 'stream'=>$stream,
-                'infos'=>$infos
+                'infos'=>$infos,
+                'topUniversity'=>$topUniversity,
+                'topUnicode'=>$topUnicode
             ];
 
             $this->view('actors/students/degree_result',$data);

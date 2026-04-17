@@ -39,6 +39,35 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
 }
 
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--gradient-primary);
+    color: var(--white);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: var(--gradient-secondary);
+}
+
+.back-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+
 .article-single-container {
     min-height: 80vh;
     padding: 120px 20px 60px 20px;
@@ -197,6 +226,10 @@
         gap: 1rem;
     }
 }
+    .article-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+    }
 
 </style>
 </head>
@@ -216,15 +249,17 @@
         include __DIR__ . '/../layout/nav_home.php';
     }
     ?>
-    
     <div class="article-single-container">
         <div class="article-card">
+           <button class="back-btn" onclick="window.history.back()">
+                ← Back
+            </button>
             <div class="article-header">
                 <h1><?= $data['article']['title'] ?></h1>
             </div>
-            <div class="article-body">
-                <p>
-                    <?= $data['article']['content']?>
+            <div class="article-body article-content">
+                <p>    
+                    <?= nl2br(htmlspecialchars($data['article']['content'])) ?>
                 </p>
                 <hr>
                 <footer class="article-footer"> 

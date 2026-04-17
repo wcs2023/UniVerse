@@ -81,8 +81,9 @@
     
     .nav-link:hover,
     .nav-link.active {
-        color: #6b46c1;
-        background-color: rgba(107, 70, 193, 0.1);
+        color: #ffffff;
+        background-color: rgba(118, 44, 214, 0.75);
+        transition: all 0.2s ease;
     }
 
     .logout-btn {
@@ -90,7 +91,8 @@
     }
 
     .logout-btn:hover {
-        background-color: #ffebee;
+        color: #ffebee;
+        background-color: #ef4444;
     }
     
     /* Mobile Menu Button */
@@ -412,4 +414,17 @@
             <span></span>
         </button>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            navLinks.forEach(link => {
+                const linkPath = new URL(link.href).pathname;
+                if (currentPath === linkPath || currentPath.startsWith(linkPath + '/')) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </header>

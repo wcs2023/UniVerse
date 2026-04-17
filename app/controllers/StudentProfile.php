@@ -21,25 +21,25 @@ class StudentProfile extends Controller
 
     public function getCurrentUserId()
     {
-        // $user = $this->getCurrentUser();
-        return $_SESSION['user_id'] ?? null;
+        $user = $this->getCurrentUser();
+        return $user['user_id'] ?? null;
     }
 
     public function profile()
     {
         // Check if user is logged in
-        
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . BASE_URL . '/Login/index');
             exit;
         }
-            
+
         $user_id = $this->getCurrentUserId();
+
 
         $user = $this->userModel->getUserById($user_id);
         if (!$user) {
-            header('Location: ' . BASE_URL . '/Login/index');
             session_destroy();
+            header('Location: ' . BASE_URL . '/Login/index');
             exit;
         }
         $count = $this->thread_model->getThreadCountByUserId($user_id);
@@ -234,7 +234,7 @@ class StudentProfile extends Controller
             ? $user['profile_picture']
             : '/assets/images/default-avatar.png';
 
-        // GET
+        // ===================== GET REQUEST =====================
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $data = [
                 'user' => $user,
@@ -246,52 +246,70 @@ class StudentProfile extends Controller
             return;
         }
 
-        // POST fields
+        // ===================== POST DATA =====================
         $first_name    = trim($_POST['first_name'] ?? '');
         // $middle_name   = trim($_POST['middle_name'] ?? '');
         $last_name     = trim($_POST['last_name'] ?? '');
         $date_of_birth = trim($_POST['date_of_birth'] ?? '');
         $gender        = trim($_POST['gender'] ?? '');
         $phone         = trim($_POST['phone'] ?? '');
-        $address       = trim($_POST['address_line1'] ?? '');
+        // $address       = trim($_POST['address_line1'] ?? '');
 
-        // Password change fields (optional)
+        // Password fields
         $current_password = $_POST['current_password'] ?? '';
         $new_password     = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
-        // Validate required fields
-        if ($first_name === '' || $last_name === '') {
-            $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'First name and last name are required.', 'success' => null];
-            $this->view('actors/students/student_edit_profile', $data);
-            return;
+        // ===================== FIX: IMAGE-ONLY DETECTION =====================
+        $isImageOnly = isset($_FILES['profile_picture']) &&
+            ($_FILES['profile_picture']['error'] !== UPLOAD_ERR_NO_FILE) &&
+            empty($_POST['first_name']) &&
+            empty($_POST['last_name']);
+
+        // ===================== VALIDATION =====================
+        if (!$isImageOnly) {
+            if ($first_name === '' || $last_name === '') {
+                $data = [
+                    'user' => $user,
+                    'profilePic' => $profilePic,
+                    'error' => 'First name and last name are required.',
+                    'success' => null
+                ];
+                $this->view('actors/students/student_edit_profile', $data);
+                return;
+            }
         }
 
         $allowedGenders = ['male', 'female', 'other', ''];
         if (!in_array($gender, $allowedGenders, true)) {
-            $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Invalid gender value.', 'success' => null];
+            $data = [
+                'user' => $user,
+                'profilePic' => $profilePic,
+                'error' => 'Invalid gender value.',
+                'success' => null
+            ];
             $this->view('actors/students/student_edit_profile', $data);
             return;
         }
 
-        // 1) Password change (only if user filled any password field)
+        // ===================== PASSWORD CHANGE =====================
         $wantsPasswordChange = ($current_password !== '' || $new_password !== '' || $confirm_password !== '');
 
         if ($wantsPasswordChange) {
             if ($current_password === '' || $new_password === '' || $confirm_password === '') {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'To change password, fill Current, New, and Confirm password fields.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Fill all password fields.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
 
             if ($new_password !== $confirm_password) {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'New password and confirmation do not match.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Passwords do not match.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
 
             if (strlen($new_password) < 8) {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'New password must be at least 8 characters.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Password must be at least 8 characters.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
@@ -307,16 +325,17 @@ class StudentProfile extends Controller
             $okPwd = $this->studentProfileModel->updatePasswordHash($user_id, $newHash);
 
             if (!$okPwd) {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Password update failed. Please try again.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Password update failed.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
         }
 
-        // 2) Profile picture upload (optional)
+        // ===================== IMAGE UPLOAD =====================
         $newProfilePicturePath = null;
 
         if (!empty($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] !== UPLOAD_ERR_NO_FILE) {
+
             $file = $_FILES['profile_picture'];
 
             if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -326,7 +345,7 @@ class StudentProfile extends Controller
             }
 
             if ($file['size'] > 5 * 1024 * 1024) {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'File size must be less than 5MB.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Max file size is 5MB.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
@@ -342,7 +361,7 @@ class StudentProfile extends Controller
             ];
 
             if (!isset($allowed[$mime])) {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Upload JPG, PNG or WEBP only.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Only JPG, PNG, WEBP allowed.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
@@ -358,23 +377,24 @@ class StudentProfile extends Controller
             $dest = $uploadDir . '/' . $filename;
 
             if (!move_uploaded_file($file['tmp_name'], $dest)) {
-                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Could not save uploaded file.', 'success' => null];
+                $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'File save failed.', 'success' => null];
                 $this->view('actors/students/student_edit_profile', $data);
                 return;
             }
 
-            $newProfilePicturePath = '/uploads/student_edit_profile/' . $filename;
+            // ✅ FIXED PATH
+            $newProfilePicturePath = '/uploads/profile_pictures/' . $filename;
         }
 
-        // 3) Update profile info
+        // ===================== UPDATE PROFILE =====================
         $updateData = [
-            'first_name'    => $first_name,
+            'first_name'    => $first_name ?: $user['first_name'],
             // 'middle_name'   => $middle_name,
-            'last_name'     => $last_name,
+            'last_name'     => $last_name ?: $user['last_name'],
             'date_of_birth' => $date_of_birth,
             'gender'        => $gender,
-            'phone'  => $phone,
-            'address_line1'       => $address,
+            'phone'         => $phone,
+            // 'address_line1'       => $address,
         ];
 
         if ($newProfilePicturePath !== null) {
@@ -384,12 +404,12 @@ class StudentProfile extends Controller
         $okProfile = $this->studentProfileModel->updateUserProfile($user_id, $updateData);
 
         if (!$okProfile) {
-            $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Profile update failed. Please try again.', 'success' => null];
+            $data = ['user' => $user, 'profilePic' => $profilePic, 'error' => 'Profile update failed.', 'success' => null];
             $this->view('actors/students/student_edit_profile', $data);
             return;
         }
 
-        // Reload
+        // ===================== SUCCESS =====================
         $user = $this->userModel->getUserById($user_id);
 
         $profilePic = !empty($user['profile_picture'])

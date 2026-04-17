@@ -49,36 +49,86 @@ class Job extends Model
     /**
      * Get all jobs by company ID
      */
-    public function getJobsByCompany($companyId, $status = null)
+    // public function getJobsByCompany($companyId, $status = null)
+    // {
+    //     if ($status) {
+    //         $query = "SELECT j.*, 
+    //                         COUNT(DISTINCT ja.application_id) as total_applications,
+    //                         u.first_name, u.last_name
+    //                   FROM jobs j
+    //                   LEFT JOIN job_applications ja ON j.job_id = ja.job_id
+    //                   LEFT JOIN users u ON j.company_id = u.user_id
+    //                   WHERE j.company_id = :company_id AND j.status = :status
+    //                   GROUP BY j.job_id
+    //                   ORDER BY j.created_at DESC";
+    //         return $this->fetchAll($query, [
+    //             'company_id' => $companyId,
+    //             'status' => $status
+    //         ]);
+    //     } else {
+    //         $query = "SELECT j.*, 
+    //                         COUNT(DISTINCT ja.application_id) as total_applications,
+    //                         u.first_name, u.last_name
+    //                   FROM jobs j
+    //                   LEFT JOIN job_applications ja ON j.job_id = ja.job_id
+    //                   LEFT JOIN users u ON j.company_id = u.user_id
+    //                   WHERE j.company_id = :company_id
+    //                   GROUP BY j.job_id
+    //                   ORDER BY j.created_at DESC";
+    //         return $this->fetchAll($query, ['company_id' => $companyId]);
+    //     }
+    // }
+    public function getJobsByCompany($companyId, $status = null, $search = null)
     {
-        if ($status) {
-            $query = "SELECT j.*, 
-                            COUNT(DISTINCT ja.application_id) as total_applications,
-                            u.first_name, u.last_name
-                      FROM jobs j
-                      LEFT JOIN job_applications ja ON j.job_id = ja.job_id
-                      LEFT JOIN users u ON j.company_id = u.user_id
-                      WHERE j.company_id = :company_id AND j.status = :status
-                      GROUP BY j.job_id
-                      ORDER BY j.created_at DESC";
-            return $this->fetchAll($query, [
-                'company_id' => $companyId,
-                'status' => $status
-            ]);
-        } else {
-            $query = "SELECT j.*, 
-                            COUNT(DISTINCT ja.application_id) as total_applications,
-                            u.first_name, u.last_name
-                      FROM jobs j
-                      LEFT JOIN job_applications ja ON j.job_id = ja.job_id
-                      LEFT JOIN users u ON j.company_id = u.user_id
-                      WHERE j.company_id = :company_id
-                      GROUP BY j.job_id
-                      ORDER BY j.created_at DESC";
-            return $this->fetchAll($query, ['company_id' => $companyId]);
+        $query = "SELECT j.*, 
+                        COUNT(DISTINCT ja.application_id) as applications_count,
+                        u.first_name, u.last_name
+                FROM jobs j
+                LEFT JOIN job_applications ja ON j.job_id = ja.job_id
+                LEFT JOIN users u ON j.company_id = u.user_id
+                WHERE j.company_id = :company_id";
+
+        $params = [
+            'company_id' => $companyId
+        ];
+
+        if (!empty($status)) {
+            $query .= " AND j.status = :status";
+            $params['status'] = $status;
         }
+
+        if (!empty($search)) {
+            $query .= " AND (
+                j.title LIKE :search_title
+                OR j.location LIKE :search_location
+                OR j.job_type LIKE :search_job_type
+                OR j.experience_level LIKE :search_experience
+                OR j.status LIKE :search_status
+            )";
+
+            $searchTerm = '%' . $search . '%';
+            $params['search_title'] = $searchTerm;
+            $params['search_location'] = $searchTerm;
+            $params['search_job_type'] = $searchTerm;
+            $params['search_experience'] = $searchTerm;
+            $params['search_status'] = $searchTerm;
+        }
+
+        $query .= " GROUP BY j.job_id
+                    ORDER BY j.created_at DESC";
+
+        return $this->fetchAll($query, $params);
     }
 
+    public function updateJobStatus($jobId, $status)
+    {
+        $query = "UPDATE jobs SET status = :status WHERE job_id = :job_id";
+        return $this->query($query, [
+            'job_id' => $jobId,
+            'status' => $status
+        ]);
+    }
+    
     /**
      * Get job by ID
      */

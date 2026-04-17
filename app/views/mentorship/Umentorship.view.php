@@ -107,10 +107,10 @@ if (!defined('BASE_URL')) {
                     ?>
                     <div class="booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
                         <div class="booking-header">
-                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                 alt="<?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?>" 
                                 class="booking-avatar"
-                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
                             <div class="booking-info">
                                 <h4 class="booking-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></h4>
                                 <p class="booking-subtitle">
@@ -257,16 +257,21 @@ if (!defined('BASE_URL')) {
                 <?php foreach (array_slice($reviewedSessions, 0, 5) as $session): ?>
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
                     <div class="completed-item">
-                        <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                        <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                             alt="Mentor" class="completed-avatar"
-                            onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                            onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png2003'">
                         <div class="completed-info">
                             <div class="completed-name"><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></div>
                             <div class="completed-date"><?= $sessionDate->format('M j, Y') ?></div>
                         </div>
+                        <?php if (!empty($session['review_text'])): ?>
+                        <div class="completed-review" style="margin-top: 6px; color: #6b7280;">
+                            "<?= htmlspecialchars($session['review_text']) ?>"
+                        </div>
                         <div class="rating-stars">
                             <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
                         </div>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>

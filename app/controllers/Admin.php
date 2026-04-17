@@ -145,6 +145,48 @@ class Admin extends Controller
         }
         exit;
     }
+
+    public function degreeprogramimport()
+    {
+        $data = [];
+        $this->view('actors/admin/degree_program_import', $data);
+    }
+
+    public function importdegreeprogramcsv()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+            exit;
+        }
+
+        if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+            $_SESSION['error'] = 'Please upload a valid CSV file.';
+            header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+            exit;
+        }
+
+        $fileTmpPath = $_FILES['csv_file']['tmp_name'];
+        $fileName = $_FILES['csv_file']['name'];
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if ($fileExt !== 'csv') {
+            $_SESSION['error'] = 'Only CSV files are allowed.';
+            header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+            exit;
+        }
+
+        $degreeProgramModel = $this->model('DegreeProgram');
+        $result = $degreeProgramModel->importFromCsv($fileTmpPath);
+
+        if ($result['success']) {
+            $_SESSION['success'] = "CSV imported successfully. Inserted: {$result['inserted']}, Updated: {$result['updated']}, Skipped: {$result['skipped']}";
+        } else {
+            $_SESSION['error'] = $result['message'];
+        }
+
+        header('Location: ' . BASE_URL . '/admin/degreeprogramimport');
+        exit;
+    }
     
     /**
      * Activate user account
@@ -212,11 +254,11 @@ class Admin extends Controller
     public function updateUser($userId = null)
     {
         // Debug logging
-        error_log("=== UPDATE USER DEBUG ===");
-        error_log("User ID: " . ($userId ?? 'NULL'));
-        error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
-        error_log("POST Data: " . print_r($_POST, true));
-        
+        // error_log("=== UPDATE USER DEBUG ===");
+        // error_log("User ID: " . ($userId ?? 'NULL'));
+        // error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+        // error_log("POST Data: " . print_r($_POST, true));
+
         if (!$userId || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             error_log("ERROR: Missing user ID or not POST request");
             header('Location: ' . BASE_URL . '/admin/users?error=missing_id');
@@ -236,8 +278,8 @@ class Admin extends Controller
         $user_type = $_POST['user_type'] ?? '';
         $account_status = $_POST['account_status'] ?? 'active';
         
-        error_log("Validating data...");
-        error_log("First name: $first_name, Last name: $last_name, Email: $email");
+        // error_log("Validating data...");
+        // error_log("First name: $first_name, Last name: $last_name, Email: $email");
         
         // Validation
         if (empty($first_name) || empty($last_name) || empty($email)) {
@@ -267,6 +309,7 @@ class Admin extends Controller
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'email' => $email,
+                'phone' => $phone,
                 'user_type' => $user_type,
                 'account_status' => $account_status
             ];
@@ -414,12 +457,17 @@ class Admin extends Controller
             $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
         }
         
+        $filter = $_GET['status'] ?? 'all';
+        $searchQuery = $_GET['search'] ?? '';
+
         // Get all articles
-        $articles = $articleModel->getAllArticles();
+        $articles = $articleModel->getAllArticles($filter,$searchQuery);
         $artilesCount = $userModel->getArticleCountWithType();        
         $data = [
             'articles' => $articles,
-            'articlesCount' => $artilesCount
+            'articlesCount' => $artilesCount,
+            'searchQuery' => $searchQuery,
+            'statusFilter' => $filter
         ];
         
         $this->view('actors/admin/articles', $data);
@@ -576,12 +624,12 @@ class Admin extends Controller
         $this->view('actors/admin/registrations', $data);
     }
     
-    /**
-     * Manage forums
+    /*
+        Manage forums
      */
     public function forums()
     {
-        $forumPostModel = $this->model('Forum_post_model');
+        $forumPostModel = $this->model('Forum_thread_model');
 
         if (empty($_SESSION['admin_csrf_token'])) {
             $_SESSION['admin_csrf_token'] = bin2hex(random_bytes(32));
@@ -615,8 +663,10 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('Forum_post_model');
+        $forumPostModel = $this->model('Forum_thread_model');
         $post = $forumPostModel->getPostByIdForAdmin($postId);
+
+        // return $post;
 
         if (!$post) {
             echo json_encode(['success' => false, 'message' => 'Post not found']);
@@ -649,8 +699,8 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('Forum_post_model');
-        $result = $forumPostModel->hidePost($postId);
+        $forumPostModel = $this->model('Forum_thread_model');
+        $result = $forumPostModel->hideThread($postId);
 
         if ($result) {
             header('Location: ' . BASE_URL . '/admin/forums?success=hidden');
@@ -682,8 +732,8 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('forum_post_model');
-        $result = $forumPostModel->unhidePost($postId);
+        $forumPostModel = $this->model('Forum_thread_model');
+        $result = $forumPostModel->unhideThread($postId);
 
         if ($result) {
             header('Location: ' . BASE_URL . '/admin/forums?success=unhidden');
@@ -715,8 +765,8 @@ class Admin extends Controller
             exit;
         }
 
-        $forumPostModel = $this->model('Forum_post_model');
-        $result = $forumPostModel->deletePostPermanently($postId);
+        $forumPostModel = $this->model('Forum_thread_model');
+        $result = $forumPostModel->delete_post($postId);
 
         if ($result) {
             header('Location: ' . BASE_URL . '/admin/forums?success=deleted');

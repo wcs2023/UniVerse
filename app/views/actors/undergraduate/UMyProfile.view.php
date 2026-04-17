@@ -27,8 +27,10 @@
             <div class="profile-info">
                 <h1><?= htmlspecialchars($data['user']['first_name'] . ' ' . $data['user']['last_name']) ?></h1>
                 <p class="degree-info">
+                    
                     <?= htmlspecialchars($data['profile']['degree_program'] ?? 'Undergraduate Student') ?> 
-                    (Class of <?= htmlspecialchars($data['profile']['expected_graduation_year'] ?? 'N/A') ?>)
+                        (<?= htmlspecialchars($data['profile']['expected_graduation_year'] ?? 'N/A') ?>)
+                    
                 </p>
                 <a href="<?= BASE_URL ?>/ueditprofile" class="edit-profile-btn">
                     Edit Profile

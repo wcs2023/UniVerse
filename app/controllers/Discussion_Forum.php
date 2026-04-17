@@ -2,7 +2,6 @@
 
 class Discussion_Forum extends Controller
 {
-
     protected $thread_model;
     protected $category_model;
     protected $post_model;
@@ -20,15 +19,13 @@ class Discussion_Forum extends Controller
 
     public function getCurrentUserId()
     {
-        // $user = $this->getCurrentUser();
-        $userId = $_SESSION['user_id'] ?? null;
-        // Debug log
-        // error_log("Discussion_Forum user check - user_id: " . ($userId ?? 'NOT SET'));
-        return $userId;
+        $user = $this->getCurrentUser();
+        return $user['user_id'] ?? null;
     }
 
     private function isAdmin($admin_id)
     {
+
         $user = $this->getCurrentUser();
         if (!$user) {
             return false;
@@ -72,7 +69,7 @@ class Discussion_Forum extends Controller
             'title' => 'Discussion Forum',
             'categories' => $categories,
             'recent_threads' => $recent_threads,
-            'curr_user_id' => $currentUserId ? (int)$currentUserId : null,
+            'curr_user_id' => $currentUserId,
             'stats' => [
                 'total_threads' => count($threads),
                 'total_posts' => 0,
@@ -164,9 +161,9 @@ class Discussion_Forum extends Controller
             header("Location: " . BASE_URL . "/Discussion_Forum?error=Invalid thread ID");
             exit;
         }
-
+        $currentUserId = $this->getCurrentUserId();
         $thread = $this->thread_model->getIdWithDetails($thread_id);
-        $thread_votes = $this->thread_model->getThreadVotes($thread_id);
+        $thread_votes = $this->thread_model->getThreadVotes($thread_id,$currentUserId);
 
         if (!$thread) {
             header("Location: " . BASE_URL . "/Discussion_Forum?error=Thread not found");
@@ -192,12 +189,13 @@ class Discussion_Forum extends Controller
             'is_locked' => $thread['is_locked'],
             'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname'],
             'likes' => $thread_votes['likes'] ?? 0,
-            'dislikes' => $thread_votes['dislikes'] ?? 0
+            'dislikes' => $thread_votes['dislikes'] ?? 0,
+            'user_vote' => $thread_votes['user_vote'] ?? 0
         ];
 
         $post_data = [];
         foreach ($posts as $post) {
-            $post_votes = $this->post_model->getReplyVotes((int)$post['post_id']);
+            $post_votes = $this->post_model->getReplyVotes((int)$post['post_id'], $currentUserId);
             $post_data[] = [
                 'post_id' => $post['post_id'],
                 'content' => $post['content'],
@@ -207,7 +205,8 @@ class Discussion_Forum extends Controller
                 'is_edited' => $post['is_edited'] ?? false,
                 'edited_at' => $post['edited_at'] ?? null,
                 'likes' => $post_votes['likes'] ?? 0,
-                'dislikes' => $post_votes['dislikes'] ?? 0
+                'dislikes' => $post_votes['dislikes'] ?? 0,
+                'user_vote' => $post_votes['user_vote'] ?? 0    
             ];
         }
 
@@ -229,7 +228,7 @@ class Discussion_Forum extends Controller
     public function view_my_discussion()
     {
         //funtion to display own threads and replies
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             header('Location: ' . BASE_URL . '/Login/index?redirect=/Discussion_Forum/view_my_discussion');
             exit;
         }
@@ -271,7 +270,7 @@ class Discussion_Forum extends Controller
             exit;
         }
 
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             header('Location: ' . BASE_URL . '/Login/index?redirect=/Discussion_Forum/view_my_discussion');
             exit;
         }
@@ -362,7 +361,7 @@ class Discussion_Forum extends Controller
             exit;
         }
 
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             header('Location: ' . BASE_URL . '/Login/index');
             exit;
         }
@@ -381,97 +380,57 @@ class Discussion_Forum extends Controller
 
         $result = $this->thread_model->delete_post($thread_id);
         $delete_reply = $this->post_model->delete_all_reply($thread_id);
-        
 
         if ($result && $delete_reply) {
-            header("Location: " . BASE_URL . "/Discussion_Forum/view_thread?success=Thread deleted successfully!");
+            header("Location: " . BASE_URL . "/Discussion_Forum/view_my_discussion?success=Thread deleted successfully!");
             exit;
         } else {
             header("Location: " . BASE_URL . "/Discussion_Forum/view_thread?error=Delete Failed!");
             exit;
         }
     }
+
     public function reply_post($thread_id = null)
     {
-        if (!isset($_SESSION['user_id'])) {
+
+        if (!isset($_SESSION['USER'])) {
             header('Location: ' . BASE_URL . '/Login/index?redirect=/Discussion_Forum/view_thread/' . $thread_id);
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
             $user_id = $this->getCurrentUserId();
 
             $data = [
-                'content'     => trim($_POST['content'] ?? ''),
-                'thread_id'   => $thread_id,
-                'user_id'     => $user_id,
+                'content' => trim($_POST['content'] ?? ''),
+                'thread_id' => $thread_id,
+                'user_id' => $user_id,
+
                 'content_err' => ''
+
             ];
 
-            // Validate
+
+
+            //validate
             if (empty($data['content'])) {
                 $data['content_err'] = 'Please enter your content';
-            } elseif (strlen($data['content']) < 10) {
+            } else if (strlen($data['content']) < 10) {
                 $data['content_err'] = 'Your reply must be at least 10 characters long';
             }
 
             if (empty($data['content_err'])) {
                 if ($this->post_model->create_reply($data)) {
                     header("Location: " . BASE_URL . "/Discussion_Forum/view_thread/{$thread_id}?success=reply_posted");
-                    exit;
                 } else {
-                    header("Location: " . BASE_URL . "/Discussion_Forum/view_thread/{$thread_id}?error=reply_failed");
-                    exit;
+                    header("Location: " . BASE_URL . "Discussion_Forum/view_thread/{$thread_id}?error=reply_failed");
                 }
             } else {
-                // Re-fetch everything the view needs
-                $thread     = $this->thread_model->getIdWithDetails($thread_id);
-                $thread_votes = $this->thread_model->getThreadVotes($thread_id);
-                $posts      = $this->post_model->getByThread($thread_id);
-
-                $thread_data = [
-                    'thread_id'   => $thread['thread_id'],
-                    'title'       => $thread['title'],
-                    'content'     => $thread['content'],
-                    'author_id'   => $thread['author_id'],
-                    'created_at'  => $thread['created_at'],
-                    'views'       => $thread['views'],
-                    'replies'     => $thread['reply_count'] ?? 0,
-                    'cat_name'    => $thread['cat_name'],
-                    'is_locked'   => $thread['is_locked'],
-                    'author_name' => $thread['author_fname'] . ' ' . $thread['author_lname'],
-                    'likes'       => $thread_votes['likes'] ?? 0,
-                    'dislikes'    => $thread_votes['dislikes'] ?? 0
-                ];
-
-                $post_data = [];
-                foreach ($posts as $post) {
-                    $post_votes  = $this->post_model->getReplyVotes((int)$post['post_id']);
-                    $post_data[] = [
-                        'post_id'     => $post['post_id'],
-                        'content'     => $post['content'],
-                        'author_id'   => $post['author_id'],
-                        'author_name' => $post['author_fname'] . ' ' . $post['author_lname'],
-                        'created_at'  => $post['created_at'],
-                        'is_edited'   => $post['is_edited'] ?? false,
-                        'edited_at'   => $post['edited_at'] ?? null,
-                        'likes'       => $post_votes['likes'] ?? 0,
-                        'dislikes'    => $post_votes['dislikes'] ?? 0
-                    ];
-                }
-
-                $this->view('actors/students/forum_single_discussion', [
-                    'title'       => $thread['title'],
-                    'thread'      => $thread_data,
-                    'posts'       => $post_data,
-                    'curr_user_id' => $user_id,
-                    'can_edit'    => $this->isAdmin($thread_data['author_id']),
-                    // Pass the reply error back so the form can show it
-                    'reply_content'     => $data['content'],
-                    'reply_content_err' => $data['content_err']
-                ]);
+                $this->view('actors/students/forum_single_discussion', $data);
             }
         } else {
+
             redirect("Discussion_Forum/view_thread/{$thread_id}");
         }
     }
@@ -531,7 +490,7 @@ class Discussion_Forum extends Controller
 
     public function update_reply($post_id = null)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             header("Location: " . BASE_URL . "/Login/index");
             exit;
         }
@@ -582,7 +541,7 @@ class Discussion_Forum extends Controller
             exit;
         }
 
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             header("Location: " . BASE_URL . "/Login/index");
             exit;
         }
@@ -592,7 +551,7 @@ class Discussion_Forum extends Controller
         if (!$post) {
             header("Location: " . BASE_URL . "/Discussion_Forum/view_thread/{$post['thread_id']}?error=post_not_found");
             exit;
-        } 
+        }
 
         if (!$this->isAdmin($post['author_id'])) {
             header("Location: " . BASE_URL . "/Discussion_Forum/index?error=not_authorized");
@@ -648,7 +607,7 @@ class Discussion_Forum extends Controller
 
     public function like_thread($thread_id = null)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             $this->jsonResponse(['ok' => false, 'error' => 'unauthorized'], 401);
         }
         if (!$thread_id) {
@@ -663,7 +622,7 @@ class Discussion_Forum extends Controller
 
     public function dislike_thread($thread_id = null)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             $this->jsonResponse(['ok' => false, 'error' => 'unauthorized'], 401);
         }
         if (!$thread_id) {
@@ -678,7 +637,7 @@ class Discussion_Forum extends Controller
 
     public function like_reply($post_id = null)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             $this->jsonResponse(['ok' => false, 'error' => 'unauthorized'], 401);
         }
         if (!$post_id) {
@@ -686,14 +645,14 @@ class Discussion_Forum extends Controller
         }
 
         $user_id = (int)$this->getCurrentUserId();
-        $post_like = $this->thread_model->setThreadVote($post_id, $user_id, 1);
+        $post_like = $this->post_model->setReplyVote($post_id, $user_id, 1);
 
         $this->jsonResponse(['ok' => true, 'post_id' => $post_id] + $post_like);
     }
 
     public function dislike_reply($post_id = null)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['USER'])) {
             $this->jsonResponse(['ok' => false, 'error' => 'unauthorized'], 401);
         }
         if (!$post_id) {
@@ -701,7 +660,7 @@ class Discussion_Forum extends Controller
         }
 
         $user_id = (int)$this->getCurrentUserId();
-        $post_dislike = $this->thread_model->setThreadVote($post_id, $user_id, -1);
+        $post_dislike = $this->post_model->setReplyVote($post_id, $user_id, -1);
 
         $this->jsonResponse(['ok' => true, 'post_id' => $post_id] + $post_dislike);
     }

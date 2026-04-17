@@ -29,7 +29,7 @@ class AarticleModel extends Model
             'status' => $status
         ]);
     }
-
+    
     /**
      * Get article by ID
      */
@@ -56,20 +56,15 @@ class AarticleModel extends Model
     {
         $query = "SELECT 
                     a.*,
-                    u.first_name,
-                    u.last_name,
-                    u.profile_picture,
-                    u.user_type,
-                    u.account_status,
                     CONCAT(u.first_name, ' ', u.last_name) as author_name,
-                    u.email as author_email
-                  FROM Articles a
-                  JOIN Users u ON a.user_id = u.user_id
-                  WHERE a.article_id = :article_id";
+                    u.email as author_email,
+                    u.user_type
+                FROM articles a
+                JOIN users u ON a.user_id = u.user_id
+                WHERE a.article_id = :article_id";
 
         return $this->fetch($query, ['article_id' => $articleId]);
     }
-
     /**
      * Get all published articles (for public viewing) - FIXED FOR SCHOOL LEAVERS
      */
@@ -337,7 +332,7 @@ class AarticleModel extends Model
     /**
      * Get all articles (for admin panel)
      */
-    public function getAllArticles()
+    public function getAllArticles($filter='all',$searchQuery='')
     {
         $query = "SELECT 
                     a.article_id,
@@ -349,14 +344,31 @@ class AarticleModel extends Model
                     a.comments_count,
                     a.created_at,
                     a.published_at,
+                    a.content,
                     CONCAT(u.first_name, ' ', u.last_name) as author_name,
                     u.email as author_email,
                     u.user_type
                   FROM Articles a
                   JOIN Users u ON a.user_id = u.user_id
-                  ORDER BY a.created_at DESC";
+                  WHERE 1=1 ";
+        $param = []; 
+        if($filter !== 'all')
+        {
+            $query .= " AND a.status = ? ";
+            $param[] = $filter;
+        }
 
-        return $this->fetchAll($query);
+        if(!empty($searchQuery))
+        {
+            $query .= " AND (a.title LIKE ? OR a.category LIKE ? OR a.content LIKE ?) ";
+            $param[] = "%$searchQuery%";
+            $param[] = "%$searchQuery%";
+            $param[] = "%$searchQuery%";
+        }
+
+        $query .= " ORDER BY a.created_at DESC";
+
+        return $this->fetchAll($query,$param);
     }
 
     /**

@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("forum_search");
     const rowContainer = document.querySelector(".discussion-table");
 
+    // Get current user ID from the page
+    const currUserId = document.querySelector('[data-current-user-id]')?.dataset.currentUserId || null;
+
     if (!input || !rowContainer) return;
 
     let timer = null;
@@ -49,6 +52,32 @@ document.addEventListener("DOMContentLoaded", () => {
                     const row = document.createElement("div");
                     row.className = "discussion-row";
 
+                    // Determine if current user is the author
+                    const isAuthor = currUserId && parseInt(currUserId) === parseInt(t.author_id);
+                    
+                    // Build action buttons HTML
+                    let actionHtml = '';
+                    if (isAuthor) {
+                        actionHtml = `
+                            <div class="col-action">
+                                <div class="action-btn">
+                                    <a href="${baseUrl}/Discussion_Forum/edit_post/${t.thread_id}" class="btn-action btn-edit" data-tooltip="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <button class="btn-action btn-delete js-delete-thread" data-thread-id="${t.thread_id}" data-tooltip="Delete">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    } else if (currUserId) {
+                        actionHtml = `
+                            <div class="col-action">
+                                <span class="no-action">-</span>
+                            </div>
+                        `;
+                    }
+
                     row.innerHTML = `
                         <div class="col-topic">
                             <div class="topic-title">
@@ -82,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
                             </div>
                         </div>
+                        ${actionHtml}
                     `;
 
                     rowContainer.appendChild(row);

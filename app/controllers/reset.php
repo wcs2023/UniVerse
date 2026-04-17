@@ -1,5 +1,4 @@
 <?php
-
 require_once '../app/PHPMailer/PHPMailer.php';
 require_once '../app/PHPMailer/SMTP.php';
 require_once '../app/PHPMailer/Exception.php';
@@ -20,13 +19,13 @@ class Reset extends Controller
         }
     }
 
-    // VIEW 1: Email entry page
+    // Step 1: show email form
     public function index()
     {
         $this->view('auth/request_reset');
     }
 
-    // ACTION: Generate OTP and send email
+    // Step 2: generate OTP and send mail
     public function generateOTP()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -43,9 +42,18 @@ class Reset extends Controller
             return;
         }
 
+        // Optional but recommended:
+        // check whether user exists before sending OTP
+        if (!$this->resetModel->emailExists($email)) {
+            $this->view('auth/request_reset', [
+                'error' => 'No account found with that email address.'
+            ]);
+            return;
+        }
+
         $otp = (string) random_int(100000, 999999);
-        $otp_hash = hash("sha256", $otp);
-        $expires_at = date("Y-m-d H:i:s", time() + 60 * 5);
+        $otp_hash = hash('sha256', $otp);
+        $expires_at = date('Y-m-d H:i:s', time() + 300); // 5 minutes
 
         $data = [
             'email' => $email,
@@ -53,28 +61,35 @@ class Reset extends Controller
             'expires_at' => $expires_at
         ];
 
-        if ($this->resetModel->insertOTP($data)) {
-            if ($this->sendOTPEmail($email, $otp)) {
-                $_SESSION['reset_email'] = $email;
-                $_SESSION['otp_sent'] = true;
+        // remove old unused OTPs first if needed
+        // $this->resetModel->deleteOldOTPs($email);
 
-                header('Location: ' . BASE_URL . '/reset/verify');
-                exit;
-            } else {
-                $this->view('auth/request_reset', [
-                    'error' => 'Failed to send email.'
-                ]);
-                return;
-            }
-        } else {
+        $inserted = $this->resetModel->insertOTP($data);
+
+        if (!$inserted) {
             $this->view('auth/request_reset', [
                 'error' => 'Failed to generate OTP.'
             ]);
             return;
         }
+
+        $sent = $this->sendOTPEmail($email, $otp);
+
+        if (!$sent) {
+            $this->view('auth/request_reset', [
+                'error' => 'Failed to send OTP email.'
+            ]);
+            return;
+        }
+
+        $_SESSION['reset_email'] = $email;
+        $_SESSION['otp_sent'] = true;
+
+        header('Location: ' . BASE_URL . '/reset/verify');
+        exit;
     }
 
-    // VIEW 2: OTP entry page
+    // Step 3: show OTP form
     public function verify()
     {
         if (!isset($_SESSION['otp_sent']) || !isset($_SESSION['reset_email'])) {
@@ -85,7 +100,7 @@ class Reset extends Controller
         $this->view('auth/verify_otp');
     }
 
-    // ACTION: Verify OTP
+    // Step 4: verify OTP
     public function verifyOTP()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -103,24 +118,40 @@ class Reset extends Controller
             return;
         }
 
-        $otp_entered_hash = hash("sha256", $otp_entered);
+        if (!preg_match('/^[0-9]{6}$/', $otp_entered)) {
+            $this->view('auth/verify_otp', [
+                'error' => 'OTP must be a 6-digit number.'
+            ]);
+            return;
+        }
+
+        $otp_hash = hash('sha256', $otp_entered);
         $otp_row = $this->resetModel->getLatestValidOTP($email);
 
-        if ($otp_row && hash_equals($otp_row['otp_hash'], $otp_entered_hash)) {
-            unset($_SESSION['otp_sent']);
-            $_SESSION['user_verified_to_reset'] = true;
-            $this->resetModel->markOTPUsed($email);
-            header('Location: ' . BASE_URL . '/reset/passwordchange');
-            exit;
-        } else {
+        if (!$otp_row) {
             $this->view('auth/verify_otp', [
                 'error' => 'Invalid or expired OTP.'
             ]);
             return;
         }
+
+        if (!hash_equals($otp_row['otp_hash'], $otp_hash)) {
+            $this->view('auth/verify_otp', [
+                'error' => 'Invalid or expired OTP.'
+            ]);
+            return;
+        }
+
+        $this->resetModel->markOTPUsed($otp_row['id']);
+
+        $_SESSION['user_verified_to_reset'] = true;
+        unset($_SESSION['otp_sent']);
+
+        header('Location: ' . BASE_URL . '/reset/passwordchange');
+        exit;
     }
 
-    // VIEW 3: Password change page
+    // Step 5: show new password form
     public function passwordchange()
     {
         if (!isset($_SESSION['user_verified_to_reset']) || !isset($_SESSION['reset_email'])) {
@@ -131,7 +162,7 @@ class Reset extends Controller
         $this->view('auth/passwordchange');
     }
 
-    // ACTION: Update password
+    // Step 6: update password
     public function updatePassword()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -150,7 +181,7 @@ class Reset extends Controller
 
         if (empty($password) || empty($confirm_password)) {
             $this->view('auth/passwordchange', [
-                'error' => 'Please fill all fields.'
+                'error' => 'Please fill in all fields.'
             ]);
             return;
         }
@@ -171,24 +202,28 @@ class Reset extends Controller
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Make sure your model has this method
         $updated = $this->resetModel->updateUserPassword($email, $hashed_password);
 
-        if ($updated) {
-            unset($_SESSION['user_verified_to_reset']);
-            unset($_SESSION['reset_email']);
-            unset($_SESSION['otp_sent']);
-
-            $this->view('auth/login', [
-                'success' => 'Password reset successful. Please log in.'
-            ]);
-        } else {
+        if (!$updated) {
             $this->view('auth/passwordchange', [
                 'error' => 'Failed to update password.'
             ]);
+            return;
         }
+
+        // cleanup
+        // $this->resetModel->deleteOldOTPs($email);
+
+        unset($_SESSION['user_verified_to_reset']);
+        unset($_SESSION['reset_email']);
+        unset($_SESSION['otp_sent']);
+
+        $this->view('auth/login', [
+            'success' => 'Password reset successful. Please log in.'
+        ]);
     }
 
+    // Send OTP email
     private function sendOTPEmail($email, $otp)
     {
         $mail = new PHPMailer(true);
@@ -197,10 +232,8 @@ class Reset extends Controller
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-
             $mail->Username = 'universeg027@gmail.com';
             $mail->Password = 'bycy jolk gfgf gfrm';
-
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -208,18 +241,26 @@ class Reset extends Controller
             $mail->addAddress($email);
 
             $mail->isHTML(true);
-            $mail->Subject = 'Your Password Reset Code';
+            $mail->Subject = 'Your Password Reset OTP';
+
             $mail->Body = "
-                <h2>Password Reset OTP</h2>
-                <p>Your OTP is:</p>
-                <h1 style='color:#483d8b;'>$otp</h1>
-                <i>This code expires in 5 minutes.</i>
+                <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                    <h2 style='color: #6b46c1;'>Password Reset Request</h2>
+                    <p>You requested to reset your password.</p>
+                    <p>Use the OTP below to continue:</p>
+                    <div style='font-size: 30px; font-weight: bold; letter-spacing: 4px; background: #f3f4f6; padding: 15px; text-align: center; border-radius: 8px;'>
+                        {$otp}
+                    </div>
+                    <p style='margin-top: 20px;'>This OTP expires in <strong>5 minutes</strong>.</p>
+                    <p>If you did not request this, please ignore this email.</p>
+                </div>
             ";
-            $mail->AltBody = "Your OTP is: $otp. This code expires in 5 minutes.";
+
+            $mail->AltBody = "Your password reset OTP is: {$otp}. It expires in 5 minutes.";
 
             return $mail->send();
         } catch (Exception $e) {
-            error_log('Mailer Error: ' . $mail->ErrorInfo);
+            error_log('OTP Mail Error: ' . $mail->ErrorInfo);
             return false;
         }
     }

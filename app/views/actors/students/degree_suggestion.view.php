@@ -1,18 +1,20 @@
-<?php
+<head>
+    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/degree_suggestion_styles.css">
+    <?php
     $title = "Degree Recommendation System";
     $userType = $data['user_type'] ?? 'student';
     include_once __DIR__ . '/includes/header2.view.php';
-?>
-<head>
-    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/degree_suggestion_styles.css">
+    ?>
+    <title> <?=$title?> </title>;
+    <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_style.css">
 </head>
 
 <main class="main-container">
     <!-- Hero Section -->
-    <section class="degree-hero fade-in">    
+    <section class="degree-hero fade-in" >    
         <div class="hero-content">
-            <h1><i class="fa-solid fa-graduation-cap"></i> Discover Your Ideal Degree Path</h1>
-            <p>Our advanced recommendation system analyzes your Z-score and individual interests to provide personalized degree suggestions. Explore suitable universities and career pathways tailored to your strengths, aspirations, and long-term goals.</p>
+            <h1 style="color: white;"><i class="fa-solid fa-graduation-cap"></i> Discover Your Ideal Degree Path</h1>
+            <p style="color: white;">Our advanced recommendation system analyzes your Z-score and individual interests to provide personalized degree suggestions. Explore suitable universities and career pathways tailored to your strengths, aspirations, and long-term goals.</p>
         </div>
     </section>
 

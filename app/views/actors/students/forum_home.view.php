@@ -7,7 +7,7 @@
         <style>        
             .main-container {
                 margin-top: 10vh; /* Adjust this value based on your header height */
-            }
+            } 
         </style>
     <?php endif; ?>
         
@@ -20,10 +20,12 @@
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'alumni'): ?>
         <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/alumni.css">
         <style>
+            .main-container {
+                margin-top: 4rem; /* Adjust this value based on your header height */
+            }
             .btn-edit{
                 padding:1.4rem ;}
         </style>
-
     <?php endif; ?>
 
 </head>
@@ -47,7 +49,7 @@
         }
     ?>
 
-<body data-base-url="<?= BASE_URL ?>">
+<body data-base-url="<?= BASE_URL ?>" data-current-user-id="<?= isset($curr_user_id) ? $curr_user_id : (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '') ?>">
     <main class="main-container">
         <section class="forum-header">
             <div class="header-content">

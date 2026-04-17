@@ -67,6 +67,27 @@ class ArticleModel extends Model
         }
     }
 
+    public function getArticleByIdAdmin($articleId)
+    {
+        try {
+            $query = "SELECT 
+                        a.*,
+                        CONCAT(u.first_name, ' ', u.last_name) as author_name,
+                        u.email as author_email,
+                        u.user_type
+                    FROM articles a
+                    JOIN users u ON a.user_id = u.user_id
+                    WHERE a.article_id = ?";
+
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$articleId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error getting article by ID for admin: " . $e->getMessage());
+            return null;
+        }
+    }
+    
     /**
      * Create a new article
      */

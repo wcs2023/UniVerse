@@ -146,7 +146,7 @@ class User extends Model
                     (SELECT COUNT(*) FROM job_applications) as jobApplicationCount,
                     (SELECT COUNT(*) FROM mentorship_bookings) as bookedSessionCount,
                     (SELECT COUNT(*) FROM articles) as articleCount,
-                    (SELECT COUNT(*) FROM forum_posts) as forumCount
+                    (SELECT COUNT(*) FROM forum_threads) as forumCount
                     ";
 
         return $this->fetchAll($query);
@@ -165,11 +165,11 @@ class User extends Model
     {
         try {
             // Whitelist only the fields users are allowed to update
-            $allowedFields = ['first_name', 'last_name', 'date_of_birth', 'gender', 'phone'];
+            $allowedFields = ['first_name', 'last_name', 'date_of_birth', 'gender', 'phone','username','email'];
 
             $setParts = [];
             $params   = ['user_id' => $userId];
-
+            
             foreach ($allowedFields as $field) {
                 if (array_key_exists($field, $data)) {
                     $setParts[]     = "{$field} = :{$field}";
@@ -408,14 +408,16 @@ class User extends Model
             $query = "UPDATE users SET 
                         password_hash = :password_hash,
                         updated_at = NOW()
-                      WHERE user_id = :user_id";
+                    WHERE user_id = :user_id";
             
             $stmt = $this->query($query, [
                 'password_hash' => $hashedPassword,
                 'user_id' => $userId
             ]);
             
-            return $stmt->rowCount() > 0;
+            // Return true if the query executed. 
+            // rowCount() > 0 is only true if the data actually CHANGED.
+            return $stmt !== false; 
         } catch (Exception $e) {
             error_log("Error in updatePassword(): " . $e->getMessage());
             return false;

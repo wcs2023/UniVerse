@@ -27,6 +27,11 @@ $article = $data['article'] ?? [];
             padding-top: 80px;
             background-color: #a78bfa45 !important;
         }
+        .article-body {
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.8;
+        }
     </style>
 </head>
 
@@ -85,10 +90,9 @@ $article = $data['article'] ?? [];
             </div>
 
             <!-- Article Content -->
-            <div class="article-content">
-                <div class="article-body">
-                    <?= $article['content'] ?>
-                </div>
+           <div class="article-content">
+            <div class="article-body">
+                <?= nl2br(htmlspecialchars($article['content'] ?? '')) ?>
             </div>
 
             <!-- Article Stats -->
@@ -104,11 +108,6 @@ $article = $data['article'] ?? [];
             </div>
         </div>
     </div>
-
-    <?php
-    // Include footer
-    include dirname(dirname(dirname(__FILE__))) . '/layout/footer.php';
-    ?>
 </body>
 
 </html>

@@ -69,8 +69,9 @@
 
 .btn-back:hover{
     color:var(--primary-purple);
-    background:rgb(179, 175, 175);
-    border:var(--primary-purple) 1px solid;
+    /* font-weight: bold; */
+    background:hsl(261, 46%, 93%);
+    border:var(--primary-purple) 2px solid;
 }
 
 .alert{
