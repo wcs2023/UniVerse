@@ -124,15 +124,15 @@
                             </div>
 
                             <div class="form-row">
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="dob">Date of Birth</label>
                                     <input type="date"
                                         id="dob"
                                         name="date_of_birth"
                                         value="<?= htmlspecialchars($data['user']['date_of_birth'] ?? '') ?>">
-                                </div>
+                                </div> -->
 
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label>Gender</label>
                                     <?php $gender = $data['user']['gender'] ?? ''; ?>
                                     <div class="radio-group-horizontal">
@@ -154,7 +154,7 @@
                                             Other
                                         </label>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="form-row">

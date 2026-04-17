@@ -3,27 +3,28 @@
 class DegreeModel extends Model{
     protected $table = "degree_cutoffs";
 
-    public function getDegreeRecommendations($zscore,$district,$stream){
-
-        $query = 'SELECT 
-                u.university_name,
-                u.university_code,
-                dp.degree_id,
-                dp.unicode,
-                dp.details,
-                dp.degree_name,
-                dc.cutoff_mark
-                
+    public function getDegreeRecommendations($zscore, $district, $stream)
+    {
+        $query = "SELECT
+                    dp.degree_id AS degree_id,
+                    dp.unicode AS unicode,
+                    dp.details AS details,
+                    dp.degree_name AS degree_name,
+                    dc.cutoff_mark AS cutoff_mark,
+                    u.university_name AS university_name,
+                    u.university_code AS university_code
                 FROM degree_cutoffs dc
                 JOIN degree_programs dp ON dc.degree_id = dp.degree_id
-                JOIN universities u ON dp.university_id = u.university_id
+                LEFT JOIN universities u ON dp.university_id = u.university_id
                 WHERE dc.cutoff_mark <= :zscore
-                    AND dp.stream = :stream
-                    AND dc.district = :district
-                    ORDER BY dc.cutoff_mark DESC';
+                    AND LOWER(TRIM(dp.stream)) = LOWER(TRIM(:stream))
+                    AND LOWER(TRIM(dc.district)) = LOWER(TRIM(:district))
+                ORDER BY dc.cutoff_mark DESC";
 
-                    return $this ->fetchAll($query,['zscore' =>$zscore,'district'=>$district,'stream' =>$stream]);
-
-                    
+        return $this->fetchAll($query, [
+            'zscore'   => (float)$zscore,
+            'district' => $district,
+            'stream'   => $stream
+        ]);
     }
 }

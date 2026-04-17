@@ -11,15 +11,6 @@ body {
   padding-bottom: 40px;
 }
 
-/* Header */
-header {
-  background: white;
-  padding: 20px 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
 .logo {
   font-size: 28px;

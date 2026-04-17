@@ -8,6 +8,8 @@
   <script src="https://kit.fontawesome.com/317f05ac77.js" crossorigin="anonymous"></script>
 
   <?php include_once __DIR__ . '/includes/header2.view.php'; ?>
+  
+  <link rel="stylesheet" href="<?=BASE_URL?>/assets/css/student_style.css">
 </head>
 
 <body>
@@ -28,16 +30,15 @@
         <label class="stat-label">District</label>
         <div class="stat-value"><?= htmlspecialchars(ucfirst($district) ?? '') ?></div>
       </div>
+
     </div>
-
-    <h2 class="section-title">Recommended Universities and Courses</h2>
-
+    
+    <h2 class="section-title">Recommended Universities and Courses</h2>  
     <div class="table-section">
       <table>
         <thead>
           <tr>
             <th>Uni Code</th>
-            <th>University</th>
             <th>Degree Name</th>
             <th>Cutoff Mark</th>
             <th>Details</th>
@@ -48,7 +49,6 @@
           <?php foreach ($infos as $info): ?>
             <tr>
               <td class="uni-code"><?= htmlspecialchars($info['unicode'] ?? '') ?></td>
-              <td><span class="uni-badge"><?= htmlspecialchars($info['university_name'] ?? '') ?></span></td>
               <td class="degree-name"><?= htmlspecialchars($info['degree_name'] ?? '') ?></td>
               <td class="cutoff-mark"><?= htmlspecialchars($info['cutoff_mark'] ?? '') ?></td>
               <td>

@@ -61,7 +61,7 @@ class DegreeProgram extends Model
                     university_id = :university_id,
                     stream = :stream,
                     details = :details
-                  WHERE degree_program_id = :degree_program_id";
+                  WHERE degree_id = :degree_program_id";
 
         return $this->query($query, [
             'degree_program_id' => $id,
@@ -161,7 +161,7 @@ class DegreeProgram extends Model
             $existing = $this->findByUnicodeAndUniversity($unicode, $universityId);
 
             if ($existing) {
-                $ok = $this->updateDegreeProgram($existing['degree_program_id'], $normalizedData);
+                $ok = $this->updateDegreeProgram($existing['degree_id'], $normalizedData);
                 if ($ok) {
                     $updated++;
                 } else {

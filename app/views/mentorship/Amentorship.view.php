@@ -224,6 +224,11 @@ if (!defined('BASE_URL')) {
                                     <div class="ms-completed-name"><?= htmlspecialchars($session['student_name'] ?? 'Student') ?></div>
                                     <div class="ms-completed-date"><?= $sessionDate->format('M j, Y') ?></div>
                                 </div>
+                                <?php if (!empty($session['review_text'])): ?>
+                                <div class="completed-review" style="margin-top: 6px; color: #6b7280;">
+                                    "<?= htmlspecialchars($session['review_text']) ?>"
+                                </div>
+                                <?php endif; ?>
                                 <?php if (!empty($session['rating'])): ?>
                                     <div class="ms-rating-stars">
                                         <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>

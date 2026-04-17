@@ -792,6 +792,18 @@ if (!defined('URLROOT')) {
             dobInput.max = maxDate.toISOString().split("T")[0];
             }
         });
+
+    const dobInput = document.getElementById('date_of_birth');
+
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 16);
+
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+
+    dobInput.max = `${yyyy}-${mm}-${dd}`;
+
     </script>
 </body>
 </html>
