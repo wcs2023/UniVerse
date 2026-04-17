@@ -11,10 +11,10 @@
 
 <main class="main-container">
     <!-- Hero Section -->
-    <section class="degree-hero fade-in">    
+    <section class="degree-hero fade-in" >    
         <div class="hero-content">
-            <h1><i class="fa-solid fa-graduation-cap"></i> Discover Your Ideal Degree Path</h1>
-            <p>Our advanced recommendation system analyzes your Z-score and individual interests to provide personalized degree suggestions. Explore suitable universities and career pathways tailored to your strengths, aspirations, and long-term goals.</p>
+            <h1 style="color: white;"><i class="fa-solid fa-graduation-cap"></i> Discover Your Ideal Degree Path</h1>
+            <p style="color: white;">Our advanced recommendation system analyzes your Z-score and individual interests to provide personalized degree suggestions. Explore suitable universities and career pathways tailored to your strengths, aspirations, and long-term goals.</p>
         </div>
     </section>
 

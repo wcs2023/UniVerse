@@ -20,7 +20,28 @@
         padding: 1.5rem;
         border-left: 4px solid #6c63ff; /* purple accent line */
     }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.5);
 
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: #fff;
+    width: min(800px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    margin: 0;
+    position: relative;
+}
     .data-analysis .content-card-title {
         color: #2d2d5e;
         font-weight: 700;
@@ -794,30 +815,7 @@
             color: #dc2626;
         }
         
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 3% auto;
-            padding: 0;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+       
         
         .modal-header {
             padding: 1.5rem;
