@@ -15,6 +15,15 @@ class DegreeProgram extends Model
         return $row['university_id'] ?? null;
     }
 
+    public function getAllDegreePrograms()
+    {
+        $sql = "SELECT degree_id, degree_name, unicode, stream
+                FROM degree_programs
+                ORDER BY degree_id ASC";
+
+        return $this->fetchAll($sql);
+    }
+
     public function findByUnicodeAndUniversity($unicode, $universityId)
     {
         $query = "SELECT * 

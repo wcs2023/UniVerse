@@ -146,6 +146,56 @@ class Admin extends Controller
         exit;
     }
 
+    public function degreecutoffimport()
+    {
+        $degreeProgramModel = $this->model('DegreeProgram');
+        $degreePrograms = $degreeProgramModel->getAllDegreePrograms();
+
+        $data = [
+            'degreePrograms' => $degreePrograms
+        ];
+
+        $this->view('actors/admin/degree_cutoff_import', $data);
+    }
+
+    public function importdegreecutoffcsv()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '/admin/degreecutoffimport');
+            exit;
+        }
+
+        if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+            $_SESSION['error'] = 'Please upload a valid CSV file.';
+            header('Location: ' . BASE_URL . '/admin/degreecutoffimport');
+            exit;
+        }
+
+        $fileTmpPath = $_FILES['csv_file']['tmp_name'];
+        $fileName = $_FILES['csv_file']['name'];
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if ($fileExt !== 'csv') {
+            $_SESSION['error'] = 'Only CSV files are allowed.';
+            header('Location: ' . BASE_URL . '/admin/degreecutoffimport');
+            exit;
+        }
+
+        $degreeCutoffModel = $this->model('DegreeCutoff');
+        $result = $degreeCutoffModel->importFromCsv($fileTmpPath);
+
+        if ($result['success']) {
+            $_SESSION['success'] = "CSV imported successfully. Inserted: {$result['inserted']}, Updated: {$result['updated']}, Skipped: {$result['skipped']}";
+        } else {
+            $_SESSION['error'] = $result['message'] ?? 'CSV import failed.';
+        }
+
+        header('Location: ' . BASE_URL . '/admin/degreecutoffimport');
+        exit;
+    }
+
+
+    
     public function degreeprogramimport()
     {
         $data = [];
