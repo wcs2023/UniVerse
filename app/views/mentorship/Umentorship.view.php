@@ -266,12 +266,12 @@ if (!defined('BASE_URL')) {
                         </div>
                         <?php if (!empty($session['review_text'])): ?>
                         <div class="completed-review" style="margin-top: 6px; color: #6b7280;">
-                            "<?= htmlspecialchars($session['review_text']) ?>"
+                            <?= htmlspecialchars($session['review_text']) ?>
                         </div>
+                        <?php endif; ?>
                         <div class="rating-stars">
                             <?= str_repeat('&#9733;', $session['rating']) . str_repeat('&#9734;', 5 - $session['rating']) ?>
                         </div>
-                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
