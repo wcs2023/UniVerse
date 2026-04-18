@@ -85,6 +85,7 @@ class Registration extends Controller {
         } catch (Exception $e) {
             // Validation or other errors
             error_log("Registration exception: " . $e->getMessage());
+            
             $this->view('/auth/registration', [
                 'error' => 'Registration error: ' . $e->getMessage()
             ]);

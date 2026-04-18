@@ -216,13 +216,13 @@
                 <label for="graduationYear" >Expected Graduation</label>
                 <select id="graduationYear" name="expected_graduation_year" >
                   <option value="">Select Year</option>
-                  <option value="2024">2024</option>
-                  <option value="2025">2025</option>
                   <option value="2026">2026</option>
                   <option value="2027">2027</option>
                   <option value="2028">2028</option>
                   <option value="2029">2029</option>
                   <option value="2030">2030</option>
+                  <option value="2024">2031</option>
+                  <option value="2025">2032</option>
                 </select>
                 <div class="field-error"></div>
               </div>
@@ -474,7 +474,6 @@
         dobInput.max = maxDate.toISOString().split("T")[0];
       }
     });
-
   </script>
 
 </body>

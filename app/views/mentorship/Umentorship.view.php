@@ -51,8 +51,8 @@ if (!defined('BASE_URL')) {
                     <span class="stat-label">Completed</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">24/7</span>
-                    <span class="stat-label">Support</span>
+                    <span class="stat-number"><?= count($data['cancelled_bookings'] ?? []) ?></span>
+                    <span class="stat-label">Cancelled</span>
                 </div>
             </div>
         </div>
@@ -170,7 +170,15 @@ if (!defined('BASE_URL')) {
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="empty-state">
-                    <div class="empty-icon">--</div>
+                    <div class="empty-icon" aria-hidden="true">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <circle cx="12" cy="16" r="2" fill="#a78bfa" stroke="none" />
+                        </svg>
+                    </div>
                     <h3>No Upcoming Sessions</h3>
                     <p>You don't have any booked mentorship sessions yet. Explore available mentors and book a session!</p>
                     <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
@@ -179,6 +187,33 @@ if (!defined('BASE_URL')) {
                 </div>
             <?php endif; ?>
         </div>
+
+        <!-- Cancelled Sessions -->
+        <?php if (!empty($data['cancelled_bookings'])): ?>
+            <div class="section-card" style="border: 2px solid #fca5a5;">
+                <h2 class="section-title" style="color: #dc2626;">Cancelled Sessions</h2>
+                <?php foreach ($data['cancelled_bookings'] as $booking): ?>
+                    <?php $sessionDate = new DateTime($booking['slot_datetime']); ?>
+                    <div class="completed-item" style="border-left: 4px solid #ef4444; padding-left: 1rem; margin-bottom: 1rem; background: #fff5f5; border-radius: 8px; padding: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                alt="Mentor" class="completed-avatar"
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                            <div style="flex: 1;">
+                                <div class="completed-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></div>
+                                <div class="completed-date"><?= $sessionDate->format('M j, Y') ?> at <?= $sessionDate->format('g:i A') ?></div>
+                                <?php if (!empty($booking['cancellation_reason'])): ?>
+                                    <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #b91c1c; background: #fee2e2; padding: 0.4rem 0.75rem; border-radius: 6px; display: inline-block;">
+                                        <strong>Reason:</strong> <?= htmlspecialchars($booking['cancellation_reason']) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <span style="font-size: 0.75rem; font-weight: 700; background: #fee2e2; color: #dc2626; padding: 0.25rem 0.75rem; border-radius: 20px; white-space: nowrap;">Cancelled</span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Sessions Needing Feedback -->
         <?php if (isset($data['needs_feedback']) && count($data['needs_feedback']) > 0): ?>
@@ -242,14 +277,7 @@ if (!defined('BASE_URL')) {
             </div>
         <?php endif; ?>
 
-        <!-- CTA Section -->
-        <div class="cta-section">
-            <h2>Ready to Find Your Guide?</h2>
-            <p>Explore our network of experienced mentors who can help you achieve your academic and career goals.</p>
-            <a href="<?= BASE_URL ?>/umentorships/exploreMentors" class="btn" style="text-decoration: none;">
-                Explore Mentors
-            </a>
-        </div>
+
     </div>
     </main>
 
@@ -450,7 +478,10 @@ if (!defined('BASE_URL')) {
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= BASE_URL ?>/assets/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/core.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/actions.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/ui.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/styles-init.js"></script>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
 </body>

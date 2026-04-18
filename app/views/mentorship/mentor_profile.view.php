@@ -313,6 +313,9 @@ if (!defined('APPROOT')) {
 
     <script>
     </script>
-    <script src="<?= BASE_URL ?>/assets/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/core.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/actions.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/ui.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/styles-init.js"></script>
 </body>
 </html>

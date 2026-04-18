@@ -23,6 +23,7 @@ if (!defined('BASE_URL')) {
     <script>
         window.BASE_URL = '<?= BASE_URL ?>';
         window.USER_TYPE = 'alumni';
+        window.MENTOR_ACTIVE = <?= empty($data['mentor_inactive']) ? 'true' : 'false' ?>;
     </script>
     <style>
         body { padding-top: 80px; background-color: #a78bfa45 !important; }
@@ -30,10 +31,33 @@ if (!defined('BASE_URL')) {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
+        .slot-row { display: flex; gap: 8px; align-items: center; }
+        .slot-row .slot-input { flex: 1; }
+        .slot-done-btn {
+            padding: 6px 14px;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .slot-done-btn.done { background: #10b981; }
+        .slot-done-btn:hover { opacity: 0.88; }
+        .slot-time-label { font-size: 0.82rem; color: #059669; margin-top: 4px; }
+        .ms-btn-add-availability:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
+    <?php $canManageSlots = empty($data['mentor_inactive']); ?>
     <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
@@ -54,7 +78,7 @@ if (!defined('BASE_URL')) {
         <?php endif; ?>
 
         <!-- Success Message -->
-        <?php if (isset($_GET['success'])): ?>
+        <?php if (isset($_GET['success']) && $_GET['success'] !== 'slots_added'): ?>
             <div class="ms-success-message">
                 <span class="ms-status-dot ms-status-dot--active"></span>
                 <span>
@@ -94,7 +118,11 @@ if (!defined('BASE_URL')) {
                 <div class="ms-card">
                     <div class="ms-availability-header">
                         <h2 class="ms-card-title">My Availability (Next 2 Weeks)</h2>
-                        <button class="ms-btn-add-availability" onclick="openAddSlotsModal()" aria-label="Add new availability slots">
+                        <button
+                            class="ms-btn-add-availability"
+                            onclick="<?= $canManageSlots ? 'openAddSlotsModal()' : '' ?>"
+                            aria-label="Add new availability slots"
+                            <?= $canManageSlots ? '' : 'disabled title="Enable mentorship in profile settings to add slots"' ?>>
                             + Add Slots
                         </button>
                     </div>
@@ -119,7 +147,16 @@ if (!defined('BASE_URL')) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="ms-empty-state" style="grid-column: 1 / -1;">
-                                <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                                <div class="ms-empty-icon" aria-hidden="true">
+                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                        <line x1="8" y1="14" x2="8" y2="18" />
+                                        <line x1="6" y1="16" x2="10" y2="16" />
+                                    </svg>
+                                </div>
                                 <h3>No Availability Set</h3>
                                 <p>Add your available time slots so students can book sessions with you.</p>
                             </div>
@@ -203,7 +240,15 @@ if (!defined('BASE_URL')) {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="ms-empty-state">
-                            <div class="ms-empty-icon ms-empty-icon--css">--</div>
+                            <div class="ms-empty-icon" aria-hidden="true">
+                                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                    <circle cx="12" cy="16" r="2" fill="#a78bfa" stroke="none" />
+                                </svg>
+                            </div>
                             <h3>No Upcoming Bookings</h3>
                             <p>When students book your available slots, they'll appear here.</p>
                         </div>
@@ -281,9 +326,13 @@ if (!defined('BASE_URL')) {
                 <div id="slotsContainer">
                     <div class="ms-time-slot-input-group">
                         <label>Slot 1</label>
-                        <input type="datetime-local" class="slot-input" 
-                               min="<?= date('Y-m-d\TH:i') ?>" 
-                               max="<?= date('Y-m-d\TH:i', strtotime('+14 days')) ?>">
+                        <div class="slot-row">
+                            <input type="datetime-local" class="slot-input"
+                                   min="<?= date('Y-m-d\TH:i') ?>"
+                                   max="<?= date('Y-m-d\TH:i', strtotime('+14 days')) ?>">
+                            <button type="button" class="slot-done-btn" onclick="doneSlot(this)">Done</button>
+                        </div>
+                        <div class="slot-time-label"></div>
                     </div>
                 </div>
 
@@ -324,6 +373,10 @@ if (!defined('BASE_URL')) {
         let slotCount = 1;
 
         function openAddSlotsModal() {
+            if (!window.MENTOR_ACTIVE) {
+                MentorshipSystem.showNotification('Enable mentorship in your profile settings before adding slots.', 'error');
+                return;
+            }
             document.getElementById('addSlotsModal').classList.add('show');
         }
 
@@ -333,9 +386,13 @@ if (!defined('BASE_URL')) {
             document.getElementById('slotsContainer').innerHTML = `
                 <div class="ms-time-slot-input-group">
                     <label>Slot 1</label>
-                    <input type="datetime-local" class="slot-input" 
-                           min="${new Date().toISOString().slice(0, 16)}" 
-                           max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                    <div class="slot-row">
+                        <input type="datetime-local" class="slot-input"
+                               min="${new Date().toISOString().slice(0, 16)}"
+                               max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                        <button type="button" class="slot-done-btn" onclick="doneSlot(this)">Done</button>
+                    </div>
+                    <div class="slot-time-label"></div>
                 </div>
             `;
             slotCount = 1;
@@ -347,15 +404,40 @@ if (!defined('BASE_URL')) {
             const html = `
                 <div class="ms-time-slot-input-group">
                     <label>Slot ${slotCount}</label>
-                    <input type="datetime-local" class="slot-input" 
-                           min="${new Date().toISOString().slice(0, 16)}" 
-                           max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                    <div class="slot-row">
+                        <input type="datetime-local" class="slot-input"
+                               min="${new Date().toISOString().slice(0, 16)}"
+                               max="${new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0, 16)}">
+                        <button type="button" class="slot-done-btn" onclick="doneSlot(this)">Done</button>
+                    </div>
+                    <div class="slot-time-label"></div>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
         }
 
+        function doneSlot(btn) {
+            const group = btn.closest('.ms-time-slot-input-group');
+            const input = group.querySelector('.slot-input');
+            const label = group.querySelector('.slot-time-label');
+            input.blur(); // close the calendar popup
+            if (input.value) {
+                const d = new Date(input.value);
+                label.textContent = '✅ ' + d.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+                btn.textContent = '✓ Done';
+                btn.classList.add('done');
+            } else {
+                label.textContent = '';
+                MentorshipSystem.showNotification('Please select a date and time first.', 'error');
+            }
+        }
+
         async function submitSlots() {
+            if (!window.MENTOR_ACTIVE) {
+                MentorshipSystem.showNotification('Mentorship is not enabled for your profile.', 'error');
+                return;
+            }
+
             const inputs = document.querySelectorAll('.slot-input');
             const slots = [];
             
@@ -369,13 +451,6 @@ if (!defined('BASE_URL')) {
                 MentorshipSystem.showNotification('Please add at least one time slot.', 'error');
                 return;
             }
-
-            // Show confirmation with count
-            const confirmed = await MentorshipSystem.showConfirmationModal(
-                'Add Availability',
-                `Add ${slots.length} availability slot${slots.length > 1 ? 's' : ''}?`
-            );
-            if (!confirmed) return;
 
             fetch('<?= BASE_URL ?>/amentorships/addAvailability', {
                 method: 'POST',
@@ -401,6 +476,11 @@ if (!defined('BASE_URL')) {
         }
 
         async function removeSlot(slotId) {
+            if (!window.MENTOR_ACTIVE) {
+                MentorshipSystem.showNotification('Mentorship is not enabled for your profile.', 'error');
+                return;
+            }
+
             const confirmed = await MentorshipSystem.showConfirmationModal(
                 'Remove Slot',
                 'Remove this availability slot?',
@@ -463,7 +543,10 @@ if (!defined('BASE_URL')) {
 
         // Close modals handled globally by mentorship.js (outside click + Escape key)
     </script>
-    <script src="<?= BASE_URL ?>/assets/js/mentorship.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/core.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/actions.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/ui.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mentorship/styles-init.js"></script>
     </main>
 
     <?php include __DIR__ . '/../layout/footer.php'; ?>
