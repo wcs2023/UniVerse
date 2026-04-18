@@ -255,6 +255,31 @@ if (!defined('BASE_URL')) {
                     <?php endif; ?>
                 </div>
 
+                <!-- Cancelled Sessions -->
+                <?php if (!empty($data['cancelled_bookings'])): ?>
+                    <div class="ms-card" style="border: 2px solid #fca5a5;">
+                        <h2 class="ms-card-title" style="color: #dc2626;">Cancelled Sessions</h2>
+                        <?php foreach ($data['cancelled_bookings'] as $booking): ?>
+                            <?php $sessionDate = new DateTime($booking['slot_datetime']); ?>
+                            <div class="ms-completed-item" style="border-left: 4px solid #ef4444; padding-left: 1rem; margin-bottom: 1rem; background: #fff5f5; border-radius: 8px; padding: 1rem;">
+                                <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                    alt="Student" class="ms-completed-avatar"
+                                    onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
+                                <div class="ms-completed-info" style="flex: 1;">
+                                    <div class="ms-completed-name"><?= htmlspecialchars($booking['student_name'] ?? 'Student') ?></div>
+                                    <div class="ms-completed-date"><?= $sessionDate->format('M j, Y') ?> at <?= $sessionDate->format('g:i A') ?></div>
+                                    <?php if (!empty($booking['cancellation_reason'])): ?>
+                                        <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #b91c1c; background: #fee2e2; padding: 0.4rem 0.75rem; border-radius: 6px; display: inline-block;">
+                                            <strong>Reason:</strong> <?= htmlspecialchars($booking['cancellation_reason']) ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <span style="font-size: 0.75rem; font-weight: 700; background: #fee2e2; color: #dc2626; padding: 0.25rem 0.75rem; border-radius: 20px; white-space: nowrap;">Cancelled</span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Completed Sessions -->
                 <?php if (isset($data['completed_sessions']) && count($data['completed_sessions']) > 0): ?>
                     <div class="ms-card">

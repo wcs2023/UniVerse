@@ -67,6 +67,7 @@ class Amentorships extends Controller
                 'mentor_inactive' => true,
                 'availability_slots' => [],
                 'upcoming_bookings' => [],
+                'cancelled_bookings' => [],
                 'completed_sessions' => [],
                 'stats' => [
                     'total_sessions' => 0,
@@ -87,6 +88,9 @@ class Amentorships extends Controller
         // Get upcoming scheduled bookings
         $upcomingBookings = $this->mentorshipModel->getMentorBookings($mentorUserId, 'scheduled') ?? [];
 
+        // Get cancelled bookings for visibility when either side cancels
+        $cancelledBookings = $this->mentorshipModel->getMentorBookings($mentorUserId, 'cancelled') ?? [];
+
         // Get past/completed sessions
         $completedSessions = $this->mentorshipModel->getMentorBookings($mentorUserId, 'completed') ?? [];
 
@@ -104,6 +108,7 @@ class Amentorships extends Controller
         $data = [
             'availability_slots' => $availabilitySlots,
             'upcoming_bookings' => $upcomingBookings,
+            'cancelled_bookings' => $cancelledBookings,
             'completed_sessions' => $completedSessions,
             'stats' => $stats,
             'unread_notifications' => $unreadNotifications
