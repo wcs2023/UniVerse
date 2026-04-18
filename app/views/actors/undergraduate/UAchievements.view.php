@@ -143,7 +143,7 @@
                             <button class="delete-btn" onclick="deleteAchievement(<?= $achievement['achievement_id'] ?>)">Delete</button>
                             <?php if (!empty($achievement['certificate_url'])): ?>
                                 <a href="<?= htmlspecialchars($achievement['certificate_url']) ?>" target="_blank" class="view-link">View Certificate</a>
-                                <?php endif; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

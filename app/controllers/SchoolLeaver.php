@@ -14,6 +14,13 @@ class SchoolLeaver extends Controller
      */
     public function index()
     {
+        if(!(isset($_SESSION['user_id'])) || !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'school_leaver')
+        {   
+            redirect('login');
+            exit;
+            // $this->view('login');
+        }
+ 
         $data = [
             'title' => "School Leavers' Home",
             'hero' => [

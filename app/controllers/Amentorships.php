@@ -12,6 +12,14 @@
 class Amentorships extends Controller
 {
     private $mentorshipModel;
+    /**
+     * Returns true only when the alumni has an active mentor profile.
+     */
+    private function isMentorshipEnabled($userId)
+    {
+        $mentorStatus = $this->mentorshipModel->getMentorStatus($userId);
+        return !empty($mentorStatus) && !empty($mentorStatus['is_active']);
+    }
 
     public function __construct()
     {
