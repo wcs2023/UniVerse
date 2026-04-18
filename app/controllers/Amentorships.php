@@ -13,6 +13,15 @@ class Amentorships extends Controller
 {
     private $mentorshipModel;
 
+    /**
+     * Returns true only when the alumni has an active mentor profile.
+     */
+    private function isMentorshipEnabled($userId)
+    {
+        $mentorStatus = $this->mentorshipModel->getMentorStatus($userId);
+        return !empty($mentorStatus) && !empty($mentorStatus['is_active']);
+    }
+
     public function __construct()
     {
         // Start session if not already started
@@ -118,6 +127,14 @@ class Amentorships extends Controller
 
         $mentorUserId = $_SESSION['user_id'];
 
+        if (!$this->isMentorshipEnabled($mentorUserId)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Mentorship is not enabled. Enable it in profile settings first.'
+            ]);
+            exit;
+        }
+
         // Accept both form data and JSON
         $input = json_decode(file_get_contents('php://input'), true);
         if (!$input) {
@@ -188,6 +205,14 @@ class Amentorships extends Controller
         }
 
         $mentorUserId = $_SESSION['user_id'];
+
+        if (!$this->isMentorshipEnabled($mentorUserId)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Mentorship is not enabled. Enable it in profile settings first.'
+            ]);
+            exit;
+        }
 
         $input = json_decode(file_get_contents('php://input'), true);
         $slotId = $input['slot_id'] ?? null;

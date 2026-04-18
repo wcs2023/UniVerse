@@ -23,6 +23,7 @@ if (!defined('BASE_URL')) {
     <script>
         window.BASE_URL = '<?= BASE_URL ?>';
         window.USER_TYPE = 'alumni';
+        window.MENTOR_ACTIVE = <?= empty($data['mentor_inactive']) ? 'true' : 'false' ?>;
     </script>
     <style>
         body { padding-top: 80px; background-color: #a78bfa45 !important; }
@@ -47,10 +48,16 @@ if (!defined('BASE_URL')) {
         .slot-done-btn.done { background: #10b981; }
         .slot-done-btn:hover { opacity: 0.88; }
         .slot-time-label { font-size: 0.82rem; color: #059669; margin-top: 4px; }
+        .ms-btn-add-availability:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
+    <?php $canManageSlots = empty($data['mentor_inactive']); ?>
     <?php
     // Include navigation
     $navFile = APPROOT . '/views/actors/alumni/Anavbar.php';
@@ -111,7 +118,11 @@ if (!defined('BASE_URL')) {
                 <div class="ms-card">
                     <div class="ms-availability-header">
                         <h2 class="ms-card-title">My Availability (Next 2 Weeks)</h2>
-                        <button class="ms-btn-add-availability" onclick="openAddSlotsModal()" aria-label="Add new availability slots">
+                        <button
+                            class="ms-btn-add-availability"
+                            onclick="<?= $canManageSlots ? 'openAddSlotsModal()' : '' ?>"
+                            aria-label="Add new availability slots"
+                            <?= $canManageSlots ? '' : 'disabled title="Enable mentorship in profile settings to add slots"' ?>>
                             + Add Slots
                         </button>
                     </div>
@@ -362,6 +373,10 @@ if (!defined('BASE_URL')) {
         let slotCount = 1;
 
         function openAddSlotsModal() {
+            if (!window.MENTOR_ACTIVE) {
+                MentorshipSystem.showNotification('Enable mentorship in your profile settings before adding slots.', 'error');
+                return;
+            }
             document.getElementById('addSlotsModal').classList.add('show');
         }
 
@@ -418,6 +433,11 @@ if (!defined('BASE_URL')) {
         }
 
         async function submitSlots() {
+            if (!window.MENTOR_ACTIVE) {
+                MentorshipSystem.showNotification('Mentorship is not enabled for your profile.', 'error');
+                return;
+            }
+
             const inputs = document.querySelectorAll('.slot-input');
             const slots = [];
             
@@ -456,6 +476,11 @@ if (!defined('BASE_URL')) {
         }
 
         async function removeSlot(slotId) {
+            if (!window.MENTOR_ACTIVE) {
+                MentorshipSystem.showNotification('Mentorship is not enabled for your profile.', 'error');
+                return;
+            }
+
             const confirmed = await MentorshipSystem.showConfirmationModal(
                 'Remove Slot',
                 'Remove this availability slot?',
