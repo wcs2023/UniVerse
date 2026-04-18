@@ -71,6 +71,50 @@ class AlumniModel extends Model
             return false;
         }
     }
+    
+    public function getMentorIdByUserId($userId)
+    {
+        try {
+            $query = "SELECT mentor_id 
+                    FROM mentors 
+                    WHERE user_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+
+            return $stmt->fetch(PDO::FETCH_ASSOC); 
+            // or PDO::FETCH_OBJ if you prefer object access
+        } catch (PDOException $e) {
+            error_log("Error getting mentor ID by user ID: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getScheduledSessionCount($userId)
+    {
+        try {
+            $mentor = $this->getMentorIdByUserId($userId);
+
+            if (!$mentor) {
+                return 0;
+            }
+
+            $query = "SELECT COUNT(*) AS total
+                    FROM mentorship_bookings
+                    WHERE mentor_id = ? AND status = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                $mentor['mentor_id'],
+                'scheduled'
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result ? (int)$result['total'] : 0;
+        } catch (PDOException $e) {
+            error_log("Error getting scheduled session count: " . $e->getMessage());
+            return 0;
+        }
+    }
 
     /**
      * Get alumni by ID (alias for backward compatibility)
