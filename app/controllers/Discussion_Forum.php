@@ -44,7 +44,7 @@ class Discussion_Forum extends Controller
             $categories = [];
         }
 
-        $threads = $this->thread_model->getAllDEtails();
+        $threads = $this->thread_model->getAllDetails();
         if (!is_array($threads)) {
             $threads = [];
         }

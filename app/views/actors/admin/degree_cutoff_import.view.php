@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Import Degree Programs - UniVerse</title>
+    <title>Import Degree Cutoff Marks - UniVerse</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css">
     <style>
         .main-content {
@@ -18,7 +18,8 @@
             border-radius: 18px;
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
             padding: 1.5rem;
-            max-width: 900px;
+            max-width: 1100px;
+            margin-bottom: 1.5rem;
         }
 
         .card-title {
@@ -83,6 +84,16 @@
             color: #475569;
         }
 
+        .sample-box {
+            margin-top: 1rem;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #334155;
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -106,6 +117,34 @@
             padding: 2px 6px;
             border-radius: 6px;
         }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .degree-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .degree-table th,
+        .degree-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .degree-table th {
+            background: #f8fafc;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        .degree-table tr:hover {
+            background: #f8fafc;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +152,7 @@
 <?php require_once __DIR__ . '/components/sidebar.php'; ?>
 
 <main class="main-content">
+
     <?php if (isset($_SESSION['success'])): ?>
         <div class="alert alert-success">
             <?= $_SESSION['success']; unset($_SESSION['success']); ?>
@@ -126,15 +166,20 @@
     <?php endif; ?>
 
     <div class="card">
-        <h2 class="card-title">Import Degree Programs</h2>
-        <p class="card-subtitle">Upload a CSV file to insert or update degree programs.</p>
+        <h2 class="card-title">Import Degree Cutoff Marks</h2>
+        <p class="card-subtitle">Upload a CSV file to insert or update degree cutoff marks by district and year.</p>
 
         <div class="help-box">
             <strong>Required CSV columns:</strong><br>
-            <code>degree_name</code>, <code>unicode</code>, <code>university_name</code>, <code>stream</code>, <code>details</code>
+            <code>degree_id</code>, <code>district</code>, <code>cutoff_mark</code>, <code>year</code>
+
+            <div class="sample-box">degree_id,district,cutoff_mark,year
+3,Colombo,1.52,2024
+3,Gampaha,1.52,2024
+3,Kalutara,1.53,2024</div>
         </div>
 
-        <form action="<?= BASE_URL ?>/admin/importdegreeprogramcsv" method="POST" enctype="multipart/form-data">
+        <form action="<?= BASE_URL ?>/admin/importdegreecutoffcsv" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="csv_file">Choose CSV File</label>
                 <input type="file" id="csv_file" name="csv_file" class="form-control" accept=".csv" required>
@@ -143,6 +188,41 @@
             <button type="submit" class="btn btn-primary">Upload and Import</button>
         </form>
     </div>
+
+    <div class="card">
+        <h3 class="card-title" style="font-size: 1.5rem;">Available Degree Programs</h3>
+        <p class="card-subtitle">Use the correct <strong>degree_id</strong> from this list when preparing your cutoff CSV file.</p>
+
+        <div class="table-wrapper">
+            <table class="degree-table">
+                <thead>
+                    <tr>
+                        <th>Degree ID</th>
+                        <th>Degree Name</th>
+                        <th>Unicode</th>
+                        <th>Stream</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($data['degreePrograms'])): ?>
+                        <?php foreach ($data['degreePrograms'] as $program): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($program['degree_id']) ?></td>
+                                <td><?= htmlspecialchars($program['degree_name']) ?></td>
+                                <td><?= htmlspecialchars($program['unicode']) ?></td>
+                                <td><?= htmlspecialchars($program['stream']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">No degree programs found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </main>
 
 </body>

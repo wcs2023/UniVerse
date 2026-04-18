@@ -1,5 +1,4 @@
 <?php 
-
 class Login extends Controller {
 
     public function index() {
@@ -44,6 +43,7 @@ class Login extends Controller {
                     $this->view('/auth/login', ['error' => 'Your account is not active. Please contact an administrator.']);
                     return;
                 }
+                
                 $_SESSION['USER'] = [
                     'user_id'    => $user['user_id'],
                     'user_type'  => $user['user_type'],

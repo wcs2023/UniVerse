@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/login.css">
 </head>
 <body>
-  <!-- ✅ Custom navigation for login page -->
+  <!-- Custom navigation for login page -->
   <header class="header">
     <div class="container">
         <div class="nav-brand">
@@ -19,7 +19,7 @@
         
         <!-- Auth Navigation Actions -->
         <div class="auth-nav-actions">
-            <!-- ✅ Always go to home page instead of history.back() -->
+            <!-- Always go to home page instead of history.back() -->
             <a href="<?= BASE_URL ?>" class="back-btn" title="Go to Home">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 12H5M12 19l-7-7 7-7"/>

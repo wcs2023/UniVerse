@@ -246,9 +246,9 @@
             <span>Contact Messages</span>
         </a>
 
-        <a href="<?= BASE_URL ?>/admin/degreeprogramimport"
-           class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/degreeprogramimport') !== false ? 'active' : '' ?>">
-            <span>Degree Programs</span>
+        <a href="<?= BASE_URL ?>/admin/degreecutoffimport"
+           class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/degreecutoffimport') !== false ? 'active' : '' ?>">
+            <span>Degree Cutoffs</span>
         </a>
     </nav>
     

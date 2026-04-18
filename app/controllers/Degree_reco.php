@@ -40,14 +40,14 @@ class Degree extends Controller{
             $this->view('actors/students/degree_suggestion',$data);
         }
         $degreeModel = new DegreeModel();
-        $rows = $degreeModel->searchByFilters((float)$zscore,$stream,$district);
+        // $rows = $degreeModel->searchByFilters((float)$zscore,$stream,$district);
 
         $data = [
             'title' =>'Recommendations',
             'zscore' => $zscore,
             'stream' => $stream,
             'district' => $district,
-            'rows' => $rows
+            // 'rows' => $rows
         ];
         $this->view('actors/students/degree_results',$data);
 
@@ -65,13 +65,13 @@ class Degree extends Controller{
         }
 
         $model = new DegreeModel();
-        $row   = $model->findById((int)$id);
+        // $row   = $model->findById((int)$id);
 
-        if (!$row) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Not found']);
-            return;
-        }
+        // if (!$row) {
+        //     http_response_code(404);
+        //     echo json_encode(['error' => 'Not found']);
+        //     return;
+        // }
 
         // Try to decode details as JSON; if it fails, treat as plain text
         $extra = null;
@@ -87,7 +87,7 @@ class Degree extends Controller{
         }
 
         echo json_encode([
-            'id'         => (int)$row->id,
+            // 'id'         => (int)$row->id,
             'unicode'    => $row->unicode ?? null,
             'university' => $row->university ?? null,
             'course'     => $row->course_name ?? null,

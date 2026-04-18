@@ -266,51 +266,51 @@
         <?php endif; ?>
     </div>
 
-    <div class="card">
+    <!-- <div class="card">
         <div class="card-header">
             <h3 class="card-title" style="font-size:1.4rem;">Published Articles</h3>
             <p class="card-subtitle">Public content posted by the applicant</p>
-        </div>
+        </div> -->
 
-        <?php if (!empty($data['articles'])): ?>
+        <!-- <//?php if (!empty($data['articles'])): ?>
             <div class="list">
-                <?php foreach ($data['articles'] as $article): ?>
+                <//?php foreach ($data['articles'] as $article): ?>
                     <div class="list-item">
                         <div class="list-title">
-                            <a href="<?= BASE_URL ?>/uarticles/viewDetails/<?= (int)($article['article_id'] ?? 0) ?>" target="_blank" rel="noopener noreferrer">
-                                <?= htmlspecialchars($article['title'] ?? 'Article') ?>
+                            <a href="<//?= BASE_URL ?>/uarticles/viewDetails/<//?= (int)($article['article_id'] ?? 0) ?>" target="_blank" rel="noopener noreferrer">
+                                <//?= htmlspecialchars($article['title'] ?? 'Article') ?>
                             </a>
                         </div>
                         <div class="list-sub">
-                            <?php if (!empty($article['category'])): ?>
-                                <span class="pill"><?= htmlspecialchars(ucfirst(str_replace('-', ' ', $article['category']))) ?></span>
-                            <?php endif; ?>
-                            <?php $articleDate = $formatDate($article['published_at'] ?? '') ?: $formatDate($article['created_at'] ?? ''); ?>
-                            <?php if (!empty($articleDate)): ?>
-                                <span class="pill"><?= htmlspecialchars($articleDate) ?></span>
-                            <?php endif; ?>
-                            <?php if (isset($article['views'])): ?>
-                                <span class="pill">Views: <?= (int)$article['views'] ?></span>
-                            <?php endif; ?>
-                            <?php if (isset($article['likes'])): ?>
-                                <span class="pill">Likes: <?= (int)$article['likes'] ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <?php if (!empty($article['content'])): ?>
+                            <//?php if (!empty($article['category'])): ?>
+                                <span class="pill"><//?= htmlspecialchars(ucfirst(str_replace('-', ' ', $article['category']))) ?></span>
+                            <//?php endif; ?>
+                            <//?php $articleDate = $formatDate($article['published_at'] ?? '') ?: $formatDate($article['created_at'] ?? ''); ?>
+                            <//?php if (!empty($articleDate)): ?>
+                                <span class="pill"><//?= htmlspecialchars($articleDate) ?></span>
+                            <//?php endif; ?>
+                            </?php if (isset($article['views'])): ?>
+                                <span class="pill">Views: <//?= (int)$article['views'] ?></span>
+                            <//?php endif; ?>
+                            </?php if (isset($article['likes'])): ?>
+                                <span class="pill">Likes: <//?= (int)$article['likes'] ?></span>
+                            <//?php endif; ?>
+                        </div> -->
+                        <!-- <//?php if (!empty($article['content'])): ?>
                             <div class="list-sub" style="margin-top:0.5rem; color: var(--text-dark);">
-                                <?= htmlspecialchars($makeExcerpt($article['content'], 220)) ?>
+                                <//?= htmlspecialchars($makeExcerpt($article['content'], 220)) ?>
                             </div>
-                        <?php endif; ?>
+                        <//?php endif; ?>
                     </div>
-                <?php endforeach; ?>
+                <//?php endforeach; ?>
             </div>
-        <?php else: ?>
+        <//?php else: ?>
             <div class="empty-state">
                 <h3>No published articles</h3>
                 <p>This applicant hasn’t published articles yet.</p>
             </div>
-        <?php endif; ?>
-    </div>
+        <//?php endif; ?> -->
+    <!-- </div> -->
 </main>
 
 <?php require_once __DIR__ . '/../../layout/footer.php'; ?>

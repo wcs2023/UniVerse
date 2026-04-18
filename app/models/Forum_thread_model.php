@@ -19,6 +19,7 @@ class Forum_thread_model extends Model
                     FROM {$this->table} ft
                     JOIN users u on ft.user_id = u.user_id
                     JOIN forum_categories fc ON ft.cat_id = fc.cat_id
+                    WHERE ft.is_locked = 0
                     ORDER BY ft.is_pinned DESC,ft.updated_at DESC LIMIT :limit";
 
         // $query = "SELECT 
