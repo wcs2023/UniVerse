@@ -386,13 +386,16 @@ class MentorshipBooking extends MentorshipBase
 
             $query = "SELECT 
                         mb.booking_id, mb.session_datetime as slot_datetime, mb.duration_minutes,
-                        mb.meeting_link, mb.status, mb.student_id, mb.cancellation_reason,
+                                                mb.meeting_link, mb.status, mb.student_id, mb.cancellation_reason,
+                                                mb.cancelled_by, mb.updated_at as cancelled_at,
+                                                CONCAT(cu.first_name, ' ', cu.last_name) as cancelled_by_name,
                         CONCAT(u.first_name, ' ', u.last_name) as student_name,
                         u.profile_picture as student_picture,
                         up.degree_program, up.academic_year,
                         mf.rating, mf.review_text
                       FROM mentorship_bookings mb
                       INNER JOIN users u ON mb.student_id = u.user_id
+                                            LEFT JOIN users cu ON mb.cancelled_by = cu.user_id
                       LEFT JOIN undergraduate_profiles up ON u.user_id = up.user_id
                       LEFT JOIN mentorship_feedback mf ON mb.booking_id = mf.booking_id
                       WHERE mb.mentor_id = ?";
