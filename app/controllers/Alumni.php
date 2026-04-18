@@ -182,6 +182,18 @@ class Alumni extends Controller
             echo json_encode(['success' => false, 'message' => 'Name and email are required']);
             exit;
         }
+
+        $requestedMentorshipAvailability = !empty($data['available_for_mentorship']);
+        $currentUser = $this->alumniModel->getUserById($userId);
+        $currentlyMentorshipAvailable = !empty($currentUser) && !empty($currentUser->available_for_mentorship);
+
+        if ($currentlyMentorshipAvailable && !$requestedMentorshipAvailability && $this->alumniModel->hasActiveUpcomingMentorshipSessions($userId)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'You have active upcoming mentorship sessions. Please complete or cancel those sessions before changing your mentorship status to unavailable.'
+            ]);
+            exit;
+        }
         
         // Update profile data
         $result = $this->alumniModel->updateProfile($userId, [
@@ -191,7 +203,7 @@ class Alumni extends Controller
             'company' => $data['company'] ?? '',
             'linkedin_url' => $data['linkedin_url'] ?? '',
             'short_bio' => $data['short_bio'] ?? '',
-            'available_for_mentorship' => $data['available_for_mentorship'] ? 1 : 0
+            'available_for_mentorship' => $requestedMentorshipAvailability ? 1 : 0
         ]);
         
         if ($result) {

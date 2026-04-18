@@ -128,6 +128,13 @@ class Aeditprofile extends Controller {
             $mentorshipAvailable = isset($_POST['mentorship_available']) && $_POST['mentorship_available'] == '1';
             $mentorExpertise = $validatedData['mentor_expertise'] ?? [];
 
+            $currentUserData = $this->alumniModel->getUserById($userId);
+            $currentlyMentorshipAvailable = !empty($currentUserData) && !empty($currentUserData->available_for_mentorship);
+
+            if ($currentlyMentorshipAvailable && !$mentorshipAvailable && $this->alumniModel->hasActiveUpcomingMentorshipSessions($userId)) {
+                throw new Exception('You have active upcoming mentorship sessions. Please complete or cancel those sessions before changing your mentorship status to unavailable.');
+            }
+
             if ($mentorshipAvailable && empty($mentorExpertise)) {
                 throw new Exception("Please select at least one expertise area when enabling mentorship");
             }
@@ -144,7 +151,10 @@ class Aeditprofile extends Controller {
             $this->alumniModel->updateProfile($userId, $updateData);
             
             // Update mentorship availability
-            $this->alumniModel->updateMentorshipAvailability($userId, $mentorshipAvailable);
+            $availabilityUpdated = $this->alumniModel->updateMentorshipAvailability($userId, $mentorshipAvailable);
+            if (!$availabilityUpdated && $currentlyMentorshipAvailable && !$mentorshipAvailable) {
+                throw new Exception('You have active upcoming mentorship sessions. Please complete or cancel those sessions before changing your mentorship status to unavailable.');
+            }
 
             // Save mentor expertise only for mentorship flow
             if ($mentorshipAvailable) {

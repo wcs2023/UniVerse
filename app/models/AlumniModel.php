@@ -158,6 +158,32 @@ class AlumniModel extends Model
     }
 
     /**
+     * Check whether an alumni mentor has upcoming scheduled sessions.
+     *
+     * @param int $userId The alumni user ID
+     * @return bool True if at least one upcoming scheduled booking exists
+     */
+    public function hasActiveUpcomingMentorshipSessions($userId)
+    {
+        try {
+            $query = "SELECT COUNT(*) as booking_count
+                      FROM mentorship_bookings mb
+                      INNER JOIN mentors m ON mb.mentor_id = m.mentor_id
+                      WHERE m.user_id = ?
+                      AND mb.status = 'scheduled'
+                      AND mb.session_datetime > NOW()";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return !empty($result) && (int)($result['booking_count'] ?? 0) > 0;
+        } catch (PDOException $e) {
+            error_log("Error checking upcoming mentorship sessions: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Update user profile
      * 
      * @param int $userId The user ID
@@ -446,6 +472,10 @@ class AlumniModel extends Model
     public function updateMentorshipAvailability($userId, $isAvailable)
     {
         try {
+            if (!$isAvailable && $this->hasActiveUpcomingMentorshipSessions($userId)) {
+                return false;
+            }
+
             // Check if mentor record exists
             $query = "SELECT mentor_id FROM mentors WHERE user_id = ?";
             $stmt = $this->db->prepare($query);
