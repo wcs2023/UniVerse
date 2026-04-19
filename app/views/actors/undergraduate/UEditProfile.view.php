@@ -41,7 +41,7 @@
                                         <?php 
                                         $profilePic = !empty($data['user']['profile_picture']) 
                                             ? $data['user']['profile_picture'] 
-                                            : '/assets/images/default-avatar.svg';
+                                            : '/assets/images/U.png';
                                         ?>
                                         <img src="<?= BASE_URL ?><?= $profilePic ?>" 
                                              alt="Profile Preview" 
@@ -69,7 +69,7 @@
                                     <?php 
                                     $profilePicture = !empty($data['user']['profile_picture']) 
                                         ? $data['user']['profile_picture'] 
-                                        : '/assets/images/default-avatar.svg';
+                                        : '/assets/images/U.png';
                                     ?>
                                     <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
                                          alt="Profile Picture" 

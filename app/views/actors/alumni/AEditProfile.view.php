@@ -640,26 +640,29 @@ if (!defined('URLROOT')) {
             </div>
 
             <!-- Mentorship Availability Section -->
-            <div class="form-section" id="mentorship-settings">
-                <h2>Mentorship Settings</h2>
-                
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
-                        <input type="checkbox" 
-                               id="mentorship_available" 
-                               name="mentorship_available" 
-                               value="1"
-                               <?= ($data['user']->available_for_mentorship ?? false) ? 'checked' : '' ?>
-                               style="width: 20px; height: 20px; accent-color: var(--primary-purple, #6c63ff); cursor: pointer;">
-                        <span style="font-weight: 600; font-size: 1rem;">
-                            I am available for mentorship
-                        </span>
-                    </label>
-                    <small style="margin-left: 2rem; display: block; margin-top: 0.5rem;">
-                        When enabled, undergraduate students will be able to see your profile and send mentorship requests.
-                        You can disable this at any time.
-                    </small>
-                </div>
+            <?php if( !isset($data['bookingCount']) || empty($data['bookingCount'])) :?>
+                <div class="form-section" id="mentorship-settings">
+                    <h2>Mentorship Settings</h2>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" 
+                                id="mentorship_available" 
+                                name="mentorship_available" 
+                                value="1"
+                                <?= ($data['user']->available_for_mentorship ?? false) ? 'checked' : '' ?>
+                                style="width: 20px; height: 20px; accent-color: var(--primary-purple, #6c63ff); cursor: pointer;">
+                            <span style="font-weight: 600; font-size: 1rem;">
+                                I am available for mentorship
+                            </span>
+                        </label>
+                        <small style="margin-left: 2rem; display: block; margin-top: 0.5rem;">
+                            When enabled, undergraduate students will be able to see your profile and send mentorship requests.
+                            You can disable this at any time.
+                        </small>
+                    </div>        
+                    
+                    
 
                 <div id="mentor-expertise-section" style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb;">
                     <h3 style="margin: 0 0 0.5rem 0; color: var(--text-dark, #1a1a2e); font-size: 1rem;">Mentor Expertise (IT Focus)</h3>
@@ -686,12 +689,37 @@ if (!defined('URLROOT')) {
                                 </span>
                                 <?php if (!empty($categoryDescription)): ?>
                                     <small style="margin: 0; color: #6b7280; font-size: 0.78rem;"><?= htmlspecialchars($categoryDescription) ?></small>
-                                <?php endif; ?>
-                            </label>
-                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </label>
+                                <?php endforeach; ?>
                     </div>
                 </div>
             </div>
+            <?php else: ?>
+                <div class="form-section" id="mentorship-settings">
+                    <h2>Mentorship Settings</h2>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.75rem; opacity: 0.7;">
+                        <input type="checkbox" 
+                            id="mentorship_available" 
+                            name="mentorship_available" 
+                            value="1"
+                            <?= ($data['user']->available_for_mentorship ?? false) ? 'checked' : '' ?>
+                            disabled
+                            style="width: 20px; height: 20px; accent-color: var(--primary-purple, #6c63ff);">
+                        <span style="font-weight: 600; font-size: 1rem;">
+                            I am available for mentorship
+                        </span>
+                    </label>
+                    <small style="margin-left: 2rem; display: block; margin-top: 0.5rem; color: red;">
+                        You cannot change mentorship availability because you have scheduled bookings.
+                        Please complete or cancel those bookings first.
+                    </small>
+            </div>
+        </div>
+    <?php endif; ?>
+
 
             <!-- Form Actions -->
             <div class="form-actions">

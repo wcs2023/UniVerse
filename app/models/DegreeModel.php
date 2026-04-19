@@ -27,4 +27,4 @@ class DegreeModel extends Model{
             'stream'   => $stream
         ]);
     }
-}
+} 

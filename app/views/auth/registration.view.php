@@ -123,7 +123,7 @@
                 <input type="password" id="password" name="password" required 
                        autocomplete="new-password" minlength="8">
                 <button type="button" class="password-toggle" aria-label="Toggle password visibility">
-                  <span class="toggle-icon">👁️</span>
+                  <!-- <span class="toggle-icon">👁️</span> -->
                 </button>
               </div>
               <div class="password-strength">
@@ -140,7 +140,7 @@
               <div class="password-field">
                 <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password">
                 <button type="button" class="password-toggle" aria-label="Toggle password visibility">
-                  <span class="toggle-icon">👁️</span>
+                  <!-- <span class="toggle-icon">👁️</span> -->
                 </button>
               </div>
               <div class="password-match"></div>

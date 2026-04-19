@@ -22,12 +22,12 @@ class Alumni extends Controller
     public function index()
     {
         // TODO: Add authentication check
-        /*
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'alumni') {
+        
+        if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) ||$_SESSION['user_role'] !== 'alumni') {
             header('Location: ' . URLROOT . '/users/login');
             exit;
         }
-        */
+        
         
         // Get recent published articles (limit to 6 for homepage)
         $recentArticles = $this->articleModel->getAllPublishedArticles(6, 0);

@@ -70,6 +70,8 @@ class Aeditprofile extends Controller {
         $expertiseCategories = $this->alumniModel->getExpertiseCategories();
         $selectedExpertise = $this->alumniModel->getMentorExpertiseByUserId($userId);
 
+        $ScheduledSessionsCount = $this->alumniModel->getScheduledSessionCount($userId);
+
         // Prepare data for view
         $data = [
             'user' => $userData,
@@ -77,7 +79,8 @@ class Aeditprofile extends Controller {
             'selectedExpertise' => $selectedExpertise,
             'error' => $_SESSION['profile_error'] ?? null,
             'success' => $_SESSION['profile_success'] ?? null,
-            'title' => 'Edit Profile'
+            'title' => 'Edit Profile',
+            'bookingCount' => $ScheduledSessionsCount
         ];
         
         // Clear session messages
