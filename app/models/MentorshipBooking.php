@@ -206,8 +206,8 @@ class MentorshipBooking extends MentorshipBase
                       LEFT JOIN alumni_profiles ap ON u.user_id = ap.user_id
                       WHERE mb.student_id = ?
                       AND mb.status = 'scheduled'
-                      AND mb.session_datetime > NOW()
-                      ORDER BY mb.session_datetime ASC";
+                      AND mb.session_datetime > DATE_SUB(NOW(), INTERVAL 2 HOUR)
+                      ORDER BY mb.session_datetime DESC";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$studentId]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -242,8 +242,8 @@ class MentorshipBooking extends MentorshipBase
                       LEFT JOIN undergraduate_profiles up ON u.user_id = up.user_id
                       WHERE mb.mentor_id = ?
                       AND mb.status = 'scheduled'
-                      AND mb.session_datetime > NOW()
-                      ORDER BY mb.session_datetime ASC";
+                      AND mb.session_datetime > DATE_SUB(NOW(), INTERVAL 2 HOUR)
+                      ORDER BY mb.session_datetime DESC";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$mentorId]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -355,10 +355,10 @@ class MentorshipBooking extends MentorshipBase
             }
 
             if ($status === 'scheduled') {
-                $query .= " AND mb.session_datetime > NOW()";
+                $query .= " AND mb.session_datetime > DATE_SUB(NOW(), INTERVAL 2 HOUR)";
             }
 
-            $query .= " ORDER BY mb.session_datetime " . ($status === 'scheduled' ? 'ASC' : 'DESC');
+            $query .= " ORDER BY mb.session_datetime DESC";
 
             $stmt = $this->db->prepare($query);
             $stmt->execute($params);
@@ -408,10 +408,10 @@ class MentorshipBooking extends MentorshipBase
             }
 
             if ($status === 'scheduled') {
-                $query .= " AND mb.session_datetime > NOW()";
+                $query .= " AND mb.session_datetime > DATE_SUB(NOW(), INTERVAL 2 HOUR)";
             }
 
-            $query .= " ORDER BY mb.session_datetime " . ($status === 'scheduled' ? 'ASC' : 'DESC');
+            $query .= " ORDER BY mb.session_datetime DESC";
 
             $stmt = $this->db->prepare($query);
             $stmt->execute($params);
