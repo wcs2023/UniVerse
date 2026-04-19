@@ -180,7 +180,7 @@ if (!defined('BASE_URL')) {
                             ?>
                             <div class="ms-booking-card" data-booking-id="<?= $booking['booking_id'] ?>" data-session-id="<?= $booking['booking_id'] ?>" data-session-datetime="<?= $sessionDate->format('Y-m-d\TH:i:s') ?>" data-meeting-link="<?= htmlspecialchars($booking['meeting_link'] ?? '') ?>">
                                 <div class="ms-booking-header">
-                                    <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                    <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                         alt="<?= htmlspecialchars($booking['student_name'] ?? 'Student') ?>" 
                                         class="ms-booking-avatar"
                                         onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
@@ -263,7 +263,7 @@ if (!defined('BASE_URL')) {
                             <?php $sessionDate = new DateTime($booking['slot_datetime']); ?>
                             <?php $cancelledAt = !empty($booking['cancelled_at']) ? new DateTime($booking['cancelled_at']) : null; ?>
                             <div class="ms-completed-item" style="border-left: 4px solid #ef4444; padding-left: 1rem; margin-bottom: 1rem; background: #fff5f5; border-radius: 8px; padding: 1rem;">
-                                <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                <img src="<?= !empty($booking['student_picture']) ? BASE_URL . htmlspecialchars($booking['student_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                     alt="Student" class="ms-completed-avatar"
                                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                                 <div class="ms-completed-info" style="flex: 1;">
@@ -296,7 +296,7 @@ if (!defined('BASE_URL')) {
                         <?php foreach (array_slice($data['completed_sessions'], 0, 5) as $session): ?>
                             <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
                             <div class="ms-completed-item">
-                                <img src="<?= !empty($session['student_picture']) ? BASE_URL . htmlspecialchars($session['student_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                                <img src="<?= !empty($session['student_picture']) ? BASE_URL . htmlspecialchars($session['student_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                     alt="Student" class="ms-completed-avatar"
                                     onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'">
                                 <div class="ms-completed-info">
