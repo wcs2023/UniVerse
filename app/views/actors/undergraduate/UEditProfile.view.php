@@ -69,12 +69,12 @@
                                     <?php 
                                     $profilePicture = !empty($data['user']['profile_picture']) 
                                         ? $data['user']['profile_picture'] 
-                                        : '/assets/images/default-avatar.svg';
+                                        : '/assets/images/U.png';
                                     ?>
                                     <img src="<?= BASE_URL ?><?= $profilePicture ?>" 
                                          alt="Profile Picture" 
                                          id="profile-preview"
-                                         onerror="this.src='<?= BASE_URL ?>/assets/images/U.png'"
+                                         onerror="this.onerror=null;   this.src='<?= BASE_URL ?>/assets/images/U.png'"
                                          style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; cursor: pointer;">
                                     <p class="picture-note">Click to edit</p>
                                 </div>

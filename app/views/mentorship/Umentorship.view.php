@@ -196,9 +196,9 @@ if (!defined('BASE_URL')) {
                     <?php $sessionDate = new DateTime($booking['slot_datetime']); ?>
                     <div class="completed-item" style="border-left: 4px solid #ef4444; padding-left: 1rem; margin-bottom: 1rem; background: #fff5f5; border-radius: 8px; padding: 1rem;">
                         <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                            <img src="<?= !empty($booking['mentor_picture']) ? BASE_URL . htmlspecialchars($booking['mentor_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                 alt="Mentor" class="completed-avatar"
-                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
                             <div style="flex: 1;">
                                 <div class="completed-name"><?= htmlspecialchars($booking['mentor_name'] ?? 'Mentor') ?></div>
                                 <div class="completed-date"><?= $sessionDate->format('M j, Y') ?> at <?= $sessionDate->format('g:i A') ?></div>
