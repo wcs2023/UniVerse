@@ -85,7 +85,7 @@
                             
                             <?php if (!empty($categoryName)): ?>
                             <a href="<?= BASE_URL ?>/uarticles/category/<?= strtolower($categoryName) ?>" class="category-card">
-                               
+   
                                 <div class="category-info">
                                     <span class="category-name"><?= ucfirst(str_replace('-', ' ', $categoryName)) ?></span>
                                     <span class="category-count"><?= $categoryCount ?> articles</span>
@@ -124,7 +124,7 @@
                             <div class="search-box">
                                 <i class="fas fa-search"></i>
                                 <input type="text" placeholder="Search articles..." id="article-search">
-                            </div>
+                            </div> 
                             <select class="sort-dropdown" id="sort-articles">
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>

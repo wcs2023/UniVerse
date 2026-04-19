@@ -442,6 +442,14 @@
                                         <div class="detail-value">${app.notes}</div>
                                     </div>
                                 ` : ''}
+
+                                 ${app.resume_url ? `
+                            <div class="detail-group">
+                                <div class="detail-label">Resume</div>
+                                <div class="detail-value"><a href="${app.resume_url}" target="_blank">View Resume</a></div>
+                            </div>
+                        ` : ''}
+
                             </div>
                             
                             <div class="modal-actions">
