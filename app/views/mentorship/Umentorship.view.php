@@ -228,7 +228,7 @@ if (!defined('BASE_URL')) {
                             <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
                                 alt="<?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?>"
                                 class="feedback-avatar"
-                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/default-avatar.svg'">
+                                onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
                             <div class="feedback-info">
                                 <h4><?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?></h4>
                                 <p>

@@ -98,7 +98,7 @@ class AlumniModel extends Model
                 return 0;
             }
 
-            $query = "SELECT COUNT(*) AS total
+            $query = "SELECT COUNT(*) AS total,status
                     FROM mentorship_bookings
                     WHERE mentor_id = ? AND status = ?";
             $stmt = $this->db->prepare($query);

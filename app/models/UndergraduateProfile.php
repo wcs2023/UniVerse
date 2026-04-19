@@ -39,7 +39,8 @@ class UndergraduateProfile extends Model
                 'faculty', 
                 'degree_program',
                 'academic_year',
-                'expected_graduation_year'
+                'expected_graduation_year',
+                'school'
             ];
 
             $setParts = [];

@@ -97,4 +97,11 @@ class Database
     {
         return $this->pdo->lastInsertId();
     }
+
+    public function rowCount($sql, $params = [])
+    {
+        $stmt = $this->query($sql, $params);
+        return $stmt->rowCount();
+    }
+
 }

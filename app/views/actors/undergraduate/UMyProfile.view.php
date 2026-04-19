@@ -71,6 +71,16 @@
                     <div class="info-value"><?= htmlspecialchars($data['user']['email']) ?></div>
                 </div>
 
+                 <!-- <div class="info-item">
+                    <div class="info-label">
+                        <i class="icon-phone"></i>
+                        School
+                    </div>
+                    <div class="info-value"><//?= htmlspecialchars($data['profile']['school'] ?? 'Not provided') ?></div>
+                </div> -->
+
+
+
                 <!-- Phone -->
                 <div class="info-item">
                     <div class="info-label">

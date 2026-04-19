@@ -139,6 +139,11 @@
                                     <small style="color: #666;">Format: +94xxxxxxxxx (e.g., +94771234567)</small>
                                 </div>
                             </div>
+                            <!-- <div class="form-group">
+                                <label for="school">School</label>
+                                <input type="text" id=school name="school"
+                                        value ="<//?= htmlspecialchars($data['profile']['school']) ?>">
+                            </div> -->
 
                         </div>
                         <!-- Academic Information Section -->
