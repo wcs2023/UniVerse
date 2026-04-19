@@ -225,7 +225,7 @@ if (!defined('BASE_URL')) {
                     <?php $sessionDate = new DateTime($session['slot_datetime']); ?>
                     <div class="feedback-card">
                             <div class="feedback-layout">
-                            <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/default-avatar.svg' ?>"
+                            <img src="<?= !empty($session['mentor_picture']) ? BASE_URL . htmlspecialchars($session['mentor_picture']) : BASE_URL . '/assets/images/U.png' ?>"
                                 alt="<?= htmlspecialchars($session['mentor_name'] ?? 'Mentor') ?>"
                                 class="feedback-avatar"
                                 onerror="this.onerror=null; this.src='<?= BASE_URL ?>/assets/images/U.png'">
