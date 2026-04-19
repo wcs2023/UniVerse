@@ -30,26 +30,59 @@ class MentorAvailabilitySlot extends MentorshipBase
 
             $successCount = 0;
             $duplicates = 0;
-            
-            $query = "INSERT IGNORE INTO mentor_availability_slots 
-                      (mentor_id, slot_datetime, duration_minutes) 
+
+            // Normalize incoming slots first so duplicates in the same request are skipped.
+            $normalizedUniqueSlots = [];
+            foreach ($slots as $slotDatetime) {
+                $timestamp = strtotime($slotDatetime);
+                if ($timestamp === false || $timestamp <= time()) {
+                    continue;
+                }
+
+                $formattedSlot = date('Y-m-d H:i:s', $timestamp);
+                if (isset($normalizedUniqueSlots[$formattedSlot])) {
+                    $duplicates++;
+                    continue;
+                }
+                $normalizedUniqueSlots[$formattedSlot] = true;
+            }
+
+            if (empty($normalizedUniqueSlots)) {
+                return [
+                    'success' => false,
+                    'added' => 0,
+                    'duplicates' => $duplicates,
+                    'message' => 'No valid future slots provided'
+                ];
+            }
+
+            // Fetch existing slots for this mentor to block DB duplicates.
+            $slotValues = array_keys($normalizedUniqueSlots);
+            $existingSlots = [];
+            $placeholders = implode(',', array_fill(0, count($slotValues), '?'));
+            $existingQuery = "SELECT slot_datetime
+                              FROM mentor_availability_slots
+                              WHERE mentor_id = ?
+                              AND slot_datetime IN ($placeholders)";
+            $existingStmt = $this->db->prepare($existingQuery);
+            $existingStmt->execute(array_merge([$mentorId], $slotValues));
+            foreach ($existingStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $existingSlots[$row['slot_datetime']] = true;
+            }
+
+            $query = "INSERT INTO mentor_availability_slots
+                      (mentor_id, slot_datetime, duration_minutes)
                       VALUES (?, ?, ?)";
             $stmt = $this->db->prepare($query);
 
-            foreach ($slots as $slotDatetime) {
-                $formattedSlot = date('Y-m-d H:i:s', strtotime($slotDatetime));
-                
-                if (strtotime($formattedSlot) <= time()) {
+            foreach ($slotValues as $formattedSlot) {
+                if (isset($existingSlots[$formattedSlot])) {
+                    $duplicates++;
                     continue;
                 }
-                
+
                 $stmt->execute([$mentorId, $formattedSlot, $duration]);
-                
-                if ($stmt->rowCount() > 0) {
-                    $successCount++;
-                } else {
-                    $duplicates++;
-                }
+                $successCount++;
             }
 
             return [
