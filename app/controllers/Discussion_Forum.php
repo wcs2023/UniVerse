@@ -60,7 +60,7 @@ class Discussion_Forum extends Controller
                 'replies' => $thread['reply_count'] ?? 0,
                 'views' => $thread['views'] ?? 0,
                 'last_author' => $thread['last_post_author'] ?? $thread['author_fname'] . ' ' . $thread['author_lname'],
-                'last_edited' => $thread['last_edited'] ?? $thread['created_at']
+                'last_edited' => $thread['updated_at'] ?? $thread['created_at']
             ];
         }
         $currentUserId = $this->getCurrentUserId();

@@ -42,8 +42,8 @@
                     <i class="fa-solid fa-newspaper"></i>
                 </div>
                 <div class="stat-info">
-                    <h3>8</h3>
-                    <p>Articles Read</p>
+                    <h3>5</h3>
+                    <p>Articles</p>
                 </div>
             </div>
         </section>

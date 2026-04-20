@@ -42,7 +42,6 @@ class Reset extends Controller
             return;
         }
 
-        // Optional but recommended:
         // check whether user exists before sending OTP
         if (!$this->resetModel->emailExists($email)) {
             $this->view('auth/request_reset', [

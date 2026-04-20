@@ -149,6 +149,23 @@ WHERE mb.status = 'scheduled'
 AND mb.session_datetime > NOW()
 ORDER BY mb.session_datetime ASC;
 
+-- Query to get articles, their authors (users), and the number of comments for each article, limited to the top 5
+    SELECT 
+        a.ArticleID,
+        a.Title AS ArticleTitle,
+        u.Username AS Author,
+        COUNT(c.CommentID) AS NumberOfComments
+    FROM 
+        Articles a
+    JOIN 
+        Users u ON a.UserID = u.UserID
+    LEFT JOIN 
+        Comments c ON a.ArticleID = c.ArticleID
+    GROUP BY 
+        a.ArticleID, a.Title, u.Username
+    ORDER BY 
+        NumberOfComments DESC
+    LIMIT 5;
 -- =====================================================
 -- VIEW: Mentor's Upcoming Bookings
 -- =====================================================
