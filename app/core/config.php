@@ -6,21 +6,21 @@ if (!isset($_SERVER['SERVER_NAME'])) {
 }
 
 if($_SERVER['SERVER_NAME'] == 'localhost') {
-    define('DBHOST', 'localhost');
-    define('DBNAME', 'universe_db');  // Updated to match our schema
-    define('DBUSER', 'root');
-    define('DBPASS', '');
-    define('DBDRIVER', '');
-    define('BASE_URL', 'http://localhost/UniVerse/public');
+    define('DBHOST', getenv('DB_HOST') ?: 'localhost');
+    define('DBNAME', getenv('DB_NAME') ?: 'universe_db');
+    define('DBUSER', getenv('DB_USER') ?: 'root');
+    define('DBPASS', getenv('DB_PASS') ?: '');
+    define('DBDRIVER', getenv('DB_DRIVER') ?: '');
+    define('BASE_URL', getenv('BASE_URL') ?: 'http://localhost/UniVerse/public');
 } else {
-    define('DBNAME', 'universe_db');  // Updated to match our schema
-    define('DBHOST', 'localhost');
-    define('DBUSER', 'root');
-    define('DBPASS', '');
-    define('DBDRIVER', '');
-    define('BASE_URL', 'https://yourdomain.com/public');
+    define('DBHOST', getenv('DB_HOST') ?: 'localhost');
+    define('DBNAME', getenv('DB_NAME') ?: 'universe_db');
+    define('DBUSER', getenv('DB_USER') ?: 'root');
+    define('DBPASS', getenv('DB_PASS') ?: '');
+    define('DBDRIVER', getenv('DB_DRIVER') ?: '');
+    define('BASE_URL', getenv('BASE_URL') ?: 'https://yourdomain.com/public');
 }
 
 define('APPROOT',dirname(dirname(__FILE__))); 
-define('URLROOT','http://localhost/UniVerse'); 
+define('URLROOT', getenv('URL_ROOT') ?: 'http://localhost/UniVerse'); 
 define('SITENAME','UniVerse');
