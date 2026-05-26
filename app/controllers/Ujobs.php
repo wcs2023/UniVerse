@@ -178,7 +178,7 @@ class Ujobs extends Controller
             }
 
             // Create upload directory if it doesn't exist
-            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/UniVerse/public/uploads/resumes/';
+            $uploadDir = APPROOT . '/public/uploads/resumes/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
@@ -189,7 +189,7 @@ class Ujobs extends Controller
             $filePath = $uploadDir . $fileName;
 
             if (move_uploaded_file($_FILES['resume']['tmp_name'], $filePath)) {
-                $resumeUrl = '/UniVerse/public/uploads/resumes/' . $fileName;
+                $resumeUrl = '/uploads/resumes/' . $fileName;
             } else {
                 $_SESSION['error'] = 'Failed to upload resume. Please try again.';
                 header('Location: ' . BASE_URL . '/ujobs/apply/' . $jobId);

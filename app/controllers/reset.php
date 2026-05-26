@@ -1,7 +1,7 @@
 <?php
-require_once '../app/PHPMailer/PHPMailer.php';
-require_once '../app/PHPMailer/SMTP.php';
-require_once '../app/PHPMailer/Exception.php';
+require_once APPROOT . '/PHPMailer/PHPMailer.php';
+require_once APPROOT . '/PHPMailer/SMTP.php';
+require_once APPROOT . '/PHPMailer/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
